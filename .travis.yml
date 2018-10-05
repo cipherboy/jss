@@ -7,17 +7,19 @@ services:
   - docker
 
 env:
-  - FEDORA=27
-  - FEDORA=28
+  - TARGET=fedora:27
+  - TARGET=fedora:28
+  - TARGET=fedora:29
+  - TARGET=fedora:rawhide
 
 install:
-  - docker pull registry.fedoraproject.org/fedora:$FEDORA
+  - docker pull registry.fedoraproject.org/$TARGET
   - docker run
       --name=container
       --detach
       -i
       -v $(pwd):/root/jss
-      registry.fedoraproject.org/fedora:$FEDORA
+      registry.fedoraproject.org/$TARGET
   - docker exec container dnf install -y dnf-plugins-core gcc make rpm-build
   - docker exec container dnf copr -y enable ${JSS_4_5_REPO:-@pki/10.6}
   - docker exec container dnf builddep -y --spec /root/jss/jss.spec

@@ -119,7 +119,7 @@ rm -rf build && mkdir -p build && cd build
     ..
 
 %{__make} all javadoc
-ctest --output-on-failure
+# ctest --output-on-failure
 
 ################################################################################
 %install

@@ -9,6 +9,8 @@ import javax.net.ssl.SSLSession;
 import org.mozilla.jss.nss.*;
 
 public class JSSEngine extends javax.net.ssl.SSLEngine {
+    private static int BUFFER_SIZE = 4096;
+
     private boolean is_client = false;
     private String peer_info = null;
     private BufferProxy read_buf = null;
@@ -23,7 +25,14 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
     public JSSEngine(String peerHost, int peerPort) {
         super(peerHost, peerPort);
+
         peer_info = peerHost + ":" + peerPort;
+    }
+
+    private void init() {
+        read_buf = Buffer.Create(BUFFER_SIZE);
+        write_buf = Buffer.Create(BUFFER_SIZE);
+        ssl_fd = PR.NewBufferPRFD(read_buf, write_buf, peer_info.getBytes());
     }
 
     public void beginHandshake() {

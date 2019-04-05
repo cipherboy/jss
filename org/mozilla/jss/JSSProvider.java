@@ -256,6 +256,11 @@ public final class JSSProvider extends java.security.Provider {
         put("Alg.Alias.TrustManagerFactory.PKIX", "NssX509");
         put("Alg.Alias.TrustManagerFactory.X509", "NssX509");
         put("Alg.Alias.TrustManagerFactory.X.509", "NssX509");
+
+        /////////////////////////////////////////////////////////////
+        // TLS
+        /////////////////////////////////////////////////////////////
+        put("SSLContext.Default", "org.mozilla.jss.ssl.javax.JSSContext");
     }
 
     public String toString() {

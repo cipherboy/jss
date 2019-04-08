@@ -8,11 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.mozilla.jss.nss.*;
+import org.mozilla.jss.pkcs11.*;
 
 public class JSSEngine extends javax.net.ssl.SSLEngine {
     public static Logger logger = LoggerFactory.getLogger(JSSEngine.class);
 
-    private static int BUFFER_SIZE = 4096;
+    private static int BUFFER_SIZE = 2048;
 
     private boolean is_client = false;
     private String peer_info = null;
@@ -39,6 +40,33 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         read_buf = Buffer.Create(BUFFER_SIZE);
         write_buf = Buffer.Create(BUFFER_SIZE);
         ssl_fd = PR.NewBufferPRFD(read_buf, write_buf, peer_info.getBytes());
+
+        if (is_client) {
+            initClient();
+        } else {
+            initServer();
+        }
+
+        SSL.ResetHandshake(ssl_fd, !is_client);
+    }
+
+    private void initClient() {
+        PRFDProxy model = SSL.ImportFD(null, PR.NewTCPSocket());
+        ssl_fd = SSL.ImportFD(model, ssl_fd);
+        PR.Close(model);
+    }
+
+    private void initServer() {
+        PRFDProxy model = SSL.ImportFD(null, PR.NewTCPSocket());
+        ssl_fd = SSL.ImportFD(model, ssl_fd);
+        PR.Close(model);
+
+        // TODO find cert, key
+        PK11Cert cert = null;
+        PK11PrivKey key = null;
+
+        SSL.ConfigSecureServer(ssl_fd, cert, key, 1);
+        SSL.ConfigServerSessionIDCache(1, 100, 100, null);
     }
 
     public void beginHandshake() {
@@ -134,8 +162,13 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         logger.debug("JSSEngine: setNeedClientAuth(" + need + ")");
     }
 
-    public void setUseClientMode(boolean mode) {
+    public void setUseClientMode(boolean mode) throws IllegalArgumentException {
         logger.debug("JSSEngine: setUseClientMode(" + mode + ")");
+        if (ssl_fd != null) {
+            throw new IllegalArgumentException("Cannot change client mode after beginning handshake.");
+        }
+
+        is_client = mode;
     }
 
     public void setWantClientAuth(boolean want) {

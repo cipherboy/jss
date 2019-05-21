@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.mozilla.jss.nss.*;
+import org.mozilla.jss.ssl.SSLCipher;
 import org.mozilla.jss.pkcs11.*;
 
 public class JSSEngine extends javax.net.ssl.SSLEngine {
@@ -21,6 +22,9 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
     private BufferProxy write_buf = null;
     private PRFDProxy ssl_fd = null;
 
+    private PK11Cert cert = null;
+    private PK11PrivKey key = null;
+
     public JSSEngine() {
         super();
 
@@ -33,6 +37,16 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
         peer_info = peerHost + ":" + peerPort;
         logger.debug("JSSEngine: constructor(" + peerHost + ", " + peerPort + ")");
+    }
+
+    public JSSEngine(String peerHost, int peerPort, PK11Cert localCert, PK11PrivKey localKey) {
+        super(peerHost, peerPort);
+
+        peer_info = peerHost + ":" + peerHost;
+        cert = localCert;
+        key = localKey;
+
+        logger.debug("JSSEngine: constructor(" + peerHost + ", " + peerPort + ", " + localCert + ", " + localKey + ")");
     }
 
     private void init() {
@@ -61,9 +75,9 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         ssl_fd = SSL.ImportFD(model, ssl_fd);
         PR.Close(model);
 
-        // TODO find cert, key
-        PK11Cert cert = null;
-        PK11PrivKey key = null;
+        if (cert == null || key == null) {
+            throw new IllegalArgumentException("JSSEngine: must be initialized with server certificate and key!");
+        }
 
         SSL.ConfigSecureServer(ssl_fd, cert, key, 1);
         SSL.ConfigServerSessionIDCache(1, 100, 100, null);
@@ -80,10 +94,14 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
     public void closeInbound() {
         logger.debug("JSSEngine: closeInbound()");
+
+        PR.Shutdown(ssl_fd, PR.SHUTDOWN_RCV);
     }
 
     public void closeOutbound() {
         logger.debug("JSSEngine: closeOutbound()");
+
+        PR.Shutdown(ssl_fd, PR.SHUTDOWN_SEND);
     }
 
     public Runnable getDelegatedTask() {
@@ -93,7 +111,19 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
     public String[] getEnabledCipherSuites() {
         logger.debug("JSSEngine: getEnabledCipherSuites()");
-        return null;
+
+        ArrayList<String> enabledCiphers;
+        for (SSLCipher cipher : SSLCipher.values()) {
+            try {
+                if (SSL.CipherPrefGet(ssl_fd, cipher.getID())) {
+                    enabledCiphers.add(cipher.name());
+                }
+            } catch (Exception e) {
+                // Do nothing -- this shouldn't happen as SSLCipher should be
+                // synced with NSS.
+            }
+        }
+        return enabledCiphers.toArray(new String[0]);
     }
     public String[] getEnabledProtocols() {
         logger.debug("JSSEngine: getEnabledProtocols()");

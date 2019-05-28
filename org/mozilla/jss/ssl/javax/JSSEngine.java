@@ -1,4 +1,5 @@
 import java.lang.Runnable;
+import java.util.ArrayList;
 
 import java.nio.ByteBuffer;
 
@@ -112,7 +113,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
     public String[] getEnabledCipherSuites() {
         logger.debug("JSSEngine: getEnabledCipherSuites()");
 
-        ArrayList<String> enabledCiphers;
+        ArrayList<String> enabledCiphers = new ArrayList<String>();
         for (SSLCipher cipher : SSLCipher.values()) {
             try {
                 if (SSL.CipherPrefGet(ssl_fd, cipher.getID())) {

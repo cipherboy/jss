@@ -126,10 +126,12 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         }
         return enabledCiphers.toArray(new String[0]);
     }
+
     public String[] getEnabledProtocols() {
         logger.debug("JSSEngine: getEnabledProtocols()");
         return null;
     }
+
     public boolean getEnableSessionCreation() {
         logger.debug("JSSEngine: getEnableSessionCreation()");
         return false;

@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.mozilla.jss.nss.*;
-import org.mozilla.jss.ssl.SSLCipher;
+import org.mozilla.jss.ssl.*;
 import org.mozilla.jss.pkcs11.*;
 
 public class JSSEngine extends javax.net.ssl.SSLEngine {
@@ -28,6 +28,8 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
     public boolean need_client_auth = false;
     public boolean want_client_auth = false;
+
+    public SSLEngineResult.HandshakeStatus handshake_state = SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING;
 
     public JSSEngine() {
         super();
@@ -64,8 +66,6 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         } else {
             initServer();
         }
-
-        SSL.ResetHandshake(ssl_fd, !is_client);
     }
 
     private void initClient() {
@@ -91,6 +91,16 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         logger.debug("JSSEngine: beginHandshake()");
         if (ssl_fd == null) {
             init();
+        }
+
+        if (is_client) {
+            // Update handshake status; client initiates connection, so we
+            // need to wrap first.
+            handshake_state = SSLEngineResult.HandshakeStatus.NEED_WRAP;
+        } else {
+            // Update handshake status; client initiates connection, so wait
+            // for unwrap on the server end.
+            handshake_state = SSLEngineResult.HandshakeStatus.NEED_UNWRAP;
         }
 
         SSL.ResetHandshake(ssl_fd, is_client);
@@ -138,8 +148,8 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
         SSLVersionRange vrange = null;
         try {
-            vrange = SSL.VerionRangeGet(ssl_fd);
-        } catch (Excpetion e) {
+            vrange = SSL.VersionRangeGet(ssl_fd);
+        } catch (Exception e) {
             // This shouldn't happen unless the PRFDProxy is null.
             throw new RuntimeException("Unexpected failure: " + e.getMessage(), e);
         }
@@ -151,7 +161,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         }
 
         for (SSLVersion v: SSLVersion.values()) {
-            if (vrange.getMinVersion.ordinal() <= v.ordinal() && v.ordinal() <= vrange.getMaxVersion().ordinal()) {
+            if (vrange.getMinVersion().ordinal() <= v.ordinal() && v.ordinal() <= vrange.getMaxVersion().ordinal()) {
                 // We've designated the second alias as the standard Java name
                 // for the protocol. However if one isn't provided, fall back
                 // to the first alias. It currently is the case that all
@@ -169,45 +179,52 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
     }
 
     public boolean getEnableSessionCreation() {
-        logger.debug("JSSEngine: getEnableSessionCreation()");
+        logger.debug("JSSEngine: getEnableSessionCreation() - not implemented");
         return false;
     }
 
     public SSLEngineResult.HandshakeStatus getHandshakeStatus() {
         logger.debug("JSSEngine: getHandshakeStatus()");
-        return null;
+        return handshake_state;
     }
 
     public boolean getNeedClientAuth() {
         logger.debug("JSSEngine: getNeedClientAuth()");
-        return false;
+        return need_client_auth;
     }
+
     public SSLSession getSession() {
-        logger.debug("JSSEngine: getSession()");
+        logger.debug("JSSEngine: getSession() - not implemented");
         return null;
     }
+
     public String[] getSupportedCipherSuites() {
-        logger.debug("JSSEngine: getSupportedCipherSuites()");
+        logger.debug("JSSEngine: getSupportedCipherSuites() - not implemented");
         return null;
     }
+
     public String[] getSupportedProtocols() {
-        logger.debug("JSSEngine: getSupportedProtocols()");
+        logger.debug("JSSEngine: getSupportedProtocols() - not implemented");
         return null;
     }
+
     public boolean getUseClientMode() {
         logger.debug("JSSEngine: getUseClientMode()");
-        return false;
+        return is_client;
     }
+
     public boolean getWantClientAuth() {
         logger.debug("JSSEngine: getWantClientAuth()");
-        return false;
+        return want_client_auth;
     }
+
     public boolean isInboundDone() {
-        logger.debug("JSSEngine: isInboundDone()");
+        logger.debug("JSSEngine: isInboundDone() - not implemented");
         return false;
     }
+
     public boolean isOutboundDone() {
-        logger.debug("JSSEngine: isOutboundDone()");
+        logger.debug("JSSEngine: isOutboundDone() - not implemented");
         return false;
     }
 
@@ -218,6 +235,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         }
         logger.debug(")");
     }
+
     public void setEnabledProtocols(String[] protocols) {
         logger.debug("JSSEngine: setEnabledProtocols(");
         for (String protocol : protocols) {
@@ -225,12 +243,14 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         }
         logger.debug(")");
     }
+
     public void setEnableSessionCreation(boolean flag) {
-        logger.debug("JSSEngine: setEnableSessionCreation(" + flag + ")");
+        logger.debug("JSSEngine: setEnableSessionCreation(" + flag + ") - not implemented");
     }
 
     public void setNeedClientAuth(boolean need) {
         logger.debug("JSSEngine: setNeedClientAuth(" + need + ")");
+        need_client_auth = need;
     }
 
     public void setUseClientMode(boolean mode) throws IllegalArgumentException {
@@ -244,6 +264,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
     public void setWantClientAuth(boolean want) {
         logger.debug("JSSEngine: setWantClientAuth(" + want + ")");
+        want_client_auth = want;
     }
 
     public SSLEngineResult unwrap(ByteBuffer src, ByteBuffer[] dsts, int offset, int length) {

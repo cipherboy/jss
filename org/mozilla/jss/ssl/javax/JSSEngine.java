@@ -26,6 +26,9 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
     private PK11Cert cert = null;
     private PK11PrivKey key = null;
 
+    public boolean need_client_auth = false;
+    public boolean want_client_auth = false;
+
     public JSSEngine() {
         super();
 
@@ -121,7 +124,8 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
                 }
             } catch (Exception e) {
                 // Do nothing -- this shouldn't happen as SSLCipher should be
-                // synced with NSS.
+                // synced with NSS. However, we won't throw an exception as
+                // doing so would break this loop.
             }
         }
         return enabledCiphers.toArray(new String[0]);
@@ -129,17 +133,51 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
     public String[] getEnabledProtocols() {
         logger.debug("JSSEngine: getEnabledProtocols()");
-        return null;
+
+        ArrayList<String> enabledProtocols = new ArrayList<String>();
+
+        SSLVersionRange vrange = null;
+        try {
+            vrange = SSL.VerionRangeGet(ssl_fd);
+        } catch (Excpetion e) {
+            // This shouldn't happen unless the PRFDProxy is null.
+            throw new RuntimeException("Unexpected failure: " + e.getMessage(), e);
+        }
+
+        if (vrange == null) {
+            // Again; this shouldn't happen as the vrange should always
+            // be created by VersionRangeGet(...).
+            throw new RuntimeException("JSSEngine.getEnabledProtocols() - null protocol range; this shouldn't happen");
+        }
+
+        for (SSLVersion v: SSLVersion.values()) {
+            if (vrange.getMinVersion.ordinal() <= v.ordinal() && v.ordinal() <= vrange.getMaxVersion().ordinal()) {
+                // We've designated the second alias as the standard Java name
+                // for the protocol. However if one isn't provided, fall back
+                // to the first alias. It currently is the case that all
+                // elements in SSLVersion have two aliases.
+
+                if (v.aliases().length >= 2) {
+                    enabledProtocols.add(v.aliases()[1]);
+                } else {
+                    enabledProtocols.add(v.aliases()[0]);
+                }
+            }
+        }
+
+        return enabledProtocols.toArray(new String[0]);
     }
 
     public boolean getEnableSessionCreation() {
         logger.debug("JSSEngine: getEnableSessionCreation()");
         return false;
     }
+
     public SSLEngineResult.HandshakeStatus getHandshakeStatus() {
         logger.debug("JSSEngine: getHandshakeStatus()");
         return null;
     }
+
     public boolean getNeedClientAuth() {
         logger.debug("JSSEngine: getNeedClientAuth()");
         return false;

@@ -234,14 +234,67 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
             logger.debug("\t" + suite + ",");
         }
         logger.debug(")");
+
+        // We need to disable the suite if it isn't present in the list of
+        // suites above. Be lazy about it for the time being and disable all
+        // cipher suites first.
+        for (SSLCipher suite : SSLCipher.values()) {
+            SSL.CipherPrefSet(ssl_fd, suite.getID(), false);
+        }
+
+        // Only enable these particular suites.
+        for (String suite_name : suites) {
+            try {
+                SSLCipher suite = SSLCipher.valueOf(suite_name);
+                if (suite != null) {
+                    SSL.CipherPrefSet(ssl_fd, suite.getID(), true);
+                }
+            } catch (Exception e) {
+                // The most common case would be if they pass an invalid
+                // cipher name. We might as well tell them about it...
+                throw new RuntimeException(e.getMessage(), e);
+            }
+        }
     }
 
+    /**
+     * Set the range of SSL protocols supported by this SSLEngine instance.
+     *
+     * Note that this enables all protocols in the range of min(protocols) to
+     * max(protocols), inclusive due to the underlying call to NSS's
+     * SSL_VersionRangeSet(...).
+     */
     public void setEnabledProtocols(String[] protocols) {
         logger.debug("JSSEngine: setEnabledProtocols(");
         for (String protocol : protocols) {
             logger.debug("\t" + protocol + ",");
         }
         logger.debug(")");
+
+        try {
+            SSLVersion min_version = SSLVersion.findByAlias(protocols);
+            SSLVersion max_version = SSLVersion.findByAlias(protocols);
+
+            for (String protocol : protocols) {
+                SSLVersion version = SSLVersion.findByAlias(protocols);
+                if (min_version.ordinal() > version.ordinal()) {
+                    min_version = version;
+                }
+
+                if (max_version.ordinal() < version.ordinal()) {
+                    max_version = version;
+                }
+
+                // We should bound this range by crypto-policies in the
+                // future to match the current behavior.
+                SSLVersionRange vrange = SSLVersionRange(min_version, max_version);
+                SSL.VersionRangeSet(ssl_fd, vrange);
+            }
+        } catch (Exception e) {
+            // The most common case would be if they pass an invalid protocol
+            // version. We might as well tell them about it...
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
     public void setEnableSessionCreation(boolean flag) {

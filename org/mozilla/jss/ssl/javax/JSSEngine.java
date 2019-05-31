@@ -291,7 +291,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
                 // We should bound this range by crypto-policies in the
                 // future to match the current behavior.
-                SSLVersionRange vrange = SSLVersionRange(min_version, max_version);
+                SSLVersionRange vrange = new SSLVersionRange(min_version, max_version);
                 SSL.VersionRangeSet(ssl_fd, vrange);
             }
         } catch (Exception e) {

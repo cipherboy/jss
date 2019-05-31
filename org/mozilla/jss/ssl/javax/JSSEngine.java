@@ -264,19 +264,23 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
      * max(protocols), inclusive due to the underlying call to NSS's
      * SSL_VersionRangeSet(...).
      */
-    public void setEnabledProtocols(String[] protocols) {
+    public void setEnabledProtocols(String[] protocols) throws IllegalArgumentException {
         logger.debug("JSSEngine: setEnabledProtocols(");
         for (String protocol : protocols) {
             logger.debug("\t" + protocol + ",");
         }
         logger.debug(")");
 
+        if (protocols == null || protocols.length == 0) {
+            throw new IllegalArgumentException("setEnabledProtocols(): protocols must be not null and non-empty!");
+        }
+
         try {
-            SSLVersion min_version = SSLVersion.findByAlias(protocols);
-            SSLVersion max_version = SSLVersion.findByAlias(protocols);
+            SSLVersion min_version = SSLVersion.findByAlias(protocols[0]);
+            SSLVersion max_version = SSLVersion.findByAlias(protocols[0]);
 
             for (String protocol : protocols) {
-                SSLVersion version = SSLVersion.findByAlias(protocols);
+                SSLVersion version = SSLVersion.findByAlias(protocol);
                 if (min_version.ordinal() > version.ordinal()) {
                     min_version = version;
                 }
@@ -293,7 +297,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         } catch (Exception e) {
             // The most common case would be if they pass an invalid protocol
             // version. We might as well tell them about it...
-            throw new RuntimeException(e.getMessage(), e);
+            throw new IllegalArgumentException("setEnabledProtocols(): unknown protocol: " + e.getMessage(), e);
         }
     }
 

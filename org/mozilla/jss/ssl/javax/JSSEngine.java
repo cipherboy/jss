@@ -324,13 +324,78 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         want_client_auth = want;
     }
 
-    public SSLEngineResult unwrap(ByteBuffer src, ByteBuffer[] dsts, int offset, int length) {
+    private int computeSize(ByteBuffer[] buffers, int offset, int length) throws IllegalArgumentException {
+        int result = 0;
+
+        // Semantics of arguments:
+        //
+        // - buffers is where we're reading/writing application data.
+        // - offset is the index of the first buffer we read/write to.
+        // - length is the total number of buffers we read/write to.
+        //
+        // We use a relative index and an absolute index to handle these
+        // constraints.
+        for (int rel_index = 0; rel_index < length; rel_index++) {
+            int index = offset + rel_index;
+            if (index >= buffers.length) {
+                throw new IllegalArgumentException("offset (" + offset + ") or length (" + length + ") exceeds contract based on number of buffers (" + buffers.length + ")");
+            }
+            if (buffers[index] == null) {
+                throw new IllegalArgumentException("Buffer at index " + index + " is null.");
+            }
+
+            result += (buffers[index].capacity() - buffers[index].position());
+        }
+
+        return result;
+    }
+
+    private void putData(byte[] data, ByteBuffer[] buffers, int offset, int length) {
+        // Handle the rather unreasonable task of moving data into the buffers.
+        // We assume the buffer parameters have already been checked by
+        // computeSize(...); that is, offset/length contracts hold and that
+        // each buffer in the range is non-null.
+        //
+        // We also assume that data.length does not exceed the total number
+        // of bytes the buffers can hold; this is what computeSize(...)'s
+        // return value should ensure.
+
+        int buffer_index = offset;
+
+        for (int data_index = 0; data_index < data.length; data_index++) {
+            // Ensure we have have a buffer with capacity.
+            while (buffers[buffer_index].capacity() == buffers[buffer_index].position()) {
+                buffer_index += 1;
+            }
+
+            // TODO: use bulk copy
+            buffers[buffer_index].put(data[data_index]);
+        }
+    }
+
+    public SSLEngineResult unwrap(ByteBuffer src, ByteBuffer[] dsts, int offset, int length) throws IllegalArgumentException {
         logger.debug("JSSEngine: unwrap()");
+        // In this method, we're taking the network wire contents of src and
+        // passing them as the read side of our buffer. If there's any data
+        // for us to read from the remote peer (via ssl_fd), we place it in
+        // the various dsts.
+        //
+        // However, we also need to detect if the handshake is still ongoing;
+        // if so, we can't send data (from src) until then.
+
+        int wire_data = 0;
+        int app_data = 0;
+
+        int max_app_data = computeSize(dsts, offset, length);
+
         return null;
     }
 
     public SSLEngineResult wrap(ByteBuffer[] srcs, int offset, int length, ByteBuffer dst) {
         logger.debug("JSSEngine: wrap()");
+        // In this method, we're taking the application data from the various
+        // srcs and writing it to the remote peer (via ssl_fd). If there's any
+        // data for us to send to the remote peer, we place it in dst.
         return null;
     }
 }

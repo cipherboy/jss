@@ -385,8 +385,9 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
         int wire_data = 0;
         int app_data = 0;
-
         int max_app_data = computeSize(dsts, offset, length);
+
+
 
         return null;
     }

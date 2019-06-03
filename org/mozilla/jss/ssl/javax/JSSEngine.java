@@ -1,5 +1,5 @@
-import java.lang.Runnable;
-import java.util.ArrayList;
+import java.lang.*;
+import java.util.*;
 
 import java.nio.ByteBuffer;
 
@@ -31,6 +31,8 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
     public SSLEngineResult.HandshakeStatus handshake_state = SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING;
 
+    public HashSet<String> enabled_ciphers = null;
+
     public JSSEngine() {
         super();
 
@@ -57,24 +59,55 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
     private void init() {
         logger.debug("JSSEngine: init()");
+
+        // Initialize our JSSEngine when we begin to handshake; otherwise,
+        // calls to Set<Option>(...) won't be processed if we call it too
+        // early; some of these need to be applied at initialization.
+
+        // If the buffers exist, destroy them and recreate.
+        if (read_buf != null) {
+            Buffer.Free(read_buf);
+        }
         read_buf = Buffer.Create(BUFFER_SIZE);
+
+        if (write_buf != null) {
+            Buffer.Free(write_buf);
+        }
         write_buf = Buffer.Create(BUFFER_SIZE);
+
+        // Ensure we don't leak ssl_fd if we're called multiple times.
+        if (ssl_fd != null) {
+            PR.Close(ssl_fd);
+        }
         ssl_fd = PR.NewBufferPRFD(read_buf, write_buf, peer_info.getBytes());
 
+        // Initialize the appropriate end of this connection.
         if (is_client) {
             initClient();
+
+            // Update handshake status; client initiates connection, so we
+            // need to wrap first.
+            handshake_state = SSLEngineResult.HandshakeStatus.NEED_WRAP;
         } else {
             initServer();
+
+            // Update handshake status; client initiates connection, so wait
+            // for unwrap on the server end.
+            handshake_state = SSLEngineResult.HandshakeStatus.NEED_UNWRAP;
         }
+
+        applyCiphers();
     }
 
     private void initClient() {
+        // Initialize ssl_fd as a client connection.
         PRFDProxy model = SSL.ImportFD(null, PR.NewTCPSocket());
         ssl_fd = SSL.ImportFD(model, ssl_fd);
         PR.Close(model);
     }
 
     private void initServer() {
+        // Initialize ssl_fd as a server connection.
         PRFDProxy model = SSL.ImportFD(null, PR.NewTCPSocket());
         ssl_fd = SSL.ImportFD(model, ssl_fd);
         PR.Close(model);
@@ -87,20 +120,46 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         SSL.ConfigServerSessionIDCache(1, 100, 100, null);
     }
 
-    public void beginHandshake() {
-        logger.debug("JSSEngine: beginHandshake()");
-        if (ssl_fd == null) {
-            init();
+    private void applyCiphers() {
+        // Enabled the ciphersuites specified by setEnabledCipherSuites(...).
+        // When this isn't called, enabled_ciphers will be null, so we'll just
+        // use whatever is enabled by default.
+        if (enabled_ciphers == null) {
+            return;
         }
 
-        if (is_client) {
-            // Update handshake status; client initiates connection, so we
-            // need to wrap first.
-            handshake_state = SSLEngineResult.HandshakeStatus.NEED_WRAP;
-        } else {
-            // Update handshake status; client initiates connection, so wait
-            // for unwrap on the server end.
-            handshake_state = SSLEngineResult.HandshakeStatus.NEED_UNWRAP;
+        // We need to disable the suite if it isn't present in the list of
+        // suites above. Be lazy about it for the time being and disable all
+        // cipher suites first.
+        for (SSLCipher suite : SSLCipher.values()) {
+            SSL.CipherPrefSet(ssl_fd, suite.getID(), false);
+        }
+
+        // Only enable these particular suites.
+        for (String suite_name : enabled_ciphers) {
+            try {
+                SSLCipher suite = SSLCipher.valueOf(suite_name);
+                if (suite != null) {
+                    SSL.CipherPrefSet(ssl_fd, suite.getID(), true);
+                }
+            } catch (Exception e) {
+                // The most common case would be if they pass an invalid
+                // cipher name. We might as well tell them about it...
+                throw new RuntimeException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public void beginHandshake() {
+        logger.debug("JSSEngine: beginHandshake()");
+
+        // We assume beginHandshake(...) is the entry point for initializing
+        // the buffer. In particular, wrap(...) / unwrap(...) *MUST* call
+        // beginHandshake(...) if ssl_fd == null.
+
+        // ssl_fd == null <-> we've not initialized anything yet.
+        if (ssl_fd == null) {
+            init();
         }
 
         SSL.ResetHandshake(ssl_fd, is_client);
@@ -123,14 +182,13 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         return null;
     }
 
-    public String[] getEnabledCipherSuites() {
-        logger.debug("JSSEngine: getEnabledCipherSuites()");
+    private void queryEnabledCipherSuites() {
+        enabled_ciphers = new HashSet<String>();
 
-        ArrayList<String> enabledCiphers = new ArrayList<String>();
         for (SSLCipher cipher : SSLCipher.values()) {
             try {
                 if (SSL.CipherPrefGet(ssl_fd, cipher.getID())) {
-                    enabledCiphers.add(cipher.name());
+                    enabled_ciphers.add(cipher.name());
                 }
             } catch (Exception e) {
                 // Do nothing -- this shouldn't happen as SSLCipher should be
@@ -138,7 +196,16 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
                 // doing so would break this loop.
             }
         }
-        return enabledCiphers.toArray(new String[0]);
+    }
+
+    public String[] getEnabledCipherSuites() {
+        logger.debug("JSSEngine: getEnabledCipherSuites()");
+
+        if (enabled_ciphers == null) {
+            queryEnabledCipherSuites();
+        }
+
+        return enabled_ciphers.toArray(new String[0]);
     }
 
     public String[] getEnabledProtocols() {
@@ -235,25 +302,13 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         }
         logger.debug(")");
 
-        // We need to disable the suite if it isn't present in the list of
-        // suites above. Be lazy about it for the time being and disable all
-        // cipher suites first.
-        for (SSLCipher suite : SSLCipher.values()) {
-            SSL.CipherPrefSet(ssl_fd, suite.getID(), false);
+        if (ssl_fd != null) {
+            throw new RuntimeException("Must call JSSEngine.setEnabledCipherSuites() prior to calling beginHandshake()");
         }
 
-        // Only enable these particular suites.
-        for (String suite_name : suites) {
-            try {
-                SSLCipher suite = SSLCipher.valueOf(suite_name);
-                if (suite != null) {
-                    SSL.CipherPrefSet(ssl_fd, suite.getID(), true);
-                }
-            } catch (Exception e) {
-                // The most common case would be if they pass an invalid
-                // cipher name. We might as well tell them about it...
-                throw new RuntimeException(e.getMessage(), e);
-            }
+        enabled_ciphers = new HashSet<String>();
+        for (String suite : suites) {
+            enabled_ciphers.add(suite);
         }
     }
 
@@ -327,6 +382,10 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
     private int computeSize(ByteBuffer[] buffers, int offset, int length) throws IllegalArgumentException {
         int result = 0;
 
+        if (buffers == null) {
+            return result;
+        }
+
         // Semantics of arguments:
         //
         // - buffers is where we're reading/writing application data.
@@ -373,6 +432,10 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         }
     }
 
+    private void updateHandshakeState() {
+
+    }
+
     public SSLEngineResult unwrap(ByteBuffer src, ByteBuffer[] dsts, int offset, int length) throws IllegalArgumentException {
         logger.debug("JSSEngine: unwrap()");
         // In this method, we're taking the network wire contents of src and
@@ -383,11 +446,48 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         // However, we also need to detect if the handshake is still ongoing;
         // if so, we can't send data (from src) until then.
 
-        int wire_data = 0;
+        if (ssl_fd == null) {
+            beginHandshake();
+        }
+
+        // wire_data is the number of bytes from src we've written into
+        // read_buf. This is bounded above by src.capcity but also the
+        // free space left in read_buf to write to. Allows us to size the
+        // temporary byte array appropriately.
+        int wire_data = (int) Buffer.WriteCapacity(read_buf);
+        if (src == null) {
+            wire_data = 0;
+        } else {
+            wire_data = Math.max(wire_data, src.capacity());
+        }
+
         int app_data = 0;
         int max_app_data = computeSize(dsts, offset, length);
+        int buffer_index = offset;
 
+        // When we have data from src, write it to read_buf
+        if (wire_data > 0) {
+            byte[] wire_buffer = new byte[wire_data];
+            src.get(wire_buffer);
+            int written = (int) Buffer.Write(read_buf, wire_buffer);
 
+            // For safety: ensure everything we thought we could write was
+            // actually written. Otherwise, we've done something wrong.
+            wire_data = Math.min(wire_data, written);
+
+            // TODO: Determine if we should write the trail of wire_buffer
+            // back to the front of src... Seems like unnecessary work.
+        }
+
+        // Check to see if we need to step our handshake process or not
+        if (handshake_state != SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING) {
+            updateHandshakeState();
+        }
+
+        // When we have app data to read, go ahead and do so
+        if (max_app_data > 0) {
+
+        }
 
         return null;
     }

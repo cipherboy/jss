@@ -201,8 +201,16 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
     public String[] getEnabledCipherSuites() {
         logger.debug("JSSEngine: getEnabledCipherSuites()");
 
-        if (enabled_ciphers == null) {
+        // This only happens in the event that setEnabledCipherSuites(...)
+        // isn't called. In which case, we'll need to explicitly query the
+        // list off the ssl_fd.
+        if (enabled_ciphers == null && ssl_fd == null) {
             queryEnabledCipherSuites();
+        }
+
+        if (enabled_ciphers == null) {
+            // TODO: Query default ciphersuites here.
+            throw new RuntimeException("Unable to query enabled ciphers off of empty ssl_fd.");
         }
 
         return enabled_ciphers.toArray(new String[0]);

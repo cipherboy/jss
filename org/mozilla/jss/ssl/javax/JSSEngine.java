@@ -412,17 +412,17 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         }
 
         try {
-            SSLVersion min_version = SSLVersion.findByAlias(protocols[0]);
-            SSLVersion max_version = SSLVersion.findByAlias(protocols[0]);
+            min_protocol = SSLVersion.findByAlias(protocols[0]);
+            max_protocol = SSLVersion.findByAlias(protocols[0]);
 
             for (String protocol : protocols) {
                 SSLVersion version = SSLVersion.findByAlias(protocol);
-                if (min_version.ordinal() > version.ordinal()) {
-                    min_version = version;
+                if (min_protocol.ordinal() > version.ordinal()) {
+                    min_protocol = version;
                 }
 
-                if (max_version.ordinal() < version.ordinal()) {
-                    max_version = version;
+                if (max_protocol.ordinal() < version.ordinal()) {
+                    max_protocol = version;
                 }
             }
         } catch (Exception e) {
@@ -485,7 +485,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         return result;
     }
 
-    private void putData(byte[] data, ByteBuffer[] buffers, int offset, int length) {
+    private int putData(byte[] data, ByteBuffer[] buffers, int offset, int length) {
         // Handle the rather unreasonable task of moving data into the buffers.
         // We assume the buffer parameters have already been checked by
         // computeSize(...); that is, offset/length contracts hold and that
@@ -496,8 +496,9 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         // return value should ensure.
 
         int buffer_index = offset;
+        int data_index = 0;
 
-        for (int data_index = 0; data_index < data.length; data_index++) {
+        for (data_index = 0; data_index < data.length; data_index++) {
             // Ensure we have have a buffer with capacity.
             while (buffers[buffer_index].capacity() == buffers[buffer_index].position()) {
                 buffer_index += 1;
@@ -506,10 +507,53 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
             // TODO: use bulk copy
             buffers[buffer_index].put(data[data_index]);
         }
+
+        return data_index;
     }
 
     private void updateHandshakeState() {
+        // If we're already done, nothing to do.
+        if (handshake_state != SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING) {
+            return;
+        }
 
+        // If we've previously finished handshaking, then move to
+        // NOT_HANDSHAKING.
+        if (handshake_state == SSLEngineResult.HandshakeStatus.FINISHED) {
+            handshake_state = SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING;
+            return;
+        }
+
+        // Since we're not obviously done handshaking, and the last time we
+        // were called, we were still handshaking, step the handshake.
+        SSL.ForceHandshake(ssl_fd);
+
+        // Check if we've just finished handshaking.
+        SecurityStatusResult handshakeStatus = SSL.SecurityStatus(ssl_fd);
+        if (handshakeStatus.on == 1) {
+            handshake_state = SSLEngineResult.HandshakeStatus.FINISHED;
+            return;
+        }
+
+        // Otherwise, set NEED_WRAP / NEED_UNWRAP as appropriate.
+        if (!Buffer.CanRead(read_buf)) {
+            // Cant read; to read, we need to call unwrap to provide
+            // more data to read.
+            handshake_state = SSLEngineResult.HandshakeStatus.NEED_UNWRAP;
+            return;
+        }
+
+        if (!Buffer.CanWrite(write_buf)) {
+            // Cant write; to read, we need to call wrap to provide more
+            // data to write.
+            handshake_state = SSLEngineResult.HandshakeStatus.NEED_UNWRAP;
+            return;
+        }
+
+        // If we get here, it isn't clear what the next step in the
+        // handshake should be. Keep it at whatever it currently is.
+        // Perhaps we should flipflop between WRAP/UNWRAP, but that'd
+        // require additional code.
     }
 
     public SSLEngineResult unwrap(ByteBuffer src, ByteBuffer[] dsts, int offset, int length) throws IllegalArgumentException {
@@ -537,9 +581,14 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
             wire_data = Math.max(wire_data, src.capacity());
         }
 
+        // Actual amount of data written to the buffer.
         int app_data = 0;
-        int max_app_data = computeSize(dsts, offset, length);
-        int buffer_index = offset;
+
+        // Maximum theoretical amount of data we could've written to the
+        // destination. This is bounded by both the size of our dsts and
+        // the maximum BUFFER_SIZE. Worst case, we'll be forced to call
+        // unwrap(...) multiple times.
+        int max_app_data = Math.max(computeSize(dsts, offset, length), BUFFER_SIZE);
 
         // When we have data from src, write it to read_buf
         if (wire_data > 0) {
@@ -556,16 +605,20 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         }
 
         // Check to see if we need to step our handshake process or not
-        if (handshake_state != SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING) {
-            updateHandshakeState();
+        updateHandshakeState();
+
+        // When we have app data to write over the network, go ahead and do
+        // so. This involves reading from write_buf and writing it to
+        // dsts.
+        if (max_app_data > 0 && Buffer.CanRead(write_buf)) {
+            byte[] app_buffer = Buffer.Read(write_buf, max_app_data);
+            app_data = putData(app_buffer, dsts, offset, length);
         }
 
-        // When we have app data to read, go ahead and do so
-        if (max_app_data > 0) {
+        // Need a way to introspect the open/closed state of the TLS
+        // connection.
 
-        }
-
-        return null;
+        return new SSLEngineResult(SSLEngineResult.Status.OK, handshake_state, wire_data, app_data);
     }
 
     public SSLEngineResult wrap(ByteBuffer[] srcs, int offset, int length, ByteBuffer dst) {

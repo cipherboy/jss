@@ -13,6 +13,19 @@ import org.mozilla.jss.ssl.*;
 import org.mozilla.jss.pkcs11.*;
 
 public class JSSEngine extends javax.net.ssl.SSLEngine {
+    /*
+     * TODO list:
+     *
+     *  - Allow client authentication.
+     *  - Pass want_client_auth and need_client_auth.
+     *  - Finish wrap/unwrap.
+     *
+     * Optional list:
+     *
+     *  - KeyManager/TrustManager constructor?
+     *  - SSLSession object interactions?
+     */
+
     public static Logger logger = LoggerFactory.getLogger(JSSEngine.class);
 
     private static int BUFFER_SIZE = 2048;
@@ -31,7 +44,9 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
     public SSLEngineResult.HandshakeStatus handshake_state = SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING;
 
-    public HashSet<String> enabled_ciphers = null;
+    public ArrayList<SSLCipher> enabled_ciphers = null;
+    public SSLVersion min_protocol = null;
+    public SSLVersion max_protocol = null;
 
     public JSSEngine() {
         super();
@@ -84,19 +99,13 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         // Initialize the appropriate end of this connection.
         if (is_client) {
             initClient();
-
-            // Update handshake status; client initiates connection, so we
-            // need to wrap first.
-            handshake_state = SSLEngineResult.HandshakeStatus.NEED_WRAP;
         } else {
             initServer();
-
-            // Update handshake status; client initiates connection, so wait
-            // for unwrap on the server end.
-            handshake_state = SSLEngineResult.HandshakeStatus.NEED_UNWRAP;
         }
 
+        // Apply the requested cipher suites and protocols.
         applyCiphers();
+        applyProtocols();
     }
 
     private void initClient() {
@@ -104,6 +113,10 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         PRFDProxy model = SSL.ImportFD(null, PR.NewTCPSocket());
         ssl_fd = SSL.ImportFD(model, ssl_fd);
         PR.Close(model);
+
+        // Update handshake status; client initiates connection, so we
+        // need to wrap first.
+        handshake_state = SSLEngineResult.HandshakeStatus.NEED_WRAP;
     }
 
     private void initServer() {
@@ -112,12 +125,18 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         ssl_fd = SSL.ImportFD(model, ssl_fd);
         PR.Close(model);
 
+        // The only time cert and key are required are when we're creating a
+        // server SSLEngine.
         if (cert == null || key == null) {
             throw new IllegalArgumentException("JSSEngine: must be initialized with server certificate and key!");
         }
 
         SSL.ConfigSecureServer(ssl_fd, cert, key, 1);
         SSL.ConfigServerSessionIDCache(1, 100, 100, null);
+
+        // Update handshake status; client initiates connection, so wait
+        // for unwrap on the server end.
+        handshake_state = SSLEngineResult.HandshakeStatus.NEED_UNWRAP;
     }
 
     private void applyCiphers() {
@@ -136,18 +155,32 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         }
 
         // Only enable these particular suites.
-        for (String suite_name : enabled_ciphers) {
+        for (SSLCipher suite : enabled_ciphers) {
+            if (suite == null) {
+                continue;
+            }
+
             try {
-                SSLCipher suite = SSLCipher.valueOf(suite_name);
-                if (suite != null) {
-                    SSL.CipherPrefSet(ssl_fd, suite.getID(), true);
-                }
+                SSL.CipherPrefSet(ssl_fd, suite.getID(), true);
             } catch (Exception e) {
-                // The most common case would be if they pass an invalid
-                // cipher name. We might as well tell them about it...
+                // The most common case would be if enabled_ciphers contains
+                // a cipher removed from NSS.
                 throw new RuntimeException(e.getMessage(), e);
             }
         }
+    }
+
+    private void applyProtocols() {
+        // Enable the protocols only when both a maximum and minimum protocol
+        // version are specified.
+        if (min_protocol == null || max_protocol == null) {
+            return;
+        }
+
+        // We should bound this range by crypto-policies in the future to
+        // match the current behavior.
+        SSLVersionRange vrange = new SSLVersionRange(min_protocol, max_protocol);
+        SSL.VersionRangeSet(ssl_fd, vrange);
     }
 
     public void beginHandshake() {
@@ -162,6 +195,8 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
             init();
         }
 
+        // Always, reset the handshake status, using the existing
+        // socket and configuration (which might've been just created).
         SSL.ResetHandshake(ssl_fd, is_client);
     }
 
@@ -179,21 +214,26 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
     public Runnable getDelegatedTask() {
         logger.debug("JSSEngine: getDelegatedTask()");
+
+        // We fake being a non-blocking SSLEngine. In particular, we never
+        // export tasks as delegated tasks (e.g., OCSP checking), so this
+        // method will always return null.
+
         return null;
     }
 
     private void queryEnabledCipherSuites() {
-        enabled_ciphers = new HashSet<String>();
+        enabled_ciphers = new ArrayList<SSLCipher>();
 
         for (SSLCipher cipher : SSLCipher.values()) {
             try {
                 if (SSL.CipherPrefGet(ssl_fd, cipher.getID())) {
-                    enabled_ciphers.add(cipher.name());
+                    enabled_ciphers.add(cipher);
                 }
             } catch (Exception e) {
                 // Do nothing -- this shouldn't happen as SSLCipher should be
                 // synced with NSS. However, we won't throw an exception as
-                // doing so would break this loop.
+                // doing so would break this method.
             }
         }
     }
@@ -213,30 +253,52 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
             throw new RuntimeException("Unable to query enabled ciphers off of empty ssl_fd.");
         }
 
-        return enabled_ciphers.toArray(new String[0]);
+        // Convert from SSLCipher Enum values to Java standard strings.
+        ArrayList<String> result = new ArrayList<String>();
+        for (SSLCipher suite : enabled_ciphers) {
+            result.add(suite.name());
+        }
+
+        return result.toArray(new String[0]);
     }
 
-    public String[] getEnabledProtocols() {
-        logger.debug("JSSEngine: getEnabledProtocols()");
-
-        ArrayList<String> enabledProtocols = new ArrayList<String>();
-
+    private void queryEnabledProtocols() {
         SSLVersionRange vrange = null;
         try {
             vrange = SSL.VersionRangeGet(ssl_fd);
         } catch (Exception e) {
             // This shouldn't happen unless the PRFDProxy is null.
-            throw new RuntimeException("Unexpected failure: " + e.getMessage(), e);
+            throw new RuntimeException("JSSEngine.queryEnabledProtocols() Unexpected failure: " + e.getMessage(), e);
         }
 
         if (vrange == null) {
             // Again; this shouldn't happen as the vrange should always
             // be created by VersionRangeGet(...).
-            throw new RuntimeException("JSSEngine.getEnabledProtocols() - null protocol range; this shouldn't happen");
+            throw new RuntimeException("JSSEngine.queryEnabledProtocols() - null protocol range; this shouldn't happen");
         }
 
+        min_protocol = vrange.getMinVersion();
+        max_protocol = vrange.getMaxVersion();
+    }
+
+    public String[] getEnabledProtocols() {
+        logger.debug("JSSEngine: getEnabledProtocols()");
+
+        if ((min_protocol == null || max_protocol == null) && ssl_fd != null) {
+            queryEnabledProtocols();
+        }
+
+        if (min_protocol == null || max_protocol == null) {
+            // TODO: Query default ciphersuites here.
+            throw new RuntimeException("JSSEngine.getEnabledProtocls() - Unable to query enabled protocols off of empty ssl_fd.");
+        }
+
+        // NSS enables a range of protocols [min_protocol, max_protocol], but
+        // Java expects you to be able to pick and choose.
+        ArrayList<String> enabledProtocols = new ArrayList<String>();
+
         for (SSLVersion v: SSLVersion.values()) {
-            if (vrange.getMinVersion().ordinal() <= v.ordinal() && v.ordinal() <= vrange.getMaxVersion().ordinal()) {
+            if (min_protocol.ordinal() <= v.ordinal() && v.ordinal() <= max_protocol.ordinal()) {
                 // We've designated the second alias as the standard Java name
                 // for the protocol. However if one isn't provided, fall back
                 // to the first alias. It currently is the case that all
@@ -303,20 +365,31 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         return false;
     }
 
-    public void setEnabledCipherSuites(String[] suites) {
+    public void setEnabledCipherSuites(String[] suites) throws IllegalArgumentException {
         logger.debug("JSSEngine: setEnabledCipherSuites(");
         for (String suite : suites) {
             logger.debug("\t" + suite + ",");
         }
         logger.debug(")");
 
+        if (suites == null || suites.length == 0) {
+            throw new IllegalArgumentException("Must specify at least one cipher suite to enable.");
+        }
+
         if (ssl_fd != null) {
             throw new RuntimeException("Must call JSSEngine.setEnabledCipherSuites() prior to calling beginHandshake()");
         }
 
-        enabled_ciphers = new HashSet<String>();
-        for (String suite : suites) {
-            enabled_ciphers.add(suite);
+        enabled_ciphers = new ArrayList<SSLCipher>();
+        for (String suite_name : suites) {
+            try {
+                SSLCipher suite = SSLCipher.valueOf(suite_name);
+                enabled_ciphers.add(suite);
+            } catch (Exception e) {
+                // This should only happen when the suite isn't a know cipher;
+                // best to inform the user.
+                throw new IllegalArgumentException("Cipher suite (" + suite_name + ") isn't present in the list of supported SSLCiphers: " + e.getMessage(), e);
+            }
         }
     }
 
@@ -351,11 +424,6 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
                 if (max_version.ordinal() < version.ordinal()) {
                     max_version = version;
                 }
-
-                // We should bound this range by crypto-policies in the
-                // future to match the current behavior.
-                SSLVersionRange vrange = new SSLVersionRange(min_version, max_version);
-                SSL.VersionRangeSet(ssl_fd, vrange);
             }
         } catch (Exception e) {
             // The most common case would be if they pass an invalid protocol

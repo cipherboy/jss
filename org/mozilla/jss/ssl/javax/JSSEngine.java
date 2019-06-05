@@ -18,7 +18,6 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
      *
      *  - Allow client authentication.
      *  - Pass want_client_auth and need_client_auth.
-     *  - Finish wrap/unwrap.
      *
      * Optional list:
      *
@@ -137,6 +136,13 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         // Update handshake status; client initiates connection, so wait
         // for unwrap on the server end.
         handshake_state = SSLEngineResult.HandshakeStatus.NEED_UNWRAP;
+
+        // Only specify these on the server side as they affect what we
+        // want from the remote peer in NSS. In the server case, this is
+        // client auth, but if we were to set these on the client, it would
+        // affect server auth.
+        SSL.OptionSet(ssl_fd, SSL.REQUEST_CERTIFICATE, want_client_auth ? 1 : 0);
+        SSL.OptionSet(ssl_fd, SSL.REQUIRE_CERTIFICATE, need_client_auth ? 1 : 0);
     }
 
     private void applyCiphers() {

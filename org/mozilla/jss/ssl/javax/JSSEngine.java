@@ -556,6 +556,11 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         // require additional code.
     }
 
+    private boolean isHandshakeFinished() {
+        return (handshake_state == SSLEngineResult.HandshakeStatus.FINISHED ||
+                (ssl_fd != null && handshake_state == SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING));
+    }
+
     public SSLEngineResult unwrap(ByteBuffer src, ByteBuffer[] dsts, int offset, int length) throws IllegalArgumentException {
         logger.debug("JSSEngine: unwrap()");
         // In this method, we're taking the network wire contents of src and
@@ -578,7 +583,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         if (src == null) {
             wire_data = 0;
         } else {
-            wire_data = Math.max(wire_data, src.capacity());
+            wire_data = Math.max(wire_data, src.capacity() - src.position());
         }
 
         // Actual amount of data written to the buffer.
@@ -590,7 +595,20 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         // unwrap(...) multiple times.
         int max_app_data = Math.max(computeSize(dsts, offset, length), BUFFER_SIZE);
 
-        // When we have data from src, write it to read_buf
+        // Order of operations:
+        //  1. Read data from srcs
+        //  2. Update handshake status
+        //  3. Write data to dsts
+        //
+        // Since srcs is coming from the data, it could affect our ability to
+        // handshake. It could also affect our ability to write data to dsts,
+        // as src could provide new data to decrypt. When no new data from src
+        // is present, we could have residual steps in handshake(), in which
+        // case no data would be written to dsts. Lastly, even if no new data
+        // from srcs, could still have residual data in read_buf, so we should
+        // attempt to read from the ssl_fd.
+
+        // When we have data from src, write it to read_buf.
         if (wire_data > 0) {
             byte[] wire_buffer = new byte[wire_data];
             src.get(wire_buffer);
@@ -604,14 +622,15 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
             // back to the front of src... Seems like unnecessary work.
         }
 
-        // Check to see if we need to step our handshake process or not
+        // Check to see if we need to step our handshake process or not.
         updateHandshakeState();
 
         // When we have app data to write over the network, go ahead and do
-        // so. This involves reading from write_buf and writing it to
-        // dsts.
-        if (max_app_data > 0 && Buffer.CanRead(write_buf)) {
-            byte[] app_buffer = Buffer.Read(write_buf, max_app_data);
+        // so. This involves reading from ssl_fd and writing to dsts. We don't
+        // currently have a good proxy metric for "can read from a ssl_fd",
+        // so always attempt it if the handshake is finished.
+        if (max_app_data > 0 && isHandshakeFinished()) {
+            byte[] app_buffer = PR.Read(ssl_fd, max_app_data);
             app_data = putData(app_buffer, dsts, offset, length);
         }
 
@@ -621,11 +640,96 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         return new SSLEngineResult(SSLEngineResult.Status.OK, handshake_state, wire_data, app_data);
     }
 
-    public SSLEngineResult wrap(ByteBuffer[] srcs, int offset, int length, ByteBuffer dst) {
+    public int writeData(srcs, offset, length) {
+        // This is the tough end of reading/writing. There's two potential
+        // places buffering could occur:
+        //
+        //  - Inside the NSS library (unclear if this happens).
+        //  - write_buf
+        //
+        // So when we call PR.Write(ssl_fd, data), it isn't guaranteed that
+        // we can write all of data to ssl_fd (unlike with all our other read
+        // or write operations where we have a clear bound). In the event that
+        // our Write call is truncated, we have to put data back into the
+        // buffer from whence it was read.
+        //
+        // However, we do use Buffer.WriteCapacity(write_buf) as a proxy
+        // metric for how much we can write without having to place data back
+        // in a src buffer.
+        int data_length = 0;
+
+        for (int rel_index = 0; rel_index < length; rel_index += 1) {
+            int this_write = 0;
+            int expected_write = (int) Buffer.WriteCapacity(write_buf);
+        }
+
+        return data_length;
+    }
+
+    public SSLEngineResult wrap(ByteBuffer[] srcs, int offset, int length, ByteBuffer dst) throws IllegalArgumentException {
         logger.debug("JSSEngine: wrap()");
         // In this method, we're taking the application data from the various
         // srcs and writing it to the remote peer (via ssl_fd). If there's any
         // data for us to send to the remote peer, we place it in dst.
-        return null;
+        //
+        // However, we also need to detect if the handshake is still ongoing;
+        // if so, we can't send data (from src) until then.
+
+        if (ssl_fd == null) {
+            beginHandshake();
+        }
+
+        // wire_data is the number of bytes written to dst. This is bounded
+        // above by two fields: the number of bytes we can read from
+        // write_buf, and the size of dst, if present.
+        int wire_data = (int) Buffer.ReadCapacity(write_buf);
+        if (dst == null) {
+            wire_data = 0;
+        } else {
+            wire_data = Math.max(wire_data, dst.capacity() - dst.position());
+        }
+
+        // Actual amount of data read from srcs (and written to ssl_fd). This
+        // is determined by the PR.Write(...) call on ssl_fd.
+        int app_data = 0;
+
+        // Maximum theoretical amount of data we could've read from srcs.
+        // While this isn't strictly bounded above by BUFFER_SIZE (as it is
+        // being written to ssl_fd instead of to read_buf or write_buf), we're
+        // better off limiting ourselves to a reasonable limit.
+        int max_app_data = Math.max(computeSize(srcs, offset, length), BUFFER_SIZE);
+
+        // Order of operations:
+        //  1. Step the handshake
+        //  2. Write data from srcs to ssl_fd
+        //  3. Write data from write_buf to dst
+        //
+        // This isn't technically locally optimal: it could be that write_buf
+        // is full while we're handshaking so step 1 could be a no-op, but
+        // we could read from write_buf and step the handshake then. However,
+        // on our next call to wrap() would also step the handshake, which
+        // two in a row would almost certainly result in one being a no-op.
+        // Both steps 1 and 2 could write data to dsts. At best 2 will fail if
+        // write_buf is full, however, we'd again end up calling wrap() again
+        // anyways.
+
+        // Check to see if we need to step our handshake process or not.
+        updateHandshakeState();
+
+        // Try writing data from srcs to
+        if (max_app_data > 0 && isHandshakeFinished()) {
+            app_data = writeData(srcs, offset, length);
+        }
+
+        // Try reading data from write_buf to dst
+        if (wire_data > 0) {
+            byte[] wire_buffer = Buffer.Read(write_buf, wire_data);
+            dst.put(wire_buffer);
+        }
+
+        // Need a way to introspect the open/closed state of the TLS
+        // connection.
+
+        return new SSLEngineResult(SSLEngineResult.Status.OK, handshake_state, wire_data, app_data);
     }
 }

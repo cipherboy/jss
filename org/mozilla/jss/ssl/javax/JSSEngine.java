@@ -479,7 +479,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
                 throw new IllegalArgumentException("Buffer at index " + index + " is null.");
             }
 
-            result += (buffers[index].capacity() - buffers[index].position());
+            result += buffers[index].remaining();
         }
 
         return result;
@@ -493,14 +493,15 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         //
         // We also assume that data.length does not exceed the total number
         // of bytes the buffers can hold; this is what computeSize(...)'s
-        // return value should ensure.
+        // return value should ensure. This directly means that the inner
+        // while loop won't exceed the bounds of offset+length.
 
         int buffer_index = offset;
         int data_index = 0;
 
         for (data_index = 0; data_index < data.length; data_index++) {
             // Ensure we have have a buffer with capacity.
-            while (buffers[buffer_index].capacity() == buffers[buffer_index].position()) {
+            while (buffers[buffer_index].remaining() <= 0) {
                 buffer_index += 1;
             }
 
@@ -583,17 +584,19 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         if (src == null) {
             wire_data = 0;
         } else {
-            wire_data = Math.max(wire_data, src.capacity() - src.position());
+            // We need to know how many bytes have been written into src: this
+            // is via src.remaining().
+            wire_data = Math.max(wire_data, src.remaining());
         }
 
         // Actual amount of data written to the buffer.
         int app_data = 0;
 
         // Maximum theoretical amount of data we could've written to the
-        // destination. This is bounded by both the size of our dsts and
-        // the maximum BUFFER_SIZE. Worst case, we'll be forced to call
-        // unwrap(...) multiple times.
-        int max_app_data = Math.max(computeSize(dsts, offset, length), BUFFER_SIZE);
+        // destination. This is bounded by the lower of both the size of
+        // our dsts and the maximum BUFFER_SIZE. Worst case, we'll be forced
+        // to call unwrap(...) multiple times.
+        int max_app_data = Math.min(computeSize(dsts, offset, length), BUFFER_SIZE);
 
         // Order of operations:
         //  1. Read data from srcs
@@ -640,7 +643,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         return new SSLEngineResult(SSLEngineResult.Status.OK, handshake_state, wire_data, app_data);
     }
 
-    public int writeData(srcs, offset, length) {
+    public int writeData(ByteBuffer[] srcs, int offset, int length) {
         // This is the tough end of reading/writing. There's two potential
         // places buffering could occur:
         //
@@ -658,9 +661,38 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         // in a src buffer.
         int data_length = 0;
 
-        for (int rel_index = 0; rel_index < length; rel_index += 1) {
-            int this_write = 0;
-            int expected_write = (int) Buffer.WriteCapacity(write_buf);
+        int index = offset;
+        int max_index = offset + length;
+
+        while (index <= max_index) {
+            // If we don't have any remaining bytes in this buffer, skip it.
+            if (srcs[index].remaining() <= 0) {
+                index += 1;
+                continue;
+            }
+
+            // We expect (i.e., need to construct a buffer) to write up to
+            // this much. Note that this is non-zero since we're taking the
+            // max here and we guarantee with the previous statement that
+            // srcs[index].remaining() > 0.
+            int expected_write = Math.max((int) Buffer.WriteCapacity(write_buf), srcs[index].remaining());
+
+            // Get data from our current srcs[index] buffer.
+            byte[] app_data = new byte[expected_write];
+            srcs[index].get(app_data);
+
+            // Actual amount written.
+            int this_write = PR.Write(ssl_fd, app_data);
+            data_length += this_write;
+
+            if (this_write == 0) {
+                // Revert our position to the previous position and break: we
+                // are out of space to write into our SSL FD.
+                int pos = srcs[index].position();
+                int delta = expected_write - this_write;
+                srcs[index].position(pos - delta);
+                break;
+            }
         }
 
         return data_length;
@@ -686,7 +718,9 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         if (dst == null) {
             wire_data = 0;
         } else {
-            wire_data = Math.max(wire_data, dst.capacity() - dst.position());
+            // We want to know how much free space there is in dst for us to
+            // write to. This is given by dst.remaining().
+            wire_data = Math.max(wire_data, dst.remaining());
         }
 
         // Actual amount of data read from srcs (and written to ssl_fd). This
@@ -697,7 +731,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         // While this isn't strictly bounded above by BUFFER_SIZE (as it is
         // being written to ssl_fd instead of to read_buf or write_buf), we're
         // better off limiting ourselves to a reasonable limit.
-        int max_app_data = Math.max(computeSize(srcs, offset, length), BUFFER_SIZE);
+        int max_app_data = Math.min(computeSize(srcs, offset, length), BUFFER_SIZE);
 
         // Order of operations:
         //  1. Step the handshake

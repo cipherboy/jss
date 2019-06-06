@@ -461,6 +461,25 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         want_client_auth = want;
     }
 
+    /**
+     * Set public and private key material; useful when doing client auth or
+     * if this wasn't provided to the constructor. Can also be used to remove
+     * key material; however note that both arguments must match: either both
+     * certificate and key are null or both are not-null.
+     */
+    public void setKeyMaterials(PK11Cert our_cert, PK11PrivKey our_key) throws IllegalArgumentException {
+        if (ssl_fd != null) {
+            throw new RuntimeException("It is too late to call setKeyMaterials when the handshake has already started.");
+        }
+
+        if ((our_cert == null && our_key != null) || (our_cert != null && our_key == null)) {
+            throw new IllegalArgumentException("JSSEngine.setKeyMaterials(): Either both cert and key must be null or both must be not-null");
+        }
+
+        cert = our_certificate;
+        key = our_key;
+    }
+
     private int computeSize(ByteBuffer[] buffers, int offset, int length) throws IllegalArgumentException {
         int result = 0;
 

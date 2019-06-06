@@ -48,7 +48,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
     private SSLEngineResult.HandshakeStatus handshake_state = SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING;
 
-    private ArrayList<SSLCipher> enabled_ciphers = null;
+    private SSLCipher[] enabled_ciphers = null;
     private SSLVersion min_protocol = null;
     private SSLVersion max_protocol = null;
 
@@ -234,12 +234,12 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
     }
 
     private void queryEnabledCipherSuites() {
-        enabled_ciphers = new ArrayList<SSLCipher>();
+        ArrayList<SSLCipher> enabledCiphers = new ArrayList<SSLCipher>();
 
         for (SSLCipher cipher : SSLCipher.values()) {
             try {
                 if (SSL.CipherPrefGet(ssl_fd, cipher.getID())) {
-                    enabled_ciphers.add(cipher);
+                    enabledCiphers.add(cipher);
                 }
             } catch (Exception e) {
                 // Do nothing -- this shouldn't happen as SSLCipher should be
@@ -247,6 +247,8 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
                 // doing so would break this method.
             }
         }
+
+        enabled_ciphers = enabledCiphers.toArray(new SSLCipher[0]);
     }
 
     public String[] getEnabledCipherSuites() {
@@ -355,6 +357,42 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         return false;
     }
 
+    public void setSSLParameters(SSLParameters params) {
+        logger.debug("JSSEngine: setSSLParameters(" + params + ")");
+
+        JSSParameters parsed = null;
+        if (params instanceof JSSParameters) {
+            parsed = (JSSParameters) params;
+        } else {
+            parsed = new JSSParameters(params);
+        }
+
+        if (parsed.getSSLCiphers() != null) {
+            setEnabledCipherSuites(parsed.getSSLCiphers());
+        }
+
+        if (parsed.getSSLVersionRange() != null) {
+            setEnabledProtocols(parsed.getSSLVersionRange());
+        }
+
+        setWantClientAuth(parsed.getWantClientAuth());
+        if (parsed.getNeedClientAuth() == true) {
+            setNeedClientAuth(true);
+            setWantClientAuth(true);
+        }
+
+        // In the event we haven't explicitly set cert and key, try and infer
+        // them from the list of ServerNames specified... We assume that
+        if (params.getServerNames() != null && key_manager != null && cert == null && key == null) {
+            setCertFromServerNames(params.getServerNames());
+        }
+    }
+
+    public void setCertFromServernames(List<SNIServerName> sni_names) throws IllegalArgumentException {
+        if (key_manager != null) {
+        }
+    }
+
     public void setEnabledCipherSuites(String[] suites) throws IllegalArgumentException {
         logger.debug("JSSEngine: setEnabledCipherSuites(");
         for (String suite : suites) {
@@ -370,7 +408,11 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
             return;
         }
 
-        enabled_ciphers = new ArrayList<SSLCipher>(Arrays.asList(parser.getSSLCiphers()));
+        setEnabledCipherSuites(parser.getSSLCiphers());
+    }
+
+    public void setEnabledCipherSuites(SSLCipher[] suites) {
+        enabled_ciphers = suites.clone();
     }
 
     /**
@@ -391,11 +433,24 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         parser.setProtocols(protocols);
 
         SSLVersionRange vrange = parser.getSSLVersionRange();
+        setEnabledProtocols(vrange);
+    }
+
+    public void setEnabledProtocols(SSLVersion min, SSLVersion max) throws IllegalArgumentException {
+        if ((min_protocol == null && max_protocol != null) || (min_protocol != null && max_protocol == null)) {
+            throw new IllegalArgumentException("Expected min and max to either both be null or both be not-null; not mixed: (" + min + ", " + max + ")");
+        }
+        min_protocol = min;
+        max_protocol = max;
+    }
+
+    public void setEnabledProtocols(SSLVersionRange vrange) {
         if (vrange == null) {
             min_protocol = null;
             max_protocol = null;
             return;
         }
+
         min_protocol = vrange.getMinVersion();
         max_protocol = vrange.getMaxVersion();
     }

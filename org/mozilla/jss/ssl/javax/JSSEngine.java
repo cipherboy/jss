@@ -1,3 +1,5 @@
+package org.mozilla.jss.ssl.javax;
+
 import java.lang.*;
 import java.util.*;
 
@@ -476,7 +478,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
             throw new IllegalArgumentException("JSSEngine.setKeyMaterials(): Either both cert and key must be null or both must be not-null");
         }
 
-        cert = our_certificate;
+        cert = our_cert;
         key = our_key;
     }
 

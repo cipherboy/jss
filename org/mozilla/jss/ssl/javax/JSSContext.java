@@ -6,47 +6,80 @@ import javax.net.ssl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JSSContext extends SSLContextSpi {
+import org.mozilla.jss.provider.javax.crypto.JSSKeyManager;
+
+public class JSSContext extends SSLContext {
     public static Logger logger = LoggerFactory.getLogger(JSSContext.class);
 
-    @Override
-    protected void engineInit(KeyManager[] km, TrustManager[] tm, SecureRandom sr) {
+    PK11Cert cert = null;
+    PK11PrivKey key = null;
+
+    public JSSContext() {}
+    public JSSContext(String alias) {
+        findKeys(alias);
+    }
+
+    public static SSLContext getDefault() {
+        return new JSSContext();
+    }
+
+    public void init(KeyManager[] km, TrustManager[] tm, SecureRandom sr) throws KeyManagementException {
         logger.debug("JSSContext: engineInit(" + km + ", " + tm + ", " + sr + ")");
+
+        throw new KeyManagementException("Multiple KeyManagers are not supported by the JSS SSLContext implementation");
     }
 
-    @Override
-    protected SSLEngine engineCreateSSLEngine() {
+    public void findKeys(String alias) {
+        CryptoManager cm = CryptoManager.getInstance();
+        cert = cm.findCertByNickname(alias);
+        key = cm.findPrivKeyByCert(cert);
+    }
+
+    public SSLEngine createSSLEngine() {
         logger.debug("JSSContext: engineCreateSSLEngine()");
-        return null;
+
+        JSSEngine ret = new JSSEngine();
+        if (cert != null && key != null) {
+            ret.setKeyMaterials(cert, key);
+        }
+
+        return ret;
     }
 
-    @Override
-    protected SSLEngine engineCreateSSLEngine(String host, int port) {
+    public SSLEngine createSSLEngine(String host, int port) {
         logger.debug("JSSContext: engineCreateSSLEngine(" + host + ", " + port + ")");
+
+        JSSEngine ret = new JSSEngine(host, port);
+        if (cert != null && key != null) {
+            ret.setKeyMaterials(cert, key);
+        }
+
+        return ret;
+    }
+
+    public SSLSessionContext engineGetClientSessionContext() {
+        logger.debug("JSSContext: engineGetClientSessionContext() - not implemented");
         return null;
     }
 
-    @Override
-    protected SSLSessionContext engineGetClientSessionContext() {
-        logger.debug("JSSContext: engineGetClientSessionContext()");
+    public SSLSessionContext engineGetServerSessionContext() {
+        logger.debug("JSSContext: engineGetServerSessionContext() - not implemented");
         return null;
     }
 
-    @Override
-    protected SSLSessionContext engineGetServerSessionContext() {
-        logger.debug("JSSContext: engineGetServerSessionContext()");
+    public SSLServerSocketFactory engineGetServerSocketFactory() {
+        logger.debug("JSSContext: engineGetServerSocketFactory() - not implemented");
         return null;
     }
 
-    @Override
-    protected SSLServerSocketFactory engineGetServerSocketFactory() {
-        logger.debug("JSSContext: engineGetServerSocketFactory()");
+    public SSLSocketFactory engineGetSocketFactory() {
+        logger.debug("JSSContext: engineGetSocketFactory() - not implemented");
         return null;
     }
 
-    @Override
-    protected SSLSocketFactory engineGetSocketFactory() {
-        logger.debug("JSSContext: engineGetSocketFactory()");
-        return null;
+    public getProvider() {
+        // We hard code our provider since it is the only supported Provider
+        // for use with our SSLEngine (JSSEngine).
+        return Security.getProvider("Mozilla-JSS");
     }
 }

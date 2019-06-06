@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.mozilla.jss.nss.*;
 import org.mozilla.jss.ssl.*;
 import org.mozilla.jss.pkcs11.*;
+import org.mozilla.jss.provider.javax.crypto.*;
 
 public class JSSEngine extends javax.net.ssl.SSLEngine {
     /*
@@ -39,15 +40,17 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
     private PK11Cert cert = null;
     private PK11PrivKey key = null;
+    private JSSKeyManager key_manager = null;
+    private JSSTrustManager trust_manager = null;
 
-    public boolean need_client_auth = false;
-    public boolean want_client_auth = false;
+    private boolean need_client_auth = false;
+    private boolean want_client_auth = false;
 
-    public SSLEngineResult.HandshakeStatus handshake_state = SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING;
+    private SSLEngineResult.HandshakeStatus handshake_state = SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING;
 
-    public ArrayList<SSLCipher> enabled_ciphers = null;
-    public SSLVersion min_protocol = null;
-    public SSLVersion max_protocol = null;
+    private ArrayList<SSLCipher> enabled_ciphers = null;
+    private SSLVersion min_protocol = null;
+    private SSLVersion max_protocol = null;
 
     public JSSEngine() {
         super();
@@ -480,6 +483,20 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
         cert = our_cert;
         key = our_key;
+    }
+
+    /**
+     * Set the internal KeyManager, when present.
+     */
+    public void setKeyManager(JSSKeyManager km) {
+        key_manager = km;
+    }
+
+    /**
+     * Set the internal TrustManager, when present.
+     */
+    public void setTrustManager(JSSTrustManager tm) {
+        trust_manager = tm;
     }
 
     private int computeSize(ByteBuffer[] buffers, int offset, int length) throws IllegalArgumentException {

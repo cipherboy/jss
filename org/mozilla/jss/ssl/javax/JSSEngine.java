@@ -264,13 +264,9 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
             throw new RuntimeException("Unable to query enabled ciphers off of empty ssl_fd.");
         }
 
-        // Convert from SSLCipher Enum values to Java standard strings.
-        ArrayList<String> result = new ArrayList<String>();
-        for (SSLCipher suite : enabled_ciphers) {
-            result.add(suite.name());
-        }
-
-        return result.toArray(new String[0]);
+        JSSParameters parser = new JSSParameters();
+        parser.setCipherSuites(enabled_ciphers);
+        return parser.getCipherSuites();
     }
 
     private void queryEnabledProtocols() {
@@ -304,26 +300,9 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
             throw new RuntimeException("JSSEngine.getEnabledProtocls() - Unable to query enabled protocols off of empty ssl_fd.");
         }
 
-        // NSS enables a range of protocols [min_protocol, max_protocol], but
-        // Java expects you to be able to pick and choose.
-        ArrayList<String> enabledProtocols = new ArrayList<String>();
-
-        for (SSLVersion v: SSLVersion.values()) {
-            if (min_protocol.ordinal() <= v.ordinal() && v.ordinal() <= max_protocol.ordinal()) {
-                // We've designated the second alias as the standard Java name
-                // for the protocol. However if one isn't provided, fall back
-                // to the first alias. It currently is the case that all
-                // elements in SSLVersion have two aliases.
-
-                if (v.aliases().length >= 2) {
-                    enabledProtocols.add(v.aliases()[1]);
-                } else {
-                    enabledProtocols.add(v.aliases()[0]);
-                }
-            }
-        }
-
-        return enabledProtocols.toArray(new String[0]);
+        JSSParameters parser = new JSSParameters();
+        parser.setProtocols(min_protocol, max_protocol);
+        return parser.getProtocols();
     }
 
     public boolean getEnableSessionCreation() {
@@ -383,25 +362,15 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         }
         logger.debug(")");
 
-        if (suites == null || suites.length == 0) {
-            throw new IllegalArgumentException("Must specify at least one cipher suite to enable.");
+        JSSParameters parser = new JSSParameters();
+        parser.setCipherSuites(suites);
+
+        if (parser.getSSLCiphers() == null) {
+            enabled_ciphers = null;
+            return;
         }
 
-        if (ssl_fd != null) {
-            throw new RuntimeException("Must call JSSEngine.setEnabledCipherSuites() prior to calling beginHandshake()");
-        }
-
-        enabled_ciphers = new ArrayList<SSLCipher>();
-        for (String suite_name : suites) {
-            try {
-                SSLCipher suite = SSLCipher.valueOf(suite_name);
-                enabled_ciphers.add(suite);
-            } catch (Exception e) {
-                // This should only happen when the suite isn't a know cipher;
-                // best to inform the user.
-                throw new IllegalArgumentException("Cipher suite (" + suite_name + ") isn't present in the list of supported SSLCiphers: " + e.getMessage(), e);
-            }
-        }
+        enabled_ciphers = new ArrayList<SSLCipher>(Arrays.asList(parser.getSSLCiphers()));
     }
 
     /**
@@ -418,29 +387,17 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         }
         logger.debug(")");
 
-        if (protocols == null || protocols.length == 0) {
-            throw new IllegalArgumentException("setEnabledProtocols(): protocols must be not null and non-empty!");
+        JSSParameters parser = new JSSParameters();
+        parser.setProtocols(protocols);
+
+        SSLVersionRange vrange = parser.getSSLVersionRange();
+        if (vrange == null) {
+            min_protocol = null;
+            max_protocol = null;
+            return;
         }
-
-        try {
-            min_protocol = SSLVersion.findByAlias(protocols[0]);
-            max_protocol = SSLVersion.findByAlias(protocols[0]);
-
-            for (String protocol : protocols) {
-                SSLVersion version = SSLVersion.findByAlias(protocol);
-                if (min_protocol.ordinal() > version.ordinal()) {
-                    min_protocol = version;
-                }
-
-                if (max_protocol.ordinal() < version.ordinal()) {
-                    max_protocol = version;
-                }
-            }
-        } catch (Exception e) {
-            // The most common case would be if they pass an invalid protocol
-            // version. We might as well tell them about it...
-            throw new IllegalArgumentException("setEnabledProtocols(): unknown protocol: " + e.getMessage(), e);
-        }
+        min_protocol = vrange.getMinVersion();
+        max_protocol = vrange.getMaxVersion();
     }
 
     public void setEnableSessionCreation(boolean flag) {

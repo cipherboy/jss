@@ -383,14 +383,33 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
 
         // In the event we haven't explicitly set cert and key, try and infer
         // them from the list of ServerNames specified... We assume that
-        if (params.getServerNames() != null && key_manager != null && cert == null && key == null) {
-            setCertFromServerNames(params.getServerNames());
+        if (parsed.getAlias() != null && key_manager != null && cert == null && key == null) {
+            setCertFromAlias(parsed.getAlias());
         }
     }
 
-    public void setCertFromServernames(List<SNIServerName> sni_names) throws IllegalArgumentException {
-        if (key_manager != null) {
+    public void setCertFromAlias(String alias) throws IllegalArgumentException {
+        if (alias == null) {
+            cert = null;
+            key = null;
+            return;
         }
+
+        if (key_manager == null) {
+            throw new IllegalArgumentException("Missing JSSKeyManager; refusing to search for cert");
+        }
+
+        if (cert != null || key != null) {
+            throw new IllegalArgumentException("SSLEngine already has certificates; refusing to change them.");
+        }
+
+        /*
+         * While the return type of CryptoManager.findCertByNickname is
+         * technically org.mozilla.jss.crypto.X509Certificate, in practice
+         * they are always PK11Cert instances.
+         */
+        cert = (PK11Cert) key_manager.getCertificate(alias);
+        key = (PK11PrivKey) key_manager.getPrivateKey(alias);
     }
 
     public void setEnabledCipherSuites(String[] suites) throws IllegalArgumentException {

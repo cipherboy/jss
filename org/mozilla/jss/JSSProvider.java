@@ -260,7 +260,14 @@ public final class JSSProvider extends java.security.Provider {
         /////////////////////////////////////////////////////////////
         // TLS
         /////////////////////////////////////////////////////////////
-        put("SSLContext.Default", "org.mozilla.jss.ssl.javax.JSSContext");
+        put("SSLContext.Default", "org.mozilla.jss.provider.javax.net.JSSContext");
+        put("SSLContext.SSL", "org.mozilla.jss.provider.javax.net.JSSContext");
+        put("SSLContext.SSLv3", "org.mozilla.jss.provider.javax.net.JSSContext");
+        put("SSLContext.TLS", "org.mozilla.jss.provider.javax.net.JSSContext");
+        put("SSLContext.TLSv1", "org.mozilla.jss.provider.javax.net.JSSContext");
+        put("SSLContext.TLSv1.1", "org.mozilla.jss.provider.javax.net.JSSContext");
+        put("SSLContext.TLSv1.2", "org.mozilla.jss.provider.javax.net.JSSContext");
+        put("SSLContext.TLSv1.3", "org.mozilla.jss.provider.javax.net.JSSContext");
     }
 
     public String toString() {

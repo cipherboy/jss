@@ -98,7 +98,16 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
         if (ssl_fd != null) {
             PR.Close(ssl_fd);
         }
-        ssl_fd = PR.NewBufferPRFD(read_buf, write_buf, peer_info.getBytes());
+
+        if (peer_info != null && peer_info.length() != 0) {
+            ssl_fd = PR.NewBufferPRFD(read_buf, write_buf, peer_info.getBytes());
+        } else {
+            ssl_fd = PR.NewBufferPRFD(read_buf, write_buf, null);
+        }
+
+        if (ssl_fd == null) {
+            throw new RuntimeException("JSSEngine.init(): Error creating buffer-backed PRFileDesc.");
+        }
 
         // Initialize the appropriate end of this connection.
         if (is_client) {
@@ -113,10 +122,9 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
     }
 
     private void initClient() {
+        logger.debug("JSSEngine: initClient()");
         // Initialize ssl_fd as a client connection.
-        PRFDProxy model = SSL.ImportFD(null, PR.NewTCPSocket());
-        ssl_fd = SSL.ImportFD(model, ssl_fd);
-        PR.Close(model);
+        ssl_fd = SSL.ImportFD(null, ssl_fd);
 
         // Update handshake status; client initiates connection, so we
         // need to wrap first.
@@ -124,10 +132,9 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
     }
 
     private void initServer() {
+        logger.debug("JSSEngine: initServer()");
         // Initialize ssl_fd as a server connection.
-        PRFDProxy model = SSL.ImportFD(null, PR.NewTCPSocket());
-        ssl_fd = SSL.ImportFD(model, ssl_fd);
-        PR.Close(model);
+        ssl_fd = SSL.ImportFD(null, ssl_fd);
 
         // The only time cert and key are required are when we're creating a
         // server SSLEngine.
@@ -151,6 +158,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
     }
 
     private void applyCiphers() {
+        logger.debug("JSSEngine: applyCiphers()");
         // Enabled the ciphersuites specified by setEnabledCipherSuites(...).
         // When this isn't called, enabled_ciphers will be null, so we'll just
         // use whatever is enabled by default.
@@ -182,6 +190,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
     }
 
     private void applyProtocols() {
+        logger.debug("JSSEngine: applyProtocols()");
         // Enable the protocols only when both a maximum and minimum protocol
         // version are specified.
         if (min_protocol == null || max_protocol == null) {
@@ -234,6 +243,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
     }
 
     private void queryEnabledCipherSuites() {
+        logger.debug("JSSEngine: queryEnabledCipherSuites()");
         ArrayList<SSLCipher> enabledCiphers = new ArrayList<SSLCipher>();
 
         for (SSLCipher cipher : SSLCipher.values()) {
@@ -272,6 +282,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
     }
 
     private void queryEnabledProtocols() {
+        logger.debug("JSSEngine: queryEnabledProtocols()");
         SSLVersionRange vrange = null;
         try {
             vrange = SSL.VersionRangeGet(ssl_fd);
@@ -389,6 +400,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
     }
 
     public void setCertFromAlias(String alias) throws IllegalArgumentException {
+        logger.debug("JSSEngine: setCertFromAlias()");
         if (alias == null) {
             cert = null;
             key = null;
@@ -431,6 +443,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
     }
 
     public void setEnabledCipherSuites(SSLCipher[] suites) {
+        logger.debug("JSSEngine: setEnabledCipherSuites()");
         enabled_ciphers = suites.clone();
     }
 
@@ -456,6 +469,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
     }
 
     public void setEnabledProtocols(SSLVersion min, SSLVersion max) throws IllegalArgumentException {
+        logger.debug("JSSEngine: setEnabledProtocols()");
         if ((min_protocol == null && max_protocol != null) || (min_protocol != null && max_protocol == null)) {
             throw new IllegalArgumentException("Expected min and max to either both be null or both be not-null; not mixed: (" + min + ", " + max + ")");
         }
@@ -464,6 +478,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
     }
 
     public void setEnabledProtocols(SSLVersionRange vrange) {
+        logger.debug("JSSEngine: setEnabledProtocols()");
         if (vrange == null) {
             min_protocol = null;
             max_protocol = null;
@@ -504,6 +519,7 @@ public class JSSEngine extends javax.net.ssl.SSLEngine {
      * certificate and key are null or both are not-null.
      */
     public void setKeyMaterials(PK11Cert our_cert, PK11PrivKey our_key) throws IllegalArgumentException {
+        logger.debug("JSSEngine: setKeyMaterials()");
         if (ssl_fd != null) {
             throw new RuntimeException("It is too late to call setKeyMaterials when the handshake has already started.");
         }

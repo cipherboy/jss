@@ -42,7 +42,7 @@ import org.mozilla.jss.netscape.security.x509.OIDMap;
  * SkipCerts ::= INTEGER (0..MAX)
  */
 public class InhibitAnyPolicyExtension
-          extends Extension implements CertAttrSet {
+    extends Extension implements CertAttrSet {
 
     /**
      *
@@ -56,7 +56,7 @@ public class InhibitAnyPolicyExtension
     static {
         try {
             OIDMap.addAttribute(InhibitAnyPolicyExtension.class.getName(),
-                    OID, NAME);
+                                OID, NAME);
         } catch (CertificateException e) {
         }
     }
@@ -77,7 +77,7 @@ public class InhibitAnyPolicyExtension
     }
 
     public InhibitAnyPolicyExtension(Boolean crit, Object value)
-            throws IOException {
+    throws IOException {
         extensionId = ObjectIdentifier.getObjectIdentifier(OID);
         critical = crit.booleanValue();
         //extensionValue = (byte[]) ((byte[]) byteVal).clone();
@@ -119,11 +119,11 @@ public class InhibitAnyPolicyExtension
     }
 
     public void decode(InputStream in)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
     }
 
     public void set(String name, Object obj)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         // NOT USED
     }
 
@@ -141,7 +141,7 @@ public class InhibitAnyPolicyExtension
     }
 
     public void delete(String name)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         // NOT USED
     }
 

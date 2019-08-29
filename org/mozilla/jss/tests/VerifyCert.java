@@ -25,10 +25,10 @@ public class VerifyCert {
     public void showCert( String certFile) {
         //Read the cert
         try (FileInputStream fis = new FileInputStream(certFile);
-                BufferedInputStream bis = new BufferedInputStream(fis)) {
+                    BufferedInputStream bis = new BufferedInputStream(fis)) {
 
             Certificate cert = (Certificate)
-                 Certificate.getTemplate().decode(bis);
+                               Certificate.getTemplate().decode(bis);
 
             //output the cert
             CertificateInfo info = cert.getInfo();
@@ -78,7 +78,7 @@ public class VerifyCert {
 
             //initialize JSS
             InitializationValues vals = new
-                                InitializationValues(dbdir);
+            InitializationValues(dbdir);
 
             //enable PKIX verify rather than the old NSS cert library,
             //to verify certificates.
@@ -119,7 +119,7 @@ public class VerifyCert {
     }
 
 
-    public void validateDerCert(byte[] pkg, CryptoManager cm){
+    public void validateDerCert(byte[] pkg, CryptoManager cm) {
         ArrayList<String> usageList = new ArrayList<>();
         try {
 
@@ -128,15 +128,15 @@ public class VerifyCert {
             while(list.hasNext()) {
                 certUsage = list.next();
                 if (
-       !certUsage.equals(CertUsage.UserCertImport) &&
-       !certUsage.equals(CertUsage.ProtectedObjectSigner) &&
-       !certUsage.equals(CertUsage.AnyCA) )
-                    {
-                        if (cm.isCertValid(pkg, true,
-                            certUsage) == true) {
-                            usageList.add(certUsage.toString());
-                        }
+                    !certUsage.equals(CertUsage.UserCertImport) &&
+                    !certUsage.equals(CertUsage.ProtectedObjectSigner) &&
+                    !certUsage.equals(CertUsage.AnyCA) )
+                {
+                    if (cm.isCertValid(pkg, true,
+                                       certUsage) == true) {
+                        usageList.add(certUsage.toString());
                     }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -145,17 +145,17 @@ public class VerifyCert {
         if (usageList.isEmpty()) {
             System.out.println("The certificate is not valid.");
         } else {
-        System.out.println("The certificate is valid for " +
-                           "the following usages:\n");
+            System.out.println("The certificate is valid for " +
+                               "the following usages:\n");
             Iterator<String> iterateUsage = usageList.iterator();
             while (iterateUsage.hasNext()) {
                 System.out.println("                       "
-                + iterateUsage.next());
+                                   + iterateUsage.next());
             }
         }
     }
 
-    public void validateCertInDB(String nickname, CryptoManager cm){
+    public void validateCertInDB(String nickname, CryptoManager cm) {
         ArrayList<String> usageList = new ArrayList<>();
 
         try {
@@ -165,15 +165,15 @@ public class VerifyCert {
             while(list.hasNext()) {
                 certUsage = list.next();
                 if (
-       !certUsage.equals(CertUsage.UserCertImport) &&
-       !certUsage.equals(CertUsage.ProtectedObjectSigner) &&
-       !certUsage.equals(CertUsage.AnyCA) )
-                    {
-                        if (cm.isCertValid(nickname, true,
-                            certUsage) == true) {
-                            usageList.add(certUsage.toString());
-                        }
+                    !certUsage.equals(CertUsage.UserCertImport) &&
+                    !certUsage.equals(CertUsage.ProtectedObjectSigner) &&
+                    !certUsage.equals(CertUsage.AnyCA) )
+                {
+                    if (cm.isCertValid(nickname, true,
+                                       certUsage) == true) {
+                        usageList.add(certUsage.toString());
                     }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -188,7 +188,7 @@ public class VerifyCert {
             Iterator<String> iterateUsage = usageList.iterator();
             while (iterateUsage.hasNext()) {
                 System.out.println("                       " +
-                                          iterateUsage.next());
+                                   iterateUsage.next());
             }
         }
     }

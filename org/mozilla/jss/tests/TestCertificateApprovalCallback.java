@@ -30,7 +30,7 @@ public class TestCertificateApprovalCallback
         SSLCertificateApprovalCallback.ValidityItem item;
 
         logger.debug("in TestCertificateApprovalCallback.approve()");
-            /* dump out server cert details */
+        /* dump out server cert details */
 
         logger.debug("Peer cert details:");
         logger.debug("     subject: " + servercert.getSubjectDN());
@@ -47,12 +47,12 @@ public class TestCertificateApprovalCallback
             i++;
             item = errors.nextElement();
             logger.debug("item "+i+
-                    " reason="+item.getReason()+
-                    " depth="+item.getDepth());
+                         " reason="+item.getReason()+
+                         " depth="+item.getDepth());
 
             org.mozilla.jss.crypto.X509Certificate cert = item.getCert();
             if (item.getReason() ==
-                SSLCertificateApprovalCallback.ValidityStatus.UNTRUSTED_ISSUER) {
+                    SSLCertificateApprovalCallback.ValidityStatus.UNTRUSTED_ISSUER) {
                 trust_the_server_cert = true;
             }
             logger.debug(" cert details:");
@@ -69,7 +69,7 @@ public class TestCertificateApprovalCallback
                     org.mozilla.jss.CryptoManager.getInstance().
                     importCertToPerm(servercert,"testnick");
                 newcert.setSSLTrust(InternalCertificate.TRUSTED_PEER |
-                    InternalCertificate.VALID_PEER);
+                                    InternalCertificate.VALID_PEER);
             } catch (Exception e) {
                 System.out.println("thrown exception: "+e);
             }

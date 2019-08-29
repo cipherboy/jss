@@ -129,7 +129,7 @@ public class EDIPartyName implements GeneralNameInterface {
             // XXX - shd check is chars fit into PrintableString
             tmp2.putPrintableString(assigner);
             tagged.write(DerValue.createTag(DerValue.TAG_CONTEXT,
-                                 false, TAG_ASSIGNER), tmp2);
+                                            false, TAG_ASSIGNER), tmp2);
         }
         if (party == null) {
             tagged.close();
@@ -140,7 +140,7 @@ public class EDIPartyName implements GeneralNameInterface {
         // XXX - shd check is chars fit into PrintableString
         tmp.putPrintableString(party);
         tagged.write(DerValue.createTag(DerValue.TAG_CONTEXT,
-                                 false, TAG_PARTYNAME), tmp);
+                                        false, TAG_PARTYNAME), tmp);
 
         out.write(DerValue.tag_Sequence, tagged);
     }
@@ -150,8 +150,8 @@ public class EDIPartyName implements GeneralNameInterface {
      */
     public String toString() {
         return ("EDIPartyName: " +
-                 ((assigner == null) ? "" :
-                         ("  nameAssigner = " + assigner + ","))
-                 + "  partyName = " + party);
+                ((assigner == null) ? "" :
+                 ("  nameAssigner = " + assigner + ","))
+                + "  partyName = " + party);
     }
 }

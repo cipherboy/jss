@@ -70,156 +70,156 @@ class JSSCipherSpi extends javax.crypto.CipherSpi {
     }
 
     static private SecretKey importKey(Key key)
-         throws InvalidKeyException
+    throws InvalidKeyException
     {
         if (key instanceof SecretKey) {
             SecretKey sKey = (SecretKey) key;
             SecretKeyFactory fact = null;
             try {
                 fact = SecretKeyFactory.getInstance(sKey.getAlgorithm(),
-                                                "Mozilla-JSS");
+                                                    "Mozilla-JSS");
             } catch (NoSuchAlgorithmException e) {
                 throw new InvalidKeyException(
-                                  "Unable to translate key with Algorithm"
-                                    + key.getAlgorithm());
+                    "Unable to translate key with Algorithm"
+                    + key.getAlgorithm());
             } catch (NoSuchProviderException ex) {
                 throw new InvalidKeyException(
                     "Unable to find provider, this should not happen");
             }
 
             return fact.translateKey(sKey);
-        }else {
+        } else {
             throw new InvalidKeyException("Invalid key type: " +
-                                       key.getClass().getName());
+                                          key.getClass().getName());
         }
     }
 
     public void engineInit(int opmode, Key key,
-        AlgorithmParameterSpec givenParams, SecureRandom random)
-        throws InvalidKeyException, InvalidAlgorithmParameterException
+                           AlgorithmParameterSpec givenParams, SecureRandom random)
+    throws InvalidKeyException, InvalidAlgorithmParameterException
     {
-      try {
-        // throw away any previous state
-        cipher = null;
-        wrapper = null;
+        try {
+            // throw away any previous state
+            cipher = null;
+            wrapper = null;
 
-        params = givenParams;
-        if( algFamily==null ) {
-            throw new InvalidAlgorithmParameterException(
-                "incorrectly specified algorithm");
-        }
-        if( opmode != Cipher.ENCRYPT_MODE && opmode != Cipher.DECRYPT_MODE &&
-            opmode != Cipher.WRAP_MODE && opmode != Cipher.UNWRAP_MODE )
-        {
-            throw new InvalidKeyException("Invalid opmode");
-        }
-
-        StringBuffer buf = new StringBuffer();
-        buf.append(algFamily);
-        if( algMode != null ) {
-            buf.append('/');
-            buf.append(algMode);
-        }
-        if( algPadding != null ) {
-            buf.append('/');
-            buf.append(algPadding);
-        }
-
-        if( opmode == Cipher.ENCRYPT_MODE || opmode == Cipher.DECRYPT_MODE ) {
-            if( ! (key instanceof SecretKeyFacade) )  {
-                key = importKey(key);
+            params = givenParams;
+            if( algFamily==null ) {
+                throw new InvalidAlgorithmParameterException(
+                    "incorrectly specified algorithm");
             }
-            SymmetricKey symkey = ((SecretKeyFacade)key).key;
-
-            // lookup the encryption algorithm
-            keyStrength = symkey.getStrength();
-            encAlg = EncryptionAlgorithm.lookup(algFamily, algMode,
-                algPadding, keyStrength);
-            blockSize = encAlg.getBlockSize();
-
-            if( !token.doesAlgorithm(encAlg) ) {
-                throw new NoSuchAlgorithmException(
-                    encAlg.toString() + " is not supported by this token " +
-                    token.getName());
+            if( opmode != Cipher.ENCRYPT_MODE && opmode != Cipher.DECRYPT_MODE &&
+                    opmode != Cipher.WRAP_MODE && opmode != Cipher.UNWRAP_MODE )
+            {
+                throw new InvalidKeyException("Invalid opmode");
             }
 
-            cipher = token.getCipherContext(encAlg);
-
-            if( opmode == Cipher.ENCRYPT_MODE ) {
-                if( params == noAlgParams ) {
-                    // we're supposed to generate some params
-                    params = generateAlgParams(encAlg, blockSize);
-                }
-                cipher.initEncrypt(symkey, params);
-            } else if( opmode == Cipher.DECRYPT_MODE ) {
-                if( params == noAlgParams) {
-                    params = null;
-                }
-                cipher.initDecrypt(symkey, params);
+            StringBuffer buf = new StringBuffer();
+            buf.append(algFamily);
+            if( algMode != null ) {
+                buf.append('/');
+                buf.append(algMode);
             }
-        } else {
-            assert(
-                opmode==Cipher.WRAP_MODE || opmode==Cipher.UNWRAP_MODE);
-            wrapAlg = KeyWrapAlgorithm.fromString(buf.toString());
-            blockSize = wrapAlg.getBlockSize();
-            wrapper = token.getKeyWrapper(wrapAlg);
-
-            // generate params if necessary
-            if( params == noAlgParams ) {
-                if( opmode == Cipher.WRAP_MODE ) {
-                    params = generateAlgParams(wrapAlg, blockSize);
-                } else {
-                    assert(opmode == Cipher.UNWRAP_MODE);
-                    params = null;
-                }
+            if( algPadding != null ) {
+                buf.append('/');
+                buf.append(algPadding);
             }
 
-            if( key instanceof org.mozilla.jss.crypto.PrivateKey ) {
-                if( opmode != Cipher.UNWRAP_MODE ) {
-                    throw new InvalidKeyException(
-                        "Private key can only be used for unwrapping");
+            if( opmode == Cipher.ENCRYPT_MODE || opmode == Cipher.DECRYPT_MODE ) {
+                if( ! (key instanceof SecretKeyFacade) )  {
+                    key = importKey(key);
                 }
-                wrapper.initUnwrap(
-                    (org.mozilla.jss.crypto.PrivateKey) key, params );
-            } else if( key instanceof PublicKey ) {
-                if( opmode != Cipher.WRAP_MODE ) {
-                    throw new InvalidKeyException(
-                        "Public key can only be used for wrapping");
+                SymmetricKey symkey = ((SecretKeyFacade)key).key;
+
+                // lookup the encryption algorithm
+                keyStrength = symkey.getStrength();
+                encAlg = EncryptionAlgorithm.lookup(algFamily, algMode,
+                                                    algPadding, keyStrength);
+                blockSize = encAlg.getBlockSize();
+
+                if( !token.doesAlgorithm(encAlg) ) {
+                    throw new NoSuchAlgorithmException(
+                        encAlg.toString() + " is not supported by this token " +
+                        token.getName());
                 }
-                wrapper.initWrap((PublicKey) key, params);
-            } else if( key instanceof org.mozilla.jss.crypto.SecretKeyFacade) {
-                org.mozilla.jss.crypto.SecretKeyFacade sk =
-                    (org.mozilla.jss.crypto.SecretKeyFacade) key;
-                if( opmode == Cipher.WRAP_MODE ) {
-                    wrapper.initWrap( sk.key, params );
-                } else {
-                    assert(opmode==Cipher.UNWRAP_MODE);
-                    wrapper.initUnwrap( sk.key, params );
+
+                cipher = token.getCipherContext(encAlg);
+
+                if( opmode == Cipher.ENCRYPT_MODE ) {
+                    if( params == noAlgParams ) {
+                        // we're supposed to generate some params
+                        params = generateAlgParams(encAlg, blockSize);
+                    }
+                    cipher.initEncrypt(symkey, params);
+                } else if( opmode == Cipher.DECRYPT_MODE ) {
+                    if( params == noAlgParams) {
+                        params = null;
+                    }
+                    cipher.initDecrypt(symkey, params);
                 }
             } else {
-                throw new InvalidKeyException("Invalid key type: " +
-                    key.getClass().getName());
+                assert(
+                    opmode==Cipher.WRAP_MODE || opmode==Cipher.UNWRAP_MODE);
+                wrapAlg = KeyWrapAlgorithm.fromString(buf.toString());
+                blockSize = wrapAlg.getBlockSize();
+                wrapper = token.getKeyWrapper(wrapAlg);
+
+                // generate params if necessary
+                if( params == noAlgParams ) {
+                    if( opmode == Cipher.WRAP_MODE ) {
+                        params = generateAlgParams(wrapAlg, blockSize);
+                    } else {
+                        assert(opmode == Cipher.UNWRAP_MODE);
+                        params = null;
+                    }
+                }
+
+                if( key instanceof org.mozilla.jss.crypto.PrivateKey ) {
+                    if( opmode != Cipher.UNWRAP_MODE ) {
+                        throw new InvalidKeyException(
+                            "Private key can only be used for unwrapping");
+                    }
+                    wrapper.initUnwrap(
+                        (org.mozilla.jss.crypto.PrivateKey) key, params );
+                } else if( key instanceof PublicKey ) {
+                    if( opmode != Cipher.WRAP_MODE ) {
+                        throw new InvalidKeyException(
+                            "Public key can only be used for wrapping");
+                    }
+                    wrapper.initWrap((PublicKey) key, params);
+                } else if( key instanceof org.mozilla.jss.crypto.SecretKeyFacade) {
+                    org.mozilla.jss.crypto.SecretKeyFacade sk =
+                        (org.mozilla.jss.crypto.SecretKeyFacade) key;
+                    if( opmode == Cipher.WRAP_MODE ) {
+                        wrapper.initWrap( sk.key, params );
+                    } else {
+                        assert(opmode==Cipher.UNWRAP_MODE);
+                        wrapper.initUnwrap( sk.key, params );
+                    }
+                } else {
+                    throw new InvalidKeyException("Invalid key type: " +
+                                                  key.getClass().getName());
+                }
             }
-        }
-      } catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             throw new InvalidAlgorithmParameterException(e.getMessage());
-      } catch(TokenException te) {
+        } catch(TokenException te) {
             throw new TokenRuntimeException(te.getMessage());
-      }
+        }
     }
 
     public void engineInit(int opmode, Key key,
-            AlgorithmParameters givenParams, SecureRandom random)
-        throws InvalidKeyException, InvalidAlgorithmParameterException
+                           AlgorithmParameters givenParams, SecureRandom random)
+    throws InvalidKeyException, InvalidAlgorithmParameterException
     {
         try {
             AlgorithmParameterSpec gp = null;
             if (algFamily.compareToIgnoreCase("RC2") == 0) {
                 gp = givenParams.getParameterSpec(
-                    javax.crypto.spec.RC2ParameterSpec.class );
+                         javax.crypto.spec.RC2ParameterSpec.class );
             } else if (algMode.compareToIgnoreCase("CBC") == 0) {
-                 gp = givenParams.getParameterSpec(
-                             javax.crypto.spec.IvParameterSpec.class );
+                gp = givenParams.getParameterSpec(
+                         javax.crypto.spec.IvParameterSpec.class );
             }
 
             if (gp != null) {
@@ -233,7 +233,7 @@ class JSSCipherSpi extends javax.crypto.CipherSpi {
     }
 
     public void engineInit(int opmode, Key key, SecureRandom random)
-        throws InvalidKeyException
+    throws InvalidKeyException
     {
         try {
             engineInit(opmode, key, noAlgParams, random);
@@ -254,7 +254,7 @@ class JSSCipherSpi extends javax.crypto.CipherSpi {
         byte[] iv = new byte[blockSize];
         try {
             SecureRandom random = SecureRandom.getInstance("pkcs11prng",
-                                                       "Mozilla-JSS");
+                                  "Mozilla-JSS");
             random.nextBytes(iv);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -295,17 +295,17 @@ class JSSCipherSpi extends javax.crypto.CipherSpi {
 
     public AlgorithmParameters engineGetParameters() {
         AlgorithmParameters algParams = null;
-         try {
+        try {
             if(( params instanceof IvParameterSpec )
-               || ( params instanceof RC2ParameterSpec )) {
+                    || ( params instanceof RC2ParameterSpec )) {
                 algParams = AlgorithmParameters.getInstance(algFamily);
                 algParams.init(params);
             }
-          } catch(NoSuchAlgorithmException e) {
-              throw new RuntimeException("Unable to get parameters: " + e.getMessage(), e);
-          } catch(InvalidParameterSpecException e) {
-              throw new RuntimeException("Unable to get parameters: " + e.getMessage(), e);
-          }
+        } catch(NoSuchAlgorithmException e) {
+            throw new RuntimeException("Unable to get parameters: " + e.getMessage(), e);
+        } catch(InvalidParameterSpecException e) {
+            throw new RuntimeException("Unable to get parameters: " + e.getMessage(), e);
+        }
         return algParams;
     }
 
@@ -328,19 +328,19 @@ class JSSCipherSpi extends javax.crypto.CipherSpi {
     }
 
     public int engineUpdate(byte[] input, int inputOffset, int inputLen,
-        byte[] output, int outputOffset) throws ShortBufferException
+                            byte[] output, int outputOffset) throws ShortBufferException
     {
         byte[] bytes = engineUpdate(input, inputOffset, inputLen);
         if( bytes.length > output.length-outputOffset ) {
             throw new ShortBufferException(bytes.length +  " needed, " +
-                (output.length-outputOffset) + " supplied");
+                                           (output.length-outputOffset) + " supplied");
         }
         System.arraycopy(bytes, 0, output, outputOffset, bytes.length);
         return bytes.length;
     }
 
     public byte[] engineDoFinal(byte[] input, int inputOffset, int inputLen)
-        throws IllegalBlockSizeException, BadPaddingException
+    throws IllegalBlockSizeException, BadPaddingException
     {
         if( cipher == null ) {
             // Cipher is supposed to catch an illegal state, so we should never
@@ -363,21 +363,21 @@ class JSSCipherSpi extends javax.crypto.CipherSpi {
     }
 
     public int engineDoFinal(byte[] input, int inputOffset, int inputLen,
-        byte[] output, int outputOffset)
-            throws ShortBufferException, IllegalBlockSizeException,
-            BadPaddingException
+                             byte[] output, int outputOffset)
+    throws ShortBufferException, IllegalBlockSizeException,
+               BadPaddingException
     {
         byte[] bytes = engineDoFinal(input, inputOffset, inputLen);
         if( bytes.length > output.length-outputOffset ) {
             throw new ShortBufferException(bytes.length +  " needed, " +
-                (output.length-outputOffset) + " supplied");
+                                           (output.length-outputOffset) + " supplied");
         }
         System.arraycopy(bytes, 0, output, outputOffset, bytes.length);
         return bytes.length;
     }
 
     public byte[] engineWrap(Key key)
-        throws IllegalBlockSizeException, InvalidKeyException
+    throws IllegalBlockSizeException, InvalidKeyException
     {
         if( wrapper == null ) {
             throw new IllegalStateException();
@@ -387,10 +387,10 @@ class JSSCipherSpi extends javax.crypto.CipherSpi {
                 return wrapper.wrap( (org.mozilla.jss.crypto.PrivateKey) key);
             } else if( key instanceof org.mozilla.jss.crypto.SecretKeyFacade) {
                 return wrapper.wrap(
-                    ((org.mozilla.jss.crypto.SecretKeyFacade)key).key );
+                           ((org.mozilla.jss.crypto.SecretKeyFacade)key).key );
             } else {
                 throw new InvalidKeyException("Unsupported key type: " +
-                    key.getClass().getName());
+                                              key.getClass().getName());
             }
         } catch(IllegalStateException ise) {
             throw ise;
@@ -400,22 +400,22 @@ class JSSCipherSpi extends javax.crypto.CipherSpi {
     }
 
     public Key engineUnwrap(byte[] wrappedKey, String wrappedKeyAlgorithm,
-            int wrappedKeyType)
-        throws InvalidKeyException, NoSuchAlgorithmException
+                            int wrappedKeyType)
+    throws InvalidKeyException, NoSuchAlgorithmException
     {
         if( wrapper == null ) {
             throw new IllegalStateException();
         }
         try {
             switch(wrappedKeyType) {
-              case Cipher.SECRET_KEY:
+            case Cipher.SECRET_KEY:
                 return engineUnwrapSecret(wrappedKey, wrappedKeyAlgorithm);
-              case Cipher.PRIVATE_KEY:
+            case Cipher.PRIVATE_KEY:
                 return engineUnwrapPrivate(wrappedKey, wrappedKeyAlgorithm);
-              case Cipher.PUBLIC_KEY:
+            case Cipher.PUBLIC_KEY:
                 throw new UnsupportedOperationException(
                     "Unable to unwrap public keys");
-              default:
+            default:
                 throw new NoSuchAlgorithmException(
                     "Invalid key type: " + wrappedKeyType);
             }
@@ -425,7 +425,7 @@ class JSSCipherSpi extends javax.crypto.CipherSpi {
     }
 
     private Key engineUnwrapSecret(byte[] wrappedKey, String wrappedKeyAlg)
-        throws InvalidKeyException, NoSuchAlgorithmException
+    throws InvalidKeyException, NoSuchAlgorithmException
     {
         try {
             int idx = wrappedKeyAlg.indexOf('/');
@@ -445,17 +445,17 @@ class JSSCipherSpi extends javax.crypto.CipherSpi {
             return new SecretKeyFacade(key);
         } catch(StringIndexOutOfBoundsException e) {
             throw new NoSuchAlgorithmException("Unknown algorithm: " +
-                wrappedKeyAlg);
+                                               wrappedKeyAlg);
         } catch(TokenException te ) {
             throw new TokenRuntimeException(te.getMessage());
         } catch(InvalidAlgorithmParameterException iape ) {
             throw new NoSuchAlgorithmException("Invalid algorithm parameters" +
-                iape.getMessage());
+                                               iape.getMessage());
         }
     }
 
     private Key engineUnwrapPrivate(byte[] wrappedKey, String wrappedKeyAlg)
-        throws InvalidKeyException, NoSuchAlgorithmException
+    throws InvalidKeyException, NoSuchAlgorithmException
     {
         throw new NoSuchAlgorithmException(
             "Unwrapping private keys via the JCA interface is not supported: "+
@@ -471,12 +471,12 @@ class JSSCipherSpi extends javax.crypto.CipherSpi {
                 SubjectPublicKeyInfo.Template spkiTemp =
                     new SubjectPublicKeyInfo.Template();
                 SubjectPublicKeyInfo spki = (SubjectPublicKeyInfo)
-                    ASN1Util.decode(spkiTemp, encoded);
+                                            ASN1Util.decode(spkiTemp, encoded);
                 BIT_STRING pk = spki.getSubjectPublicKey();
                 return pk.getBits().length - pk.getPadCount();
             } catch(InvalidBERException e) {
                 throw new InvalidKeyException("Exception while decoding " +
-                    "public key: " + e.getMessage());
+                                              "public key: " + e.getMessage());
             }
         } else if( key instanceof SecretKeyFacade ) {
             SymmetricKey symkey = ((SecretKeyFacade)key).key;

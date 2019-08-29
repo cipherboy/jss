@@ -47,7 +47,7 @@ public class LraPopWitness implements ASN1Value {
     public LraPopWitness(INTEGER pkiDataBodyid, SEQUENCE bodyIds) {
         if (pkiDataBodyid == null || bodyIds == null)
             throw new IllegalArgumentException(
-               "parameter to LraPopWitness constructor is null");
+                "parameter to LraPopWitness constructor is null");
         sequence = new SEQUENCE();
         this.pkiDataBodyid = pkiDataBodyid;
         sequence.addElement(pkiDataBodyid);
@@ -88,7 +88,7 @@ public class LraPopWitness implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         sequence.encode(implicitTag, ostream);
     }
@@ -114,12 +114,12 @@ public class LraPopWitness implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
 
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 

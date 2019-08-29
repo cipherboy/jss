@@ -41,11 +41,11 @@ public class ListCerts {
                 System.out.println("\nSubject: "+certs[i].getSubjectDN());
                 Certificate cert =
                     (Certificate)ASN1Util.decode(Certificate.getTemplate(),
-                    certs[i].getEncoded());
+                                                 certs[i].getEncoded());
                 CertificateInfo info = cert.getInfo();
                 OBJECT_IDENTIFIER sigalg = info.getSignatureAlgId().getOID();
                 System.out.println("Signature oid " +
-                    info.getSignatureAlgId().getOID());
+                                   info.getSignatureAlgId().getOID());
 
                 SEQUENCE extensions = info.getExtensions();
                 for (int j = 0; j < extensions.size(); j++) {
@@ -55,10 +55,10 @@ public class ListCerts {
                     System.out.println("Extension " + oid.toString());
                     if (ext.getCritical()) {
                         System.out.println("Critical extension: "
-                            + oid.toString());
+                                           + oid.toString());
                     } else {
                         System.out.println("NON Critical extension: "
-                            + oid.toString());
+                                           + oid.toString());
                     }
                 }
                 System.out.println("Convert to JDK cert");
@@ -80,7 +80,9 @@ public class ListCerts {
                         String oid = j.next();
                         System.out.println(oid);
                     }
-                } else { System.out.println("no NON Critical Extensions"); }
+                } else {
+                    System.out.println("no NON Critical Extensions");
+                }
 
                 /* critical extensions */
                 Set<String> critSet = jdkCert.getCriticalExtensionOIDs();
@@ -90,7 +92,9 @@ public class ListCerts {
                         String oid = j.next();
                         System.out.println(oid);
                     }
-                } else { System.out.println("no Critical Extensions"); }
+                } else {
+                    System.out.println("no Critical Extensions");
+                }
             }
             System.out.println("END");
 

@@ -92,8 +92,8 @@ public class DirStrConverterTest {
         System.out.println(" - expected: " + StringTestUtil.toString(expected));
 
         byte[] actual = ConverterTestUtil.convert(new DirStrConverter(), string, new byte[] {
-                DerValue.tag_IA5String, DerValue.tag_UTF8String
-        });
+                            DerValue.tag_IA5String, DerValue.tag_UTF8String
+                        });
         System.out.println(" - actual  : " + StringTestUtil.toString(actual));
 
         Assert.assertArrayEquals(expected, actual);
@@ -109,8 +109,8 @@ public class DirStrConverterTest {
         System.out.println(" - expected: " + StringTestUtil.toString(expected));
 
         byte[] actual = ConverterTestUtil.convert(new DirStrConverter(), string, new byte[] {
-                DerValue.tag_IA5String, DerValue.tag_UTF8String
-        });
+                            DerValue.tag_IA5String, DerValue.tag_UTF8String
+                        });
         System.out.println(" - actual  : " + StringTestUtil.toString(actual));
 
         Assert.assertArrayEquals(expected, actual);

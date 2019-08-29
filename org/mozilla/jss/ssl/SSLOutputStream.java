@@ -22,7 +22,7 @@ class SSLOutputStream extends java.io.OutputStream {
 
     public void write(byte[] b, int off, int len) throws IOException {
         sock.write(b, off, len);
-    }       
+    }
 
     public void close() throws IOException {
         sock.close();

@@ -246,10 +246,10 @@ public class NativeErrcodes {
     public static final int SEC_ERROR_DECRYPTION_DISALLOWED = 228;
     /**
      * @deprecated As of NSS 3.11, FORTEZZA is no longer supported.
-     * XP_SEC_FORTEZZA_BAD_CARD, XP_SEC_FORTEZZA_NO_CARD, 
+     * XP_SEC_FORTEZZA_BAD_CARD, XP_SEC_FORTEZZA_NO_CARD,
      * XP_SEC_FORTEZZA_NONE_SELECTED, XP_SEC_FORTEZZA_MORE_INFO
      * XP_SEC_FORTEZZA_PERSON_NOT_FOUND, XP_SEC_FORTEZZA_NO_MORE_INFO
-     * XP_SEC_FORTEZZA_BAD_PIN and XP_SEC_FORTEZZA_PERSON_ERROR are 
+     * XP_SEC_FORTEZZA_BAD_PIN and XP_SEC_FORTEZZA_PERSON_ERROR are
      * placeholder for backward compatibility.
      */
     public static final int XP_SEC_FORTEZZA_BAD_CARD = 229;

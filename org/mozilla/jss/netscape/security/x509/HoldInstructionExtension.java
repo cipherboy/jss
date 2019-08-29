@@ -42,7 +42,7 @@ import org.mozilla.jss.netscape.security.util.ObjectIdentifier;
  */
 
 public class HoldInstructionExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
 
     /**
      *
@@ -60,28 +60,30 @@ public class HoldInstructionExtension extends Extension
     public static final String OID = "2.5.29.23";
 
     public static final String NONE_HOLD_INSTR_OID_STR =
-            "1.2.840.10040.2.1";
+        "1.2.840.10040.2.1";
     public static final ObjectIdentifier NONE_HOLD_INSTR_OID =
-            new ObjectIdentifier(NONE_HOLD_INSTR_OID_STR);
+        new ObjectIdentifier(NONE_HOLD_INSTR_OID_STR);
 
     public static final String CALL_ISSUER_HOLD_INSTR_OID_STR =
-            "1.2.840.10040.2.2";
+        "1.2.840.10040.2.2";
     public static final ObjectIdentifier CALL_ISSUER_HOLD_INSTR_OID =
-            new ObjectIdentifier(CALL_ISSUER_HOLD_INSTR_OID_STR);
+        new ObjectIdentifier(CALL_ISSUER_HOLD_INSTR_OID_STR);
 
     public static final String REJECT_HOLD_INSTR_OID_STR =
-            "1.2.840.10040.2.3";
+        "1.2.840.10040.2.3";
     public static final ObjectIdentifier REJECT_HOLD_INSTR_OID =
-            new ObjectIdentifier(REJECT_HOLD_INSTR_OID_STR);
+        new ObjectIdentifier(REJECT_HOLD_INSTR_OID_STR);
 
     private ObjectIdentifier holdInstructionCodeOIDs[] = { NONE_HOLD_INSTR_OID,
-                                                          CALL_ISSUER_HOLD_INSTR_OID,
-                                                          REJECT_HOLD_INSTR_OID };
+                                                           CALL_ISSUER_HOLD_INSTR_OID,
+                                                           REJECT_HOLD_INSTR_OID
+                                                         };
     private ObjectIdentifier holdInstructionCodeOID = null;
 
     private String holdInstructionDescription[] = { "None",
-                                                   "Call Issuer",
-                                                   "Reject" };
+                                                    "Call Issuer",
+                                                    "Reject"
+                                                  };
 
     static {
         try {
@@ -127,7 +129,7 @@ public class HoldInstructionExtension extends Extension
      * @param code the value to be set for the extension.
      */
     public HoldInstructionExtension(int code)
-            throws IOException {
+    throws IOException {
         if (code < 1 || code > 3)
             throw new IOException("Invalid hold instruction code");
         holdInstructionCodeOID = holdInstructionCodeOIDs[code - 1];
@@ -143,7 +145,7 @@ public class HoldInstructionExtension extends Extension
      * @param oidStr the value to be set for the extension.
      */
     public HoldInstructionExtension(String oidStr)
-            throws IOException {
+    throws IOException {
         ObjectIdentifier oid = new ObjectIdentifier(oidStr);
         if (oid == null || getHoldInstructionCodeFromOID(oid) == 0)
             throw new IOException("Invalid hold instruction code");
@@ -160,7 +162,7 @@ public class HoldInstructionExtension extends Extension
      * @param oid the value to be set for the extension.
      */
     public HoldInstructionExtension(ObjectIdentifier oid)
-            throws IOException {
+    throws IOException {
         if (getHoldInstructionCodeFromOID(oid) == 0)
             throw new IOException("Invalid hold instruction code");
         holdInstructionCodeOID = oid;
@@ -177,7 +179,7 @@ public class HoldInstructionExtension extends Extension
      * @param code the value to be set for the extension.
      */
     public HoldInstructionExtension(Boolean critical, int code)
-            throws IOException {
+    throws IOException {
         if (code < 1 || code > 3)
             throw new IOException("Invalid hold instruction code");
         holdInstructionCodeOID = holdInstructionCodeOIDs[code - 1];
@@ -194,7 +196,7 @@ public class HoldInstructionExtension extends Extension
      * @param oidStr the value to be set for the extension.
      */
     public HoldInstructionExtension(Boolean critical, String oidStr)
-            throws IOException {
+    throws IOException {
         ObjectIdentifier oid = new ObjectIdentifier(oidStr);
         if (oid == null || getHoldInstructionCodeFromOID(oid) == 0)
             throw new IOException("Invalid hold instruction code");
@@ -212,7 +214,7 @@ public class HoldInstructionExtension extends Extension
      * @param oid the value to be set for the extension.
      */
     public HoldInstructionExtension(Boolean critical, ObjectIdentifier oid)
-            throws IOException {
+    throws IOException {
         if (getHoldInstructionCodeFromOID(oid) == 0)
             throw new IOException("Invalid hold instruction code");
         holdInstructionCodeOID = oid;
@@ -229,7 +231,7 @@ public class HoldInstructionExtension extends Extension
      * @exception IOException on error.
      */
     public HoldInstructionExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = PKIXExtensions.HoldInstructionCode_Id;
         this.critical = critical.booleanValue();
 

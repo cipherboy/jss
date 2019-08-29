@@ -28,7 +28,7 @@ public class GeneralizedTime extends TimeBase implements ASN1Value {
     }
 
     private static final GeneralizedTime.Template templateInstance =
-                                new GeneralizedTime.Template();
+        new GeneralizedTime.Template();
     public static GeneralizedTime.Template getTemplate() {
         return templateInstance;
     }

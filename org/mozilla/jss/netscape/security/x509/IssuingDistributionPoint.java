@@ -131,7 +131,7 @@ public class IssuingDistributionPoint implements ASN1Value {
      *                name.
      */
     public void setFullName(GeneralNames fullName)
-            throws GeneralNamesException, IOException {
+    throws GeneralNamesException, IOException {
         this.fullName = fullName;
         if (fullName != null) {
             // encode the name to catch any problems with it
@@ -217,7 +217,7 @@ public class IssuingDistributionPoint implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
 
         SEQUENCE seq = new SEQUENCE();
         DerOutputStream derOut;
@@ -281,14 +281,14 @@ public class IssuingDistributionPoint implements ASN1Value {
             }
 
             bos = new BufferedOutputStream(
-                    new FileOutputStream(args[0]));
+                new FileOutputStream(args[0]));
 
             SEQUENCE idps = new SEQUENCE();
 
             IssuingDistributionPoint idp = new IssuingDistributionPoint();
 
             X500Name dn = new X500Name("CN=Skovw Wjasldk,E=nicolson@netscape.com" +
-                    ",OU=Certificate Server,O=Netscape,C=US");
+                                       ",OU=Certificate Server,O=Netscape,C=US");
             GeneralNames generalNames = new GeneralNames();
             generalNames.addElement(dn);
             idp.setFullName(generalNames);

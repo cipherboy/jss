@@ -31,8 +31,8 @@ public class ResponseBody implements ASN1Value {
     ///////////////////////////////////////////////////////////////////////
     private SEQUENCE sequence;
     private SEQUENCE controlSequence;
-	private SEQUENCE cmsSequence;
-	private SEQUENCE otherMsgSequence;
+    private SEQUENCE cmsSequence;
+    private SEQUENCE otherMsgSequence;
 
     ///////////////////////////////////////////////////////////////////////
     // Construction
@@ -46,7 +46,7 @@ public class ResponseBody implements ASN1Value {
      * @param otherMsgSequence Sequence of OtherMsg.
      */
     public ResponseBody(SEQUENCE controlSequence, SEQUENCE
-			cmsSequence, SEQUENCE otherMsgSequence) {
+                        cmsSequence, SEQUENCE otherMsgSequence) {
         sequence = new SEQUENCE();
         this.controlSequence = controlSequence;
         sequence.addElement(controlSequence);
@@ -87,7 +87,7 @@ public class ResponseBody implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         sequence.encode(implicitTag, ostream);
     }
@@ -115,22 +115,22 @@ public class ResponseBody implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
             assert(seq.size() == 3);
 
             return new ResponseBody(
-                            (SEQUENCE)      seq.elementAt(0),
-                            (SEQUENCE)      seq.elementAt(1),
-                            (SEQUENCE)      seq.elementAt(2));
+                       (SEQUENCE)      seq.elementAt(0),
+                       (SEQUENCE)      seq.elementAt(1),
+                       (SEQUENCE)      seq.elementAt(2));
         }
     }
 }

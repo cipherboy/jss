@@ -9,7 +9,7 @@ package org.mozilla.jss.crypto;
  * cannot be decoded.
  */
 public class InvalidKeyFormatException
-        extends java.security.spec.InvalidKeySpecException
+    extends java.security.spec.InvalidKeySpecException
 {
     private static final long serialVersionUID = 1L;
     public InvalidKeyFormatException() {

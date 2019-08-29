@@ -17,7 +17,7 @@
 #include "_jni/org_mozilla_jss_nss_SSL.h"
 
 jobject JSS_NewSecurityStatusResult(JNIEnv *env, int on, char *cipher,
-    int keySize, int secretKeySize, char *issuer, char *subject)
+                                    int keySize, int secretKeySize, char *issuer, char *subject)
 {
     jclass resultClass;
     jmethodID constructor;
@@ -35,7 +35,7 @@ jobject JSS_NewSecurityStatusResult(JNIEnv *env, int on, char *cipher,
     }
 
     constructor = (*env)->GetMethodID(env, resultClass, PLAIN_CONSTRUCTOR,
-        SECURITY_STATUS_CONSTRUCTOR_SIG);
+                                      SECURITY_STATUS_CONSTRUCTOR_SIG);
     if (constructor == NULL) {
         ASSERT_OUTOFMEM(env);
         goto finish;
@@ -54,7 +54,7 @@ jobject JSS_NewSecurityStatusResult(JNIEnv *env, int on, char *cipher,
     }
 
     result = (*env)->NewObject(env, resultClass, constructor, on, cipher_java,
-        keySize, secretKeySize, issuer_java, subject_java);
+                               keySize, secretKeySize, issuer_java, subject_java);
 
 finish:
     return result;
@@ -62,7 +62,7 @@ finish:
 
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_nss_SSL_ImportFD(JNIEnv *env, jclass clazz, jobject model,
-    jobject fd)
+                                      jobject fd)
 {
     PRFileDesc *result = NULL;
     PRFileDesc *real_model = NULL;
@@ -87,7 +87,7 @@ Java_org_mozilla_jss_nss_SSL_ImportFD(JNIEnv *env, jclass clazz, jobject model,
 
 JNIEXPORT int JNICALL
 Java_org_mozilla_jss_nss_SSL_OptionSet(JNIEnv *env, jclass clazz, jobject fd,
-    jint option, jint val)
+                                       jint option, jint val)
 {
     PRFileDesc *real_fd = NULL;
 
@@ -102,7 +102,7 @@ Java_org_mozilla_jss_nss_SSL_OptionSet(JNIEnv *env, jclass clazz, jobject fd,
 
 JNIEXPORT int JNICALL
 Java_org_mozilla_jss_nss_SSL_OptionGet(JNIEnv *env, jclass clazz, jobject fd,
-    jint option)
+                                       jint option)
 {
     PRFileDesc *real_fd = NULL;
     int result = -1;
@@ -111,20 +111,20 @@ Java_org_mozilla_jss_nss_SSL_OptionGet(JNIEnv *env, jclass clazz, jobject fd,
 
     if (JSS_PR_getPRFileDesc(env, fd, &real_fd) != PR_SUCCESS) {
         JSS_throwMsg(env, INVALID_PARAMETER_EXCEPTION,
-            "Unable to dereference fd object");
+                     "Unable to dereference fd object");
         return result;
     }
 
     if (SSL_OptionGet(real_fd, option, &result) != SECSuccess) {
         JSS_throwMsg(env, ILLEGAL_ARGUMENT_EXCEPTION,
-            "Unknown option to get or getting option failed");
+                     "Unknown option to get or getting option failed");
     }
     return result;
 }
 
 JNIEXPORT int JNICALL
 Java_org_mozilla_jss_nss_SSL_SetURL(JNIEnv *env, jclass clazz, jobject fd,
-    jstring url)
+                                    jstring url)
 {
     PRFileDesc *real_fd = NULL;
     char *real_url = NULL;
@@ -145,7 +145,7 @@ Java_org_mozilla_jss_nss_SSL_SetURL(JNIEnv *env, jclass clazz, jobject fd,
 
 JNIEXPORT int JNICALL
 Java_org_mozilla_jss_nss_SSL_CipherPrefSet(JNIEnv *env, jclass clazz,
-    jobject fd, jint cipher, jboolean enabled)
+        jobject fd, jint cipher, jboolean enabled)
 {
     PRFileDesc *real_fd = NULL;
 
@@ -160,7 +160,7 @@ Java_org_mozilla_jss_nss_SSL_CipherPrefSet(JNIEnv *env, jclass clazz,
 
 JNIEXPORT jboolean JNICALL
 Java_org_mozilla_jss_nss_SSL_CipherPrefGet(JNIEnv *env, jclass clazz,
-    jobject fd, jint cipher)
+        jobject fd, jint cipher)
 {
     PRFileDesc *real_fd = NULL;
     int enabled = false;
@@ -169,13 +169,13 @@ Java_org_mozilla_jss_nss_SSL_CipherPrefGet(JNIEnv *env, jclass clazz,
 
     if (JSS_PR_getPRFileDesc(env, fd, &real_fd) != PR_SUCCESS) {
         JSS_throwMsg(env, INVALID_PARAMETER_EXCEPTION,
-            "Unable to dereference fd object");
+                     "Unable to dereference fd object");
         return enabled;
     }
 
     if (SSL_CipherPrefGet(real_fd, cipher, &enabled) != SECSuccess) {
         JSS_throwMsg(env, ILLEGAL_ARGUMENT_EXCEPTION,
-            "Unknown cipher suite to get or getting its value failed");
+                     "Unknown cipher suite to get or getting its value failed");
         return enabled;
     }
 
@@ -184,7 +184,7 @@ Java_org_mozilla_jss_nss_SSL_CipherPrefGet(JNIEnv *env, jclass clazz,
 
 JNIEXPORT int JNICALL
 Java_org_mozilla_jss_nss_SSL_VersionRangeSetNative(JNIEnv *env, jclass clazz,
-    jobject fd, jint min_ssl, jint max_ssl)
+        jobject fd, jint min_ssl, jint max_ssl)
 {
     PRFileDesc *real_fd = NULL;
     SSLVersionRange vrange;
@@ -204,7 +204,7 @@ Java_org_mozilla_jss_nss_SSL_VersionRangeSetNative(JNIEnv *env, jclass clazz,
 
     if (JSS_PR_getPRFileDesc(env, fd, &real_fd) != PR_SUCCESS) {
         JSS_throwMsg(env, INVALID_PARAMETER_EXCEPTION,
-            "Unable to dereference fd object");
+                     "Unable to dereference fd object");
         return SECFailure;
     }
 
@@ -216,7 +216,7 @@ Java_org_mozilla_jss_nss_SSL_VersionRangeSetNative(JNIEnv *env, jclass clazz,
 
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_nss_SSL_VersionRangeGet(JNIEnv *env, jclass clazz,
-    jobject fd)
+        jobject fd)
 {
     PRFileDesc *real_fd = NULL;
     SSLVersionRange vrange;
@@ -225,13 +225,13 @@ Java_org_mozilla_jss_nss_SSL_VersionRangeGet(JNIEnv *env, jclass clazz,
 
     if (JSS_PR_getPRFileDesc(env, fd, &real_fd) != PR_SUCCESS) {
         JSS_throwMsg(env, INVALID_PARAMETER_EXCEPTION,
-            "Unable to dereference fd object");
+                     "Unable to dereference fd object");
         return NULL;
     }
 
     if (SSL_VersionRangeGet(real_fd, &vrange) != SECSuccess) {
         JSS_throwMsg(env, INVALID_PARAMETER_EXCEPTION,
-            "Unable to dereference fd object");
+                     "Unable to dereference fd object");
         return NULL;
     }
 
@@ -240,7 +240,7 @@ Java_org_mozilla_jss_nss_SSL_VersionRangeGet(JNIEnv *env, jclass clazz,
 
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_nss_SSL_SecurityStatus(JNIEnv *env, jclass clazz,
-    jobject fd)
+        jobject fd)
 {
     PRFileDesc *real_fd = NULL;
     int on;
@@ -261,12 +261,12 @@ Java_org_mozilla_jss_nss_SSL_SecurityStatus(JNIEnv *env, jclass clazz,
     }
 
     return JSS_NewSecurityStatusResult(env, on, cipher, keySize, secretKeySize,
-        issuer, subject);
+                                       issuer, subject);
 }
 
 JNIEXPORT int JNICALL
 Java_org_mozilla_jss_nss_SSL_ResetHandshake(JNIEnv *env, jclass clazz,
-    jobject fd, jboolean asServer)
+        jobject fd, jboolean asServer)
 {
     PRFileDesc *real_fd = NULL;
 
@@ -281,7 +281,7 @@ Java_org_mozilla_jss_nss_SSL_ResetHandshake(JNIEnv *env, jclass clazz,
 
 JNIEXPORT int JNICALL
 Java_org_mozilla_jss_nss_SSL_ForceHandshake(JNIEnv *env, jclass clazz,
-    jobject fd)
+        jobject fd)
 {
     PRFileDesc *real_fd = NULL;
 
@@ -296,7 +296,7 @@ Java_org_mozilla_jss_nss_SSL_ForceHandshake(JNIEnv *env, jclass clazz,
 
 JNIEXPORT int JNICALL
 Java_org_mozilla_jss_nss_SSL_ConfigSecureServer(JNIEnv *env, jclass clazz,
-    jobject fd, jobject cert, jobject key, jint kea)
+        jobject fd, jobject cert, jobject key, jint kea)
 {
     PRFileDesc *real_fd = NULL;
     CERTCertificate *real_cert = NULL;
@@ -321,7 +321,7 @@ Java_org_mozilla_jss_nss_SSL_ConfigSecureServer(JNIEnv *env, jclass clazz,
 
 JNIEXPORT int JNICALL
 Java_org_mozilla_jss_nss_SSL_ConfigServerCert(JNIEnv *env, jclass clazz,
-    jobject fd, jobject cert, jobject key)
+        jobject fd, jobject cert, jobject key)
 {
     PRFileDesc *real_fd = NULL;
     CERTCertificate *real_cert = NULL;
@@ -346,7 +346,7 @@ Java_org_mozilla_jss_nss_SSL_ConfigServerCert(JNIEnv *env, jclass clazz,
 
 JNIEXPORT int JNICALL
 Java_org_mozilla_jss_nss_SSL_ConfigServerSessionIDCache(JNIEnv *env, jclass clazz,
-    jint maxCacheEntries, jlong timeout, jlong ssl3_timeout, jstring directory)
+        jint maxCacheEntries, jlong timeout, jlong ssl3_timeout, jstring directory)
 {
     const char *dir_path;
     SECStatus ret = SECFailure;
@@ -356,7 +356,7 @@ Java_org_mozilla_jss_nss_SSL_ConfigServerSessionIDCache(JNIEnv *env, jclass claz
     dir_path = JSS_RefJString(env, directory);
 
     ret = SSL_ConfigServerSessionIDCache(maxCacheEntries, timeout,
-        ssl3_timeout, dir_path);
+                                         ssl3_timeout, dir_path);
 
     JSS_DerefJString(env, directory, dir_path);
     return ret;
@@ -364,7 +364,7 @@ Java_org_mozilla_jss_nss_SSL_ConfigServerSessionIDCache(JNIEnv *env, jclass claz
 
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_nss_SSL_PeerCertificate(JNIEnv *env, jclass clazz,
-    jobject fd)
+        jobject fd)
 {
     PRFileDesc *real_fd = NULL;
     CERTCertificate *cert = NULL;
@@ -385,7 +385,7 @@ Java_org_mozilla_jss_nss_SSL_PeerCertificate(JNIEnv *env, jclass clazz,
 
 JNIEXPORT jobjectArray JNICALL
 Java_org_mozilla_jss_nss_SSL_PeerCertificateChain(JNIEnv *env, jclass clazz,
-    jobject fd)
+        jobject fd)
 {
     PRFileDesc *real_fd = NULL;
     CERTCertList *chain = NULL;
@@ -403,7 +403,7 @@ Java_org_mozilla_jss_nss_SSL_PeerCertificateChain(JNIEnv *env, jclass clazz,
         return NULL;
     } else if (chain == NULL /* && error != SSL_ERROR_NO_CERTIFICATE */) {
         JSS_throwMsgPrErrArg(env, SECURITY_EXCEPTION,
-            "Unable to construct peer certificate chain.", error);
+                             "Unable to construct peer certificate chain.", error);
         return NULL;
     }
 

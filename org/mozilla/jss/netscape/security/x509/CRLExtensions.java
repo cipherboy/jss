@@ -71,14 +71,15 @@ public class CRLExtensions extends Vector<Extension> {
                 Array.setByte(value, i, extData[i]);
             }
             Object[] passed = new Object[] { Boolean.valueOf(ext.isCritical()),
-                                                        value };
+                                             value
+                                           };
             CertAttrSet crlExt = (CertAttrSet) cons.newInstance(passed);
             map.put(crlExt.getName(), (Extension) crlExt);
             addElement((Extension) crlExt);
 
         } catch (InvocationTargetException invk) {
             throw new X509ExtensionException(
-                                 invk.getTargetException().getMessage());
+                invk.getTargetException().getMessage());
 
         } catch (Exception e) {
             throw new X509ExtensionException(e.toString());
@@ -100,7 +101,7 @@ public class CRLExtensions extends Vector<Extension> {
      * @exception X509ExtensionException on extension handling errors.
      */
     public CRLExtensions(DerInputStream in)
-            throws CRLException, X509ExtensionException {
+    throws CRLException, X509ExtensionException {
 
         map = new Hashtable<String, Extension>();
         try {
@@ -123,7 +124,7 @@ public class CRLExtensions extends Vector<Extension> {
      * @exception X509ExtensionException on extension handling errors.
      */
     public void decode(InputStream in)
-            throws CRLException, X509ExtensionException {
+    throws CRLException, X509ExtensionException {
         try {
             DerValue val = new DerValue(in);
             DerInputStream str = val.toDerInputStream();
@@ -149,7 +150,7 @@ public class CRLExtensions extends Vector<Extension> {
      * @exception CRLException on encoding errors.
      */
     public void encode(OutputStream out, boolean isExplicit)
-            throws CRLException {
+    throws CRLException {
         try (DerOutputStream tmp = new DerOutputStream()) {
             // #381559
             if (size() == 0)

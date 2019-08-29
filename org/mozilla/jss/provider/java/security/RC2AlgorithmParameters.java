@@ -24,7 +24,7 @@ public class RC2AlgorithmParameters extends AlgorithmParametersSpi {
     }
 
     public <T extends AlgorithmParameterSpec> T engineGetParameterSpec(Class<T> clazz)
-            throws InvalidParameterSpecException
+    throws InvalidParameterSpecException
     {
         if( clazz != null && !clazz.isInstance(RC2ParamSpec) ) {
             Class<?> paramSpecClass = RC2ParamSpec.getClass();

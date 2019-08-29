@@ -74,8 +74,8 @@ public final class CertificateUsage {
                certUsageVerifyCA
     */
     public static final int basicCertificateUsages = /*0x0b80;*/
-            certificateUsageUserCertImport |
-            certificateUsageVerifyCA |
-            certificateUsageProtectedObjectSigner |
-            certificateUsageAnyCA ;
+        certificateUsageUserCertImport |
+        certificateUsageVerifyCA |
+        certificateUsageProtectedObjectSigner |
+        certificateUsageAnyCA ;
 }

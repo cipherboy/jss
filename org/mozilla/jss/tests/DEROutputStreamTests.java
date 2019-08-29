@@ -26,9 +26,10 @@ public class DEROutputStreamTests {
     public static void testIntegers() throws Exception {
         int[] values = {0, 127, 128, 256};
         byte[][] expected = {{0x02, 0x01, 0x00},
-                             {0x02, 0x01, 0x7F},
-                             {0x02, 0x02, 0x00, (byte) 0x80},
-                             {0x02, 0x02, 0x01, 0x00}};
+            {0x02, 0x01, 0x7F},
+            {0x02, 0x02, 0x00, (byte) 0x80},
+            {0x02, 0x02, 0x01, 0x00}
+        };
 
         assert_f(values.length == expected.length, "testIntegers test cases");
         for (int i = 0; i < values.length; i++ ) {
@@ -50,12 +51,13 @@ public class DEROutputStreamTests {
     public static void testEnumerations() throws Exception {
         int[] values = {0, 1, 127, 128, 256, -128, -129};
         byte[][] expected = {{0x0A, 0x01, 0x00},
-                             {0x0A, 0x01, 0x01},
-                             {0x0A, 0x01, 0x7F},
-                             {0x0A, 0x02, 0x00, (byte) 0x80},
-                             {0x0A, 0x02, 0x01, 0x00},
-                             {0x0A, 0x01, (byte) 0x80},
-                             {0x0A, 0x02, (byte) 0xFF, 0x7F}};
+            {0x0A, 0x01, 0x01},
+            {0x0A, 0x01, 0x7F},
+            {0x0A, 0x02, 0x00, (byte) 0x80},
+            {0x0A, 0x02, 0x01, 0x00},
+            {0x0A, 0x01, (byte) 0x80},
+            {0x0A, 0x02, (byte) 0xFF, 0x7F}
+        };
 
         assert(values.length == expected.length);
         for (int i = 0; i < values.length; i++ ) {

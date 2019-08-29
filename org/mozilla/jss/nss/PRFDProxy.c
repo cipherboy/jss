@@ -25,8 +25,8 @@ JSS_PR_wrapPRFDProxy(JNIEnv *env, PRFileDesc **fd)
         goto finish;
     }
     constructor = (*env)->GetMethodID(env, proxyClass,
-                            PLAIN_CONSTRUCTOR,
-                            PRFD_PROXY_CONSTRUCTOR_SIG);
+                                      PLAIN_CONSTRUCTOR,
+                                      PRFD_PROXY_CONSTRUCTOR_SIG);
     if(constructor == NULL) {
         ASSERT_OUTOFMEM(env);
         goto finish;

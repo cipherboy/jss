@@ -25,12 +25,16 @@ public class RSAParameterSpec implements AlgorithmParameterSpec {
     /**
      * Returns the size of the modulus in bits.
      */
-    public int getKeySize() { return keySize; }
+    public int getKeySize() {
+        return keySize;
+    }
 
     /**
      * Returns the public exponent <i>e</i>.
      */
-    public BigInteger getPublicExponent() { return publicExponent; }
+    public BigInteger getPublicExponent() {
+        return publicExponent;
+    }
 
     private int keySize;
     private BigInteger publicExponent;

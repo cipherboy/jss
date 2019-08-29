@@ -28,46 +28,46 @@
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL Java_org_mozilla_jss_pkcs11_PK11Cert_getEncoded
-  (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
-	PRThread * VARIABLE_MAY_NOT_BE_USED pThread;
-	CERTCertificate *cert;
-	SECItem *derCert;
-	jbyteArray derArray=NULL;
+    PRThread * VARIABLE_MAY_NOT_BE_USED pThread;
+    CERTCertificate *cert;
+    SECItem *derCert;
+    jbyteArray derArray=NULL;
 
-	pThread = PR_AttachThread(PR_SYSTEM_THREAD, 0, NULL);
-	PR_ASSERT(pThread != NULL);
+    pThread = PR_AttachThread(PR_SYSTEM_THREAD, 0, NULL);
+    PR_ASSERT(pThread != NULL);
 
-	PR_ASSERT(env!=NULL && this!=NULL);
+    PR_ASSERT(env!=NULL && this!=NULL);
 
-	/*
-	 * extract the DER cert from the CERTCertificate*
-	 */
-	if( JSS_PK11_getCertPtr(env, this, &cert) != PR_SUCCESS) {
-		PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
-		goto finish;
-	}
-	PR_ASSERT(cert != NULL);
+    /*
+     * extract the DER cert from the CERTCertificate*
+     */
+    if( JSS_PK11_getCertPtr(env, this, &cert) != PR_SUCCESS) {
+        PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
+        goto finish;
+    }
+    PR_ASSERT(cert != NULL);
 
-	derCert = &cert->derCert;
-	/* the SECItem type does not have to be siDERCertBuffer */
-	if(derCert->data==NULL || derCert->len<1) {
-		JSS_throw(env, CERTIFICATE_ENCODING_EXCEPTION);
-		goto finish;
-	}
+    derCert = &cert->derCert;
+    /* the SECItem type does not have to be siDERCertBuffer */
+    if(derCert->data==NULL || derCert->len<1) {
+        JSS_throw(env, CERTIFICATE_ENCODING_EXCEPTION);
+        goto finish;
+    }
 
-	/*
-	 * Copy the DER data to a new Java byte array
-	 */
-	derArray = JSS_ToByteArray(env, derCert->data, derCert->len);
-	if (derArray == NULL) {
-		JSS_throw(env, OUT_OF_MEMORY_ERROR);
-		goto finish;
-	}
+    /*
+     * Copy the DER data to a new Java byte array
+     */
+    derArray = JSS_ToByteArray(env, derCert->data, derCert->len);
+    if (derArray == NULL) {
+        JSS_throw(env, OUT_OF_MEMORY_ERROR);
+        goto finish;
+    }
 
 finish:
-	PR_DetachThread();
-	return derArray;
+    PR_DetachThread();
+    return derArray;
 }
 
 /*
@@ -76,87 +76,87 @@ finish:
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_org_mozilla_jss_pkcs11_PK11Cert_getVersion
-  (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
-	PRThread * VARIABLE_MAY_NOT_BE_USED pThread;
-	CERTCertificate *cert;
-	long lVersion = 0;
+    PRThread * VARIABLE_MAY_NOT_BE_USED pThread;
+    CERTCertificate *cert;
+    long lVersion = 0;
 
-	pThread = PR_AttachThread(PR_SYSTEM_THREAD, 0, NULL);
-	PR_ASSERT(pThread != NULL);
+    pThread = PR_AttachThread(PR_SYSTEM_THREAD, 0, NULL);
+    PR_ASSERT(pThread != NULL);
 
-	PR_ASSERT(env!=NULL && this!=NULL);
+    PR_ASSERT(env!=NULL && this!=NULL);
 
-	/*
-	 * Get the version from the CERTCertificate *
-	 */
-	if( JSS_PK11_getCertPtr(env, this, &cert) != PR_SUCCESS) {
-		PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
-		goto finish;
-	}
-	PR_ASSERT(cert!=NULL);
+    /*
+     * Get the version from the CERTCertificate *
+     */
+    if( JSS_PK11_getCertPtr(env, this, &cert) != PR_SUCCESS) {
+        PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
+        goto finish;
+    }
+    PR_ASSERT(cert!=NULL);
 
-	if(cert->version.data==NULL || cert->version.len<=0) {
+    if(cert->version.data==NULL || cert->version.len<=0) {
         /* default value is 0 */
         lVersion = 0;
         goto finish;
     }
 
-	lVersion = DER_GetInteger(&cert->version);
+    lVersion = DER_GetInteger(&cert->version);
 
-	/* jint is 2s complement 32 bits.  The max value is 0111...111. */
-	PR_ASSERT( (lVersion >= 0L) && (lVersion < (long)0x7fffffff) );
+    /* jint is 2s complement 32 bits.  The max value is 0111...111. */
+    PR_ASSERT( (lVersion >= 0L) && (lVersion < (long)0x7fffffff) );
 
 finish:
-	PR_DetachThread();
-	return (jint) lVersion;
+    PR_DetachThread();
+    return (jint) lVersion;
 }
 
 /******************************************************************
  *
- * C e r t P r o x y . g e t P u b l i c K e y 
+ * C e r t P r o x y . g e t P u b l i c K e y
  *
  * Extracts the SECKEYPublicKey from the CERTCertificate, wraps it
  * in a Java wrapper, and returns it.
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Cert_getPublicKey
-	(JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
-	CERTCertificate *cert;
-	SECKEYPublicKey *pubk=NULL;
-	PRThread * VARIABLE_MAY_NOT_BE_USED pThread;
-	jobject pubKey=NULL;
+    CERTCertificate *cert;
+    SECKEYPublicKey *pubk=NULL;
+    PRThread * VARIABLE_MAY_NOT_BE_USED pThread;
+    jobject pubKey=NULL;
 
-	PR_ASSERT(env!=NULL && this!=NULL);
+    PR_ASSERT(env!=NULL && this!=NULL);
 
-	pThread = PR_AttachThread(PR_SYSTEM_THREAD, 0, NULL);
-	PR_ASSERT(pThread != NULL);
+    pThread = PR_AttachThread(PR_SYSTEM_THREAD, 0, NULL);
+    PR_ASSERT(pThread != NULL);
 
-	if( JSS_PK11_getCertPtr(env, this, &cert) != PR_SUCCESS) {
-		PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
-		goto finish;
-	}
+    if( JSS_PK11_getCertPtr(env, this, &cert) != PR_SUCCESS) {
+        PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
+        goto finish;
+    }
 
-	pubk = CERT_ExtractPublicKey(cert);
-	if(pubk==NULL) {
-		PR_ASSERT( PR_GetError() == SEC_ERROR_NO_MEMORY);
-		JSS_throw(env, OUT_OF_MEMORY_ERROR);
-		goto finish;
-	}
+    pubk = CERT_ExtractPublicKey(cert);
+    if(pubk==NULL) {
+        PR_ASSERT( PR_GetError() == SEC_ERROR_NO_MEMORY);
+        JSS_throw(env, OUT_OF_MEMORY_ERROR);
+        goto finish;
+    }
 
-	pubKey = JSS_PK11_wrapPubKey(env, &pubk);
-	if(pubKey == NULL) {
-		PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
-		goto finish;
-	}
+    pubKey = JSS_PK11_wrapPubKey(env, &pubk);
+    if(pubKey == NULL) {
+        PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
+        goto finish;
+    }
 
 finish:
-	if(pubk!=NULL) {
-		SECKEY_DestroyPublicKey(pubk);
-	}
-	PR_DetachThread();
-	return pubKey;
+    if(pubk!=NULL) {
+        SECKEY_DestroyPublicKey(pubk);
+    }
+    PR_DetachThread();
+    return pubKey;
 }
 
 /******************************************************************
@@ -167,29 +167,29 @@ finish:
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_CertProxy_releaseNativeResources
-  (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
-	CERTCertificate *cert;
-	PRThread * VARIABLE_MAY_NOT_BE_USED pThread;
+    CERTCertificate *cert;
+    PRThread * VARIABLE_MAY_NOT_BE_USED pThread;
 
-	PR_ASSERT(env!=NULL && this!=NULL);
+    PR_ASSERT(env!=NULL && this!=NULL);
 
-	pThread = PR_AttachThread(PR_SYSTEM_THREAD, 0, NULL);
-	PR_ASSERT(pThread != NULL);
+    pThread = PR_AttachThread(PR_SYSTEM_THREAD, 0, NULL);
+    PR_ASSERT(pThread != NULL);
 
-	/* Get the CERTCertificate structure */
-	if(JSS_getPtrFromProxy(env, this, (void**)&cert) != PR_SUCCESS) {
-		PR_ASSERT( PR_FALSE );
-		goto finish;
-	}
-	PR_ASSERT(cert != NULL);
+    /* Get the CERTCertificate structure */
+    if(JSS_getPtrFromProxy(env, this, (void**)&cert) != PR_SUCCESS) {
+        PR_ASSERT( PR_FALSE );
+        goto finish;
+    }
+    PR_ASSERT(cert != NULL);
 
-	CERT_DestroyCertificate(cert);
+    CERT_DestroyCertificate(cert);
 
 finish:
-	PR_DetachThread();
+    PR_DetachThread();
 }
-	
+
 
 /******************************************************************
  *
@@ -205,11 +205,11 @@ finish:
 PRStatus
 JSS_PK11_getCertPtr(JNIEnv *env, jobject certObject, CERTCertificate **ptr)
 {
-	PR_ASSERT(env!=NULL && certObject!=NULL && ptr!=NULL);
+    PR_ASSERT(env!=NULL && certObject!=NULL && ptr!=NULL);
 
-	/* Get the pointer from the cert proxy */
-	return JSS_getPtrFromProxyOwner(env, certObject, CERT_PROXY_FIELD,
-			CERT_PROXY_SIG, (void**)ptr);
+    /* Get the pointer from the cert proxy */
+    return JSS_getPtrFromProxyOwner(env, certObject, CERT_PROXY_FIELD,
+                                    CERT_PROXY_SIG, (void**)ptr);
 }
 
 /******************************************************************
@@ -226,11 +226,11 @@ JSS_PK11_getCertPtr(JNIEnv *env, jobject certObject, CERTCertificate **ptr)
 PRStatus
 JSS_PK11_getCertSlotPtr(JNIEnv *env, jobject certObject, PK11SlotInfo **ptr)
 {
-	PR_ASSERT(env!=NULL && certObject!=NULL && ptr!=NULL);
+    PR_ASSERT(env!=NULL && certObject!=NULL && ptr!=NULL);
 
-	/* Get the pointer from the token proxy */
-	return JSS_getPtrFromProxyOwner(env, certObject, PK11TOKEN_PROXY_FIELD,
-			PK11TOKEN_PROXY_SIG, (void**)ptr);
+    /* Get the pointer from the token proxy */
+    return JSS_getPtrFromProxyOwner(env, certObject, PK11TOKEN_PROXY_FIELD,
+                                    PK11TOKEN_PROXY_SIG, (void**)ptr);
 }
 
 /*
@@ -264,7 +264,7 @@ findSlotByTokenNameAndCert(char *name, CERTCertificate *cert)
     for(le = list->head; le; le = le->next) {
         if( (PORT_Strcmp(PK11_GetTokenName(le->slot),name) == 0) &&
                 (PK11_FindCertInSlot(le->slot,cert,NULL) !=
-                CK_INVALID_HANDLE)) {
+                 CK_INVALID_HANDLE)) {
             slot = PK11_ReferenceSlot(le->slot);
             break;
         }
@@ -292,7 +292,7 @@ findSlotByTokenNameAndCert(char *name, CERTCertificate *cert)
  */
 CERTCertificate *
 JSS_PK11_findCertAndSlotFromNickname(const char *nickname, void *wincx,
-    PK11SlotInfo **ppSlot)
+                                     PK11SlotInfo **ppSlot)
 {
     CERTCertificate *cert;
 
@@ -331,7 +331,7 @@ JSS_PK11_findCertAndSlotFromNickname(const char *nickname, void *wincx,
  */
 CERTCertList *
 JSS_PK11_findCertsAndSlotFromNickname(char *nickname, void *wincx,
-    PK11SlotInfo **ppSlot)
+                                      PK11SlotInfo **ppSlot)
 {
     CERTCertList *certList;
 
@@ -372,57 +372,57 @@ JSS_PK11_findCertsAndSlotFromNickname(char *nickname, void *wincx,
  */
 jobject
 JSS_PK11_wrapCertAndSlotAndNickname(JNIEnv *env, CERTCertificate **cert,
-    PK11SlotInfo **slot, const char *nickname)
+                                    PK11SlotInfo **slot, const char *nickname)
 {
-	jclass certClass;
-	jmethodID constructor;
-	jbyteArray certPtr;
-	jbyteArray slotPtr;
-	jstring jnickname = NULL;
-	jobject Cert=NULL;
+    jclass certClass;
+    jmethodID constructor;
+    jbyteArray certPtr;
+    jbyteArray slotPtr;
+    jstring jnickname = NULL;
+    jobject Cert=NULL;
 
-	PR_ASSERT(env!=NULL && cert!=NULL && *cert!=NULL
-		&& slot!=NULL);
+    PR_ASSERT(env!=NULL && cert!=NULL && *cert!=NULL
+              && slot!=NULL);
 
-	certPtr = JSS_ptrToByteArray(env, *cert);
-	slotPtr = JSS_ptrToByteArray(env, *slot);
-	if (nickname) {
-		jnickname = (*env)->NewStringUTF(env, nickname);
-	}
+    certPtr = JSS_ptrToByteArray(env, *cert);
+    slotPtr = JSS_ptrToByteArray(env, *slot);
+    if (nickname) {
+        jnickname = (*env)->NewStringUTF(env, nickname);
+    }
 
-	certClass = (*env)->FindClass(env, INTERNAL_TOKEN_CERT_CLASS_NAME);
-	if(certClass == NULL) {
-		ASSERT_OUTOFMEM(env);
-		goto finish;
-	}
+    certClass = (*env)->FindClass(env, INTERNAL_TOKEN_CERT_CLASS_NAME);
+    if(certClass == NULL) {
+        ASSERT_OUTOFMEM(env);
+        goto finish;
+    }
 
-	constructor = (*env)->GetMethodID(
-							env,
-							certClass,
-							PLAIN_CONSTRUCTOR,
-							CERT_CONSTRUCTOR_SIG);
-	if(constructor == NULL) {
-		ASSERT_OUTOFMEM(env);
-		goto finish;
-	}
+    constructor = (*env)->GetMethodID(
+                      env,
+                      certClass,
+                      PLAIN_CONSTRUCTOR,
+                      CERT_CONSTRUCTOR_SIG);
+    if(constructor == NULL) {
+        ASSERT_OUTOFMEM(env);
+        goto finish;
+    }
 
-	/* Call the constructor */
-	Cert = (*env)->NewObject(env, certClass, constructor, certPtr,
-		slotPtr, jnickname);
-	if(Cert==NULL) {
-		goto finish;
-	}
+    /* Call the constructor */
+    Cert = (*env)->NewObject(env, certClass, constructor, certPtr,
+                             slotPtr, jnickname);
+    if(Cert==NULL) {
+        goto finish;
+    }
 
 finish:
-	if(Cert==NULL) {
-		CERT_DestroyCertificate(*cert);
-		if(*slot!=NULL) {
-			PK11_FreeSlot(*slot);
-		}
-	}
-	*cert = NULL;
-	*slot = NULL;
-	return Cert;
+    if(Cert==NULL) {
+        CERT_DestroyCertificate(*cert);
+        if(*slot!=NULL) {
+            PK11_FreeSlot(*slot);
+        }
+    }
+    *cert = NULL;
+    *slot = NULL;
+    return Cert;
 }
 
 /****************************************************************
@@ -438,10 +438,10 @@ finish:
  */
 jobject
 JSS_PK11_wrapCertAndSlot(JNIEnv *env, CERTCertificate **cert,
-    PK11SlotInfo **slot)
+                         PK11SlotInfo **slot)
 {
-	return JSS_PK11_wrapCertAndSlotAndNickname(env, cert, slot,
-			(*cert)->nickname);
+    return JSS_PK11_wrapCertAndSlotAndNickname(env, cert, slot,
+            (*cert)->nickname);
 }
 
 /****************************************************************
@@ -460,11 +460,11 @@ JSS_PK11_wrapCertAndSlot(JNIEnv *env, CERTCertificate **cert,
 jobject
 JSS_PK11_wrapCert(JNIEnv *env, CERTCertificate **cert)
 {
-	PK11SlotInfo *slot = (*cert)->slot;
-	if(slot != NULL) {
-		slot = PK11_ReferenceSlot(slot);
-	}
-	return JSS_PK11_wrapCertAndSlot(env, cert, &slot);
+    PK11SlotInfo *slot = (*cert)->slot;
+    if(slot != NULL) {
+        slot = PK11_ReferenceSlot(slot);
+    }
+    return JSS_PK11_wrapCertAndSlot(env, cert, &slot);
 }
 
 static ssize_t
@@ -546,7 +546,7 @@ done:
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Cert_getOwningToken
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     PK11SlotInfo *slot;
     jobject token = NULL;
@@ -583,7 +583,7 @@ PK11_GetLowLevelKeyIDForCert(PK11SlotInfo*,CERTCertificate*,void*);
  */
 JNIEXPORT jbyteArray JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Cert_getUniqueID
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     CERTCertificate *cert;
     SECItem *id = NULL;
@@ -630,7 +630,7 @@ finish:
  */
 JNIEXPORT jstring JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Cert_getNickname
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     PR_NOT_REACHED("a stub function");
     return NULL;
@@ -641,7 +641,7 @@ Java_org_mozilla_jss_pkcs11_PK11Cert_getNickname
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Cert_setTrust
-    (JNIEnv *env, jobject this, jint type, jint newTrust)
+(JNIEnv *env, jobject this, jint type, jint newTrust)
 {
     CERTCertificate *cert;
     CERTCertTrust trust;
@@ -686,7 +686,7 @@ Java_org_mozilla_jss_pkcs11_PK11Cert_setTrust
  */
 JNIEXPORT jint JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Cert_getTrust
-    (JNIEnv *env, jobject this, jint type)
+(JNIEnv *env, jobject this, jint type)
 {
     CERTCertificate *cert;
     CERTCertTrust trust;
@@ -720,7 +720,7 @@ Java_org_mozilla_jss_pkcs11_PK11Cert_getTrust
  */
 JNIEXPORT jbyteArray JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Cert_getSerialNumberByteArray
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     CERTCertificate *cert;
 
@@ -740,7 +740,7 @@ Java_org_mozilla_jss_pkcs11_PK11Cert_getSerialNumberByteArray
  */
 JNIEXPORT jstring JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Cert_getSubjectDNString
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     CERTCertificate *cert;
     char *ascii;
@@ -763,7 +763,7 @@ Java_org_mozilla_jss_pkcs11_PK11Cert_getSubjectDNString
  */
 JNIEXPORT jstring JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Cert_getIssuerDNString
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     CERTCertificate *cert;
     char *ascii;

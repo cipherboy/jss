@@ -7,7 +7,7 @@ package org.mozilla.jss.crypto;
  * An X509 Certificate that lives on a PKCS #11 token.
  * Many of the X509Certificates returned by JSS calls are actually
  * TokenCertificates.
- * To find out if an X509Certificate is a TokenCertificate, use 
+ * To find out if an X509Certificate is a TokenCertificate, use
  *  <code>instanceof</code>.
  */
 public interface TokenCertificate extends X509Certificate {

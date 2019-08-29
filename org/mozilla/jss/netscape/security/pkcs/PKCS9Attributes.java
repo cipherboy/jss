@@ -70,14 +70,14 @@ public class PKCS9Attributes {
      * @see PKCS9Attribute
      */
     public PKCS9Attributes(ObjectIdentifier[] permittedAttributes,
-               DerInputStream in) throws IOException {
+                           DerInputStream in) throws IOException {
         if (permittedAttributes != null) {
             this.permittedAttributes =
-                    new Hashtable<ObjectIdentifier, ObjectIdentifier>(permittedAttributes.length);
+                new Hashtable<ObjectIdentifier, ObjectIdentifier>(permittedAttributes.length);
 
             for (int i = 0; i < permittedAttributes.length; i++)
                 this.permittedAttributes.put(permittedAttributes[i],
-                         permittedAttributes[i]);
+                                             permittedAttributes[i]);
         } else {
             this.permittedAttributes = null;
         }
@@ -117,15 +117,15 @@ public class PKCS9Attributes {
      * @see PKCS9Attribute
      */
     public PKCS9Attributes(PKCS9Attribute[] attribs)
-            throws IllegalArgumentException, IOException {
+    throws IllegalArgumentException, IOException {
         ObjectIdentifier oid;
         for (int i = 0; i < attribs.length; i++) {
             oid = attribs[i].getOID();
             if (attributes.containsKey(oid))
                 throw new IllegalArgumentException(
-                        "PKCSAttribute " + attribs[i].getOID() +
-                                " duplicated while constructing " +
-                                "PKCS9Attributes.");
+                    "PKCSAttribute " + attribs[i].getOID() +
+                    " duplicated while constructing " +
+                    "PKCS9Attributes.");
 
             attributes.put(oid, attribs[i]);
         }
@@ -168,7 +168,7 @@ public class PKCS9Attributes {
             if (permittedAttributes != null &&
                     !permittedAttributes.containsKey(oid))
                 throw new IOException("Attribute " + oid +
-                        " not permitted in this attribute set");
+                                      " not permitted in this attribute set");
 
             attributes.put(oid, attrib);
         }
@@ -195,7 +195,7 @@ public class PKCS9Attributes {
             Object[] attribVals = attributes.values().toArray();
 
             out.putOrderedSetOf(DerValue.tag_SetOf,
-                    castToDerEncoder(attribVals));
+                                castToDerEncoder(attribVals));
             return out.toByteArray();
         }
     }
@@ -244,7 +244,7 @@ public class PKCS9Attributes {
      * Get an attribute value by OID.
      */
     public Object getAttributeValue(ObjectIdentifier oid)
-            throws IOException {
+    throws IOException {
         try {
             Object value = getAttribute(oid).getValue();
             return value;
@@ -262,7 +262,7 @@ public class PKCS9Attributes {
 
         if (oid == null)
             throw new IOException("Attribute name " + name +
-                    " not recognized or not supported.");
+                                  " not recognized or not supported.");
 
         return getAttributeValue(oid);
     }

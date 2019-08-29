@@ -340,16 +340,16 @@ public class JSSKeyStoreSpi extends java.security.KeyStoreSpi {
 
         logger.debug("JSSKeyStoreSpi: engineGetCertificateAlias()");
 
-      try {
-        if (cert instanceof PK11Cert) {
-            PK11Cert _c = (PK11Cert) cert;
-            return _c.getNickname();
-        }
+        try {
+            if (cert instanceof PK11Cert) {
+                PK11Cert _c = (PK11Cert) cert;
+                return _c.getNickname();
+            }
 
-        return getCertNickname( cert.getEncoded() );
-      } catch(CertificateEncodingException e) {
-        return null;
-      }
+            return getCertNickname( cert.getEncoded() );
+        } catch(CertificateEncodingException e) {
+            return null;
+        }
     }
 
     private native String getCertNickname(byte[] derCert);
@@ -527,13 +527,13 @@ public class JSSKeyStoreSpi extends java.security.KeyStoreSpi {
     }
 
     public void engineLoad(InputStream stream, char[] password)
-        throws IOException
+    throws IOException
     {
         logger.debug("JSSKeyStoreSpi: engineLoad(stream, password)");
     }
 
     public void engineLoad(KeyStore.LoadStoreParameter param)
-        throws IOException
+    throws IOException
     {
         logger.debug("JSSKeyStoreSpi: engineLoad(param)");
 
@@ -557,7 +557,7 @@ public class JSSKeyStoreSpi extends java.security.KeyStoreSpi {
      * trusted certificate entries, so we can't supply this method currently.
      */
     public void engineSetCertificateEntry(String alias, Certificate cert)
-            throws KeyStoreException
+    throws KeyStoreException
     {
 
         logger.debug("JSSKeyStoreSpi: engineSetCertificateEntry(" + alias + ")");
@@ -569,17 +569,17 @@ public class JSSKeyStoreSpi extends java.security.KeyStoreSpi {
 
 
     public void engineSetKeyEntry(String alias, byte[] key, Certificate[] chain)
-        throws KeyStoreException
+    throws KeyStoreException
     {
 
         logger.debug("JSSKeyStoreSpi: engineSetKeyEntry(" + alias + ", key, chain)");
 
         throw new KeyStoreException("Storing plaintext keys is not supported."+
-            "Store the key as a handle instead.");
+                                    "Store the key as a handle instead.");
     }
 
     public void engineSetKeyEntry(String alias, Key key, char[] password,
-        Certificate[] chain) throws KeyStoreException
+                                  Certificate[] chain) throws KeyStoreException
     {
 
         logger.debug("JSSKeyStoreSpi: engineSetKeyEntry(" + alias + ", key, password, chain)");
@@ -593,7 +593,7 @@ public class JSSKeyStoreSpi extends java.security.KeyStoreSpi {
     }
 
     private native void engineSetKeyEntryNative(String alias, Object key,
-        char[] password, Certificate[] chain) throws KeyStoreException;
+            char[] password, Certificate[] chain) throws KeyStoreException;
 
     public int engineSize() {
 
@@ -603,7 +603,7 @@ public class JSSKeyStoreSpi extends java.security.KeyStoreSpi {
     }
 
     public void engineStore(OutputStream stream, char[] password)
-            throws IOException
+    throws IOException
     {
         logger.debug("JSSKeyStoreSpi: engineStore()");
     }

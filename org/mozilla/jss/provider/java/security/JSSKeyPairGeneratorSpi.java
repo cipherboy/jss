@@ -28,20 +28,20 @@ class JSSKeyPairGeneratorSpi
         CryptoToken token =
             TokenSupplierManager.getTokenSupplier().getThreadToken();
         try {
-          try {
-            kpg = token.getKeyPairGenerator(alg);
-          } catch(java.security.NoSuchAlgorithmException e) {
-            throw new UnsupportedOperationException(
-                "Token '" + token.getName() + "' does not support algorithm " +
-                alg.toString());
-          }
+            try {
+                kpg = token.getKeyPairGenerator(alg);
+            } catch(java.security.NoSuchAlgorithmException e) {
+                throw new UnsupportedOperationException(
+                    "Token '" + token.getName() + "' does not support algorithm " +
+                    alg.toString());
+            }
         } catch(TokenException e) {
             throw new TokenRuntimeException(e.getMessage());
         }
     }
 
     public void initialize(AlgorithmParameterSpec params,
-        SecureRandom random) throws InvalidAlgorithmParameterException
+                           SecureRandom random) throws InvalidAlgorithmParameterException
     {
         kpg.initialize(params, random);
     }
@@ -51,11 +51,11 @@ class JSSKeyPairGeneratorSpi
     }
 
     public KeyPair generateKeyPair()  {
-      try {
-        return kpg.genKeyPair();
-      } catch(TokenException e) {
-        throw new TokenRuntimeException(e.getMessage());
-      }
+        try {
+            return kpg.genKeyPair();
+        } catch(TokenException e) {
+            throw new TokenRuntimeException(e.getMessage());
+        }
     }
 
     public static class RSA extends JSSKeyPairGeneratorSpi {

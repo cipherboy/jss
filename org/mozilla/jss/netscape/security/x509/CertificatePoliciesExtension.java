@@ -52,7 +52,7 @@ import org.mozilla.jss.netscape.security.util.Utils;
  * @see CertAttrSet
  */
 public class CertificatePoliciesExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
 
     /**
      *
@@ -121,7 +121,7 @@ public class CertificatePoliciesExtension extends Extension
      * @exception IOException on error.
      */
     public CertificatePoliciesExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = PKIXExtensions.CertificatePolicies_Id;
         this.critical = critical.booleanValue();
 
@@ -151,7 +151,7 @@ public class CertificatePoliciesExtension extends Extension
         if (mInfos == null)
             return "";
         String s = super.toString() + "Certificate Policies [\n"
-                 + mInfos.toString() + "]\n";
+                   + mInfos.toString() + "]\n";
 
         return (s);
     }
@@ -192,12 +192,12 @@ public class CertificatePoliciesExtension extends Extension
         if (name.equalsIgnoreCase(INFOS)) {
             if (!(obj instanceof Vector)) {
                 throw new IOException("Attribute value should be of" +
-                                    " type Vector.");
+                                      " type Vector.");
             }
             mInfos = (Vector<CertificatePolicyInfo>) obj;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                        "CertAttrSet:CertificatePoliciesExtension.");
+                                  "CertAttrSet:CertificatePoliciesExtension.");
         }
     }
 
@@ -209,7 +209,7 @@ public class CertificatePoliciesExtension extends Extension
             return (mInfos);
         } else {
             throw new IOException("Attribute name not recognized by " +
-                        "CertAttrSet:CertificatePoliciesExtension.");
+                                  "CertAttrSet:CertificatePoliciesExtension.");
         }
     }
 
@@ -221,7 +221,7 @@ public class CertificatePoliciesExtension extends Extension
             mInfos = null;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                        "CertAttrSet:CertificatePoliciesExtension.");
+                                  "CertAttrSet:CertificatePoliciesExtension.");
         }
     }
 
@@ -292,42 +292,42 @@ public class CertificatePoliciesExtension extends Extension
          **/
 
         CertificatePolicyId plcyId0 = new CertificatePolicyId(
-                new ObjectIdentifier("1.2.3.5")
-                );
+            new ObjectIdentifier("1.2.3.5")
+        );
         PolicyQualifiers qualifiers0 = new PolicyQualifiers();
         CPSuri cpsQualifier0 = new CPSuri("http://home.netscape.com");
         PolicyQualifierInfo qualifierInfo0 = new PolicyQualifierInfo(
-                PolicyQualifierInfo.QT_CPS,
-                cpsQualifier0
-                );
+            PolicyQualifierInfo.QT_CPS,
+            cpsQualifier0
+        );
         qualifiers0.add(qualifierInfo0);
         CertificatePolicyInfo info0 = new CertificatePolicyInfo(
-                plcyId0, qualifiers0);
+            plcyId0, qualifiers0);
         CertificatePolicyId plcyId1 = new CertificatePolicyId(
-                new ObjectIdentifier("2.3.5")
-                );
+            new ObjectIdentifier("2.3.5")
+        );
         PolicyQualifiers qualifiers1 = new PolicyQualifiers();
         DisplayText org1 = new DisplayText(DisplayText.tag_BMPString,
-                "org");
+                                           "org");
         int nums[] = { 1, 2 };
         NoticeReference nr1 = new NoticeReference(org1, nums);
         DisplayText dt1 = new DisplayText(DisplayText.tag_BMPString,
-                "dt");
+                                          "dt");
         UserNotice userNotice1 = new UserNotice(nr1, dt1);
         PolicyQualifierInfo qualifierInfo1 = new PolicyQualifierInfo(
-                PolicyQualifierInfo.QT_UNOTICE,
-                userNotice1
-                );
+            PolicyQualifierInfo.QT_UNOTICE,
+            userNotice1
+        );
         qualifiers1.add(qualifierInfo0);
         qualifiers1.add(qualifierInfo1);
         CertificatePolicyInfo info1 = new CertificatePolicyInfo(
-                plcyId1, qualifiers1);
+            plcyId1, qualifiers1);
         Vector<CertificatePolicyInfo> infos = new Vector<CertificatePolicyInfo>();
         infos.addElement(info0);
         infos.addElement(info1);
         try {
             CertificatePoliciesExtension ext =
-                    new CertificatePoliciesExtension(infos);
+                new CertificatePoliciesExtension(infos);
 
             // BASE64 encode the whole thing and write it to stdout
             System.out.println(Utils.base64encode(ext.getExtensionValue(), true));

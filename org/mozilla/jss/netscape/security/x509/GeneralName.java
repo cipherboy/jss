@@ -189,11 +189,11 @@ public class GeneralName implements GeneralNameInterface {
         if (nameType == GeneralNameInterface.NAME_DIRECTORY) {
             // EXPLICIT tag, because Name is a CHOICE type
             out.write(DerValue.createTag(DerValue.TAG_CONTEXT,
-                             constructedForm, (byte) nameType), tmp);
+                                         constructedForm, (byte) nameType), tmp);
         } else {
             // IMPLICIT tag, the default
             out.writeImplicit(DerValue.createTag(DerValue.TAG_CONTEXT,
-                             constructedForm, (byte) nameType), tmp);
+                                                 constructedForm, (byte) nameType), tmp);
         }
     }
 

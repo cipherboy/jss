@@ -34,7 +34,7 @@
 */
 void
 JSS_throwMsgPrErrArg(JNIEnv *env, const char *throwableClassName,
-    const char *message, PRErrorCode errCode)
+                     const char *message, PRErrorCode errCode)
 {
     const char *errStr = JSS_strerror(errCode);
     char *msg = NULL;
@@ -80,7 +80,7 @@ finish:
 */
 void
 JSS_throwMsg(JNIEnv *env, const char *throwableClassName,
-    const char *message)
+             const char *message)
 {
 
     jclass throwableClass;
@@ -126,7 +126,7 @@ JSS_throw(JNIEnv *env, char *throwableClassName)
     jobject throwable;
     jmethodID constructor;
     jint VARIABLE_MAY_NOT_BE_USED result;
-    
+
     PR_ASSERT( (*env)->ExceptionOccurred(env) == NULL );
 
     /* Lookup the class */
@@ -144,10 +144,10 @@ JSS_throw(JNIEnv *env, char *throwableClassName)
 
     /* Lookup up the plain vanilla constructor */
     constructor = (*env)->GetMethodID(
-									env,
-									throwableClass,
-									PLAIN_CONSTRUCTOR,
-									PLAIN_CONSTRUCTOR_SIG);
+                      env,
+                      throwableClass,
+                      PLAIN_CONSTRUCTOR,
+                      PLAIN_CONSTRUCTOR_SIG);
     if(constructor == NULL) {
         /* Anything other than OutOfMemory is a bug */
         ASSERT_OUTOFMEM(env);
@@ -194,7 +194,7 @@ JSS_getPtrFromProxy(JNIEnv *env, jobject nativeProxy, void **ptr)
 #ifdef DEBUG
     jclass nativeProxyClass;
 #endif
-	jclass proxyClass;
+    jclass proxyClass;
     jfieldID byteArrayField;
     jbyteArray byteArray;
     int size;
@@ -205,13 +205,13 @@ JSS_getPtrFromProxy(JNIEnv *env, jobject nativeProxy, void **ptr)
         return PR_FAILURE;
     }
 
-	proxyClass = (*env)->GetObjectClass(env, nativeProxy);
-	PR_ASSERT(proxyClass != NULL);
+    proxyClass = (*env)->GetObjectClass(env, nativeProxy);
+    PR_ASSERT(proxyClass != NULL);
 
 #ifdef DEBUG
     nativeProxyClass = (*env)->FindClass(
-								env,
-								NATIVE_PROXY_CLASS_NAME);
+                           env,
+                           NATIVE_PROXY_CLASS_NAME);
     if(nativeProxyClass == NULL) {
         ASSERT_OUTOFMEM(env);
         return PR_FAILURE;
@@ -222,17 +222,17 @@ JSS_getPtrFromProxy(JNIEnv *env, jobject nativeProxy, void **ptr)
 #endif
 
     byteArrayField = (*env)->GetFieldID(
-								env,
-								proxyClass,
-								NATIVE_PROXY_POINTER_FIELD,
-						        NATIVE_PROXY_POINTER_SIG);
+                         env,
+                         proxyClass,
+                         NATIVE_PROXY_POINTER_FIELD,
+                         NATIVE_PROXY_POINTER_SIG);
     if(byteArrayField==NULL) {
         ASSERT_OUTOFMEM(env);
         return PR_FAILURE;
     }
 
     byteArray = (jbyteArray) (*env)->GetObjectField(env, nativeProxy,
-                        byteArrayField);
+                byteArrayField);
     PR_ASSERT(byteArray != NULL);
 
     size = sizeof(*ptr);
@@ -265,7 +265,7 @@ JSS_getPtrFromProxy(JNIEnv *env, jobject nativeProxy, void **ptr)
 **      protected MyProxy myProxy;
 **      [...]
 ** }
-** 
+**
 ** <C>
 **  DataStructure *recovered;
 **  jobject owner;
@@ -278,21 +278,21 @@ JSS_getPtrFromProxy(JNIEnv *env, jobject nativeProxy, void **ptr)
 */
 PRStatus
 JSS_getPtrFromProxyOwner(JNIEnv *env, jobject proxyOwner, char* proxyFieldName,
-	char *proxyFieldSig, void **ptr)
+                         char *proxyFieldSig, void **ptr)
 {
     jclass ownerClass;
     jfieldID proxyField;
     jobject proxyObject;
 
     PR_ASSERT(env!=NULL && proxyOwner!=NULL && proxyFieldName!=NULL &&
-        ptr!=NULL);
+              ptr!=NULL);
 
     /*
      * Get proxy object
      */
     ownerClass = (*env)->GetObjectClass(env, proxyOwner);
     proxyField = (*env)->GetFieldID(env, ownerClass, proxyFieldName,
-							proxyFieldSig);
+                                    proxyFieldSig);
     if(proxyField == NULL) {
         return PR_FAILURE;
     }
@@ -438,14 +438,14 @@ finish:
 void
 JSS_wipeCharArray(char* array)
 {
-	PR_ASSERT(array != NULL);
-	if(array == NULL) {
-		return;
-	}
+    PR_ASSERT(array != NULL);
+    if(array == NULL) {
+        return;
+    }
 
-	for(; *array != '\0'; array++) {
-		*array = '\0';
-	}
+    for(; *array != '\0'; array++) {
+        *array = '\0';
+    }
 }
 
 #ifdef DEBUG
@@ -482,7 +482,7 @@ JSS_trace(JNIEnv *env, jint level, char *mesg)
  *
  * In most JNI calls that throw Exceptions, OutOfMemoryError is the only
  * one that doesn't indicate a bug in the code.  If a JNI function throws
- * an exception (or returns an unexpected NULL), you can call this to 
+ * an exception (or returns an unexpected NULL), you can call this to
  * PR_ASSERT that it is due to an OutOfMemory condition. It takes a JNIEnv*,
  * which better not be NULL.
  */
@@ -569,7 +569,7 @@ JSS_ByteArrayToSECItem(JNIEnv *env, jbyteArray byteArray)
 
     /* copy the bytes from the byte array into the SECItem */
     (*env)->GetByteArrayRegion(env, byteArray, 0, item->len,
-                (jbyte*)item->data);
+                               (jbyte*)item->data);
     if( (*env)->ExceptionOccurred(env) ) {
         SECITEM_FreeItem(item, PR_TRUE /*freeit*/);
         item = NULL;
@@ -618,7 +618,7 @@ jbyteArray JSS_ToByteArray(JNIEnv *env, const void *data, int length)
 **  if *data is successfully referenced (i.e., is non-null).
 */
 bool JSS_RefByteArray(JNIEnv *env, jbyteArray array, jbyte **data,
-    jsize *length)
+                      jsize *length)
 {
     bool ret = false;
     jsize array_length = 0;
@@ -677,7 +677,7 @@ void JSS_DerefByteArray(JNIEnv *env, jbyteArray array, void *data, jint mode) {
 **  bool - whether or not the operation succeeded.
 */
 bool JSS_FromByteArray(JNIEnv *env, jbyteArray array, uint8_t **data,
-    size_t *length)
+                       size_t *length)
 {
     jsize array_length = 0;
     jbyte *array_data = NULL;
@@ -732,7 +732,7 @@ const char *JSS_RefJString(JNIEnv *env, jstring str) {
      * raise an exception. */
     if (result == NULL) {
         JSS_throwMsg(env, GENERAL_SECURITY_EXCEPTION,
-            "Unable to parse Java String as UTF-8.");
+                     "Unable to parse Java String as UTF-8.");
     }
 
     return result;
@@ -751,7 +751,7 @@ void JSS_DerefJString(JNIEnv *env, jstring str, const char *ref) {
 }
 
 /*
- * External references to the rcs and sccsc ident information in 
+ * External references to the rcs and sccsc ident information in
  * jssver.c. These are here to prevent the compiler from optimizing
  * away the symbols in jssver.c
  */

@@ -43,7 +43,7 @@ import org.mozilla.jss.netscape.security.util.DerValue;
  * @see CertAttrSet
  */
 public class CRLNumberExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
 
     /**
      *
@@ -114,7 +114,7 @@ public class CRLNumberExtension extends Extension
      * @exception IOException on error.
      */
     public CRLNumberExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = PKIXExtensions.CRLNumber_Id;
         this.critical = critical.booleanValue();
 
@@ -139,7 +139,7 @@ public class CRLNumberExtension extends Extension
             crlNumber = new BigInt((BigInteger) obj);
         } else {
             throw new IOException("Attribute name not recognized by"
-                                + " CertAttrSet:CRLNumber.");
+                                  + " CertAttrSet:CRLNumber.");
         }
     }
 
@@ -154,7 +154,7 @@ public class CRLNumberExtension extends Extension
                 return crlNumber.toBigInteger();
         } else {
             throw new IOException("Attribute name not recognized by"
-                                + " CertAttrSet:CRLNumber.");
+                                  + " CertAttrSet:CRLNumber.");
         }
     }
 
@@ -166,7 +166,7 @@ public class CRLNumberExtension extends Extension
             crlNumber = null;
         } else {
             throw new IOException("Attribute name not recognized by"
-                                + " CertAttrSet:CRLNumber.");
+                                  + " CertAttrSet:CRLNumber.");
         }
     }
 

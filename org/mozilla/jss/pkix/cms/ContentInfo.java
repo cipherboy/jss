@@ -28,17 +28,17 @@ public class ContentInfo implements ASN1Value {
 
 
     public static OBJECT_IDENTIFIER DATA =
-          new OBJECT_IDENTIFIER(new long[] { 1, 2, 840, 113549, 1, 7, 1  });
+        new OBJECT_IDENTIFIER(new long[] { 1, 2, 840, 113549, 1, 7, 1  });
     public static OBJECT_IDENTIFIER SIGNED_DATA =
-          new OBJECT_IDENTIFIER(new long[] { 1, 2, 840, 113549, 1, 7, 2  });
+        new OBJECT_IDENTIFIER(new long[] { 1, 2, 840, 113549, 1, 7, 2  });
     public static OBJECT_IDENTIFIER ENVELOPED_DATA =
-          new OBJECT_IDENTIFIER(new long[] { 1, 2, 840, 113549, 1, 7, 3  });
+        new OBJECT_IDENTIFIER(new long[] { 1, 2, 840, 113549, 1, 7, 3  });
     public static OBJECT_IDENTIFIER SIGNED_AND_ENVELOPED_DATA =
-          new OBJECT_IDENTIFIER(new long[] { 1, 2, 840, 113549, 1, 7, 4  });
+        new OBJECT_IDENTIFIER(new long[] { 1, 2, 840, 113549, 1, 7, 4  });
     public static OBJECT_IDENTIFIER DIGESTED_DATA =
-          new OBJECT_IDENTIFIER(new long[] { 1, 2, 840, 113549, 1, 7, 5  });
+        new OBJECT_IDENTIFIER(new long[] { 1, 2, 840, 113549, 1, 7, 5  });
     public static OBJECT_IDENTIFIER ENCRYPTED_DATA =
-          new OBJECT_IDENTIFIER(new long[] { 1, 2, 840, 113549, 1, 7, 6  });
+        new OBJECT_IDENTIFIER(new long[] { 1, 2, 840, 113549, 1, 7, 6  });
 
 
 
@@ -63,13 +63,13 @@ public class ContentInfo implements ASN1Value {
                 this.content = (ANY) content;
             } else {
                 // convert content to ANY
-              try {
-                this.content = (ANY) ASN1Util.decode(ANY.getTemplate(),
-                                    ASN1Util.encode(content) );
-              } catch(InvalidBERException e) {
-                  throw new RuntimeException("Unable to convert "+
-                    "ASN1Value to ANY: " + e.getMessage(), e);
-              }
+                try {
+                    this.content = (ANY) ASN1Util.decode(ANY.getTemplate(),
+                                                         ASN1Util.encode(content) );
+                } catch(InvalidBERException e) {
+                    throw new RuntimeException("Unable to convert "+
+                                               "ASN1Value to ANY: " + e.getMessage(), e);
+                }
             }
             sequence.addElement(new EXPLICIT(new Tag(0),content) );
         }
@@ -153,7 +153,7 @@ public class ContentInfo implements ASN1Value {
             return content.decodeWith( new EnvelopedData.Template());
         } else if( contentType.equals(SIGNED_AND_ENVELOPED_DATA) ) {
             return content.decodeWith(
-                        new SignedAndEnvelopedData.Template() );
+                       new SignedAndEnvelopedData.Template() );
         } else if( contentType.equals(DIGESTED_DATA) ) {
             return content.decodeWith( new DigestedData.Template() );
         } else if( contentType.equals(ENCRYPTED_DATA) ) {
@@ -177,7 +177,7 @@ public class ContentInfo implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         sequence.encode(implicitTag,ostream);
     }
@@ -209,36 +209,36 @@ public class ContentInfo implements ASN1Value {
             seqt = new SEQUENCE.Template();
             seqt.addElement(new OBJECT_IDENTIFIER.Template());
             seqt.addOptionalElement(
-               new EXPLICIT.Template(
-                         new Tag(0), new ANY.Template()
-                        ));
+                new EXPLICIT.Template(
+                    new Tag(0), new ANY.Template()
+                ));
         }
 
         public ASN1Value decode(InputStream istream)
-            throws IOException, InvalidBERException
-            {
-                return decode(ContentInfo.TAG,istream);
-            }
+        throws IOException, InvalidBERException
+        {
+            return decode(ContentInfo.TAG,istream);
+        }
 
 
         public ASN1Value decode(Tag implicitTag, InputStream istream )
-            throws IOException, InvalidBERException
-            {
-                SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag,istream);
-                assert(seq.size() == 2);
-                ASN1Value content;
+        throws IOException, InvalidBERException
+        {
+            SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag,istream);
+            assert(seq.size() == 2);
+            ASN1Value content;
 
-                if( seq.elementAt(1) == null ) {
-                    content = null;
-                } else {
-                    content = ((EXPLICIT)seq.elementAt(1)).getContent();
-                }
-
-                return new ContentInfo(
-                    (OBJECT_IDENTIFIER) seq.elementAt(0),
-                    content
-                    );
+            if( seq.elementAt(1) == null ) {
+                content = null;
+            } else {
+                content = ((EXPLICIT)seq.elementAt(1)).getContent();
             }
+
+            return new ContentInfo(
+                       (OBJECT_IDENTIFIER) seq.elementAt(0),
+                       content
+                   );
+        }
     } // end of template
 
 }

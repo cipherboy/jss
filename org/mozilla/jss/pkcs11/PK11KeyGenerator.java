@@ -92,7 +92,7 @@ public final class PK11KeyGenerator implements KeyGenerator {
      * conversion is UTF8 with no null termination.
      */
     public void setCharToByteConverter(
-                    KeyGenerator.CharToByteConverter charToByte)
+        KeyGenerator.CharToByteConverter charToByte)
     {
         if( charToByte==null ) {
             throw new IllegalArgumentException("CharToByteConverter is null");
@@ -104,7 +104,7 @@ public final class PK11KeyGenerator implements KeyGenerator {
      * @param strength Key size in bits. Must be evenly divisible by 8.
      */
     public void initialize(int strength)
-        throws InvalidAlgorithmParameterException
+    throws InvalidAlgorithmParameterException
     {
         // if this algorithm only accepts PBE key gen params, it can't
         // use a strength
@@ -113,13 +113,13 @@ public final class PK11KeyGenerator implements KeyGenerator {
                 paramClasses[0].equals(PBEKeyGenParams.class) )
         {
             throw new InvalidAlgorithmParameterException("PBE keygen "+
-                "algorithms require PBEKeyGenParams ");
+                    "algorithms require PBEKeyGenParams ");
         }
 
         // validate the strength for our algorithm
         if( ! algorithm.isValidStrength(strength) ) {
             throw new InvalidAlgorithmParameterException(strength+
-                " is not a valid strength for "+algorithm);
+                    " is not a valid strength for "+algorithm);
         }
 
         if( strength % 8 != 0 ) {
@@ -131,7 +131,7 @@ public final class PK11KeyGenerator implements KeyGenerator {
     }
 
     public void initialize(AlgorithmParameterSpec parameters)
-        throws InvalidAlgorithmParameterException
+    throws InvalidAlgorithmParameterException
     {
         if( ! algorithm.isValidParameterObject(parameters) ) {
             String name = "null";
@@ -169,11 +169,11 @@ public final class PK11KeyGenerator implements KeyGenerator {
      * work is done by native methods.
      */
     public SymmetricKey generate()
-        throws IllegalStateException, TokenException, CharConversionException
+    throws IllegalStateException, TokenException, CharConversionException
     {
         Class<?>[] paramClasses = algorithm.getParameterClasses();
         if( paramClasses.length == 1 &&
-            paramClasses[0].equals(PBEKeyGenParams.class) )
+                paramClasses[0].equals(PBEKeyGenParams.class) )
         {
             if(parameters==null || !(parameters instanceof PBEKeyGenParams)) {
                 throw new IllegalStateException(
@@ -185,8 +185,8 @@ public final class PK11KeyGenerator implements KeyGenerator {
             try {
                 pwbytes = charToByte.convert( kgp.getPassword().getChars() );
                 return generatePBE(
-                    token, algorithm, kgp.getEncryptionAlgorithm(),
-                    pwbytes, kgp.getSalt(), kgp.getIterations());
+                           token, algorithm, kgp.getEncryptionAlgorithm(),
+                           pwbytes, kgp.getSalt(), kgp.getIterations());
             } finally {
                 if( pwbytes!=null ) {
                     Password.wipeBytes(pwbytes);
@@ -194,7 +194,7 @@ public final class PK11KeyGenerator implements KeyGenerator {
             }
         } else {
             return generateNormal(token, algorithm, strength,
-                opFlags, temporaryKeyMode, sensitiveKeyMode);
+                                  opFlags, temporaryKeyMode, sensitiveKeyMode);
         }
     }
 
@@ -208,11 +208,11 @@ public final class PK11KeyGenerator implements KeyGenerator {
      *      using the PBE algorithm.
      */
     public byte[] generatePBE_IV()
-        throws TokenException, CharConversionException
+    throws TokenException, CharConversionException
     {
         Class<?>[] paramClasses = algorithm.getParameterClasses();
         if( paramClasses.length == 1 &&
-            paramClasses[0].equals(PBEKeyGenParams.class) )
+                paramClasses[0].equals(PBEKeyGenParams.class) )
         {
             if(parameters==null || !(parameters instanceof PBEKeyGenParams)) {
                 throw new IllegalStateException(
@@ -224,7 +224,7 @@ public final class PK11KeyGenerator implements KeyGenerator {
             try {
                 pwbytes = charToByte.convert(kgp.getPassword().getChars());
                 return generatePBE_IV(algorithm, pwbytes, kgp.getSalt(),
-                                    kgp.getIterations() );
+                                      kgp.getIterations() );
             } finally {
                 if(pwbytes!=null) {
                     Password.wipeBytes(pwbytes);
@@ -242,7 +242,7 @@ public final class PK11KeyGenerator implements KeyGenerator {
      */
     private static native byte[]
     generatePBE_IV(KeyGenAlgorithm alg, byte[] password, byte[] salt,
-                    int iterations) throws TokenException;
+                   int iterations) throws TokenException;
 
     /**
      * Allows a SymmetricKey to be cloned on a different token.
@@ -253,8 +253,8 @@ public final class PK11KeyGenerator implements KeyGenerator {
      *      the key to be cloned.
      */
     public SymmetricKey clone(SymmetricKey key)
-        throws SymmetricKey.NotExtractableException,
-            InvalidKeyException, TokenException
+    throws SymmetricKey.NotExtractableException,
+               InvalidKeyException, TokenException
     {
         return clone(key, token);
     }
@@ -270,8 +270,8 @@ public final class PK11KeyGenerator implements KeyGenerator {
      *      the key to be cloned.
      */
     public static SymmetricKey clone(SymmetricKey key, PK11Token token)
-        throws SymmetricKey.NotExtractableException, InvalidKeyException,
-            TokenException
+    throws SymmetricKey.NotExtractableException, InvalidKeyException,
+        TokenException
     {
         if( ! (key instanceof PK11SymKey) ) {
             throw new InvalidKeyException("Key is not a PKCS #11 key");
@@ -281,7 +281,7 @@ public final class PK11KeyGenerator implements KeyGenerator {
 
     private static native SymmetricKey
     nativeClone(PK11Token token, SymmetricKey toBeCloned)
-        throws SymmetricKey.NotExtractableException, TokenException;
+    throws SymmetricKey.NotExtractableException, TokenException;
 
 
     /**
@@ -295,8 +295,8 @@ public final class PK11KeyGenerator implements KeyGenerator {
      */
     private static native SymmetricKey
     generateNormal(PK11Token token, KeyGenAlgorithm algorithm, int strength,
-        int opFlags, boolean temporary, int sensitive)
-        throws TokenException;
+                   int opFlags, boolean temporary, int sensitive)
+    throws TokenException;
 
     /**
      * A native method to generate a PBE key. None of the parameters should
@@ -306,6 +306,6 @@ public final class PK11KeyGenerator implements KeyGenerator {
     generatePBE(
         PK11Token token, KeyGenAlgorithm algorithm, EncryptionAlgorithm encAlg,
         byte[] pass, byte[] salt, int iterationCount)
-        throws TokenException;
+    throws TokenException;
 
 }

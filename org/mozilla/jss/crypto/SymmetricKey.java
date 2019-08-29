@@ -63,15 +63,15 @@ public interface SymmetricKey extends javax.crypto.SecretKey {
         public static final Type RC4 = new Type("RC4", KeyGenAlgorithm.RC4);
         public static final Type RC2 = new Type("RC2", KeyGenAlgorithm.RC2);
         public static final Type SHA1_HMAC = new Type("SHA1_HMAC",
-            KeyGenAlgorithm.SHA1_HMAC);
+                KeyGenAlgorithm.SHA1_HMAC);
         public static final Type SHA256_HMAC = new Type("SHA256_HMAC",
-            KeyGenAlgorithm.SHA256_HMAC);
+                KeyGenAlgorithm.SHA256_HMAC);
         public static final Type SHA384_HMAC = new Type("SHA384_HMAC",
-            KeyGenAlgorithm.SHA384_HMAC);
+                KeyGenAlgorithm.SHA384_HMAC);
         public static final Type SHA512_HMAC = new Type("SHA512_HMAC",
-            KeyGenAlgorithm.SHA512_HMAC);
+                KeyGenAlgorithm.SHA512_HMAC);
         public static final Type PBA_SHA1_HMAC = new Type("PBA_SHA1_HMAC",
-            KeyGenAlgorithm.PBA_SHA1_HMAC);
+                KeyGenAlgorithm.PBA_SHA1_HMAC);
         public static final Type AES = new Type("AES", KeyGenAlgorithm.AES);
 
 
@@ -87,7 +87,7 @@ public interface SymmetricKey extends javax.crypto.SecretKey {
         }
 
         public static Type fromName(String name)
-                throws NoSuchAlgorithmException
+        throws NoSuchAlgorithmException
         {
             Object type = nameMap.get(name.toLowerCase());
             if( type == null ) {
@@ -109,10 +109,14 @@ public interface SymmetricKey extends javax.crypto.SecretKey {
      */
     public final static class Usage {
         private Usage() { }
-        private Usage(int val) { this.val = val;}
+        private Usage(int val) {
+            this.val = val;
+        }
         private int val;
 
-        public int getVal() { return val; }
+        public int getVal() {
+            return val;
+        }
 
         // these enums must match the JSS_symkeyUsage list in Algorithm.c
         // and the opFlagForUsage list in PK11KeyGenerator.java

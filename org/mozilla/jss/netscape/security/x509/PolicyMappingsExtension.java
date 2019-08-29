@@ -48,7 +48,7 @@ import org.mozilla.jss.netscape.security.util.DerValue;
  * @see CertAttrSet
  */
 public class PolicyMappingsExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
     /**
      *
      */
@@ -96,7 +96,7 @@ public class PolicyMappingsExtension extends Extension
      * @param map the Vector of CertificatePolicyMap.
      */
     public PolicyMappingsExtension(boolean critical, Vector<CertificatePolicyMap> map)
-            throws IOException {
+    throws IOException {
         init(critical, map);
     }
 
@@ -127,7 +127,7 @@ public class PolicyMappingsExtension extends Extension
      * @exception IOException on error.
      */
     public PolicyMappingsExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = PKIXExtensions.PolicyMappings_Id;
         this.critical = critical.booleanValue();
 
@@ -157,7 +157,7 @@ public class PolicyMappingsExtension extends Extension
         if (maps == null)
             return "";
         String s = super.toString() + "PolicyMappings [\n"
-                 + maps.toString() + "]\n";
+                   + maps.toString() + "]\n";
 
         return (s);
     }
@@ -198,12 +198,12 @@ public class PolicyMappingsExtension extends Extension
         if (name.equalsIgnoreCase(MAP)) {
             if (!(obj instanceof Vector)) {
                 throw new IOException("Attribute value should be of" +
-                                    " type Vector.");
+                                      " type Vector.");
             }
             maps = (Vector<CertificatePolicyMap>) obj;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:PolicyMappingsExtension.");
+                                  "CertAttrSet:PolicyMappingsExtension.");
         }
     }
 
@@ -215,7 +215,7 @@ public class PolicyMappingsExtension extends Extension
             return (maps);
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:PolicyMappingsExtension.");
+                                  "CertAttrSet:PolicyMappingsExtension.");
         }
     }
 
@@ -227,7 +227,7 @@ public class PolicyMappingsExtension extends Extension
             maps = null;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:PolicyMappingsExtension.");
+                                  "CertAttrSet:PolicyMappingsExtension.");
         }
     }
 

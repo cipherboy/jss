@@ -44,7 +44,7 @@ typedef struct JSSL_SocketData JSSL_SocketData;
 
 SECStatus
 JSSL_JavaCertAuthCallback(void *arg, PRFileDesc *fd, PRBool checkSig,
-             PRBool isServer);
+                          PRBool isServer);
 
 void
 JSSL_AlertReceivedCallback(const PRFileDesc *fd, void *client_data, const SSLAlert *alert);
@@ -57,18 +57,18 @@ JSSL_HandshakeCallback(PRFileDesc *fd, void *arg);
 
 SECStatus
 JSSL_DefaultCertAuthCallback(void *arg, PRFileDesc *fd, PRBool checkSig,
-             PRBool isServer);
+                             PRBool isServer);
 
 SECStatus
 JSSL_CallCertSelectionCallback(    void * arg,
-            PRFileDesc *        fd,
-            CERTDistNames *     caNames,
-            CERTCertificate **  pRetCert,
-            SECKEYPrivateKey ** pRetKey);
+                                   PRFileDesc *        fd,
+                                   CERTDistNames *     caNames,
+                                   CERTCertificate **  pRetCert,
+                                   SECKEYPrivateKey ** pRetKey);
 
 SECStatus
 JSSL_ConfirmExpiredPeerCert(void *arg, PRFileDesc *fd, PRBool checkSig,
-             PRBool isServer);
+                            PRBool isServer);
 
 SECStatus
 JSSL_GetClientAuthData( void * arg,
@@ -111,7 +111,7 @@ int JSSL_enums_reverse(PRInt32 value);
 
 JSSL_SocketData*
 JSSL_CreateSocketData(JNIEnv *env, jobject sockObj, PRFileDesc* newFD,
-        PRFilePrivate *priv);
+                      PRFilePrivate *priv);
 
 #define SSL_POLICY_DOMESTIC 0
 #define SSL_POLICY_EXPORT 1
@@ -121,7 +121,7 @@ typedef enum {LOCAL_SOCK, PEER_SOCK} LocalOrPeer;
 
 PRStatus
 JSSL_getSockAddr
-    (JNIEnv *env, jobject self, PRNetAddr *addr, LocalOrPeer localOrPeer);
+(JNIEnv *env, jobject self, PRNetAddr *addr, LocalOrPeer localOrPeer);
 
 PRFileDesc*
 JSS_SSL_javasockToPRFD(JNIEnv *env, jobject sockObj);
@@ -144,7 +144,7 @@ int
 JSSL_getOCSPPolicy();
 
 
-SECStatus 
+SECStatus
 JSSL_verifyCertPKIX(CERTCertificate *cert,
                     SECCertificateUsage certificateUsage,
                     secuPWData *pwdata, int ocspPolicy,

@@ -70,7 +70,7 @@ public class X500Name implements Principal, GeneralNameInterface {
      * @param ldapDNString a Ldap DN String e.g. as defined in RFC1779
      */
     public X500Name(String ldapDNString)
-            throws IOException {
+    throws IOException {
         X500Name x500name;
 
         if (ldapDNString == null || ldapDNString.equals("")) {
@@ -91,7 +91,7 @@ public class X500Name implements Principal, GeneralNameInterface {
      * @param ldapDNStrConverter A LdapDNStrConverter
      */
     public X500Name(String ldapDNString, LdapDNStrConverter ldapDNStrConverter, byte[] tags)
-            throws IOException {
+    throws IOException {
 
         if (ldapDNString == null || ldapDNString.equals("")) {
             clear();
@@ -104,7 +104,7 @@ public class X500Name implements Principal, GeneralNameInterface {
     }
 
     public X500Name(String ldapDNString, byte[] tags)
-            throws IOException {
+    throws IOException {
         if (ldapDNString == null || ldapDNString.equals("")) {
             clear();
             return;
@@ -124,8 +124,8 @@ public class X500Name implements Principal, GeneralNameInterface {
      * @param ldapDNStrConverter A LdapDNStrConverter
      */
     public X500Name(String ldapDNString,
-             LdapDNStrConverter ldapDNStrConverter)
-            throws IOException {
+                    LdapDNStrConverter ldapDNStrConverter)
+    throws IOException {
         if (ldapDNString == null || ldapDNString.equals("")) {
             clear();
             return;
@@ -145,10 +145,10 @@ public class X500Name implements Principal, GeneralNameInterface {
      * @param country two letter country code, e.g. "CH"
      */
     public X500Name(
-            String commonName,
-            String organizationUnit,
-            String organizationName,
-            String country) throws IOException {
+        String commonName,
+        String organizationUnit,
+        String organizationName,
+        String country) throws IOException {
         DirStrConverter dirStrConverter = new DirStrConverter();
         PrintableConverter printableConverter = new PrintableConverter();
         AVA[] assertion = new AVA[1]; // array is cloned in constructors.
@@ -160,19 +160,19 @@ public class X500Name implements Principal, GeneralNameInterface {
          * ordering is used.
          */
         assertion[0] = new AVA(commonName_oid,
-                dirStrConverter.getValue(commonName));
+                               dirStrConverter.getValue(commonName));
         names[--i] = new RDN(assertion);
 
         assertion[0] = new AVA(orgUnitName_oid,
-                dirStrConverter.getValue(organizationUnit));
+                               dirStrConverter.getValue(organizationUnit));
         names[--i] = new RDN(assertion);
 
         assertion[0] = new AVA(orgName_oid,
-                dirStrConverter.getValue(organizationName));
+                               dirStrConverter.getValue(organizationName));
         names[--i] = new RDN(assertion);
 
         assertion[0] = new AVA(countryName_oid,
-                printableConverter.getValue(country));
+                               printableConverter.getValue(country));
         names[--i] = new RDN(assertion);
     }
 
@@ -188,12 +188,12 @@ public class X500Name implements Principal, GeneralNameInterface {
      * @param country two letter country code, e.g. "CH"
      */
     public X500Name(
-            String commonName,
-            String organizationUnit,
-            String organizationName,
-            String localityName,
-            String stateName,
-            String country) throws IOException {
+        String commonName,
+        String organizationUnit,
+        String organizationName,
+        String localityName,
+        String stateName,
+        String country) throws IOException {
         DirStrConverter dirStrConverter = new DirStrConverter();
         PrintableConverter printableConverter = new PrintableConverter();
         AVA[] assertion = new AVA[1]; // array is cloned in constructors.
@@ -205,27 +205,27 @@ public class X500Name implements Principal, GeneralNameInterface {
          * ordering is used.
          */
         assertion[0] = new AVA(commonName_oid,
-                dirStrConverter.getValue(commonName));
+                               dirStrConverter.getValue(commonName));
         names[--i] = new RDN(assertion);
 
         assertion[0] = new AVA(orgUnitName_oid,
-                dirStrConverter.getValue(organizationUnit));
+                               dirStrConverter.getValue(organizationUnit));
         names[--i] = new RDN(assertion);
 
         assertion[0] = new AVA(orgName_oid,
-                dirStrConverter.getValue(organizationName));
+                               dirStrConverter.getValue(organizationName));
         names[--i] = new RDN(assertion);
 
         assertion[0] = new AVA(localityName_oid,
-                dirStrConverter.getValue(localityName));
+                               dirStrConverter.getValue(localityName));
         names[--i] = new RDN(assertion);
 
         assertion[0] = new AVA(stateName_oid,
-                dirStrConverter.getValue(stateName));
+                               dirStrConverter.getValue(stateName));
         names[--i] = new RDN(assertion);
 
         assertion[0] = new AVA(countryName_oid,
-                printableConverter.getValue(country));
+                               printableConverter.getValue(country));
         names[--i] = new RDN(assertion);
     }
 
@@ -247,7 +247,7 @@ public class X500Name implements Principal, GeneralNameInterface {
      * @param in DER-encoded data holding an X.500 name.
      */
     public X500Name(DerInputStream in)
-            throws IOException {
+    throws IOException {
         parseDER(in);
     }
 
@@ -257,7 +257,7 @@ public class X500Name implements Principal, GeneralNameInterface {
      * @param name DER-encoded byte array holding an X.500 name.
      */
     public X500Name(byte[] name)
-            throws IOException {
+    throws IOException {
         DerInputStream in = new DerInputStream(name);
         parseDER(in);
 
@@ -270,7 +270,7 @@ public class X500Name implements Principal, GeneralNameInterface {
      * @param rdns an array of RDN.
      */
     public X500Name(RDN[] rdns)
-            throws IOException {
+    throws IOException {
         names = rdns.clone();
     }
 
@@ -280,7 +280,7 @@ public class X500Name implements Principal, GeneralNameInterface {
      * @param rdnVector a vector of rdns.
      */
     public X500Name(Vector<RDN> rdnVector)
-            throws IOException {
+    throws IOException {
         int size = rdnVector.size();
         names = new RDN[size];
         for (int i = 0; i < size; i++) {
@@ -329,7 +329,7 @@ public class X500Name implements Principal, GeneralNameInterface {
 
         if (value == null)
             throw new IOException("not a DER string encoding, "
-                    + attribute.tag);
+                                  + attribute.tag);
         else
             return value;
     }
@@ -446,7 +446,7 @@ public class X500Name implements Principal, GeneralNameInterface {
      * @return Ldap DN string of this X500Name using the default converter.
      */
     public String toLdapDNString()
-            throws IOException {
+    throws IOException {
         if (dn == null)
             generateDN(LdapDNStrConverter.getDefault());
         return dn;
@@ -461,7 +461,7 @@ public class X500Name implements Principal, GeneralNameInterface {
      * list is returned.
      */
     public List<String> getAttributesForOid(ObjectIdentifier oid)
-            throws IOException {
+    throws IOException {
         List<String> xs = new ArrayList<>();
         for (int i = 0; i < names.length; i++) {
             DerValue v = names[i].findAttribute(oid);
@@ -482,7 +482,7 @@ public class X500Name implements Principal, GeneralNameInterface {
      * @return Ldap DN string of the X500Name
      */
     public String toLdapDNString(LdapDNStrConverter ldapDNStrConverter)
-            throws IOException {
+    throws IOException {
 
         if (dn == null)
             generateDN(ldapDNStrConverter);
@@ -640,7 +640,7 @@ public class X500Name implements Principal, GeneralNameInterface {
      *
      */
     private void generateDN(LdapDNStrConverter ldapDNStrConverter)
-            throws IOException {
+    throws IOException {
         if (names == null)
             return;
 
@@ -672,7 +672,7 @@ public class X500Name implements Principal, GeneralNameInterface {
      * and speed recognition of common X.500 attributes.
      */
     static ObjectIdentifier intern(ObjectIdentifier oid)
-            throws IOException {
+    throws IOException {
         return X500NameAttrMap.getDefault().getOid(oid);
     }
 
@@ -716,7 +716,7 @@ public class X500Name implements Principal, GeneralNameInterface {
      */
 
     private static final int ipAddress_data[] = // SKIP
-            { 1, 3, 6, 1, 4, 1, 42, 2, 11, 2, 1 };
+    { 1, 3, 6, 1, 4, 1, 42, 2, 11, 2, 1 };
 
     /** OID for "IP=" IP address attributes, used with SKIP. */
     public static final ObjectIdentifier ipAddress_oid = new ObjectIdentifier(ipAddress_data);

@@ -31,7 +31,7 @@ public class CertRequest implements ASN1Value {
      * @param controls May be null.
      */
     public CertRequest(INTEGER certReqId, CertTemplate certTemplate,
-            SEQUENCE controls)
+                       SEQUENCE controls)
     {
         if( certReqId == null ) {
             throw new NullPointerException("certReqId is null");
@@ -117,8 +117,8 @@ public class CertRequest implements ASN1Value {
 
         sequence.addElement( certReqId );
         sequence.addElement( certTemplate );
-		if (controls != null)
-			sequence.addElement( controls );
+        if (controls != null)
+            sequence.addElement( controls );
 
         sequence.encode(implicit,ostream);
     }
@@ -135,7 +135,7 @@ public class CertRequest implements ASN1Value {
             seqTemplate.addElement( new INTEGER.Template() );
             seqTemplate.addElement( new CertTemplate.Template() );
             seqTemplate.addOptionalElement( new
-                SEQUENCE.OF_Template( new AVA.Template() ));
+                                            SEQUENCE.OF_Template( new AVA.Template() ));
         }
 
         public boolean tagMatch( Tag tag ) {
@@ -143,20 +143,20 @@ public class CertRequest implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicit, InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
 
             SEQUENCE seq = (SEQUENCE) seqTemplate.decode(implicit, istream);
             return new CertRequest(
-                    (INTEGER) seq.elementAt(0),
-                    (CertTemplate) seq.elementAt(1),
-                    (SEQUENCE) seq.elementAt(2) );
+                       (INTEGER) seq.elementAt(0),
+                       (CertTemplate) seq.elementAt(1),
+                       (SEQUENCE) seq.elementAt(2) );
         }
     }
 }

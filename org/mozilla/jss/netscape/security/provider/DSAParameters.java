@@ -52,7 +52,7 @@ public class DSAParameters extends AlgorithmParametersSpi {
     protected BigInteger g;
 
     protected void engineInit(AlgorithmParameterSpec paramSpec)
-            throws InvalidParameterSpecException {
+    throws InvalidParameterSpecException {
         if (!(paramSpec instanceof DSAParameterSpec)) {
             throw new InvalidParameterSpecException("Inappropriate parameter specification");
         }
@@ -76,22 +76,22 @@ public class DSAParameters extends AlgorithmParametersSpi {
 
         if (encodedParams.data.available() != 0) {
             throw new IOException("encoded params have " +
-                    encodedParams.data.available() +
-                    " extra bytes");
+                                  encodedParams.data.available() +
+                                  " extra bytes");
         }
     }
 
     protected void engineInit(byte[] params, String decodingMethod)
-            throws IOException {
+    throws IOException {
         engineInit(params);
     }
 
     @SuppressWarnings("unchecked")
     protected <T extends AlgorithmParameterSpec> T engineGetParameterSpec(Class<T> paramSpec)
-            throws InvalidParameterSpecException {
+    throws InvalidParameterSpecException {
         try {
             Class<?> dsaParamSpec = Class.forName
-                    ("java.security.spec.DSAParameterSpec");
+                                    ("java.security.spec.DSAParameterSpec");
             if (dsaParamSpec.isAssignableFrom(paramSpec)) {
                 return (T) new DSAParameterSpec(this.p, this.q, this.g);
             } else {
@@ -115,7 +115,7 @@ public class DSAParameters extends AlgorithmParametersSpi {
     }
 
     protected byte[] engineGetEncoded(String encodingMethod)
-            throws IOException {
+    throws IOException {
         return engineGetEncoded();
     }
 
@@ -124,8 +124,8 @@ public class DSAParameters extends AlgorithmParametersSpi {
      */
     protected String engineToString() {
         return "\n\tp: " + new BigInt(p).toString()
-                + "\n\tq: " + new BigInt(q).toString()
-                + "\n\tg: " + new BigInt(g).toString()
-                + "\n";
+               + "\n\tq: " + new BigInt(q).toString()
+               + "\n\tg: " + new BigInt(g).toString()
+               + "\n";
     }
 }

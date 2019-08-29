@@ -66,7 +66,7 @@ public final class AVA implements DerEncoder {
      * @param avaString a Ldap DN string with one AVA component.
      */
     public AVA(String avaString)
-            throws IOException {
+    throws IOException {
         AVA ava;
         ava = LdapDNStrConverter.getDefault().parseAVA(avaString);
         oid = ava.getOid();
@@ -77,7 +77,7 @@ public final class AVA implements DerEncoder {
      * Like AVA(String) with a DER encoding order given for Directory Strings.
      */
     public AVA(String avaString, byte[] tags)
-            throws IOException {
+    throws IOException {
         AVA ava;
         ava = LdapDNStrConverter.getDefault().parseAVA(avaString, tags);
         oid = ava.getOid();
@@ -93,7 +93,7 @@ public final class AVA implements DerEncoder {
      * @param ldapDNStrConverter a LdapDNStrConverter
      */
     public AVA(String avaString, LdapDNStrConverter ldapDNStrConverter)
-            throws IOException {
+    throws IOException {
         AVA ava;
         ava = ldapDNStrConverter.parseAVA(avaString);
         oid = ava.getOid();
@@ -107,7 +107,7 @@ public final class AVA implements DerEncoder {
      * @param val a DerValue
      */
     public AVA(ObjectIdentifier type, DerValue val)
-            throws IOException {
+    throws IOException {
         oid = type;
         value = val;
     }
@@ -174,7 +174,7 @@ public final class AVA implements DerEncoder {
 
         if (assertion.data.available() != 0)
             throw new CertParseError("AVA, extra bytes = "
-                    + assertion.data.available());
+                                     + assertion.data.available());
     }
 
     // other public methods.
@@ -251,7 +251,7 @@ public final class AVA implements DerEncoder {
      * @see LdapDNStrConverter
      */
     public String toLdapDNString()
-            throws IOException {
+    throws IOException {
         LdapDNStrConverter v = LdapDNStrConverter.getDefault();
         return v.encodeAVA(this);
     }
@@ -266,7 +266,7 @@ public final class AVA implements DerEncoder {
      * @see LdapDNStrConverter
      */
     public String toLdapDNString(LdapDNStrConverter ldapDNStrConverter)
-            throws IOException {
+    throws IOException {
         return ldapDNStrConverter.encodeAVA(this);
     }
 

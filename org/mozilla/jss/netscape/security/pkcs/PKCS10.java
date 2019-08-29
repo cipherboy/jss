@@ -121,7 +121,7 @@ public class PKCS10 {
      *                algorithm is not supported in this environment
      */
     public PKCS10(byte data[], boolean sigver)
-            throws IOException, SignatureException, NoSuchAlgorithmException, java.security.NoSuchProviderException {
+    throws IOException, SignatureException, NoSuchAlgorithmException, java.security.NoSuchProviderException {
         DerInputStream in;
         DerValue seq[];
         AlgorithmId id;
@@ -231,7 +231,7 @@ public class PKCS10 {
     }
 
     public PKCS10(byte data[])
-            throws IOException, SignatureException, NoSuchAlgorithmException, java.security.NoSuchProviderException {
+    throws IOException, SignatureException, NoSuchAlgorithmException, java.security.NoSuchProviderException {
         this(data, true);
     }
 
@@ -246,7 +246,7 @@ public class PKCS10 {
      * @exception SignatureException on signature handling errors.
      */
     public void encodeAndSign(X500Signer requester)
-            throws CertificateException, IOException, SignatureException {
+    throws CertificateException, IOException, SignatureException {
         DerOutputStream out, scratch;
         byte certificateRequestInfo[];
         byte sig[];
@@ -274,7 +274,7 @@ public class PKCS10 {
          * Sign it ...
          */
         requester.update(certificateRequestInfo, 0,
-                certificateRequestInfo.length);
+                         certificateRequestInfo.length);
         sig = requester.sign();
 
         /*
@@ -338,7 +338,7 @@ public class PKCS10 {
      *                not yet signed.
      */
     public void print(PrintStream out)
-            throws IOException, SignatureException {
+    throws IOException, SignatureException {
         if (certificateRequest == null)
             throw new SignatureException("Cert request was not signed");
 
@@ -352,10 +352,10 @@ public class PKCS10 {
      */
     public String toString() {
         return "[PKCS #10 certificate request:\n"
-                + subjectPublicKeyInfo.toString()
-                + " subject: <" + subject + ">" + "\n"
-                + " attributes: " + attributeSet.toString()
-                + "\n]";
+               + subjectPublicKeyInfo.toString()
+               + " subject: <" + subject + ">" + "\n"
+               + " attributes: " + attributeSet.toString()
+               + "\n]";
     }
 
     /**

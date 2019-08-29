@@ -18,7 +18,7 @@ static PRStatus
 getTokenSlotPtr(JNIEnv *env, jobject keyStoreObj, PK11SlotInfo **ptr)
 {
     return JSS_getPtrFromProxyOwner(env, keyStoreObj,
-        "proxy", "Lorg/mozilla/jss/pkcs11/TokenProxy;", (void**)ptr);
+                                    "proxy", "Lorg/mozilla/jss/pkcs11/TokenProxy;", (void**)ptr);
 }
 
 typedef enum {
@@ -48,8 +48,8 @@ typedef JSSTraversalStatus
  */
 static PRStatus
 traverseTokenObjects
-    (JNIEnv *env, PK11SlotInfo *slot, TokenObjectTraversalCallback cb,
-        int objectTypes, void *data)
+(JNIEnv *env, PK11SlotInfo *slot, TokenObjectTraversalCallback cb,
+ int objectTypes, void *data)
 {
     PRStatus status = PR_FAILURE;
     JSSTraversalStatus travstat = INIT_TRAVSTAT;
@@ -65,12 +65,12 @@ traverseTokenObjects
         SECKEYPrivateKeyListNode *node = NULL;
 
         privkList = PK11_ListPrivKeysInSlot(slot, NULL /*nickname*/,
-                            NULL /*wincx*/);
+                                            NULL /*wincx*/);
         if( privkList != NULL ) {
 
             for( node = PRIVKEY_LIST_HEAD(privkList);
-                ! PRIVKEY_LIST_END(node, privkList);
-                node = PRIVKEY_LIST_NEXT(node) )
+                    ! PRIVKEY_LIST_END(node, privkList);
+                    node = PRIVKEY_LIST_NEXT(node) )
             {
                 travstat = cb(env, slot, PRIVKEY, (void*) node->key, data);
                 if( travstat.status == PR_FAILURE ) {
@@ -104,7 +104,7 @@ traverseTokenObjects
     if(objectTypes & SYMKEY) {
         /* this function returns a chained list of symmetric keys */
         symKey = PK11_ListFixedKeysInSlot(slot, NULL /*nickname*/,
-                    NULL/*wincx*/);
+                                          NULL/*wincx*/);
 
         while( symKey != NULL ) {
             PK11SymKey *deadKey;
@@ -137,8 +137,8 @@ traverseTokenObjects
         if( pubkList != NULL ) {
 
             for( node = PUBKEY_LIST_HEAD(pubkList);
-                ! PUBKEY_LIST_END(node, pubkList);
-                node = PUBKEY_LIST_NEXT(node) )
+                    ! PUBKEY_LIST_END(node, pubkList);
+                    node = PUBKEY_LIST_NEXT(node) )
             {
                 if( node->key == NULL ) {
                     /* workaround NSS bug 130699: PK11_ListPublicKeysInSlot
@@ -188,13 +188,13 @@ traverseTokenObjects
         certList = PK11_ListCertsInSlot(slot);
         if( certList == NULL ) {
             JSS_throwMsgPrErr(env, TOKEN_EXCEPTION,
-                "Failed to list certificates on token");
+                              "Failed to list certificates on token");
             goto finish;
         }
 
         for( node = CERT_LIST_HEAD(certList);
-             ! CERT_LIST_END(node, certList);
-             node = CERT_LIST_NEXT(node) )
+                ! CERT_LIST_END(node, certList);
+                node = CERT_LIST_NEXT(node) )
         {
             travstat = cb(env, slot, CERT, (void*) node->cert, data);
             if( travstat.status != PR_SUCCESS ) {
@@ -211,8 +211,8 @@ traverseTokenObjects
                  * there. So we only call that function if we're sure the
                  * key is there. Otherwise we delete the cert directly.
                  */
-                SECKEYPrivateKey *privKey = PK11_FindKeyByAnyCert(node->cert, 
-                    NULL /*wincx*/);
+                SECKEYPrivateKey *privKey = PK11_FindKeyByAnyCert(node->cert,
+                                            NULL /*wincx*/);
                 PRBool keyPresent = (privKey != NULL);
                 SECKEY_DestroyPrivateKey(privKey);
                 if( keyPresent ) {
@@ -256,18 +256,18 @@ static char*
 getObjectNick(void *obj, TokenObjectType type)
 {
     switch(type) {
-      case PRIVKEY:
+    case PRIVKEY:
         /* NOTE: this function allocates memory for the nickname */
         return PK11_GetPrivateKeyNickname((SECKEYPrivateKey*)obj);
-      case SYMKEY:
+    case SYMKEY:
         /* NOTE: this function allocates memory for the nickname */
         return PK11_GetSymKeyNickname((PK11SymKey*)obj);
-      case PUBKEY:
+    case PUBKEY:
         /* NOTE: this function allocates memory for the nickname */
         return PK11_GetPublicKeyNickname((SECKEYPublicKey*)obj);
-      case CERT:
+    case CERT:
         return ((CERTCertificate*)obj)->nickname;
-      default:
+    default:
         PR_ASSERT(PR_FALSE);
         return NULL;
     }
@@ -309,7 +309,7 @@ engineAliasesTraversalCallback
 
         /* store the string in the vector */
         (*env)->CallBooleanMethod(env, cbinfo->setObj,
-            cbinfo->setAdd, nickString);
+                                  cbinfo->setAdd, nickString);
         if( (*env)->ExceptionOccurred(env) ) {
             goto finish;
         }
@@ -322,7 +322,7 @@ finish:
 
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_provider_java_security_JSSKeyStoreSpi_getRawAliases
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     PK11SlotInfo *slot = NULL;
     jobject setObj=NULL;
@@ -357,7 +357,7 @@ Java_org_mozilla_jss_provider_java_security_JSSKeyStoreSpi_getRawAliases
         }
 
         setAdd = (*env)->GetMethodID(env, setClass, "add",
-            "(Ljava/lang/Object;)Z");
+                                     "(Ljava/lang/Object;)Z");
         if( setAdd == NULL ) {
             goto finish;
         }
@@ -373,7 +373,7 @@ Java_org_mozilla_jss_provider_java_security_JSSKeyStoreSpi_getRawAliases
                                 slot,
                                 engineAliasesTraversalCallback,
                                 ALL_OBJECT_TYPES,
-                                &cbinfo) 
+                                &cbinfo)
             != PR_SUCCESS )
     {
         goto finish;
@@ -389,26 +389,26 @@ typedef struct {
 
 static JSSTraversalStatus
 engineDeleteEntryTraversalCallback
-    (JNIEnv *env, PK11SlotInfo *slot, TokenObjectType type,
-     void *obj, void *data)
+(JNIEnv *env, PK11SlotInfo *slot, TokenObjectType type,
+ void *obj, void *data)
 {
     EngineDeleteEntryCBInfo *cbinfo = (EngineDeleteEntryCBInfo*)data;
     JSSTraversalStatus status = INIT_TRAVSTAT;
     char *nickname = getObjectNick(obj, type);
 
     if( nickname != NULL &&
-        (PL_strcmp(nickname, cbinfo->targetNickname) == 0) ) {
+            (PL_strcmp(nickname, cbinfo->targetNickname) == 0) ) {
         status.deleteIt = PR_TRUE;
     }
     freeObjectNick(nickname, type);
     status.status = PR_SUCCESS;
     return status;
 }
-        
+
 
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_provider_java_security_JSSKeyStoreSpi_engineDeleteEntry
-    (JNIEnv *env, jobject this, jobject aliasString)
+(JNIEnv *env, jobject this, jobject aliasString)
 {
     EngineDeleteEntryCBInfo cbinfo;
     PK11SlotInfo *slot = NULL;
@@ -447,8 +447,8 @@ typedef struct {
 
 static JSSTraversalStatus
 engineGetCertificateTraversalCallback
-    (JNIEnv *env, PK11SlotInfo *slot, TokenObjectType type,
-     void *obj, void *data)
+(JNIEnv *env, PK11SlotInfo *slot, TokenObjectType type,
+ void *obj, void *data)
 {
     JSSTraversalStatus travStat = INIT_TRAVSTAT;
     CERTCertificate *cert = (CERTCertificate*) obj;
@@ -458,7 +458,7 @@ engineGetCertificateTraversalCallback
     PR_ASSERT(cbinfo->cert == NULL);
 
     if( cert->nickname != NULL &&
-        PL_strcmp(cert->nickname, cbinfo->targetNickname) == 0 )
+            PL_strcmp(cert->nickname, cbinfo->targetNickname) == 0 )
     {
         cbinfo->cert = CERT_DupCertificate(cert);
         travStat.stopIterating = PR_TRUE;
@@ -467,7 +467,7 @@ engineGetCertificateTraversalCallback
 
     return travStat;
 }
-        
+
 static CERTCertificate*
 lookupCertByNickname(JNIEnv *env, jobject this, jstring alias)
 {
@@ -503,7 +503,7 @@ finish:
 
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_provider_java_security_JSSKeyStoreSpi_getCertObject
-    (JNIEnv *env, jobject this, jstring alias)
+(JNIEnv *env, jobject this, jstring alias)
 {
     CERTCertificate *cert = NULL;
     PK11SlotInfo *slot = NULL;
@@ -537,7 +537,7 @@ finish:
 
 JNIEXPORT jbyteArray JNICALL
 Java_org_mozilla_jss_provider_java_security_JSSKeyStoreSpi_getDERCert
-    (JNIEnv *env, jobject this, jstring alias)
+(JNIEnv *env, jobject this, jstring alias)
 {
     CERTCertificate * cert = NULL;
     jbyteArray derCertBA = NULL;
@@ -561,7 +561,7 @@ finish:
 
 JNIEXPORT jstring JNICALL
 Java_org_mozilla_jss_provider_java_security_JSSKeyStoreSpi_getCertNickname
-    (JNIEnv *env, jobject this, jbyteArray derCertBA)
+(JNIEnv *env, jobject this, jbyteArray derCertBA)
 {
     PK11SlotInfo *slot=NULL;
     SECItem *derCert=NULL;
@@ -624,13 +624,13 @@ findKeyCallback
         /* found it */
         status.stopIterating = PR_TRUE;
         switch( type ) {
-          case PRIVKEY:
+        case PRIVKEY:
             cbinfo->privk = (SECKEYPrivateKey*)obj;
             break;
-          case SYMKEY:
+        case SYMKEY:
             cbinfo->symk = (PK11SymKey*)obj;
             break;
-          default:
+        default:
             PR_ASSERT(PR_FALSE);
             status.status = PR_FAILURE;
         }
@@ -647,8 +647,8 @@ typedef struct {
 
 static JSSTraversalStatus
 getKeyByCertNickCallback
-    (JNIEnv *env, PK11SlotInfo *slot, TokenObjectType type,
-     void *obj, void *data)
+(JNIEnv *env, PK11SlotInfo *slot, TokenObjectType type,
+ void *obj, void *data)
 {
     JSSTraversalStatus travStat = INIT_TRAVSTAT;
     CERTCertificate *cert = (CERTCertificate*) obj;
@@ -658,38 +658,38 @@ getKeyByCertNickCallback
     PR_ASSERT(cbinfo->privk == NULL);
 
     if( cert->nickname != NULL &&
-        PL_strcmp(cert->nickname, cbinfo->targetNickname) == 0 )
+            PL_strcmp(cert->nickname, cbinfo->targetNickname) == 0 )
     {
         travStat.stopIterating = PR_TRUE;
 
         cbinfo->privk = PK11_FindPrivateKeyFromCert(slot, cert, NULL /*wincx*/);
         if( cbinfo->privk ) {
             printf("Found private key from cert with label '%s'\n",
-                cert->nickname);
+                   cert->nickname);
         }
     }
     travStat.status = PR_SUCCESS;
 
     return travStat;
 }
-        
+
 /*
  * This is only here for backward compatibility.
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_provider_java_security_JSSKeyStoreSpi_engineGetKey
-    (JNIEnv *env, jobject this, jstring alias, jcharArray password)
+(JNIEnv *env, jobject this, jstring alias, jcharArray password)
 {
     PR_ASSERT(0);
-    JSS_throwMsg(env, "java/lang/RuntimeException", 
-        "Java_org_mozilla_jss_provider_java_security_JSSKeyStoreSpi_engine"
-        "GetKey not implemented");
+    JSS_throwMsg(env, "java/lang/RuntimeException",
+                 "Java_org_mozilla_jss_provider_java_security_JSSKeyStoreSpi_engine"
+                 "GetKey not implemented");
     return NULL;
 }
 
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_provider_java_security_JSSKeyStoreSpi_engineGetKeyNative
-    (JNIEnv *env, jobject this, jstring alias, jcharArray password)
+(JNIEnv *env, jobject this, jstring alias, jcharArray password)
 {
     PK11SlotInfo *slot=NULL;
     FindKeyCBInfo keyCbinfo = {NULL, NULL, NULL};
@@ -768,7 +768,7 @@ finish:
 
 JNIEXPORT jboolean JNICALL
 Java_org_mozilla_jss_provider_java_security_JSSKeyStoreSpi_engineIsCertificateEntry
-    (JNIEnv *env, jobject this, jstring alias)
+(JNIEnv *env, jobject this, jstring alias)
 {
     PK11SlotInfo *slot;
     EngineGetCertificateCBInfo cbinfo = {NULL,NULL};
@@ -807,7 +807,7 @@ Java_org_mozilla_jss_provider_java_security_JSSKeyStoreSpi_engineIsCertificateEn
 
         if( (allTrust & (CERTDB_TRUSTED | CERTDB_TRUSTED_CA |
                          CERTDB_NS_TRUSTED_CA | CERTDB_TRUSTED_CLIENT_CA))
-            && !(allTrust & CERTDB_USER) )
+                && !(allTrust & CERTDB_USER) )
         {
             /* It's a trusted cert and not a user cert. */
             retVal = JNI_TRUE;
@@ -825,8 +825,8 @@ finish:
 
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_provider_java_security_JSSKeyStoreSpi_engineSetKeyEntryNative
-    (JNIEnv *env, jobject this, jstring alias, jobject keyObj,
-        jcharArray password, jobjectArray certChain)
+(JNIEnv *env, jobject this, jstring alias, jobject keyObj,
+ jcharArray password, jobjectArray certChain)
 {
     jclass privkClass, symkClass;
     const char *nickname = NULL;
@@ -856,19 +856,19 @@ Java_org_mozilla_jss_provider_java_security_JSSKeyStoreSpi_engineSetKeyEntryNati
 
         if( JSS_PK11_getPrivKeyPtr(env, keyObj, &privk) != PR_SUCCESS ) {
             JSS_throwMsgPrErr(env, KEYSTORE_EXCEPTION,
-                "Failed to extract NSS key from private key object");
+                              "Failed to extract NSS key from private key object");
             goto finish;
         }
 
         tokenPrivk = PK11_ConvertSessionPrivKeyToTokenPrivKey(privk, NULL);
         if( tokenPrivk == NULL ) {
             JSS_throwMsgPrErr(env, KEYSTORE_EXCEPTION,
-                "Failed to copy private key to permanent token object");
+                              "Failed to copy private key to permanent token object");
             goto finish;
         }
         if( PK11_SetPrivateKeyNickname(tokenPrivk, nickname) != SECSuccess ) {
             JSS_throwMsgPrErr(env, KEYSTORE_EXCEPTION,
-                "Failed to set alias of copied private key");
+                              "Failed to set alias of copied private key");
             goto finish;
         }
     } else if( (*env)->IsInstanceOf(env, keyObj, symkClass) ) {
@@ -876,25 +876,25 @@ Java_org_mozilla_jss_provider_java_security_JSSKeyStoreSpi_engineSetKeyEntryNati
 
         if( JSS_PK11_getSymKeyPtr(env, keyObj, &symk) != PR_SUCCESS ) {
             JSS_throwMsgPrErr(env, KEYSTORE_EXCEPTION,
-                "Failed to extract NSS key from symmetric key object");
+                              "Failed to extract NSS key from symmetric key object");
             goto finish;
         }
 
         tokenSymk = PK11_ConvertSessionSymKeyToTokenSymKey(symk, NULL);
         if( tokenSymk == NULL ) {
             JSS_throwMsgPrErr(env, KEYSTORE_EXCEPTION,
-                "Failed to copy symmetric key to permanent token object");
+                              "Failed to copy symmetric key to permanent token object");
             goto finish;
         }
         if( PK11_SetSymKeyNickname(tokenSymk, nickname) != SECSuccess ) {
             JSS_throwMsgPrErr(env, KEYSTORE_EXCEPTION,
-                "Failed to set alias of symmetric key");
+                              "Failed to set alias of symmetric key");
             goto finish;
         }
     } else {
         JSS_throwMsg(env, KEYSTORE_EXCEPTION,
-            "Unrecognized key type: must be JSS private key (PK11PrivKey) or"
-            " JSS symmetric key (PK11SymKey)");
+                     "Unrecognized key type: must be JSS private key (PK11PrivKey) or"
+                     " JSS symmetric key (PK11SymKey)");
         goto finish;
     }
 

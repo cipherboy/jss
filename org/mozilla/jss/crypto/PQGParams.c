@@ -26,7 +26,7 @@ generate(JNIEnv *env, jclass PQGParamsClass, jint keySize, jint seedBytes);
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_crypto_PQGParams_generateNative__I
-  (JNIEnv *env, jclass PQGParamsClass, jint keySize)
+(JNIEnv *env, jclass PQGParamsClass, jint keySize)
 {
     return generate(env, PQGParamsClass, keySize, 0);
 }
@@ -37,11 +37,11 @@ Java_org_mozilla_jss_crypto_PQGParams_generateNative__I
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_crypto_PQGParams_generateNative__II
-  (JNIEnv *env, jclass PQGParamsClass, jint keySize, jint seedBytes)
+(JNIEnv *env, jclass PQGParamsClass, jint keySize, jint seedBytes)
 {
     if(seedBytes < 20 || seedBytes > 255) {
         JSS_throwMsg(env, INVALID_PARAMETER_EXCEPTION,
-            "Number of bytes in seed must be in range [20,255]");
+                     "Number of bytes in seed must be in range [20,255]");
         return NULL;
     }
     return generate(env, PQGParamsClass, keySize, seedBytes);
@@ -113,8 +113,8 @@ generate(JNIEnv *env, jclass PQGParamsClass, jint keySize, jint seedBytes)
     keySizeIndex = PQG_PBITS_TO_INDEX(keySize);
     if(keySizeIndex == -1 || keySize<512 || keySize>1024) {
         JSS_throwMsg(env, INVALID_PARAMETER_EXCEPTION,
-            "DSA key size must be a multiple of 64 between 512 "
-            "and 1024, inclusive");
+                     "DSA key size must be a multiple of 64 between 512 "
+                     "and 1024, inclusive");
         goto finish;
     }
 
@@ -131,9 +131,9 @@ generate(JNIEnv *env, jclass PQGParamsClass, jint keySize, jint seedBytes)
         goto finish;
     }
 
-	/**********************************************************************
-	 * NOTE: the new PQG parameters will be verified at the Java level.
-	 */
+    /**********************************************************************
+     * NOTE: the new PQG parameters will be verified at the Java level.
+     */
 
     /**********************************************************************
      * Get ready for the BigIntegers
@@ -144,9 +144,9 @@ generate(JNIEnv *env, jclass PQGParamsClass, jint keySize, jint seedBytes)
         goto finish;
     }
     BigIntegerConstructor = (*env)->GetMethodID(env,
-                                                BigIntegerClass,
-                                                BIG_INTEGER_CONSTRUCTOR_NAME,
-                                                BIG_INTEGER_CONSTRUCTOR_SIG);
+                            BigIntegerClass,
+                            BIG_INTEGER_CONSTRUCTOR_NAME,
+                            BIG_INTEGER_CONSTRUCTOR_SIG);
     if(BigIntegerConstructor == NULL) {
         ASSERT_OUTOFMEM(env);
         goto finish;
@@ -156,10 +156,10 @@ generate(JNIEnv *env, jclass PQGParamsClass, jint keySize, jint seedBytes)
      * Convert the parameters to Java types.
      */
     if( PK11_PQG_GetPrimeFromParams( pParams, &P) ||
-        PK11_PQG_GetSubPrimeFromParams( pParams, &Q) ||
-        PK11_PQG_GetBaseFromParams( pParams, &G) ||
-        PK11_PQG_GetHFromVerify( pVfy, &H) ||
-        PK11_PQG_GetSeedFromVerify( pVfy, &seed) )
+            PK11_PQG_GetSubPrimeFromParams( pParams, &Q) ||
+            PK11_PQG_GetBaseFromParams( pParams, &G) ||
+            PK11_PQG_GetHFromVerify( pVfy, &H) ||
+            PK11_PQG_GetSeedFromVerify( pVfy, &seed) )
     {
         JSS_throw(env, PQG_PARAM_GEN_EXCEPTION);
         goto finish;
@@ -217,7 +217,7 @@ generate(JNIEnv *env, jclass PQGParamsClass, jint keySize, jint seedBytes)
         goto finish;
     }
     jSeed = (*env)->NewObject(env, BigIntegerClass, BigIntegerConstructor,
-                                bytes);
+                              bytes);
     if(jSeed==NULL) {
         ASSERT_OUTOFMEM(env);
         goto finish;
@@ -246,10 +246,10 @@ generate(JNIEnv *env, jclass PQGParamsClass, jint keySize, jint seedBytes)
      * Construct the PQGParams object
      */
     PQGParamsConstructor = (*env)->GetMethodID(
-                                        env,
-                                        PQGParamsClass,
-                                        PQG_PARAMS_CONSTRUCTOR_NAME,
-                                        PQG_PARAMS_CONSTRUCTOR_SIG);
+                               env,
+                               PQGParamsClass,
+                               PQG_PARAMS_CONSTRUCTOR_NAME,
+                               PQG_PARAMS_CONSTRUCTOR_SIG);
     if(PQGParamsConstructor==NULL) {
         ASSERT_OUTOFMEM(env);
         goto finish;
@@ -263,7 +263,7 @@ generate(JNIEnv *env, jclass PQGParamsClass, jint keySize, jint seedBytes)
                                     jSeed,
                                     jcounter,
                                     jH);
-    
+
 
 finish:
     if(pParams!=NULL) {
@@ -288,8 +288,8 @@ finish:
  */
 JNIEXPORT jboolean JNICALL
 Java_org_mozilla_jss_crypto_PQGParams_paramsAreValidNative
-  (JNIEnv *env, jobject this, jbyteArray jP, jbyteArray jQ, jbyteArray jG,
-    jbyteArray jSeed, jint jCounter, jbyteArray jH)
+(JNIEnv *env, jobject this, jbyteArray jP, jbyteArray jQ, jbyteArray jG,
+ jbyteArray jSeed, jint jCounter, jbyteArray jH)
 {
     jboolean valid=JNI_FALSE;
     PQGParams *pParams=NULL;
@@ -317,10 +317,10 @@ Java_org_mozilla_jss_crypto_PQGParams_paramsAreValidNative
      * Extract the Java parameters
      */
     if( JSS_ByteArrayToOctetString(env, jP, &P) ||
-        JSS_ByteArrayToOctetString(env, jQ, &Q) ||
-        JSS_ByteArrayToOctetString(env, jG, &G) ||
-        JSS_ByteArrayToOctetString(env, jSeed, &seed) ||
-        JSS_ByteArrayToOctetString(env, jH, &H) )
+            JSS_ByteArrayToOctetString(env, jQ, &Q) ||
+            JSS_ByteArrayToOctetString(env, jG, &G) ||
+            JSS_ByteArrayToOctetString(env, jSeed, &seed) ||
+            JSS_ByteArrayToOctetString(env, jH, &H) )
     {
         goto finish;
     }

@@ -48,7 +48,7 @@ public class RecipientInfo implements ASN1Value {
     private static final Template templateInstance = new Template();
 
     public static Template getTemplate() {
-	return templateInstance;
+        return templateInstance;
     }
 
     /**
@@ -56,13 +56,13 @@ public class RecipientInfo implements ASN1Value {
      */
 
     public RecipientInfo(  INTEGER version,
-			   IssuerAndSerialNumber issuerAndSerialNumber,
-			   AlgorithmIdentifier keyEncryptionAlgorithmID,
-			   OCTET_STRING encryptedKey) {
+                           IssuerAndSerialNumber issuerAndSerialNumber,
+                           AlgorithmIdentifier keyEncryptionAlgorithmID,
+                           OCTET_STRING encryptedKey) {
 
-	assert(issuerAndSerialNumber != null);
-	assert(keyEncryptionAlgorithmID != null);
-	assert(encryptedKey != null);
+        assert(issuerAndSerialNumber != null);
+        assert(keyEncryptionAlgorithmID != null);
+        assert(encryptedKey != null);
 
 
         this.version = version;
@@ -102,31 +102,31 @@ public class RecipientInfo implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws IOException, InvalidBERException
-            {
-                return decode(getTag(),istream);
-            }
+        throws IOException, InvalidBERException
+        {
+            return decode(getTag(),istream);
+        }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws IOException, InvalidBERException
-            {
-                SEQUENCE.Template seqt = new SEQUENCE.Template();
-                seqt.addElement(new INTEGER.Template());
-                seqt.addElement(new IssuerAndSerialNumber.Template());
-                seqt.addElement(new AlgorithmIdentifier.Template());
-                seqt.addElement(new OCTET_STRING.Template());
+        throws IOException, InvalidBERException
+        {
+            SEQUENCE.Template seqt = new SEQUENCE.Template();
+            seqt.addElement(new INTEGER.Template());
+            seqt.addElement(new IssuerAndSerialNumber.Template());
+            seqt.addElement(new AlgorithmIdentifier.Template());
+            seqt.addElement(new OCTET_STRING.Template());
 
-                SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag,istream);
-                assert(seq.size() ==4);
+            SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag,istream);
+            assert(seq.size() ==4);
 
-                return new RecipientInfo(
-                    (INTEGER)               seq.elementAt(0),
-                    (IssuerAndSerialNumber) seq.elementAt(1),
-                    (AlgorithmIdentifier)   seq.elementAt(2),
-                    (OCTET_STRING)          seq.elementAt(3)
+            return new RecipientInfo(
+                       (INTEGER)               seq.elementAt(0),
+                       (IssuerAndSerialNumber) seq.elementAt(1),
+                       (AlgorithmIdentifier)   seq.elementAt(2),
+                       (OCTET_STRING)          seq.elementAt(3)
 
-                    );
-            }
+                   );
+        }
     } // end of template
 
 }

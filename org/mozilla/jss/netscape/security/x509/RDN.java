@@ -57,7 +57,7 @@ public class RDN {
      * @exception IOException if error occurs while parsing the string.
      */
     public RDN(String rdnString)
-            throws IOException {
+    throws IOException {
         RDN rdn = LdapDNStrConverter.getDefault().parseRDN(rdnString);
         assertion = rdn.getAssertion();
     }
@@ -67,7 +67,7 @@ public class RDN {
      * Directory Strings.
      */
     public RDN(String rdnString, byte[] tags)
-            throws IOException {
+    throws IOException {
         RDN rdn = LdapDNStrConverter.getDefault().parseRDN(rdnString, tags);
         assertion = rdn.getAssertion();
     }
@@ -83,7 +83,7 @@ public class RDN {
      * @param ldapDNStrConverter a LdapDNStrConverter.
      */
     public RDN(String rdnString, LdapDNStrConverter ldapDNStrConverter)
-            throws IOException {
+    throws IOException {
         RDN rdn = ldapDNStrConverter.parseRDN(rdnString);
         assertion = rdn.getAssertion();
     }
@@ -265,7 +265,7 @@ public class RDN {
      * @exception IOException if an error occurs during the conversion.
      */
     public String toLdapDNString()
-            throws IOException {
+    throws IOException {
         return LdapDNStrConverter.getDefault().encodeRDN(this);
     }
 
@@ -279,7 +279,7 @@ public class RDN {
      * @exception IOException if an error occurs in the conversion.
      */
     public String toLdapDNString(LdapDNStrConverter ldapDNStrConverter)
-            throws IOException {
+    throws IOException {
         return ldapDNStrConverter.encodeRDN(this);
     }
 

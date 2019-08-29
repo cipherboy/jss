@@ -92,7 +92,7 @@ public class IPAddressName implements GeneralNameInterface {
     public IPAddressName(String s, CIDRNetmask mask) {
         address = parseAddress(true, s);
         mask.write(ByteBuffer.wrap(
-                    address, address.length / 2, address.length / 2));
+                       address, address.length / 2, address.length / 2));
     }
 
     /**

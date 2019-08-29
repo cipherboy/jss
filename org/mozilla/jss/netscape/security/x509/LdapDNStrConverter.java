@@ -39,13 +39,13 @@ public abstract class LdapDNStrConverter {
      * @return an X500Name object for the Ldap DN String.
      */
     public abstract X500Name parseDN(String dn)
-            throws IOException;
+    throws IOException;
 
     /**
      * Like parseDN with a specified DER encoding order for Directory Strings.
      */
     public abstract X500Name parseDN(String dn, byte[] tags)
-            throws IOException;
+    throws IOException;
 
     /**
      * Converts a Ldap DN string to a RDN object.
@@ -55,13 +55,13 @@ public abstract class LdapDNStrConverter {
      * @return an RDN object.
      */
     public abstract RDN parseRDN(String rdn)
-            throws IOException;
+    throws IOException;
 
     /**
      * Like parseRDN with a specified DER encoding order for Directory Strings.
      */
     public abstract RDN parseRDN(String rdn, byte[] tags)
-            throws IOException;
+    throws IOException;
 
     /**
      * Converts a Ldap DN string to a AVA object.
@@ -70,13 +70,13 @@ public abstract class LdapDNStrConverter {
      * @return an AVA object.
      */
     public abstract AVA parseAVA(String ava)
-            throws IOException;
+    throws IOException;
 
     /**
      * Like parseAVA with a specified DER encoding order for Directory Strings.
      */
     public abstract AVA parseAVA(String rdn, byte[] tags)
-            throws IOException;
+    throws IOException;
 
     //
     // public encoding methods.
@@ -132,7 +132,7 @@ public abstract class LdapDNStrConverter {
     public static void setDefault(LdapDNStrConverter defConverter) {
         if (defConverter == null)
             throw new IllegalArgumentException(
-                    "The default Ldap DN String converter cannot be set to null.");
+                "The default Ldap DN String converter cannot be set to null.");
         defaultConverter = defConverter;
     }
 

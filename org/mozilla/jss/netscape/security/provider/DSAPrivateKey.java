@@ -43,7 +43,7 @@ import org.mozilla.jss.netscape.security.x509.AlgIdDSA;
  */
 
 public final class DSAPrivateKey extends PKCS8Key
-        implements java.security.interfaces.DSAPrivateKey, Serializable {
+    implements java.security.interfaces.DSAPrivateKey, Serializable {
 
     /** use serialVersionUID from JDK 1.1. for interoperability */
     private static final long serialVersionUID = -3244453684193605938L;
@@ -61,18 +61,18 @@ public final class DSAPrivateKey extends PKCS8Key
      * Make a DSA private key out of a private key and three parameters.
      */
     public DSAPrivateKey(BigInteger x, BigInteger p,
-             BigInteger q, BigInteger g)
-            throws InvalidKeyException {
+                         BigInteger q, BigInteger g)
+    throws InvalidKeyException {
         this.x = x;
         algid = new AlgIdDSA(p, q, g);
 
         try {
             key = new DerValue(DerValue.tag_Integer,
-                    x.toByteArray()).toByteArray();
+                               x.toByteArray()).toByteArray();
             encode();
         } catch (IOException e) {
             throw new InvalidKeyException("could not DER encode x: " +
-                      e.getMessage());
+                                          e.getMessage());
         }
     }
 
@@ -128,7 +128,7 @@ public final class DSAPrivateKey extends PKCS8Key
 
     public String toString() {
         return "Sun DSA Private Key \nparameters:" + algid + "\nx: " +
-                x.toString(16) + "\n";
+               x.toString(16) + "\n";
     }
 
     protected void parseKeyBits() throws InvalidKeyException {

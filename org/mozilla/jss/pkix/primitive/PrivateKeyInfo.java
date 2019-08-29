@@ -43,7 +43,7 @@ public class PrivateKeyInfo
     public String getAlgorithm() {
         try {
             return PrivateKey.Type.fromOID(privateKeyAlgorithm.getOID())
-                        .toString();
+                   .toString();
         } catch( NoSuchAlgorithmException e ) {
             return null;
         }
@@ -80,12 +80,12 @@ public class PrivateKeyInfo
      *      Each element must be a org.mozilla.jss.pkix.primitive.Attribute.
      */
     public PrivateKeyInfo(INTEGER version,
-                AlgorithmIdentifier privateKeyAlgorithm,
-                OCTET_STRING privateKey, SET attributes)
+                          AlgorithmIdentifier privateKeyAlgorithm,
+                          OCTET_STRING privateKey, SET attributes)
     {
         if( version==null || privateKeyAlgorithm==null || privateKey==null ) {
             throw new IllegalArgumentException(
-                    "PrivateKeyInfo parameter is null");
+                "PrivateKeyInfo parameter is null");
         }
 
         this.version = version;
@@ -106,7 +106,7 @@ public class PrivateKeyInfo
             for(int i=0; i < size; i++) {
                 if( ! (attributes.elementAt(i) instanceof Attribute) ) {
                     throw new IllegalArgumentException("element "+i+
-                        " of attributes is not an Attribute");
+                                                       " of attributes is not an Attribute");
                 }
             }
         }
@@ -127,7 +127,7 @@ public class PrivateKeyInfo
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         sequence.encode(implicitTag, ostream);
     }
@@ -151,7 +151,7 @@ public class PrivateKeyInfo
             seqt.addElement( AlgorithmIdentifier.getTemplate() );
             seqt.addElement( OCTET_STRING.getTemplate() );
             seqt.addOptionalElement( new Tag(0),
-                        new SET.OF_Template( Attribute.getTemplate() ) );
+                                     new SET.OF_Template( Attribute.getTemplate() ) );
         }
 
         public boolean tagMatch(Tag tag) {
@@ -159,20 +159,20 @@ public class PrivateKeyInfo
         }
 
         public ASN1Value decode(InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
             return new PrivateKeyInfo( (INTEGER) seq.elementAt(0),
-                                        (AlgorithmIdentifier) seq.elementAt(1),
-                                        (OCTET_STRING) seq.elementAt(2),
-                                        (SET) seq.elementAt(3) );
+                                       (AlgorithmIdentifier) seq.elementAt(1),
+                                       (OCTET_STRING) seq.elementAt(2),
+                                       (SET) seq.elementAt(3) );
         }
     }
 }

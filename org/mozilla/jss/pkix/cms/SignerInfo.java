@@ -33,9 +33,9 @@ public class SignerInfo implements ASN1Value {
     // PKCS #9 attributes
     ////////////////////////////////////////////////
     private static final OBJECT_IDENTIFIER
-        CONTENT_TYPE = OBJECT_IDENTIFIER.PKCS.subBranch(9).subBranch(3);
+    CONTENT_TYPE = OBJECT_IDENTIFIER.PKCS.subBranch(9).subBranch(3);
     private static final OBJECT_IDENTIFIER
-        MESSAGE_DIGEST = OBJECT_IDENTIFIER.PKCS.subBranch(9).subBranch(4);
+    MESSAGE_DIGEST = OBJECT_IDENTIFIER.PKCS.subBranch(9).subBranch(4);
 
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
@@ -78,7 +78,7 @@ public class SignerInfo implements ASN1Value {
      *  recognized by JSS.
      */
     public DigestAlgorithm getDigestAlgorithm()
-        throws NoSuchAlgorithmException
+    throws NoSuchAlgorithmException
     {
         return DigestAlgorithm.fromOID( digestAlgorithm.getOID() );
     }
@@ -114,10 +114,10 @@ public class SignerInfo implements ASN1Value {
      *  by JSS.
      */
     public SignatureAlgorithm getDigestEncryptionAlgorithm()
-        throws NoSuchAlgorithmException
+    throws NoSuchAlgorithmException
     {
         return SignatureAlgorithm.fromOID(
-                    digestEncryptionAlgorithm.getOID() );
+                   digestEncryptionAlgorithm.getOID() );
     }
 
     /**
@@ -163,7 +163,7 @@ public class SignerInfo implements ASN1Value {
      *  this SignerInfo.
      * @param signingAlg The algorithm to be used to sign the content.
      *  This should be a composite algorithm, such as
-	 *  RSASignatureWithMD5Digest, instead of a raw algorithm, such as
+     *  RSASignatureWithMD5Digest, instead of a raw algorithm, such as
      *  RSASignature.
      *  Note that the digest portion of this algorithm must be the same
      *  algorithm as was used to digest the message content.
@@ -190,9 +190,9 @@ public class SignerInfo implements ASN1Value {
                         byte[] messageDigest,
                         SignatureAlgorithm signingAlg,
                         PrivateKey signingKey )
-        throws InvalidKeyException, NoSuchAlgorithmException,
-        NotInitializedException, SignatureException,
-        TokenException
+    throws InvalidKeyException, NoSuchAlgorithmException,
+               NotInitializedException, SignatureException,
+               TokenException
     {
         if (signerIdentifier == null) {
             throw new IllegalArgumentException("SignerIdentifier may not be null");
@@ -206,7 +206,7 @@ public class SignerInfo implements ASN1Value {
             throw new IllegalArgumentException("Unexpected SignerIdentifier type");
         }
         this.digestAlgorithm =
-                new AlgorithmIdentifier(signingAlg.getDigestAlg().toOID(),null);
+            new AlgorithmIdentifier(signingAlg.getDigestAlg().toOID(),null);
 
         // if content-type is not data, add message-digest and content-type
         // to signed attributes.
@@ -217,7 +217,7 @@ public class SignerInfo implements ASN1Value {
             Attribute attrib = new Attribute(CONTENT_TYPE, contentType);
             signedAttributes.addElement(attrib);
             attrib = new Attribute(MESSAGE_DIGEST,
-                            new OCTET_STRING(messageDigest) );
+                                   new OCTET_STRING(messageDigest) );
             signedAttributes.addElement(attrib);
         }
 
@@ -225,7 +225,7 @@ public class SignerInfo implements ASN1Value {
             signingAlg.toOID(),null );
 
 
-        if( signedAttributes != null ) 
+        if( signedAttributes != null )
         {
             assert( signedAttributes.size() >= 2 );
             this.signedAttributes = signedAttributes;
@@ -260,7 +260,7 @@ public class SignerInfo implements ASN1Value {
                 sig = token.getSignatureContext(signingAlg);
             }
         }
-        
+
         // encrypt the DER-encoded DigestInfo with the private key
         sig.initSign(signingKey);
         sig.update(toBeSigned);
@@ -276,12 +276,12 @@ public class SignerInfo implements ASN1Value {
      * A constructor for creating a new SignerInfo from its decoding.
      */
     SignerInfo( INTEGER version,
-            SignerIdentifier signerIdentifier,
-            AlgorithmIdentifier digestAlgorithm,
-            SET signedAttributes,
-            AlgorithmIdentifier digestEncryptionAlgorithm,
-            byte[] encryptedDigest,
-            SET unsignedAttributes)
+                SignerIdentifier signerIdentifier,
+                AlgorithmIdentifier digestAlgorithm,
+                SET signedAttributes,
+                AlgorithmIdentifier digestEncryptionAlgorithm,
+                byte[] encryptedDigest,
+                SET unsignedAttributes)
     {
         this.version = version;
         this.signerIdentifier = signerIdentifier;
@@ -305,7 +305,7 @@ public class SignerInfo implements ASN1Value {
      * Note that this does <b>not</b> verify the validity of the
      *  the certificate itself, only the signature.<ul>
      *
-     * <li>If no signed attributes are present, the content type is 
+     * <li>If no signed attributes are present, the content type is
      *  verified to be <i>data</i>. Then it is verified that the message
      *  digest passed
      *  in, when encrypted with the given public key, matches the encrypted
@@ -333,33 +333,33 @@ public class SignerInfo implements ASN1Value {
      *       matching the issuer name and serial number can be found.
      */
     public void verify(byte[] messageDigest, OBJECT_IDENTIFIER contentType)
-        throws NotInitializedException, NoSuchAlgorithmException,
+    throws NotInitializedException, NoSuchAlgorithmException,
         InvalidKeyException, TokenException, SignatureException,
         ObjectNotFoundException
     {
         CryptoManager cm = CryptoManager.getInstance();
-		if
-			(signerIdentifier.getType().equals(SignerIdentifier.ISSUER_AND_SERIALNUMBER)) {
-			IssuerAndSerialNumber issuerAndSerialNumber = signerIdentifier.getIssuerAndSerialNumber();
-			X509Certificate cert = cm.findCertByIssuerAndSerialNumber(
-				ASN1Util.encode(issuerAndSerialNumber.getIssuer()),
-				issuerAndSerialNumber.getSerialNumber()  );
-			verify(messageDigest, contentType, cert.getPublicKey());
-		} else {
+        if
+        (signerIdentifier.getType().equals(SignerIdentifier.ISSUER_AND_SERIALNUMBER)) {
+            IssuerAndSerialNumber issuerAndSerialNumber = signerIdentifier.getIssuerAndSerialNumber();
+            X509Certificate cert = cm.findCertByIssuerAndSerialNumber(
+                                       ASN1Util.encode(issuerAndSerialNumber.getIssuer()),
+                                       issuerAndSerialNumber.getSerialNumber()  );
+            verify(messageDigest, contentType, cert.getPublicKey());
+        } else {
             assert(
-						  signerIdentifier.getType().equals(SignerIdentifier.SUBJECT_KEY_IDENTIFIER) );
+                signerIdentifier.getType().equals(SignerIdentifier.SUBJECT_KEY_IDENTIFIER) );
 
-			// XXX Do we have method to get key using keyIdentifier
-		}
+            // XXX Do we have method to get key using keyIdentifier
+        }
     }
-    
+
 
     /**
      * Verifies that this SignerInfo contains a valid signature of the
      * given message digest.  If any signed attributes are present,
      * they are also validated. The verification algorithm is as follows:<ul>
      *
-     * <li>If no signed attributes are present, the content type is 
+     * <li>If no signed attributes are present, the content type is
      *  verified to be <i>data</i>. Then it is verified that the message
      *  digest passed
      *  in, when encrypted with the given public key, matches the encrypted
@@ -386,17 +386,17 @@ public class SignerInfo implements ASN1Value {
      * @param pubkey The public key to use to verify the signature.
      */
     public void verify(byte[] messageDigest, OBJECT_IDENTIFIER contentType,
-        PublicKey pubkey)
-        throws NotInitializedException, NoSuchAlgorithmException,
+                       PublicKey pubkey)
+    throws NotInitializedException, NoSuchAlgorithmException,
         InvalidKeyException, TokenException, SignatureException
     {
 
         if( signedAttributes == null ) {
             verifyWithoutSignedAttributes(messageDigest, contentType,
-                pubkey);
+                                          pubkey);
         } else {
             verifyWithSignedAttributes(messageDigest, contentType,
-                pubkey);
+                                       pubkey);
         }
     }
 
@@ -405,9 +405,9 @@ public class SignerInfo implements ASN1Value {
      * given public key, matches the encrypted digest in the SignerInfo.
      */
     private void verifyWithoutSignedAttributes
-        (byte[] messageDigest, OBJECT_IDENTIFIER contentType,
-        PublicKey pubkey)
-        throws NotInitializedException, NoSuchAlgorithmException,
+    (byte[] messageDigest, OBJECT_IDENTIFIER contentType,
+     PublicKey pubkey)
+    throws NotInitializedException, NoSuchAlgorithmException,
         InvalidKeyException, TokenException, SignatureException
     {
         if( ! contentType.equals(ContentInfo.DATA) ) {
@@ -424,7 +424,7 @@ public class SignerInfo implements ASN1Value {
             );
 
         CryptoToken token = CryptoManager.getInstance()
-                .getInternalCryptoToken();
+                            .getInternalCryptoToken();
         Signature sig;
         byte[] toBeVerified;
         if (sigAlg.getRawAlg() == SignatureAlgorithm.RSASignature) {
@@ -436,7 +436,7 @@ public class SignerInfo implements ASN1Value {
             toBeVerified = messageDigest;
             sig = token.getSignatureContext(sigAlg);
         }
-        
+
         sig.initVerify(pubkey);
         sig.update(toBeVerified);
         if( sig.verify(encryptedDigest.toByteArray()) ) {
@@ -464,9 +464,9 @@ public class SignerInfo implements ASN1Value {
      * signedAttributes field.
      */
     private void verifyWithSignedAttributes
-        (byte[] messageDigest, OBJECT_IDENTIFIER contentType,
-        PublicKey pubkey)
-        throws NotInitializedException, NoSuchAlgorithmException,
+    (byte[] messageDigest, OBJECT_IDENTIFIER contentType,
+     PublicKey pubkey)
+    throws NotInitializedException, NoSuchAlgorithmException,
         InvalidKeyException, TokenException, SignatureException
     {
 
@@ -490,7 +490,7 @@ public class SignerInfo implements ASN1Value {
             }
 
             Attribute attrib = (Attribute)
-                    signedAttributes.elementAt(i);
+                               signedAttributes.elementAt(i);
 
             if( attrib.getType().equals(CONTENT_TYPE) ) {
                 // content-type.  Compare with what was passed in.
@@ -513,8 +513,8 @@ public class SignerInfo implements ASN1Value {
                     } else {
                         // what the heck is it? not what it's supposed to be
                         throw new InvalidBERException(
-                        "Content-Type signed attribute has unexpected"+
-                        " content type");
+                            "Content-Type signed attribute has unexpected"+
+                            " content type");
                     }
                 } catch( InvalidBERException e ) {
                     throw new SignatureException(
@@ -550,13 +550,13 @@ public class SignerInfo implements ASN1Value {
                     } else if( val instanceof ANY ) {
                         OCTET_STRING os;
                         os = (OCTET_STRING) ((ANY)val).decodeWith(
-                            OCTET_STRING.getTemplate() );
+                                 OCTET_STRING.getTemplate() );
                         mdigest = os.toByteArray();
                     } else {
                         // what the heck is it? not what it's supposed to be
                         throw new InvalidBERException(
-                        "Content-Type signed attribute has unexpected"+
-                        " content type");
+                            "Content-Type signed attribute has unexpected"+
+                            " content type");
                     }
                 } catch( InvalidBERException e ) {
                     throw new SignatureException(
@@ -593,12 +593,12 @@ public class SignerInfo implements ASN1Value {
         }
 
         SignatureAlgorithm sigAlg = SignatureAlgorithm.fromOID(
-            digestEncryptionAlgorithm.getOID() );
+                                        digestEncryptionAlgorithm.getOID() );
 
         // All the signed attributes are present and correct.
         // Now verify the signature.
         CryptoToken token =
-                    CryptoManager.getInstance().getInternalCryptoToken();
+            CryptoManager.getInstance().getInternalCryptoToken();
         Signature sig;
 
         // verify the contents octets of the DER encoded signed attribs
@@ -613,23 +613,23 @@ public class SignerInfo implements ASN1Value {
             toBeVerified = encoding;
             sig = token.getSignatureContext(sigAlg);
         }
- 
+
         sig.initVerify(pubkey);
         sig.update( toBeVerified );
 
         if( ! sig.verify(encryptedDigest.toByteArray()) ) {
             // signature is invalid
             throw new SignatureException("encryptedDigest was not the correct"+
-                " signature of the contents octets of the DER-encoded"+
-                " signed attributes");
+                                         " signature of the contents octets of the DER-encoded"+
+                                         " signed attributes");
         }
 
         // SUCCESSFULLY VERIFIED
 
     }
-        
+
     private SEQUENCE createDigestInfo(byte[] data, boolean doDigest) throws NoSuchAlgorithmException {
-        if(data == null || data.length == 0){
+        if(data == null || data.length == 0) {
             throw new IllegalArgumentException("Data to digest must be supplied");
         }
         SEQUENCE digestInfo = new SEQUENCE();
@@ -637,7 +637,7 @@ public class SignerInfo implements ASN1Value {
         byte[] digest;
         if (doDigest) {
             MessageDigest md = MessageDigest.getInstance(
-                    DigestAlgorithm.fromOID(this.digestAlgorithm.getOID()).toString());
+                                   DigestAlgorithm.fromOID(this.digestAlgorithm.getOID()).toString());
             digest = md.digest(data);
         } else {
             digest = data;
@@ -666,7 +666,7 @@ public class SignerInfo implements ASN1Value {
         }
 
         return true;
-    } 
+    }
 
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
@@ -728,9 +728,9 @@ public class SignerInfo implements ASN1Value {
 
             // signedAttributes
             seqt.addOptionalElement(
-                        new Tag(0),
-                        new SET.OF_Template(Attribute.getTemplate()));
-          
+                new Tag(0),
+                new SET.OF_Template(Attribute.getTemplate()));
+
             // digestEncryptionAlgorithm
             seqt.addElement(AlgorithmIdentifier.getTemplate());  // dig encr alg
 
@@ -739,37 +739,37 @@ public class SignerInfo implements ASN1Value {
 
             // unsigned attributes
             seqt.addOptionalElement(
-                    new Tag(1),
-                    new SET.OF_Template(Attribute.getTemplate()));
+                new Tag(1),
+                new SET.OF_Template(Attribute.getTemplate()));
 
         }
-        
+
         public boolean tagMatch(Tag tag) {
             return TAG.equals(tag);
         }
 
-        public ASN1Value decode(InputStream istream) 
-            throws IOException, InvalidBERException
-            {
-                return decode(TAG,istream);
-            }
+        public ASN1Value decode(InputStream istream)
+        throws IOException, InvalidBERException
+        {
+            return decode(TAG,istream);
+        }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws IOException, InvalidBERException
-            {
-                SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag,istream);
-                assert(seq.size() == 7);
+        throws IOException, InvalidBERException
+        {
+            SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag,istream);
+            assert(seq.size() == 7);
 
-                return new SignerInfo(
-                    (INTEGER)                   seq.elementAt(0),
-                    (SignerIdentifier)     seq.elementAt(1),
-                    (AlgorithmIdentifier)       seq.elementAt(2),
-                    (SET)                       seq.elementAt(3),
-                    (AlgorithmIdentifier)       seq.elementAt(4),
-                    ((OCTET_STRING)             seq.elementAt(5)).toByteArray(),
-                    (SET)                       seq.elementAt(6)
-                    );
-            }
+            return new SignerInfo(
+                       (INTEGER)                   seq.elementAt(0),
+                       (SignerIdentifier)     seq.elementAt(1),
+                       (AlgorithmIdentifier)       seq.elementAt(2),
+                       (SET)                       seq.elementAt(3),
+                       (AlgorithmIdentifier)       seq.elementAt(4),
+                       ((OCTET_STRING)             seq.elementAt(5)).toByteArray(),
+                       (SET)                       seq.elementAt(6)
+                   );
+        }
     } // end of template
 
 }

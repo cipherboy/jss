@@ -14,6 +14,6 @@ final class CipherContextProxy extends NativeProxy {
     protected native void releaseNativeResources();
 
     protected void finalize() throws Throwable {
-      super.finalize();
+        super.finalize();
     }
 }

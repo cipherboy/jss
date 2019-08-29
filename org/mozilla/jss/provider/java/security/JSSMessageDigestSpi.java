@@ -32,7 +32,7 @@ public abstract class JSSMessageDigestSpi extends MessageDigestSpi {
                 token = cm.getInternalCryptoToken();
             }
             try {
-              digest = token.getDigestContext(alg);
+                digest = token.getDigestContext(alg);
             } catch(java.security.NoSuchAlgorithmException e) {
                 throw new UnsupportedOperationException(
                     "Token '" + token.getName() + "' does not support " +
@@ -52,15 +52,15 @@ public abstract class JSSMessageDigestSpi extends MessageDigestSpi {
     }
 
     public byte[] engineDigest() {
-      try {
-        return digest.digest();
-      } catch(java.security.DigestException de) {
-        throw new TokenRuntimeException(de.getMessage());
-      }
+        try {
+            return digest.digest();
+        } catch(java.security.DigestException de) {
+            throw new TokenRuntimeException(de.getMessage());
+        }
     }
 
     public int engineDigest(byte[] buf, int offset, int len)
-        throws DigestException
+    throws DigestException
     {
         return digest.digest(buf, offset, len);
     }
@@ -70,27 +70,27 @@ public abstract class JSSMessageDigestSpi extends MessageDigestSpi {
     }
 
     public void engineReset() {
-      try {
-        digest.reset();
-      } catch(java.security.DigestException de) {
-        throw new TokenRuntimeException(de.getMessage());
-      }
+        try {
+            digest.reset();
+        } catch(java.security.DigestException de) {
+            throw new TokenRuntimeException(de.getMessage());
+        }
     }
 
     public void engineUpdate(byte input) {
-      try {
-        digest.update(input);
-      } catch(java.security.DigestException de) {
-        throw new TokenRuntimeException(de.getMessage());
-      }
+        try {
+            digest.update(input);
+        } catch(java.security.DigestException de) {
+            throw new TokenRuntimeException(de.getMessage());
+        }
     }
 
     public void engineUpdate(byte[] input, int offset, int len) {
-      try {
-        digest.update(input,offset,len);
-      } catch(java.security.DigestException de) {
-        throw new TokenRuntimeException(de.getMessage());
-      }
+        try {
+            digest.update(input,offset,len);
+        } catch(java.security.DigestException de) {
+            throw new TokenRuntimeException(de.getMessage());
+        }
     }
 
     public static class SHA1 extends JSSMessageDigestSpi {

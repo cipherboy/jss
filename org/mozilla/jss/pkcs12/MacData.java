@@ -70,10 +70,10 @@ public class MacData implements ASN1Value {
      *      (and the default value of 1 will be implied).
      */
     public MacData(DigestInfo mac, OCTET_STRING macSalt,
-                INTEGER macIterationCount)
+                   INTEGER macIterationCount)
     {
         if( mac==null || macSalt==null || macIterationCount==null ) {
-             throw new IllegalArgumentException("null parameter");
+            throw new IllegalArgumentException("null parameter");
         }
 
         this.mac = mac;
@@ -83,24 +83,24 @@ public class MacData implements ASN1Value {
 
     /**
      * Creates a MacData by computing a HMAC on the given bytes. An HMAC
-	 *	is a message authentication code, which is a keyed digest. It proves
-	 *	not only that data has not been tampered with, but also that the
-	 *	entity that created the HMAC possessed the symmetric key.
-	 *
-	 * @param password The password used to generate a key using a
-	 *		PBE mechanism.
-	 * @param macSalt The salt used as input to the PBE key generation
-	 *		mechanism. If null is passed in, new random salt will be created.
+     *	is a message authentication code, which is a keyed digest. It proves
+     *	not only that data has not been tampered with, but also that the
+     *	entity that created the HMAC possessed the symmetric key.
+     *
+     * @param password The password used to generate a key using a
+     *		PBE mechanism.
+     * @param macSalt The salt used as input to the PBE key generation
+     *		mechanism. If null is passed in, new random salt will be created.
      * @param iterations The iteration count for creating the PBE key.
-	 * @param toBeMACed The data on which the HMAC will be computed.
+     * @param toBeMACed The data on which the HMAC will be computed.
      * @exception NotInitializedException If the crypto subsystem
      *      has not been initialized yet.
      * @exception TokenException If an error occurs on a crypto token.
-	 */
+     */
     public MacData( Password password, byte[] macSalt,
                     int iterations, byte[] toBeMACed )
-        throws NotInitializedException,
-            DigestException, TokenException, CharConversionException
+    throws NotInitializedException,
+               DigestException, TokenException, CharConversionException
     {
         CryptoManager cm = CryptoManager.getInstance();
         CryptoToken token = cm.getInternalCryptoToken();
@@ -133,7 +133,7 @@ public class MacData implements ASN1Value {
 
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("SHA-1 HMAC algorithm not found on internal " +
-                    "token: " + e.getMessage(), e);
+                                       "token: " + e.getMessage(), e);
 
         } catch (InvalidAlgorithmParameterException e) {
             throw new RuntimeException("Invalid PBE algorithm parameters: " + e.getMessage(), e);
@@ -165,7 +165,7 @@ public class MacData implements ASN1Value {
 
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         SEQUENCE seq = new SEQUENCE();
 
@@ -198,7 +198,7 @@ public class MacData implements ASN1Value {
             seqt.addElement( DigestInfo.getTemplate() );
             seqt.addElement( OCTET_STRING.getTemplate() );
             seqt.addElement( INTEGER.getTemplate(),
-                                new INTEGER(DEFAULT_ITERATIONS) );
+                             new INTEGER(DEFAULT_ITERATIONS) );
         }
 
 
@@ -208,14 +208,14 @@ public class MacData implements ASN1Value {
 
 
         public ASN1Value decode(InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             return decode(TAG, istream);
         }
 
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 

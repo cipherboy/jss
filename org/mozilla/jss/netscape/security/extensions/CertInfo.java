@@ -53,19 +53,19 @@ public class CertInfo extends X509CertInfo {
         try {
             // force version 3
             FORCE_VERSION_3 =
-                    new CertificateVersion(CertificateVersion.V3);
+                new CertificateVersion(CertificateVersion.V3);
             SERIALIZE_SUBJECT =
-                    new CertificateSubjectName(
-                            new X500Name("cn=uninitialized"));
+                new CertificateSubjectName(
+                new X500Name("cn=uninitialized"));
             SERIALIZE_ISSUER =
-                    new CertificateIssuerName(
-                            new X500Name("cn=uninitialized"));
+                new CertificateIssuerName(
+                new X500Name("cn=uninitialized"));
             SERIALIZE_VALIDITY =
-                    new CertificateValidity(new Date(0), new Date(0));
+                new CertificateValidity(new Date(0), new Date(0));
             SERIALIZE_SERIALNO =
-                    new CertificateSerialNumber(new BigInteger("0"));
+                new CertificateSerialNumber(new BigInteger("0"));
             SERIALIZE_ALGOR =
-                    new CertificateAlgorithmId(AlgorithmId.get("MD5withRSA"));
+                new CertificateAlgorithmId(AlgorithmId.get("MD5withRSA"));
         } catch (IOException e) {
             // should never happen. If does, system is hosed.
             System.out.println("**** Impossible Error encountered ****");
@@ -111,7 +111,7 @@ public class CertInfo extends X509CertInfo {
             }
             // key is set later in the request.
         } // these exceptions shouldn't happen here unless the
-          // whole process is hosed.
+        // whole process is hosed.
         catch (CertificateException e) {
         } catch (IOException e) {
         }

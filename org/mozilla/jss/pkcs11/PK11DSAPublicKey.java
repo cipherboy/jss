@@ -17,23 +17,23 @@ public final class PK11DSAPublicKey extends PK11PubKey implements DSAPublicKey {
     }
 
     public DSAParams getParams() {
-      try {
-        BigInteger P =  new BigInteger( getPByteArray() );
-        BigInteger Q =  new BigInteger( getQByteArray() );
-        BigInteger G =  new BigInteger( getGByteArray() );
+        try {
+            BigInteger P =  new BigInteger( getPByteArray() );
+            BigInteger Q =  new BigInteger( getQByteArray() );
+            BigInteger G =  new BigInteger( getGByteArray() );
 
-        return new DSAParameterSpec(P, Q, G);
-      } catch(NumberFormatException e) {
-          throw new RuntimeException("Unable to decode DSA parameters: " + e.getMessage(), e);
-      }
+            return new DSAParameterSpec(P, Q, G);
+        } catch(NumberFormatException e) {
+            throw new RuntimeException("Unable to decode DSA parameters: " + e.getMessage(), e);
+        }
     }
 
     public BigInteger getY() {
-      try {
-        return new BigInteger( getYByteArray() );
-      } catch(NumberFormatException e) {
-          throw new RuntimeException("Unable to decode DSA public value: " + e.getMessage(), e);
-      }
+        try {
+            return new BigInteger( getYByteArray() );
+        } catch(NumberFormatException e) {
+            throw new RuntimeException("Unable to decode DSA public value: " + e.getMessage(), e);
+        }
     }
 
     private native byte[] getPByteArray();

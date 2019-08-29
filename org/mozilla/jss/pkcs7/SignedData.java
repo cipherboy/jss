@@ -335,7 +335,7 @@ public class SignedData implements ASN1Value {
      *
      */
     public static class Template implements ASN1Template {
-            private SEQUENCE.Template seqt;
+        private SEQUENCE.Template seqt;
 
         public Template() {
             seqt = new SEQUENCE.Template();
@@ -345,20 +345,20 @@ public class SignedData implements ASN1Value {
 
             // digestAlgorithms
             seqt.addElement(new SET.OF_Template(
-                            AlgorithmIdentifier.getTemplate()));
+                                AlgorithmIdentifier.getTemplate()));
 
             // content info
             seqt.addElement(ContentInfo.getTemplate());
 
             // [0] IMPLICIT certificates OPTIONAL
             seqt.addOptionalElement(
-                        new Tag(0),
-                        new SET.OF_Template(Certificate.getTemplate()));
+                new Tag(0),
+                new SET.OF_Template(Certificate.getTemplate()));
 
             // [1] IMPLICIT CertificateRevocationLists OPTIONAL
             seqt.addOptionalElement(
-                        new Tag(1),
-                        new SET.OF_Template(ANY.getTemplate()));
+                new Tag(1),
+                new SET.OF_Template(ANY.getTemplate()));
 
             // signerInfos
             seqt.addElement(new SET.OF_Template(SignerInfo.getTemplate()));
@@ -368,27 +368,27 @@ public class SignedData implements ASN1Value {
             return TAG.equals(tag);
         }
 
-        public ASN1Value decode(InputStream istream) 
-            throws IOException, InvalidBERException
-            {
-                return decode(TAG, istream);
-            }
+        public ASN1Value decode(InputStream istream)
+        throws IOException, InvalidBERException
+        {
+            return decode(TAG, istream);
+        }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws IOException, InvalidBERException
-            {
-                SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
-                assert(seq.size() == 6);
+        throws IOException, InvalidBERException
+        {
+            SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
+            assert(seq.size() == 6);
 
-                return new SignedData(
-                    (INTEGER)     seq.elementAt(0),
-                    (SET)         seq.elementAt(1),
-                    (ContentInfo) seq.elementAt(2),
-                    (SET)         seq.elementAt(3),
-                    (SET)         seq.elementAt(4),
-                    (SET)         seq.elementAt(5)
-                    );
-            }
+            return new SignedData(
+                       (INTEGER)     seq.elementAt(0),
+                       (SET)         seq.elementAt(1),
+                       (ContentInfo) seq.elementAt(2),
+                       (SET)         seq.elementAt(3),
+                       (SET)         seq.elementAt(4),
+                       (SET)         seq.elementAt(5)
+                   );
+        }
     } // end of template
 
 }

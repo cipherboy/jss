@@ -45,7 +45,7 @@ import org.mozilla.jss.netscape.security.util.DerValue;
  * @see CertAttrSet
  */
 public class IssuerAlternativeNameExtension
-        extends Extension implements CertAttrSet {
+    extends Extension implements CertAttrSet {
     /**
      *
      */
@@ -55,7 +55,7 @@ public class IssuerAlternativeNameExtension
      * get, set, delete methods of Certificate, x509 type.
      */
     public static final String IDENT =
-                         "x509.info.extensions.IssuerAlternativeName";
+        "x509.info.extensions.IssuerAlternativeName";
     /**
      * Attribute names.
      */
@@ -84,7 +84,7 @@ public class IssuerAlternativeNameExtension
      * @exception IOException on error.
      */
     public IssuerAlternativeNameExtension(Boolean critical, GeneralNames names)
-            throws IOException {
+    throws IOException {
         this.names = names;
         this.extensionId = PKIXExtensions.IssuerAlternativeName_Id;
         this.critical = critical.booleanValue();
@@ -98,7 +98,7 @@ public class IssuerAlternativeNameExtension
      * @exception IOException on error.
      */
     public IssuerAlternativeNameExtension(GeneralNames names)
-            throws IOException {
+    throws IOException {
         this.names = names;
         this.extensionId = PKIXExtensions.IssuerAlternativeName_Id;
         this.critical = false;
@@ -122,7 +122,7 @@ public class IssuerAlternativeNameExtension
      * @exception IOException on error.
      */
     public IssuerAlternativeNameExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = PKIXExtensions.IssuerAlternativeName_Id;
         this.critical = critical.booleanValue();
 
@@ -147,7 +147,7 @@ public class IssuerAlternativeNameExtension
         if (names == null)
             return "";
         String s = super.toString() + "IssuerAlternativeName [\n"
-                  + names.toString() + "]\n";
+                   + names.toString() + "]\n";
         return (s);
     }
 
@@ -186,12 +186,12 @@ public class IssuerAlternativeNameExtension
         if (name.equalsIgnoreCase(ISSUER_NAME)) {
             if (!(obj instanceof GeneralNames)) {
                 throw new IOException("Attribute value should be of" +
-                                    " type GeneralNames.");
+                                      " type GeneralNames.");
             }
             names = (GeneralNames) obj;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:IssuerAlternativeName.");
+                                  "CertAttrSet:IssuerAlternativeName.");
         }
     }
 
@@ -203,7 +203,7 @@ public class IssuerAlternativeNameExtension
             return (names);
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:IssuerAlternativeName.");
+                                  "CertAttrSet:IssuerAlternativeName.");
         }
     }
 
@@ -215,7 +215,7 @@ public class IssuerAlternativeNameExtension
             names = null;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:IssuerAlternativeName.");
+                                  "CertAttrSet:IssuerAlternativeName.");
         }
     }
 

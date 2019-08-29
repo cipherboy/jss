@@ -22,7 +22,7 @@ public final class PK11SymKey implements SymmetricKey {
         assert(pointer!=null);
         keyProxy  = new SymKeyProxy(pointer);
         this.nickName = nickName;
-     }
+    }
 
     private SymKeyProxy keyProxy;
     private String nickName;
@@ -68,7 +68,7 @@ public final class PK11SymKey implements SymmetricKey {
     public native int getLength();
 
     public native byte[] getKeyData()
-        throws SymmetricKey.NotExtractableException;
+    throws SymmetricKey.NotExtractableException;
 
     public native KeyType getKeyType();
 

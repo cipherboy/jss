@@ -39,5 +39,5 @@ public interface ASN1Value {
      * @throws IOException If an error occurred.
      */
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException;
+    throws IOException;
 }

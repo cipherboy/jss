@@ -29,7 +29,7 @@ public interface CryptoStore {
     public PrivateKey
     importPrivateKey(  byte[] key,
                        PrivateKey.Type type       )
-        throws TokenException, KeyAlreadyImportedException;
+    throws TokenException, KeyAlreadyImportedException;
 
     /**
      * Imports a raw private key into this token.
@@ -42,7 +42,7 @@ public interface CryptoStore {
     public PrivateKey
     importPrivateKey(  byte[] key,
                        PrivateKey.Type type, boolean temporary)
-        throws TokenException, KeyAlreadyImportedException;
+    throws TokenException, KeyAlreadyImportedException;
 
 
     /**
@@ -72,7 +72,7 @@ public interface CryptoStore {
      * @throws TokenException If an error occurs on the token.
      */
     public PublicKey findPublicKey(PrivateKey privateKey)
-            throws ObjectNotFoundException, TokenException;
+    throws ObjectNotFoundException, TokenException;
 
     /**
      * Returns all symmetric keys stored on this token.
@@ -93,7 +93,7 @@ public interface CryptoStore {
      *      deleting the key.
      */
     public void deletePrivateKey(PrivateKey privateKey)
-        throws NoSuchItemOnTokenException, TokenException;
+    throws NoSuchItemOnTokenException, TokenException;
 
     /**
      * Permanently deletes a public key from the token.
@@ -105,7 +105,7 @@ public interface CryptoStore {
      *      deleting the key.
      */
     public void deletePublicKey(PublicKey publicKey)
-            throws NoSuchItemOnTokenException, TokenException;
+    throws NoSuchItemOnTokenException, TokenException;
 
     /**
      * Get an encrypted private key for the given cert.
@@ -116,9 +116,9 @@ public interface CryptoStore {
      * @param iteration Iteration count; default of 2000 if le 0
      */
     public byte[] getEncryptedPrivateKeyInfo(X509Certificate cert,
-        PBEAlgorithm pbeAlg, Password pw, int iteration)
-        throws NotInitializedException,
-            ObjectNotFoundException, TokenException;
+            PBEAlgorithm pbeAlg, Password pw, int iteration)
+    throws NotInitializedException,
+               ObjectNotFoundException, TokenException;
 
     /**
      * Get an encrypted private key, with optional password
@@ -176,7 +176,7 @@ public interface CryptoStore {
      *      deleting the certificate.
      */
     public void deleteCert(X509Certificate cert)
-        throws NoSuchItemOnTokenException, TokenException;
+    throws NoSuchItemOnTokenException, TokenException;
 
     /**
      * Deletes a certificate without deleting the corresponding keys.
@@ -189,5 +189,5 @@ public interface CryptoStore {
      *      deleting the certificate.
      */
     public void deleteCertOnly(X509Certificate cert)
-            throws NoSuchItemOnTokenException, TokenException;
+    throws NoSuchItemOnTokenException, TokenException;
 }

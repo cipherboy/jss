@@ -51,14 +51,14 @@ public final class CRLReasonExtension extends Extension implements CertAttrSet {
     public static final CRLReasonExtension KEY_COMPROMISE = new CRLReasonExtension(RevocationReason.KEY_COMPROMISE);
     public static final CRLReasonExtension CA_COMPROMISE = new CRLReasonExtension(RevocationReason.CA_COMPROMISE);
     public static final CRLReasonExtension AFFILIATION_CHANGED = new CRLReasonExtension(
-            RevocationReason.AFFILIATION_CHANGED);
+        RevocationReason.AFFILIATION_CHANGED);
     public static final CRLReasonExtension SUPERSEDED = new CRLReasonExtension(RevocationReason.SUPERSEDED);
     public static final CRLReasonExtension CESSATION_OF_OPERATION = new CRLReasonExtension(
-            RevocationReason.CESSATION_OF_OPERATION);
+        RevocationReason.CESSATION_OF_OPERATION);
     public static final CRLReasonExtension CERTIFICATE_HOLD = new CRLReasonExtension(RevocationReason.CERTIFICATE_HOLD);
     public static final CRLReasonExtension REMOVE_FROM_CRL = new CRLReasonExtension(RevocationReason.REMOVE_FROM_CRL);
     public static final CRLReasonExtension PRIVILEGE_WITHDRAWN = new CRLReasonExtension(
-            RevocationReason.PRIVILEGE_WITHDRAWN);
+        RevocationReason.PRIVILEGE_WITHDRAWN);
     public static final CRLReasonExtension AA_COMPROMISE = new CRLReasonExtension(RevocationReason.AA_COMPROMISE);
 
     /**
@@ -96,7 +96,7 @@ public final class CRLReasonExtension extends Extension implements CertAttrSet {
     }
 
     public CRLReasonExtension(Boolean critical, RevocationReason reason)
-                throws IOException {
+    throws IOException {
         this.extensionId = PKIXExtensions.ReasonCode_Id;
         this.critical = critical.booleanValue();
         mReason = reason;
@@ -109,7 +109,7 @@ public final class CRLReasonExtension extends Extension implements CertAttrSet {
      * @exception IOException on decoding errors.
      */
     public CRLReasonExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = PKIXExtensions.ReasonCode_Id;
         this.critical = critical.booleanValue();
 
@@ -227,7 +227,7 @@ public final class CRLReasonExtension extends Extension implements CertAttrSet {
             return true;
         else if (other instanceof CRLReasonExtension)
             return ((CRLReasonExtension) other).mReason == mReason &&
-                    ((CRLReasonExtension) other).critical == critical;
+                   ((CRLReasonExtension) other).critical == critical;
         else
             return false;
     }

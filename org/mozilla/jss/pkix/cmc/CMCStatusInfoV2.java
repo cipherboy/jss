@@ -104,7 +104,8 @@ public class CMCStatusInfoV2 implements ASN1Value {
                                            "not supported",
                                            "confirm required",
                                            "pop required",
-                                           "partial"};
+                                           "partial"
+                                          };
 
     ///////////////////////////////////////////////////////////////////////
     // Constructors
@@ -128,13 +129,13 @@ public class CMCStatusInfoV2 implements ASN1Value {
      * @param otherInfo The OtherInfo choice.
      */
     public CMCStatusInfoV2(int status, SEQUENCE bodyList, String
-                         statusString, OtherInfo otherInfo) {
+                           statusString, OtherInfo otherInfo) {
         this.status = new INTEGER(status);
         this.bodyList = bodyList;
-        if (statusString != null){
+        if (statusString != null) {
             try {
                 this.statusString = new UTF8String(statusString);
-            } catch (Exception e){}
+            } catch (Exception e) {}
         } else
             this.statusString = null;
         this.otherInfo = otherInfo;
@@ -148,7 +149,7 @@ public class CMCStatusInfoV2 implements ASN1Value {
      * @param otherInfo A CHOICE.
      */
     public CMCStatusInfoV2(INTEGER status, SEQUENCE bodyList, UTF8String
-                         statusString, OtherInfo otherInfo) {
+                           statusString, OtherInfo otherInfo) {
         this.status = status;
         this.bodyList = bodyList;
         this.statusString = statusString;
@@ -160,11 +161,11 @@ public class CMCStatusInfoV2 implements ASN1Value {
      *  field is optional.
      */
     public void setStatusString(String statusString) {
-        if (statusString != null){
+        if (statusString != null) {
             try {
                 this.statusString = new UTF8String(statusString);
-            } catch (Exception e){}
-        } else{
+            } catch (Exception e) {}
+        } else {
             this.statusString = null;
         }
     }
@@ -213,7 +214,7 @@ public class CMCStatusInfoV2 implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         SEQUENCE seq = new SEQUENCE();
 
@@ -254,20 +255,20 @@ public class CMCStatusInfoV2 implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
 
             CMCStatusInfoV2 psi;
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
             return new CMCStatusInfoV2((INTEGER)seq.elementAt(0),
-                                     (SEQUENCE)seq.elementAt(1),
-                                     (UTF8String)seq.elementAt(2),
-                                     (OtherInfo)seq.elementAt(3));
+                                       (SEQUENCE)seq.elementAt(1),
+                                       (UTF8String)seq.elementAt(2),
+                                       (OtherInfo)seq.elementAt(3));
         }
     }
 }

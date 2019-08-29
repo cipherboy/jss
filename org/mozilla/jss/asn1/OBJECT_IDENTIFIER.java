@@ -24,13 +24,13 @@ public class OBJECT_IDENTIFIER implements ASN1Value {
      * The OID space for EC
      */
     public static final OBJECT_IDENTIFIER EC_PUBKEY_OID =
-        new OBJECT_IDENTIFIER( new long[]{1, 2, 840, 10045, 2, 1} );
+        new OBJECT_IDENTIFIER( new long[] {1, 2, 840, 10045, 2, 1} );
 
     /**
      * The OID space for RSA Data Security, Inc.
      */
     public static final OBJECT_IDENTIFIER RSADSI =
-        new OBJECT_IDENTIFIER( new long[]{1, 2, 840, 113549} );
+        new OBJECT_IDENTIFIER( new long[] {1, 2, 840, 113549} );
 
     /**
      * The OID space for RSA's PKCS (public key cryptography standards).
@@ -230,7 +230,7 @@ public class OBJECT_IDENTIFIER implements ASN1Value {
             // input string is of the format provided by OBJECT_IDENTIFIER,toString()
             // convert this first to dotted OID
 
-        	// remove the leading and trailing brackets
+            // remove the leading and trailing brackets
             dottedOID = dottedOID.substring(1, dottedOID.length()-1);
 
             // convert spaces to dots
@@ -427,7 +427,7 @@ public class OBJECT_IDENTIFIER implements ASN1Value {
 
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         ostream.write( getEncoding(implicitTag) );
     }
@@ -440,109 +440,109 @@ public class OBJECT_IDENTIFIER implements ASN1Value {
 ///////////////////////////////////////////////////////////////////////
 // OBJECT_IDENTIFIER.Template
 //
-public static class Template implements ASN1Template {
+    public static class Template implements ASN1Template {
 
-    public Tag getTag() {
-        return OBJECT_IDENTIFIER.TAG;
-    }
-    public boolean tagMatch(Tag tag) {
-        return( tag.equals(OBJECT_IDENTIFIER.TAG) );
-    }
+        public Tag getTag() {
+            return OBJECT_IDENTIFIER.TAG;
+        }
+        public boolean tagMatch(Tag tag) {
+            return( tag.equals(OBJECT_IDENTIFIER.TAG) );
+        }
 
-    public Form getForm() {
-        return OBJECT_IDENTIFIER.FORM;
-    }
-    public boolean formMatch(Form form) {
-        return( form == OBJECT_IDENTIFIER.FORM );
-    }
+        public Form getForm() {
+            return OBJECT_IDENTIFIER.FORM;
+        }
+        public boolean formMatch(Form form) {
+            return( form == OBJECT_IDENTIFIER.FORM );
+        }
 
-    public ASN1Value decode(InputStream istream)
+        public ASN1Value decode(InputStream istream)
         throws IOException, InvalidBERException
-    {
-        return decode(getTag(), istream);
-    }
+        {
+            return decode(getTag(), istream);
+        }
 
-    public ASN1Value decode(Tag implicitTag, InputStream istream)
+        public ASN1Value decode(Tag implicitTag, InputStream istream)
         throws IOException, InvalidBERException
-    {
-      try {
-        ASN1Header head = new ASN1Header(istream);
-        long remainingContent = head.getContentLength();
+        {
+            try {
+                ASN1Header head = new ASN1Header(istream);
+                long remainingContent = head.getContentLength();
 
-        // Check the information gleaned from the header
-        if( ! head.getTag().equals( implicitTag ) ) {
-            throw new InvalidBERException("Incorrect tag for "+
-                "OBJECT IDENTIFIER: "+ head.getTag() );
-        }
-        if( head.getForm() != getForm() ) {
-            throw new InvalidBERException("Incorrect form for OBJECT "+
-                "IDENTIFIER");
-        }
-        if( remainingContent < 1 ) {
-            throw new InvalidBERException("Invalid 0 length for OBJECT"+
-                " IDENTIFIER");
-        }
-
-        Vector<Long> numberV = new Vector<>();
-
-        // handle first byte, which contains first two numbers
-        byte b = readByte(istream);
-        remainingContent--;
-        long num = b % 40;
-        numberV.addElement( Long.valueOf(b % 40) ); // second number
-        numberV.insertElementAt( Long.valueOf(b / 40), 0); // first number
-
-        // handle the rest of the numbers
-        while( remainingContent > 0 ) {
-            num = 0;
-
-            // keep reading until MSB == 0
-            int bitcount=0;
-            do {
-                if( (bitcount+=7) > 63 ) {
-                    // we're about to overflow our long
-                    throw new InvalidBERException("OBJECT IDENTIFIER "+
-                        "element too long; max is 63 bits");
+                // Check the information gleaned from the header
+                if( ! head.getTag().equals( implicitTag ) ) {
+                    throw new InvalidBERException("Incorrect tag for "+
+                                                  "OBJECT IDENTIFIER: "+ head.getTag() );
                 }
-                b = readByte(istream);
+                if( head.getForm() != getForm() ) {
+                    throw new InvalidBERException("Incorrect form for OBJECT "+
+                                                  "IDENTIFIER");
+                }
+                if( remainingContent < 1 ) {
+                    throw new InvalidBERException("Invalid 0 length for OBJECT"+
+                                                  " IDENTIFIER");
+                }
+
+                Vector<Long> numberV = new Vector<>();
+
+                // handle first byte, which contains first two numbers
+                byte b = readByte(istream);
                 remainingContent--;
-                num <<= 7;
-                num |= (b & 0x7f);
-            } while( (b & 0x80) != 0 );
+                long num = b % 40;
+                numberV.addElement( Long.valueOf(b % 40) ); // second number
+                numberV.insertElementAt( Long.valueOf(b / 40), 0); // first number
 
-            numberV.addElement( Long.valueOf(num) );
+                // handle the rest of the numbers
+                while( remainingContent > 0 ) {
+                    num = 0;
+
+                    // keep reading until MSB == 0
+                    int bitcount=0;
+                    do {
+                        if( (bitcount+=7) > 63 ) {
+                            // we're about to overflow our long
+                            throw new InvalidBERException("OBJECT IDENTIFIER "+
+                                                          "element too long; max is 63 bits");
+                        }
+                        b = readByte(istream);
+                        remainingContent--;
+                        num <<= 7;
+                        num |= (b & 0x7f);
+                    } while( (b & 0x80) != 0 );
+
+                    numberV.addElement( Long.valueOf(num) );
+                }
+
+                // convert Vector to array
+                long numbers[] = new long[ numberV.size() ];
+                for(int i = 0; i < numbers.length; i++) {
+                    numbers[i] = numberV.elementAt(i).longValue();
+                }
+
+                // create OBJECT_IDENTIFIER from array
+                return new OBJECT_IDENTIFIER(numbers);
+
+            } catch(InvalidBERException e) {
+                throw new InvalidBERException(e, "OBJECT IDENTIFIER");
+            }
         }
 
-        // convert Vector to array
-        long numbers[] = new long[ numberV.size() ];
-        for(int i = 0; i < numbers.length; i++) {
-            numbers[i] = numberV.elementAt(i).longValue();
-        }
-
-        // create OBJECT_IDENTIFIER from array
-        return new OBJECT_IDENTIFIER(numbers);
-
-      } catch(InvalidBERException e) {
-        throw new InvalidBERException(e, "OBJECT IDENTIFIER");
-      }
-    }
-
-    /**
-     *  Reads in a byte from the stream, throws an InvalidBERException
-     *  if EOF is reached.
-     */
-    private static byte readByte(InputStream istream)
+        /**
+         *  Reads in a byte from the stream, throws an InvalidBERException
+         *  if EOF is reached.
+         */
+        private static byte readByte(InputStream istream)
         throws InvalidBERException, IOException
-    {
-        int n = istream.read();
-        if( n == -1 ) {
-            throw new InvalidBERException("End-of-file reached while "+
-                "decoding OBJECT IDENTIFIER");
+        {
+            int n = istream.read();
+            if( n == -1 ) {
+                throw new InvalidBERException("End-of-file reached while "+
+                                              "decoding OBJECT IDENTIFIER");
+            }
+            assert( (n & 0xff) == n );
+            return (byte) n;
         }
-        assert( (n & 0xff) == n );
-        return (byte) n;
-    }
 
-} // end of OBJECT_IDENTIFIER.Template
+    } // end of OBJECT_IDENTIFIER.Template
 
 }

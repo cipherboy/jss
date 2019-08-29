@@ -40,7 +40,7 @@ import org.mozilla.jss.netscape.security.util.DerValue;
  */
 
 public class CertificateIssuerExtension extends Extension
-                                        implements CertAttrSet {
+    implements CertAttrSet {
     /**
      *
      */
@@ -87,7 +87,7 @@ public class CertificateIssuerExtension extends Extension
      * @exception IOException on error.
      */
     public CertificateIssuerExtension(Boolean critical, GeneralNames names)
-            throws IOException {
+    throws IOException {
         this.names = names;
         this.extensionId = PKIXExtensions.CertificateIssuer_Id;
         this.critical = critical.booleanValue();
@@ -101,7 +101,7 @@ public class CertificateIssuerExtension extends Extension
      * @exception IOException on error.
      */
     public CertificateIssuerExtension(GeneralNames names)
-            throws IOException {
+    throws IOException {
         this.names = names;
         this.extensionId = PKIXExtensions.CertificateIssuer_Id;
         this.critical = true;
@@ -125,7 +125,7 @@ public class CertificateIssuerExtension extends Extension
      * @exception IOException on error.
      */
     public CertificateIssuerExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = PKIXExtensions.CertificateIssuer_Id;
         this.critical = critical.booleanValue();
 
@@ -150,7 +150,7 @@ public class CertificateIssuerExtension extends Extension
         if (names == null)
             return "";
         String s = super.toString() + "CertificateIssuerName [\n"
-                  + names.toString() + "]\n";
+                   + names.toString() + "]\n";
         return (s);
     }
 

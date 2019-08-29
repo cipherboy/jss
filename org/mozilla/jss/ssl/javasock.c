@@ -54,7 +54,7 @@ JSS_SSL_getException(PRFilePrivate *priv)
 #define GET_ENV(vm, env) \
     ( ((*(vm))->AttachCurrentThread((vm), (void**)&(env), NULL) == 0) ? 0 : 1 )
 
-static PRInt32 
+static PRInt32
 writebuf(JNIEnv *env, PRFileDesc *fd, jobject sockObj, jbyteArray byteArray)
 {
     jmethodID getOutputStream, writeMethod;
@@ -72,9 +72,9 @@ writebuf(JNIEnv *env, PRFileDesc *fd, jobject sockObj, jbyteArray byteArray)
      */
     sockClass = (*env)->GetObjectClass(env, sockObj);
     PR_ASSERT(sockClass != NULL);
-    getOutputStream = (*env)->GetMethodID(env, sockClass, 
-        SOCKET_GET_OUTPUT_STREAM_NAME,
-        SOCKET_GET_OUTPUT_STREAM_SIG);
+    getOutputStream = (*env)->GetMethodID(env, sockClass,
+                                          SOCKET_GET_OUTPUT_STREAM_NAME,
+                                          SOCKET_GET_OUTPUT_STREAM_SIG);
     if(getOutputStream == NULL) {
         ASSERT_OUTOFMEM(env);
         goto finish;
@@ -84,14 +84,14 @@ writebuf(JNIEnv *env, PRFileDesc *fd, jobject sockObj, jbyteArray byteArray)
         ASSERT_OUTOFMEM(env);
         goto finish;
     }
-    
+
     /*
      * get OutputStream.write
      */
     osClass = (*env)->GetObjectClass(env, outputStream);
     writeMethod = (*env)->GetMethodID(env, osClass,
-        OSTREAM_WRITE_NAME,
-        OSTREAM_WRITE_SIG);
+                                      OSTREAM_WRITE_NAME,
+                                      OSTREAM_WRITE_SIG);
     if( writeMethod == NULL ) {
         ASSERT_OUTOFMEM(env);
         goto finish;
@@ -103,7 +103,7 @@ writebuf(JNIEnv *env, PRFileDesc *fd, jobject sockObj, jbyteArray byteArray)
      * Write bytes
      */
     (*env)->CallVoidMethod(env, outputStream, writeMethod, byteArray,
-        0, arrayLen);
+                           0, arrayLen);
 
     /* this may have thrown an IO Exception */
 
@@ -128,7 +128,7 @@ finish:
 
 static PRStatus
 processTimeout(JNIEnv *env, PRFileDesc *fd, jobject sockObj,
-        PRIntervalTime timeout)
+               PRIntervalTime timeout)
 {
     jclass socketClass;
     jmethodID setSoTimeoutMethod;
@@ -148,7 +148,7 @@ processTimeout(JNIEnv *env, PRFileDesc *fd, jobject sockObj,
         goto finish;
     }
     setSoTimeoutMethod = (*env)->GetMethodID(env, socketClass,
-        SET_SO_TIMEOUT_NAME, SET_SO_TIMEOUT_SIG);
+                         SET_SO_TIMEOUT_NAME, SET_SO_TIMEOUT_SIG);
     if( setSoTimeoutMethod == NULL ) {
         ASSERT_OUTOFMEM(env);
         goto finish;
@@ -176,9 +176,9 @@ finish:
     }
 }
 
-static PRInt32 
+static PRInt32
 jsock_write(PRFileDesc *fd, const PRIOVec *iov, PRInt32 iov_size,
-    PRIntervalTime timeout)
+            PRIntervalTime timeout)
 {
     jobject sockObj;
     JNIEnv *env;
@@ -197,7 +197,7 @@ jsock_write(PRFileDesc *fd, const PRIOVec *iov, PRInt32 iov_size,
 
     /*
      * convert iov to java byte array
-     */   
+     */
     {
         int iovi;
         jbyte *bytes;
@@ -293,7 +293,7 @@ getInetAddress(PRFileDesc *fd, PRNetAddr *addr, LocalOrPeer localOrPeer)
         PR_ASSERT( sockClass != NULL );
 
         getInetAddrMethod = (*env)->GetMethodID(env, sockClass,
-            getAddrMethodName, GET_INET_ADDR_SIG);
+                                                getAddrMethodName, GET_INET_ADDR_SIG);
         if( getInetAddrMethod == NULL ) {
             ASSERT_OUTOFMEM(env);
             goto finish;
@@ -307,7 +307,7 @@ getInetAddress(PRFileDesc *fd, PRNetAddr *addr, LocalOrPeer localOrPeer)
         if( (*env)->ExceptionOccurred(env) ) goto finish;
 
         getPortMethod = (*env)->GetMethodID(env, sockClass,
-            getPortMethodName, GET_PORT_SIG);
+                                            getPortMethodName, GET_PORT_SIG);
         if( getPortMethod == NULL ) {
             ASSERT_OUTOFMEM(env);
             goto finish;
@@ -327,14 +327,14 @@ getInetAddress(PRFileDesc *fd, PRNetAddr *addr, LocalOrPeer localOrPeer)
         PR_ASSERT(inetAddrClass != NULL);
 
         getAddressMethod = (*env)->GetMethodID(env, inetAddrClass,
-            GET_ADDR_NAME, GET_ADDR_SIG);
+                                               GET_ADDR_NAME, GET_ADDR_SIG);
         if( getAddressMethod == NULL ) {
             ASSERT_OUTOFMEM(env);
             goto finish;
         }
 
         addrByteArray = (*env)->CallObjectMethod(env, inetAddress,
-            getAddressMethod);
+                        getAddressMethod);
         if( addrByteArray == NULL ) {
             ASSERT_OUTOFMEM(env);
             goto finish;
@@ -407,7 +407,7 @@ jsock_getSockName(PRFileDesc *fd, PRNetAddr *addr)
 
 static PRInt32
 jsock_send(PRFileDesc *fd, const void *buf, PRInt32 amount,
-    PRIntn flags, PRIntervalTime timeout)
+           PRIntn flags, PRIntervalTime timeout)
 {
     JNIEnv *env;
     jobject sockObj;
@@ -453,7 +453,7 @@ finish:
 
 static PRInt32
 jsock_recv(PRFileDesc *fd, void *buf, PRInt32 amount,
-    PRIntn flags, PRIntervalTime timeout)
+           PRIntn flags, PRIntervalTime timeout)
 {
     PRInt32 retval=-1;
     JNIEnv *env;
@@ -484,14 +484,14 @@ jsock_recv(PRFileDesc *fd, void *buf, PRInt32 amount,
         }
 
         getInputStreamMethod = (*env)->GetMethodID(env, sockClass,
-            SOCKET_GET_INPUT_STREAM_NAME, SOCKET_GET_INPUT_STREAM_SIG);
+                               SOCKET_GET_INPUT_STREAM_NAME, SOCKET_GET_INPUT_STREAM_SIG);
         if( getInputStreamMethod == NULL ) {
             ASSERT_OUTOFMEM(env);
             goto finish;
         }
 
         inputStream = (*env)->CallObjectMethod(env, sockObj,
-            getInputStreamMethod);
+                                               getInputStreamMethod);
         if( inputStream == NULL ) {
             ASSERT_OUTOFMEM(env);
             goto finish;
@@ -517,7 +517,7 @@ jsock_recv(PRFileDesc *fd, void *buf, PRInt32 amount,
             goto finish;
         }
         readMethod = (*env)->GetMethodID(env, isClass,
-            ISTREAM_READ_NAME, ISTREAM_READ_SIG);
+                                         ISTREAM_READ_NAME, ISTREAM_READ_SIG);
         if( readMethod == NULL ) {
             ASSERT_OUTOFMEM(env);
             goto finish;
@@ -607,7 +607,7 @@ finish:
 
 static void
 setBooleanProperty(JNIEnv *env, jobject sock, const char* methodName,
-    jboolean value)
+                   jboolean value)
 {
     jclass sockClass;
     jmethodID method;
@@ -702,29 +702,29 @@ jsock_getSockOpt(PRFileDesc *fd, PRSocketOptionData *data)
     PR_ASSERT(sockObj != NULL);
 
     switch(data->option) {
-      case PR_SockOpt_Nonblocking:
+    case PR_SockOpt_Nonblocking:
         data->value.non_blocking = PR_FALSE;
         break;
-      case PR_SockOpt_Keepalive:
+    case PR_SockOpt_Keepalive:
         data->value.keep_alive =
             getBooleanProperty(env, sockObj, "getKeepAlive") == JNI_TRUE
-                ? PR_TRUE : PR_FALSE;
+            ? PR_TRUE : PR_FALSE;
         break;
-      case PR_SockOpt_RecvBufferSize:
+    case PR_SockOpt_RecvBufferSize:
         data->value.send_buffer_size = getIntProperty(env, sockObj,
-            "getReceiveBufferSize");
+                                       "getReceiveBufferSize");
         break;
-      case PR_SockOpt_SendBufferSize:
+    case PR_SockOpt_SendBufferSize:
         data->value.recv_buffer_size = getIntProperty(env, sockObj,
-            "getSendBufferSize");
+                                       "getSendBufferSize");
         break;
-      case PR_SockOpt_Linger:
+    case PR_SockOpt_Linger:
         getSoLinger( env, sockObj, & data->value.linger );
         break;
-      case PR_SockOpt_NoDelay:
+    case PR_SockOpt_NoDelay:
         data->value.no_delay = getBooleanProperty(env, sockObj,"getTcpNoDelay");
         break;
-      default:
+    default:
         retval = PR_FAILURE;
         break;
     }
@@ -761,24 +761,24 @@ jsock_setSockOpt(PRFileDesc *fd, PRSocketOptionData *data)
     PR_ASSERT(sockObj != NULL);
 
     switch(data->option) {
-      case PR_SockOpt_Keepalive:
+    case PR_SockOpt_Keepalive:
         setBooleanProperty(env, sockObj, "setKeepAlive",data->value.keep_alive);
         break;
-      case PR_SockOpt_Linger:
+    case PR_SockOpt_Linger:
         setSoLinger(env, sockObj, &data->value.linger);
         break;
-      case PR_SockOpt_RecvBufferSize:
+    case PR_SockOpt_RecvBufferSize:
         setIntProperty(env, sockObj, "setReceiveBufferSize",
-            data->value.recv_buffer_size);
+                       data->value.recv_buffer_size);
         break;
-      case PR_SockOpt_SendBufferSize:
+    case PR_SockOpt_SendBufferSize:
         setIntProperty(env, sockObj, "setSendBufferSize",
-            data->value.send_buffer_size);
+                       data->value.send_buffer_size);
         break;
-      case PR_SockOpt_NoDelay:
+    case PR_SockOpt_NoDelay:
         setBooleanProperty(env, sockObj, "setTcpNoDelay", data->value.no_delay);
         break;
-      default:
+    default:
         retval = PR_FAILURE;
         break;
     }
@@ -826,7 +826,7 @@ jsock_close(PRFileDesc *fd)
         goto finish;
     }
     closeMethod = (*env)->GetMethodID(env, sockClass,
-        SOCKET_CLOSE_NAME, SOCKET_CLOSE_SIG);
+                                      SOCKET_CLOSE_NAME, SOCKET_CLOSE_SIG);
     if( closeMethod == NULL ) {
         ASSERT_OUTOFMEM(env);
         goto finish;

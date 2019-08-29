@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PK11PrivKey extends org.mozilla.jss.pkcs11.PK11Key
-	implements PrivateKey {
+    implements PrivateKey {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,11 +27,11 @@ public class PK11PrivKey extends org.mozilla.jss.pkcs11.PK11Key
         keyProxy = new PrivateKeyProxy(pointer);
     }
 
-	/**
-	 * Make sure this key lives on the given token.
-	 */
-	public native void verifyKeyIsOnToken(PK11Token token)
-		throws org.mozilla.jss.crypto.NoSuchItemOnTokenException;
+    /**
+     * Make sure this key lives on the given token.
+     */
+    public native void verifyKeyIsOnToken(PK11Token token)
+    throws org.mozilla.jss.crypto.NoSuchItemOnTokenException;
 
     /**
      * Returns a new CryptoToken where this key resides.
@@ -54,7 +54,7 @@ public class PK11PrivKey extends org.mozilla.jss.pkcs11.PK11Key
         } else {
             assert(kt == KeyType.EC);
             return PrivateKey.Type.EC;
-	}
+        }
     }
 
     public String getAlgorithm() {
@@ -81,7 +81,7 @@ public class PK11PrivKey extends org.mozilla.jss.pkcs11.PK11Key
      */
     public static PK11PrivKey
     fromPrivateKeyInfo(PKCS8EncodedKeySpec spec, CryptoToken token)
-        throws TokenException
+    throws TokenException
     {
         return fromPrivateKeyInfo(spec.getEncoded(), token);
     }
@@ -109,17 +109,17 @@ public class PK11PrivKey extends org.mozilla.jss.pkcs11.PK11Key
      */
     public static native PK11PrivKey
     fromPrivateKeyInfo(byte[] pki, CryptoToken token, byte[] publicValue)
-        throws TokenException;
+    throws TokenException;
 
     protected DSAParameterSpec
     getDSAParams() throws TokenException {
         byte[][] pqgArray = getDSAParamsNative();
 
         return new DSAParameterSpec(
-            new BigInteger(1, pqgArray[0]),
-            new BigInteger(1, pqgArray[1]),
-            new BigInteger(1, pqgArray[2])
-        );
+                   new BigInteger(1, pqgArray[0]),
+                   new BigInteger(1, pqgArray[1]),
+                   new BigInteger(1, pqgArray[2])
+               );
     }
 
     private native byte[][]

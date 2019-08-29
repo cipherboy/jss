@@ -79,7 +79,7 @@ public class CertificateChain implements Serializable {
     }
 
     public void encode(OutputStream out)
-            throws IOException {
+    throws IOException {
         encode(out, true);
     }
 
@@ -87,7 +87,7 @@ public class CertificateChain implements Serializable {
      * encode in PKCS7 blob.
      */
     public void encode(OutputStream out, boolean sort)
-            throws IOException {
+    throws IOException {
         PKCS7 p7 = new PKCS7(new AlgorithmId[0],
                              new ContentInfo(new byte[0]), mChain,
                              new SignerInfo[0]);
@@ -98,7 +98,7 @@ public class CertificateChain implements Serializable {
      * decode from PKCS7 blob.
      */
     public void decode(InputStream in)
-            throws IOException {
+    throws IOException {
         PKCS7 p7 = new PKCS7(in);
         mChain = p7.getCertificates();
     }
@@ -107,7 +107,7 @@ public class CertificateChain implements Serializable {
      * for serialization
      */
     private void writeObject(java.io.ObjectOutputStream out)
-            throws IOException {
+    throws IOException {
         encode(out);
     }
 
@@ -115,7 +115,7 @@ public class CertificateChain implements Serializable {
      * for serialization
      */
     private void readObject(java.io.ObjectInputStream in)
-            throws IOException {
+    throws IOException {
         decode(in);
     }
 

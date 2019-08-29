@@ -39,7 +39,7 @@ Java_org_mozilla_jss_CryptoManager_verifyCertificateNowNative2(JNIEnv *env,
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_CryptoManager_findCertByNicknameNative
-  (JNIEnv *env, jobject this, jstring nickname)
+(JNIEnv *env, jobject this, jstring nickname)
 {
     const char *nick = NULL;
     jobject certObject=NULL;
@@ -80,7 +80,7 @@ finish:
  */
 JNIEXPORT jobjectArray JNICALL
 Java_org_mozilla_jss_CryptoManager_findCertsByNicknameNative
-  (JNIEnv *env, jobject this, jstring nickname)
+(JNIEnv *env, jobject this, jstring nickname)
 {
     CERTCertList *list =NULL;
     PK11SlotInfo *slot =NULL;
@@ -99,7 +99,7 @@ Java_org_mozilla_jss_CryptoManager_findCertsByNicknameNative
 
     /* get the list of certs with the given nickname */
     list = JSS_PK11_findCertsAndSlotFromNickname( (char*)nickChars,
-        NULL /*wincx*/, &slot);
+            NULL /*wincx*/, &slot);
     if( list == NULL ) {
         count = 0;
     } else {
@@ -107,8 +107,8 @@ Java_org_mozilla_jss_CryptoManager_findCertsByNicknameNative
         /* to "count" was removed from the "list" structure) we must  */
         /* now count up the number of nodes manually!                 */
         for( node = CERT_LIST_HEAD(list), count=0;
-             ! CERT_LIST_END(node, list);
-             node = CERT_LIST_NEXT(node), count++ );
+                ! CERT_LIST_END(node, list);
+                node = CERT_LIST_NEXT(node), count++ );
     }
     PR_ASSERT(count >= 0);
 
@@ -173,7 +173,7 @@ finish:
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_CryptoManager_findCertByIssuerAndSerialNumberNative
-  (JNIEnv *env, jobject this, jbyteArray issuerBA, jbyteArray serialNumBA)
+(JNIEnv *env, jobject this, jbyteArray issuerBA, jbyteArray serialNumBA)
 {
     jobject certObject=NULL;
     CERTCertificate *cert=NULL;
@@ -186,18 +186,20 @@ Java_org_mozilla_jss_CryptoManager_findCertByIssuerAndSerialNumberNative
     /* validate args */
     if( issuerBA == NULL || serialNumBA == NULL ) {
         JSS_throwMsg(env, ILLEGAL_ARGUMENT_EXCEPTION,
-            "NULL parameter passed to CryptoManager.findCertByIssuer"
-            "AndSerialNumberNative");
+                     "NULL parameter passed to CryptoManager.findCertByIssuer"
+                     "AndSerialNumberNative");
         goto finish;
     }
 
     /* convert byte arrays to SECItems */
     issuer = JSS_ByteArrayToSECItem(env, issuerBA);
     if( issuer == NULL ) {
-        goto finish; }
+        goto finish;
+    }
     serialNum = JSS_ByteArrayToSECItem(env, serialNumBA);
     if( serialNum == NULL ) {
-        goto finish; }
+        goto finish;
+    }
     issuerAndSN.derIssuer = *issuer;
     issuerAndSN.serialNumber = *serialNum;
 
@@ -233,7 +235,7 @@ finish:
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_CryptoManager_findPrivKeyByCertNative
-  (JNIEnv *env, jobject this, jobject Cert)
+(JNIEnv *env, jobject this, jobject Cert)
 {
     PRThread * VARIABLE_MAY_NOT_BE_USED pThread=NULL;
     CERTCertificate *cert;
@@ -317,7 +319,7 @@ typedef struct JSScertNode {
  */
 static jobjectArray
 cert_chain_from_cert(JNIEnv *env, CERTCertDBHandle *handle,
-    CERTCertificate *leaf)
+                     CERTCertificate *leaf)
 {
     CERTCertificate *c;
     int i, len = 0;
@@ -428,7 +430,7 @@ finish:
  */
 JNIEXPORT jobjectArray JNICALL
 Java_org_mozilla_jss_CryptoManager_buildCertificateChainNative
-    (JNIEnv *env, jobject this, jobject leafCert)
+(JNIEnv *env, jobject this, jobject leafCert)
 {
     PRThread * VARIABLE_MAY_NOT_BE_USED pThread=NULL;
     CERTCertificate *leaf;
@@ -442,7 +444,7 @@ Java_org_mozilla_jss_CryptoManager_buildCertificateChainNative
 
     if( JSS_PK11_getCertPtr(env, leafCert, &leaf) != PR_SUCCESS) {
         JSS_throwMsgPrErr(env, CERTIFICATE_EXCEPTION,
-            "Could not extract pointer from PK11Cert");
+                          "Could not extract pointer from PK11Cert");
         goto finish;
     }
     PR_ASSERT(leaf!=NULL);
@@ -451,7 +453,7 @@ Java_org_mozilla_jss_CryptoManager_buildCertificateChainNative
     if(certdb == NULL) {
         PR_ASSERT(PR_FALSE);
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION,
-            "No default certificate database has been registered");
+                          "No default certificate database has been registered");
         goto finish;
     }
 
@@ -527,7 +529,7 @@ finish:
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_CryptoManager_importCertToPermNative
-    (JNIEnv *env, jobject this, jobject cert, jstring nickString)
+(JNIEnv *env, jobject this, jobject cert, jstring nickString)
 {
     SECStatus rv;
     CERTCertificate *oldCert;
@@ -551,11 +553,11 @@ Java_org_mozilla_jss_CryptoManager_importCertToPermNative
 
     derCertArray[0] = &oldCert->derCert;
     rv = CERT_ImportCerts(CERT_GetDefaultCertDB(), -1 /* usage */,
-            1, derCertArray, &certArray, PR_TRUE /*keepCerts*/,
-            PR_FALSE /*caOnly*/, nickname);
+                          1, derCertArray, &certArray, PR_TRUE /*keepCerts*/,
+                          PR_FALSE /*caOnly*/, nickname);
     if( rv != SECSuccess || certArray == NULL || certArray[0] == NULL) {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION, "Unable to insert certificate"
-                " into permanent database");
+                          " into permanent database");
         goto finish;
     }
     slot = PK11_GetInternalKeySlot();  /* the permanent database token */
@@ -570,7 +572,7 @@ finish:
 
 static unsigned char*
 data_start(unsigned char *buf, int length, unsigned int *data_length,
-    PRBool includeTag)
+           PRBool includeTag)
 {
     unsigned char tag;
     int used_length= 0;
@@ -605,7 +607,7 @@ data_start(unsigned char *buf, int length, unsigned int *data_length,
 
 static PRStatus
 getCertFields(SECItem *derCert, SECItem *issuer,
-                     SECItem *serial, SECItem *subject)
+              SECItem *serial, SECItem *subject)
 {
     unsigned char *buf;
     unsigned int buf_length;
@@ -672,12 +674,12 @@ getCertFields(SECItem *derCert, SECItem *issuer,
  *    1 if leaf is found
  */
 static int find_child_cert(
-  CERTCertDBHandle *certdb,
-  SECItem *derCerts,
-  int numCerts,
-  int *linked,
-  int cur_link,
-  int *leaf_link
+    CERTCertDBHandle *certdb,
+    SECItem *derCerts,
+    int numCerts,
+    int *linked,
+    int cur_link,
+    int *leaf_link
 )
 {
     int i;
@@ -686,7 +688,7 @@ static int find_child_cert(
     PRStatus decodeStatus;
 
     decodeStatus = getCertFields(&derCerts[cur_link], &parentIssuer,
-        &parentSerial, &parentSubject);
+                                 &parentSerial, &parentSubject);
     if( decodeStatus != PR_SUCCESS ) {
         status = -1;
         goto finish;
@@ -699,7 +701,7 @@ static int find_child_cert(
             continue;
         }
         status = getCertFields(&derCerts[i], &childIssuer, &childSerial,
-                                &childSubject);
+                               &childSubject);
         if( status != PR_SUCCESS ) {
             status = -1;
             goto finish;
@@ -710,7 +712,7 @@ static int find_child_cert(
             status = 1; /* got it */
             goto finish;
         }
-      }
+    }
 
 finish:
     /* nothing allocated, nothing freed */
@@ -724,10 +726,10 @@ finish:
  *   0 otherwise
  */
 static int find_leaf_cert(
-  CERTCertDBHandle *certdb,
-  SECItem *derCerts,
-  int numCerts,
-  SECItem *theDerCert
+    CERTCertDBHandle *certdb,
+    SECItem *derCerts,
+    int numCerts,
+    SECItem *theDerCert
 )
 {
     int status = 1;
@@ -744,7 +746,7 @@ static int find_leaf_cert(
 
     /* initialize the bitmap */
     for (i = 0; i < numCerts; i++) {
-      linked[i] = 0;
+        linked[i] = 0;
     }
 
     /* pick the first cert to start with */
@@ -753,7 +755,7 @@ static int find_leaf_cert(
     linked[leaf_link] = 1;
 
     while (((found = find_child_cert(certdb,
-       derCerts, numCerts, linked, cur_link, &leaf_link)) == 1))
+                                     derCerts, numCerts, linked, cur_link, &leaf_link)) == 1))
     {
         cur_link = leaf_link;
     }
@@ -779,8 +781,8 @@ finish:
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_CryptoManager_importCertPackageNative
-    (JNIEnv *env, jobject this, jbyteArray packageArray, jstring nickString,
-     jboolean noUser, jboolean leafIsCA)
+(JNIEnv *env, jobject this, jbyteArray packageArray, jstring nickString,
+ jboolean noUser, jboolean leafIsCA)
 {
     SECItem *derCerts=NULL;
     int certi= -1;
@@ -808,7 +810,7 @@ Java_org_mozilla_jss_CryptoManager_importCertPackageNative
     if(packageArray == NULL) {
         PR_ASSERT(PR_FALSE);
         JSS_throwMsg(env, CERTIFICATE_ENCODING_EXCEPTION,
-            "Certificate package is NULL");
+                     "Certificate package is NULL");
         goto finish;
     }
     PR_ASSERT(certdb != NULL);
@@ -831,7 +833,7 @@ Java_org_mozilla_jss_CryptoManager_importCertPackageNative
     if( status != SECSuccess  || collection.numCerts < 1 ) {
         if( (*env)->ExceptionOccurred(env) == NULL) {
             JSS_throwMsgPrErr(env, CERTIFICATE_ENCODING_EXCEPTION,
-                "Security library failed to decode certificate package");
+                              "Security library failed to decode certificate package");
         }
         goto finish;
     }
@@ -869,10 +871,10 @@ Java_org_mozilla_jss_CryptoManager_importCertPackageNative
         if (slot == NULL) { /* same as "noUser = 1" */
             /* #397713 */
             if (!find_leaf_cert(certdb, derCerts,
-                    numCerts, &theDerCert))
+                                numCerts, &theDerCert))
             {
                 JSS_throwMsgPrErr(env, CERTIFICATE_ENCODING_EXCEPTION,
-                    "Failed to locate leaf certificate in chain");
+                                  "Failed to locate leaf certificate in chain");
                 goto finish;
             }
         }
@@ -888,10 +890,10 @@ Java_org_mozilla_jss_CryptoManager_importCertPackageNative
 
     /* get issuer and serial number of leaf certificate */
     decodeStatus = getCertFields(&theDerCert, &issuerAndSN.derIssuer,
-        &issuerAndSN.serialNumber, &leafSubject);
+                                 &issuerAndSN.serialNumber, &leafSubject);
     if( decodeStatus != PR_SUCCESS ) {
         JSS_throwMsgPrErr(env, CERTIFICATE_ENCODING_EXCEPTION,
-            "Failed to extract issuer and serial number from certificate");
+                          "Failed to extract issuer and serial number from certificate");
         goto finish;
     }
 
@@ -911,7 +913,7 @@ Java_org_mozilla_jss_CryptoManager_importCertPackageNative
              * miserably at its calling.
              *****************************************/
             JSS_throwMsgPrErr(env, NO_SUCH_ITEM_ON_TOKEN_EXCEPTION,
-                    "Expected user cert but no matching key?");             
+                              "Expected user cert but no matching key?");
             goto finish;
         }
     } else {
@@ -937,12 +939,12 @@ Java_org_mozilla_jss_CryptoManager_importCertPackageNative
             /* We already checked for this, shouldn't fail here */
             if(PR_GetError() == SEC_ERROR_ADDING_CERT) {
                 PR_ASSERT(PR_FALSE);
-                JSS_throwMsgPrErr(env, NO_SUCH_ITEM_ON_TOKEN_EXCEPTION, 
-                     "PK11_ImportDERCertForKey SEC_ERROR_ADDING_CERT");
+                JSS_throwMsgPrErr(env, NO_SUCH_ITEM_ON_TOKEN_EXCEPTION,
+                                  "PK11_ImportDERCertForKey SEC_ERROR_ADDING_CERT");
             } else {
                 JSS_throwMsgPrErr(env, TOKEN_EXCEPTION,
-                        "PK11_ImportDERCertForKey Unable to "
-                        "import certificate to its token");
+                                  "PK11_ImportDERCertForKey Unable to "
+                                  "import certificate to its token");
             }
             goto finish;
         }
@@ -957,44 +959,44 @@ Java_org_mozilla_jss_CryptoManager_importCertPackageNative
      ***************************************************/
     if( numCerts-userCertFound>= 1 ) {
 
-      if (certi == 0) {
-        status = CERT_ImportCAChainTrusted(derCerts+userCertFound,
-                                    numCerts-userCertFound,
-                                    certUsageUserCertImport);
-        if(status != SECSuccess) {
-            JSS_throwMsgPrErr(env, CERTIFICATE_ENCODING_EXCEPTION,
-                "CERT_ImportCAChainTrusted returned an error");
-            goto finish;
-        }
-      } else if (certi == numCerts) {
-        status = CERT_ImportCAChainTrusted(derCerts,
-                                    numCerts-userCertFound,
-                                    certUsageUserCertImport);
-        if(status != SECSuccess) {
-            JSS_throwMsgPrErr(env, CERTIFICATE_ENCODING_EXCEPTION,
-                "CERT_ImportCAChainTrusted returned an error");
-            goto finish;
-        }
-      } else {
-        status = CERT_ImportCAChainTrusted(derCerts,
-                   certi,
-                   certUsageUserCertImport);
-        if(status != SECSuccess) {
-            JSS_throwMsgPrErr(env, CERTIFICATE_ENCODING_EXCEPTION,
-                "CERT_ImportCAChainTrusted returned an error");
-            goto finish;
-        }
+        if (certi == 0) {
+            status = CERT_ImportCAChainTrusted(derCerts+userCertFound,
+                                               numCerts-userCertFound,
+                                               certUsageUserCertImport);
+            if(status != SECSuccess) {
+                JSS_throwMsgPrErr(env, CERTIFICATE_ENCODING_EXCEPTION,
+                                  "CERT_ImportCAChainTrusted returned an error");
+                goto finish;
+            }
+        } else if (certi == numCerts) {
+            status = CERT_ImportCAChainTrusted(derCerts,
+                                               numCerts-userCertFound,
+                                               certUsageUserCertImport);
+            if(status != SECSuccess) {
+                JSS_throwMsgPrErr(env, CERTIFICATE_ENCODING_EXCEPTION,
+                                  "CERT_ImportCAChainTrusted returned an error");
+                goto finish;
+            }
+        } else {
+            status = CERT_ImportCAChainTrusted(derCerts,
+                                               certi,
+                                               certUsageUserCertImport);
+            if(status != SECSuccess) {
+                JSS_throwMsgPrErr(env, CERTIFICATE_ENCODING_EXCEPTION,
+                                  "CERT_ImportCAChainTrusted returned an error");
+                goto finish;
+            }
 
-        status = CERT_ImportCAChainTrusted(derCerts+certi+1,
-                   numCerts-certi-1,
-                   certUsageUserCertImport);
-        if(status != SECSuccess) {
-            JSS_throwMsgPrErr(env, CERTIFICATE_ENCODING_EXCEPTION,
-                "CERT_ImportCAChainTrusted returned an error");
-            goto finish;
-        }
+            status = CERT_ImportCAChainTrusted(derCerts+certi+1,
+                                               numCerts-certi-1,
+                                               certUsageUserCertImport);
+            if(status != SECSuccess) {
+                JSS_throwMsgPrErr(env, CERTIFICATE_ENCODING_EXCEPTION,
+                                  "CERT_ImportCAChainTrusted returned an error");
+                goto finish;
+            }
 
-      }
+        }
 
     }
 
@@ -1007,7 +1009,7 @@ Java_org_mozilla_jss_CryptoManager_importCertPackageNative
     leafCert = PK11_FindCertByIssuerAndSN(&slot, &issuerAndSN, NULL);
     if( leafCert == NULL ) {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION,
-            "Failed to find certificate that was just imported");
+                          "Failed to find certificate that was just imported");
         goto finish;
     }
     leafObject = JSS_PK11_wrapCertAndSlot(env, &leafCert, &slot);
@@ -1162,7 +1164,7 @@ finish:
  */
 JNIEXPORT jbyteArray JNICALL
 Java_org_mozilla_jss_CryptoManager_exportCertsToPKCS7
-    (JNIEnv *env, jobject this, jobjectArray certArray)
+(JNIEnv *env, jobject this, jobjectArray certArray)
 {
     int i, certcount;
     SEC_PKCS7ContentInfo *cinfo=NULL;
@@ -1185,7 +1187,7 @@ Java_org_mozilla_jss_CryptoManager_exportCertsToPKCS7
     certcount = (*env)->GetArrayLength(env, certArray);
     if(certcount < 1) {
         JSS_throwMsg(env, CERTIFICATE_ENCODING_EXCEPTION,
-            "At least one certificate must be passed to exportCertsToPKCS7");
+                     "At least one certificate must be passed to exportCertsToPKCS7");
         goto finish;
     }
 
@@ -1216,7 +1218,7 @@ Java_org_mozilla_jss_CryptoManager_exportCertsToPKCS7
          */
         if( ! (*env)->IsInstanceOf(env, certObject, certClass) ) {
             JSS_throwMsg(env, CERTIFICATE_ENCODING_EXCEPTION,
-                "Certificate was not a PK11 Certificate");
+                         "Certificate was not a PK11 Certificate");
             goto finish;
         }
 
@@ -1225,7 +1227,7 @@ Java_org_mozilla_jss_CryptoManager_exportCertsToPKCS7
          */
         if( JSS_PK11_getCertPtr(env, certObject, &cert) != PR_SUCCESS) {
             JSS_trace(env, JSS_TRACE_ERROR,
-                "Unable to convert Java certificate to CERTCertificate");
+                      "Unable to convert Java certificate to CERTCertificate");
             goto finish;
         }
         PR_ASSERT(cert != NULL);
@@ -1236,11 +1238,11 @@ Java_org_mozilla_jss_CryptoManager_exportCertsToPKCS7
              */
             PR_ASSERT(cinfo == NULL);
             cinfo = SEC_PKCS7CreateCertsOnly(cert,
-                                         PR_FALSE, /* don't include chain */
-                                         NULL /* cert db */ );
+                                             PR_FALSE, /* don't include chain */
+                                             NULL /* cert db */ );
             if(cinfo == NULL) {
                 JSS_throwMsgPrErr(env, CERTIFICATE_ENCODING_EXCEPTION,
-                    "Failed to create PKCS #7 encoding context");
+                                  "Failed to create PKCS #7 encoding context");
                 goto finish;
             }
         } else {
@@ -1251,7 +1253,7 @@ Java_org_mozilla_jss_CryptoManager_exportCertsToPKCS7
 
             if( SEC_PKCS7AddCertificate(cinfo, cert) != SECSuccess ) {
                 JSS_throwMsgPrErr(env, CERTIFICATE_ENCODING_EXCEPTION,
-                    "Failed to add certificate to PKCS #7 encoding context");
+                                  "Failed to add certificate to PKCS #7 encoding context");
                 goto finish;
             }
         }
@@ -1276,7 +1278,7 @@ Java_org_mozilla_jss_CryptoManager_exportCertsToPKCS7
                              NULL /* password function arg */ );
     if( status != SECSuccess ) {
         JSS_throwMsgPrErr(env, CERTIFICATE_ENCODING_EXCEPTION,
-            "Failed to encode PKCS #7 context");
+                          "Failed to encode PKCS #7 context");
     }
     /* Make sure we got at least some data from the encoder */
     PR_ASSERT(info->totalLen > 0);
@@ -1417,7 +1419,7 @@ finish:
  */
 JNIEXPORT jobjectArray JNICALL
 Java_org_mozilla_jss_CryptoManager_getCACerts
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     return getCerts(env, PK11CertListCA);
 }
@@ -1427,22 +1429,22 @@ Java_org_mozilla_jss_CryptoManager_getCACerts
  */
 JNIEXPORT jobjectArray JNICALL
 Java_org_mozilla_jss_CryptoManager_getPermCerts
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     return getCerts(env, PK11CertListUnique);
 }
 
 
- /* Imports a CRL, and stores it into the cert7.db
-  *
-  * @param the DER-encoded CRL.
-  */
+/* Imports a CRL, and stores it into the cert7.db
+ *
+ * @param the DER-encoded CRL.
+ */
 
 
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_CryptoManager_importCRLNative
-    (JNIEnv *env, jobject this,
-        jbyteArray der_crl, jstring url_jstr, jint rl_type)
+(JNIEnv *env, jobject this,
+ jbyteArray der_crl, jstring url_jstr, jint rl_type)
 
 {
     CERTCertDBHandle *certdb = CERT_GetDefaultCertDB();
@@ -1460,7 +1462,7 @@ Java_org_mozilla_jss_CryptoManager_importCRLNative
         PR_ASSERT(PR_FALSE);
         /* XXX need new exception here */
         JSS_throwMsg(env, CERTIFICATE_ENCODING_EXCEPTION,
-            "CRL package is NULL");
+                     "CRL package is NULL");
         goto finish;
     }
     PR_ASSERT(certdb != NULL);
@@ -1483,36 +1485,36 @@ Java_org_mozilla_jss_CryptoManager_importCRLNative
         status = PR_GetError();
         errmsg = NULL;
         switch (status) {
-            case SEC_ERROR_OLD_CRL:
-            case SEC_ERROR_OLD_KRL:
-                /* not an error - leave as NULL */
-                errmsg = NULL;
-                goto finish;
-            case SEC_ERROR_CRL_EXPIRED:
-                errmsg = "CRL Expired";
-                break;
-            case SEC_ERROR_KRL_EXPIRED:
-                errmsg = "KRL Expired";
-                break;
-            case SEC_ERROR_CRL_NOT_YET_VALID:
-                errmsg = "CRL Not yet valid";
-                break;
-            case SEC_ERROR_KRL_NOT_YET_VALID:
-                errmsg = "KRL Not yet valid";
-                break;
-            case SEC_ERROR_CRL_INVALID:
-                errmsg = "Invalid encoding of CRL";
-                break;
-            case SEC_ERROR_KRL_INVALID:
-                errmsg = "Invalid encoding of KRL";
-                break;
-            case SEC_ERROR_BAD_DATABASE:
-                errmsg = "Database error";
-                break;
-            default:
-                /* printf("NSS ERROR = %d\n",status);  */
-                errmsg = "Failed to import Revocation List";
-            }
+        case SEC_ERROR_OLD_CRL:
+        case SEC_ERROR_OLD_KRL:
+            /* not an error - leave as NULL */
+            errmsg = NULL;
+            goto finish;
+        case SEC_ERROR_CRL_EXPIRED:
+            errmsg = "CRL Expired";
+            break;
+        case SEC_ERROR_KRL_EXPIRED:
+            errmsg = "KRL Expired";
+            break;
+        case SEC_ERROR_CRL_NOT_YET_VALID:
+            errmsg = "CRL Not yet valid";
+            break;
+        case SEC_ERROR_KRL_NOT_YET_VALID:
+            errmsg = "KRL Not yet valid";
+            break;
+        case SEC_ERROR_CRL_INVALID:
+            errmsg = "Invalid encoding of CRL";
+            break;
+        case SEC_ERROR_KRL_INVALID:
+            errmsg = "Invalid encoding of KRL";
+            break;
+        case SEC_ERROR_BAD_DATABASE:
+            errmsg = "Database error";
+            break;
+        default:
+            /* printf("NSS ERROR = %d\n",status);  */
+            errmsg = "Failed to import Revocation List";
+        }
         if (errmsg) {
             JSS_throwMsgPrErr(env, CRL_IMPORT_EXCEPTION, errmsg);
         }
@@ -1537,8 +1539,8 @@ finish:
  * Called by java_org_mozilla_jss_CryptoManager_verifyCertificateNowCUNative
  */
 SECStatus verifyCertificateNow(JNIEnv *env, jobject self, jstring nickString,
-        jboolean checkSig, jint required_certificateUsage,
-         SECCertificateUsage *currUsage)
+                               jboolean checkSig, jint required_certificateUsage,
+                               SECCertificateUsage *currUsage)
 {
     SECStatus         rv    = SECFailure;
     SECCertificateUsage      certificateUsage;
@@ -1547,11 +1549,11 @@ SECStatus verifyCertificateNow(JNIEnv *env, jobject self, jstring nickString,
 
     nickname = JSS_RefJString(env, nickString);
     if( nickname == NULL ) {
-         goto finish;
+        goto finish;
     }
 
     int ocspPolicy = JSSL_getOCSPPolicy();
-    
+
 
     certificateUsage = required_certificateUsage;
 
@@ -1563,12 +1565,12 @@ SECStatus verifyCertificateNow(JNIEnv *env, jobject self, jstring nickString,
         PR_smprintf_free(message);
         goto finish;
     } else {
-    /* 0 for certificateUsage in call to CERT_VerifyCertificateNow will
-     * retrieve the current valid usage into currUsage
-     */
+        /* 0 for certificateUsage in call to CERT_VerifyCertificateNow will
+         * retrieve the current valid usage into currUsage
+         */
         if( ocspPolicy == OCSP_LEAF_AND_CHAIN_POLICY) {
             rv = JSSL_verifyCertPKIX( cert, certificateUsage,
-                     NULL /* pin arg */, ocspPolicy, NULL, currUsage);
+                                      NULL /* pin arg */, ocspPolicy, NULL, currUsage);
 
             /* we need to do this just to get the cert usages, the pkix version
                doesn't seem to honor the method to get the usages as of yet.
@@ -1576,28 +1578,28 @@ SECStatus verifyCertificateNow(JNIEnv *env, jobject self, jstring nickString,
             */
             if(rv == SECSuccess) {
                 CERT_VerifyCertificateNow(CERT_GetDefaultCertDB(), cert,
-                checkSig, certificateUsage, NULL, currUsage );
+                                          checkSig, certificateUsage, NULL, currUsage );
             }
 
         } else {
             rv = CERT_VerifyCertificateNow(CERT_GetDefaultCertDB(), cert,
-                checkSig, certificateUsage, NULL, currUsage );
+                                           checkSig, certificateUsage, NULL, currUsage );
         }
 
         if ((rv == SECSuccess) && certificateUsage == 0x0000) {
-            if (*currUsage == 
-                ( certUsageUserCertImport |
-                certUsageVerifyCA |
-                certUsageProtectedObjectSigner |
-                certUsageAnyCA )) {
+            if (*currUsage ==
+                    ( certUsageUserCertImport |
+                      certUsageVerifyCA |
+                      certUsageProtectedObjectSigner |
+                      certUsageAnyCA )) {
 
-              /* the cert is good for nothing 
-                 The folllowing usages cannot be verified:
-                   certUsageAnyCA
-                   certUsageProtectedObjectSigner
-                   certUsageUserCertImport
-                   certUsageVerifyCA
-                    (0x0b80) */
+                /* the cert is good for nothing
+                   The folllowing usages cannot be verified:
+                     certUsageAnyCA
+                     certUsageProtectedObjectSigner
+                     certUsageUserCertImport
+                     certUsageVerifyCA
+                      (0x0b80) */
                 rv =SECFailure;
             }
         }
@@ -1606,7 +1608,7 @@ SECStatus verifyCertificateNow(JNIEnv *env, jobject self, jstring nickString,
 finish:
     JSS_DerefJString(env, nickString, nickname);
     if(cert != NULL) {
-       CERT_DestroyCertificate(cert);
+        CERT_DestroyCertificate(cert);
     }
 
     return rv;
@@ -1629,7 +1631,7 @@ Java_org_mozilla_jss_CryptoManager_verifyCertificateNowNative(JNIEnv *env,
 
     nickname = JSS_RefJString(env, nickString);
     if( nickname == NULL ) {
-         goto finish;
+        goto finish;
     }
 
     int ocspPolicy = JSSL_getOCSPPolicy();
@@ -1644,14 +1646,14 @@ Java_org_mozilla_jss_CryptoManager_verifyCertificateNowNative(JNIEnv *env,
         PR_smprintf_free(message);
         goto finish;
     } else {
-    /* 0 for certificateUsage in call to CERT_VerifyCertificateNow to
-     * just get the current usage (which we are not passing back for now
-     * but will bypass the certificate usage check
-     */
+        /* 0 for certificateUsage in call to CERT_VerifyCertificateNow to
+         * just get the current usage (which we are not passing back for now
+         * but will bypass the certificate usage check
+         */
 
         if( ocspPolicy == OCSP_LEAF_AND_CHAIN_POLICY) {
             rv= JSSL_verifyCertPKIX( cert, certificateUsage,
-                     NULL /* pin arg */, ocspPolicy, NULL, &currUsage);
+                                     NULL /* pin arg */, ocspPolicy, NULL, &currUsage);
 
             /* we need to do this just to get the cert usages, the pkix version
                doesn't seem to honor the method to get the usages as of yet.
@@ -1659,18 +1661,18 @@ Java_org_mozilla_jss_CryptoManager_verifyCertificateNowNative(JNIEnv *env,
             */
             if(rv == SECSuccess) {
                 CERT_VerifyCertificateNow(CERT_GetDefaultCertDB(), cert,
-                checkSig, certificateUsage, NULL, &currUsage );
+                                          checkSig, certificateUsage, NULL, &currUsage );
             }
         } else {
             rv = CERT_VerifyCertificateNow(CERT_GetDefaultCertDB(), cert,
-                checkSig, certificateUsage, NULL, &currUsage );
+                                           checkSig, certificateUsage, NULL, &currUsage );
         }
     }
 
 finish:
     JSS_DerefJString(env, nickString, nickname);
     if(cert != NULL) {
-       CERT_DestroyCertificate(cert);
+        CERT_DestroyCertificate(cert);
     }
     if( rv == SECSuccess) {
         return JNI_TRUE;
@@ -1728,7 +1730,7 @@ Java_org_mozilla_jss_CryptoManager_verifyCertificateNowNative2(JNIEnv *env,
     SECStatus                rv = SECFailure;
     CERTCertificate          *cert = NULL;
     const char *nickname = NULL;
-   
+
     if (nickString == NULL) {
         JSS_throwMsg(env, INVALID_NICKNAME_EXCEPTION, "Missing certificate nickname");
         goto finish;
@@ -1760,7 +1762,7 @@ Java_org_mozilla_jss_CryptoManager_verifyCertificateNowNative2(JNIEnv *env,
 
     if( ocspPolicy == OCSP_LEAF_AND_CHAIN_POLICY) {
         rv = JSSL_verifyCertPKIX( cert, certificateUsage,
-                     NULL /* pin arg */, ocspPolicy, NULL, &currUsage);
+                                  NULL /* pin arg */, ocspPolicy, NULL, &currUsage);
 
         /* we need to do this just to get the cert usages, the pkix version
            doesn't seem to honor the method to get the usages as of yet.
@@ -1768,13 +1770,13 @@ Java_org_mozilla_jss_CryptoManager_verifyCertificateNowNative2(JNIEnv *env,
         */
         if(rv == SECSuccess) {
             CERT_VerifyCertificateNow(CERT_GetDefaultCertDB(), cert,
-            checkSig, certificateUsage, NULL, &currUsage );
+                                      checkSig, certificateUsage, NULL, &currUsage );
 
         }
 
     } else {
         rv = CERT_VerifyCertificateNow(CERT_GetDefaultCertDB(), cert,
-                     checkSig, certificateUsage, NULL, &currUsage);
+                                       checkSig, certificateUsage, NULL, &currUsage);
     }
 
     if (rv != SECSuccess) {
@@ -1783,11 +1785,11 @@ Java_org_mozilla_jss_CryptoManager_verifyCertificateNowNative2(JNIEnv *env,
     }
 
     if ((certificateUsage == 0x0000) &&
-        (currUsage ==
-            ( certUsageUserCertImport |
-            certUsageVerifyCA |
-            certUsageProtectedObjectSigner |
-            certUsageAnyCA ))) {
+            (currUsage ==
+             ( certUsageUserCertImport |
+               certUsageVerifyCA |
+               certUsageProtectedObjectSigner |
+               certUsageAnyCA ))) {
 
         /* The certificate is good for nothing.
          * The following usages cannot be verified:
@@ -1826,7 +1828,7 @@ Java_org_mozilla_jss_CryptoManager_verifyCertNowNative(JNIEnv *env,
 
     nickname = JSS_RefJString(env, nickString);
     if( nickname == NULL ) {
-         goto finish;
+        goto finish;
     }
 
     int ocspPolicy = JSSL_getOCSPPolicy();
@@ -1842,17 +1844,17 @@ Java_org_mozilla_jss_CryptoManager_verifyCertNowNative(JNIEnv *env,
     } else {
         if( ocspPolicy == OCSP_LEAF_AND_CHAIN_POLICY) {
             rv = JSSL_verifyCertPKIX( cert, certUsage,
-                NULL /* pin arg */, ocspPolicy, NULL, NULL);
+                                      NULL /* pin arg */, ocspPolicy, NULL, NULL);
         } else {
             rv = CERT_VerifyCertNow(CERT_GetDefaultCertDB(), cert,
-                checkSig, certUsage, NULL );
+                                    checkSig, certUsage, NULL );
         }
     }
 
 finish:
     JSS_DerefJString(env, nickString, nickname);
     if(cert != NULL) {
-       CERT_DestroyCertificate(cert);
+        CERT_DestroyCertificate(cert);
     }
     if( rv == SECSuccess) {
         return JNI_TRUE;
@@ -1868,7 +1870,7 @@ finish:
  */
 JNIEXPORT jboolean JNICALL
 Java_org_mozilla_jss_CryptoManager_verifyCertTempNative(JNIEnv *env,
-     jobject self, jbyteArray packageArray,jboolean checkSig, jint cUsage)
+        jobject self, jbyteArray packageArray,jboolean checkSig, jint cUsage)
 {
     SECStatus         rv    = SECFailure;
     SECCertUsage      certUsage;
@@ -1897,7 +1899,7 @@ Java_org_mozilla_jss_CryptoManager_verifyCertTempNative(JNIEnv *env,
 
     if ( rv != SECSuccess || certArray == NULL || certArray[0] == NULL) {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION, "Unable to insert certificate"
-                     " into temporary database");
+                          " into temporary database");
         goto finish;
     }
 
@@ -1905,13 +1907,13 @@ Java_org_mozilla_jss_CryptoManager_verifyCertTempNative(JNIEnv *env,
 
     if( ocspPolicy == OCSP_LEAF_AND_CHAIN_POLICY) {
         rv = JSSL_verifyCertPKIX( certArray[0], certUsage,
-            NULL /* pin arg */, ocspPolicy, NULL, NULL);
+                                  NULL /* pin arg */, ocspPolicy, NULL, NULL);
     } else {
         rv = CERT_VerifyCertNow(certdb, certArray[0],
-            checkSig, certUsage, NULL );
+                                checkSig, certUsage, NULL );
     }
 
-    finish:
+finish:
     /* this checks for NULL */
     CERT_DestroyCertArray(certArray, 1);
     if (derCerts[0]) {

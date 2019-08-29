@@ -38,61 +38,61 @@ public class UTF8String extends CharacterString implements ASN1Value {
     }
 
 // nested class
-public static class Template
-    extends CharacterString.Template implements ASN1Template
-{
-    protected Tag getTag() {
-        return TAG;
-    }
-
-    public boolean tagMatch(Tag tag) {
-        return TAG.equals(tag);
-    }
-
-    protected CharConverter getCharConverter() {
-        return new UTF8Converter();
-    }
-
-    protected CharacterString generateInstance(char[] chars)
-        throws CharConversionException
+    public static class Template
+        extends CharacterString.Template implements ASN1Template
     {
-        return new UTF8String(chars);
-    }
+        protected Tag getTag() {
+            return TAG;
+        }
 
-    protected String typeName() {
-        return "UTF8String";
-    }
-}
+        public boolean tagMatch(Tag tag) {
+            return TAG.equals(tag);
+        }
 
-private static class UTF8Converter implements CharConverter {
+        protected CharConverter getCharConverter() {
+            return new UTF8Converter();
+        }
 
-    public char[] byteToChar(byte[] bytes, int offset, int len)
+        protected CharacterString generateInstance(char[] chars)
         throws CharConversionException
-    {
-        try {
+        {
+            return new UTF8String(chars);
+        }
 
-            String s = new String(bytes, offset, len, "UTF8");
-            return s.toCharArray();
-
-        } catch( UnsupportedEncodingException e ) {
-            String err = "Unable to find UTF8 encoding mechanism";
-            throw (CharConversionException) new CharConversionException(err).initCause(e);
+        protected String typeName() {
+            return "UTF8String";
         }
     }
 
-    public byte[] charToByte(char[] chars, int offset, int len)
+    private static class UTF8Converter implements CharConverter {
+
+        public char[] byteToChar(byte[] bytes, int offset, int len)
         throws CharConversionException
-    {
-        try {
+        {
+            try {
 
-            String s = new String(chars, offset, len);
-            return s.getBytes("UTF8");
+                String s = new String(bytes, offset, len, "UTF8");
+                return s.toCharArray();
 
-        } catch( UnsupportedEncodingException e ) {
-            String err = "Unable to find UTF8 encoding mechanism";
-            throw (CharConversionException) new CharConversionException(err).initCause(e);
+            } catch( UnsupportedEncodingException e ) {
+                String err = "Unable to find UTF8 encoding mechanism";
+                throw (CharConversionException) new CharConversionException(err).initCause(e);
+            }
         }
-    }
-} // end of char converter
+
+        public byte[] charToByte(char[] chars, int offset, int len)
+        throws CharConversionException
+        {
+            try {
+
+                String s = new String(chars, offset, len);
+                return s.getBytes("UTF8");
+
+            } catch( UnsupportedEncodingException e ) {
+                String err = "Unable to find UTF8 encoding mechanism";
+                throw (CharConversionException) new CharConversionException(err).initCause(e);
+            }
+        }
+    } // end of char converter
 
 }

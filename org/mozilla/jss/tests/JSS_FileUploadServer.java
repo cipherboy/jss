@@ -98,13 +98,13 @@ public class JSS_FileUploadServer  {
 
         if (TestInetAddress) {
             logger.debug("the HostName " + fServerHost +
-                        " the Inet Address " +
-                        InetAddress.getByName(fServerHost));
+                         " the Inet Address " +
+                         InetAddress.getByName(fServerHost));
             serverSock = new SSLServerSocket(port, 5,
-                    InetAddress.getByName(fServerHost), null , true);
+                                             InetAddress.getByName(fServerHost), null, true);
         } else {
             logger.debug("Inet set to Null");
-            serverSock = new SSLServerSocket(port, 5, null , null , true);
+            serverSock = new SSLServerSocket(port, 5, null, null, true);
         }
 
         logger.debug("Server created socket");
@@ -120,7 +120,7 @@ public class JSS_FileUploadServer  {
             sock = (SSLSocket) serverSock.accept();
             //sock.setKeepAlive(true);
             sock.addHandshakeCompletedListener(
-                    new HandshakeListener("server", this));
+                new HandshakeListener("server", this));
             socketCntr++;
             readWriteThread rwThread = new readWriteThread(sock, socketCntr);
             rwThread.start();
@@ -152,12 +152,12 @@ public class JSS_FileUploadServer  {
 
                 InputStream  is    = socket.getInputStream();
                 BufferedReader in  = new BufferedReader(
-                        new InputStreamReader(is));
+                    new InputStreamReader(is));
                 long timeInMs      = new Date().getTime();
                 while ((readString = in.readLine()) != null) {
                     long now = new Date().getTime();
                     System.out.print("Read " + readString.getBytes().length +
-                            "bytes in " + (now-timeInMs) + "\n");
+                                     "bytes in " + (now-timeInMs) + "\n");
                     timeInMs = now;
                 }
             } catch (Exception e) {
@@ -169,7 +169,7 @@ public class JSS_FileUploadServer  {
     }
 
     public static class HandshakeListener
-            implements SSLHandshakeCompletedListener {
+        implements SSLHandshakeCompletedListener {
         private String who;
         private JSS_FileUploadServer boss;
         public HandshakeListener(String who, JSS_FileUploadServer boss) {

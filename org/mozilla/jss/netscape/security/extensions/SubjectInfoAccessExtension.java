@@ -51,11 +51,11 @@ public class SubjectInfoAccessExtension extends Extension implements CertAttrSet
 
     public static final int OID_OCSP[] = { 1, 3, 6, 1, 5, 5, 7, 48, 1 };
     public static final ObjectIdentifier METHOD_OCSP = new
-            ObjectIdentifier(OID_OCSP);
+    ObjectIdentifier(OID_OCSP);
 
     public static final int OID_CA_ISSUERS[] = { 1, 3, 6, 1, 5, 5, 7, 48, 2 };
     public static final ObjectIdentifier METHOD_CA_ISSUERS = new
-            ObjectIdentifier(OID_CA_ISSUERS);
+    ObjectIdentifier(OID_CA_ISSUERS);
 
     public static final int OID[] = { 1, 3, 6, 1, 5, 5, 7, 1, 11 };
     public static final ObjectIdentifier ID = new ObjectIdentifier(OID);
@@ -81,7 +81,7 @@ public class SubjectInfoAccessExtension extends Extension implements CertAttrSet
      * @exception IOException on error.
      */
     public SubjectInfoAccessExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = ID;
         this.critical = critical.booleanValue();
         this.extensionValue = ((byte[]) value).clone();
@@ -137,8 +137,8 @@ public class SubjectInfoAccessExtension extends Extension implements CertAttrSet
      * Adds Access Description.
      */
     public void addAccessDescription(
-            ObjectIdentifier method,
-            GeneralName gn) {
+        ObjectIdentifier method,
+        GeneralName gn) {
         clearValue();
         mDesc.addElement(new AccessDescription(method, gn));
     }
@@ -171,7 +171,7 @@ public class SubjectInfoAccessExtension extends Extension implements CertAttrSet
 
     private void encodeThis() throws IOException {
         try (DerOutputStream seq = new DerOutputStream();
-             DerOutputStream tmp = new DerOutputStream()) {
+                    DerOutputStream tmp = new DerOutputStream()) {
 
             for (int i = 0; i < mDesc.size(); i++) {
                 DerOutputStream tmp0 = new DerOutputStream();
@@ -220,7 +220,7 @@ public class SubjectInfoAccessExtension extends Extension implements CertAttrSet
     public static void main(String[] argv) {
         AuthInfoAccessExtension aia = new AuthInfoAccessExtension(false);
         GeneralName ocspName = new GeneralName(new
-                URIName("http://ocsp.netscape.com"));
+                                               URIName("http://ocsp.netscape.com"));
 
         aia.addAccessDescription(METHOD_OCSP, ocspName);
         GeneralName caIssuersName = new GeneralName(new
@@ -245,10 +245,10 @@ public class SubjectInfoAccessExtension extends Extension implements CertAttrSet
             oos.writeObject(aia);
 
             ByteArrayInputStream bis = new ByteArrayInputStream(
-                    bos.toByteArray());
+                bos.toByteArray());
             ObjectInputStream ois = new ObjectInputStream(bis);
             AuthInfoAccessExtension clone = (AuthInfoAccessExtension)
-                    ois.readObject();
+                                            ois.readObject();
 
             System.out.println(clone);
         } catch (Exception e) {

@@ -24,16 +24,16 @@ class JSSMacSpi extends javax.crypto.MacSpi {
     private HMACAlgorithm alg;
 
     protected JSSMacSpi(HMACAlgorithm alg) {
-      try {
-        this.alg = alg;
-        CryptoToken token =
-            TokenSupplierManager.getTokenSupplier().getThreadToken();
-        digest = token.getDigestContext(alg);
-      } catch( DigestException de) {
+        try {
+            this.alg = alg;
+            CryptoToken token =
+                TokenSupplierManager.getTokenSupplier().getThreadToken();
+            digest = token.getDigestContext(alg);
+        } catch( DigestException de) {
             throw new TokenRuntimeException(de.getMessage());
-      } catch(NoSuchAlgorithmException nsae) {
+        } catch(NoSuchAlgorithmException nsae) {
             throw new TokenRuntimeException(nsae.getMessage());
-      }
+        }
     }
 
 
@@ -42,50 +42,50 @@ class JSSMacSpi extends javax.crypto.MacSpi {
     }
 
     public void engineInit(Key key, AlgorithmParameterSpec params)
-        throws InvalidKeyException, InvalidAlgorithmParameterException
+    throws InvalidKeyException, InvalidAlgorithmParameterException
     {
-      try {
-        if( ! (key instanceof SecretKeyFacade) ) {
-            throw new InvalidKeyException("Must use a JSS key");
+        try {
+            if( ! (key instanceof SecretKeyFacade) ) {
+                throw new InvalidKeyException("Must use a JSS key");
+            }
+            SecretKeyFacade facade = (SecretKeyFacade)key;
+            digest.initHMAC(facade.key);
+        } catch(DigestException de) {
+            throw new InvalidKeyException(
+                "DigestException: " + de.getMessage());
         }
-        SecretKeyFacade facade = (SecretKeyFacade)key;
-        digest.initHMAC(facade.key);
-      } catch(DigestException de) {
-        throw new InvalidKeyException(
-            "DigestException: " + de.getMessage());
-      }
     }
 
     public void engineUpdate(byte input) {
-      try {
-        digest.update(input);
-      } catch(DigestException de) {
-        throw new TokenRuntimeException("DigestException: " + de.getMessage());
-      }
+        try {
+            digest.update(input);
+        } catch(DigestException de) {
+            throw new TokenRuntimeException("DigestException: " + de.getMessage());
+        }
     }
 
     public void engineUpdate(byte[] input, int offset, int len) {
-      try {
-        digest.update(input, offset, len);
-      } catch(DigestException de) {
-        throw new TokenRuntimeException("DigestException: " + de.getMessage());
-      }
+        try {
+            digest.update(input, offset, len);
+        } catch(DigestException de) {
+            throw new TokenRuntimeException("DigestException: " + de.getMessage());
+        }
     }
 
     public byte[] engineDoFinal() {
-      try {
-        return digest.digest();
-      } catch(DigestException de) {
-        throw new TokenRuntimeException("DigestException: " + de.getMessage());
-      }
+        try {
+            return digest.digest();
+        } catch(DigestException de) {
+            throw new TokenRuntimeException("DigestException: " + de.getMessage());
+        }
     }
 
     public void engineReset() {
-      try {
-        digest.reset();
-      } catch(DigestException de) {
-        throw new TokenRuntimeException("DigestException: " + de.getMessage());
-      }
+        try {
+            digest.reset();
+        } catch(DigestException de) {
+            throw new TokenRuntimeException("DigestException: " + de.getMessage());
+        }
     }
 
     public Object clone() throws CloneNotSupportedException {

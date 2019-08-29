@@ -45,7 +45,7 @@ import org.mozilla.jss.netscape.security.x509.OIDMap;
  * @version $Revision$, $Date$
  */
 public class CertificateScopeOfUseExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
     /**
      *
      */
@@ -59,13 +59,13 @@ public class CertificateScopeOfUseExtension extends Extension
     static {
         try {
             OIDMap.addAttribute(CertificateScopeOfUseExtension.class.getName(),
-                    ID.toString(), NAME);
+                                ID.toString(), NAME);
         } catch (CertificateException e) {
         }
     }
 
     public CertificateScopeOfUseExtension(boolean critical, Vector<CertificateScopeEntry> scopeEntries)
-            throws IOException {
+    throws IOException {
         this.extensionId = ID;
         this.critical = critical;
         this.extensionValue = null; // build this when encodeThis() is called
@@ -80,7 +80,7 @@ public class CertificateScopeOfUseExtension extends Extension
     }
 
     public CertificateScopeOfUseExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = ID;
         this.critical = critical.booleanValue();
         this.extensionValue = ((byte[]) value).clone();
@@ -142,13 +142,13 @@ public class CertificateScopeOfUseExtension extends Extension
         mEntries = new Vector<CertificateScopeEntry>();
         while (val.data.available() != 0) {
             mEntries.addElement(new CertificateScopeEntry(
-                    val.data.getDerValue()));
+                                    val.data.getDerValue()));
         }
     }
 
     private void encodeThis() throws IOException {
         try (DerOutputStream seq = new DerOutputStream();
-             DerOutputStream tmp = new DerOutputStream()) {
+                    DerOutputStream tmp = new DerOutputStream()) {
 
             if (mEntries == null)
                 throw new IOException("Invalid Scope Entries");

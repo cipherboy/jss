@@ -121,7 +121,7 @@ public class X509CRLImpl extends X509CRL {
      * @exception X509ExtensionException on extension handling errors.
      */
     public X509CRLImpl(byte[] crlData)
-            throws CRLException, X509ExtensionException {
+    throws CRLException, X509ExtensionException {
         try {
             DerValue in = new DerValue(crlData);
 
@@ -133,7 +133,7 @@ public class X509CRLImpl extends X509CRL {
     }
 
     public X509CRLImpl(byte[] crlData, boolean includeEntries)
-            throws CRLException, X509ExtensionException {
+    throws CRLException, X509ExtensionException {
         try {
             entriesIncluded = includeEntries;
             DerValue in = new DerValue(crlData);
@@ -154,7 +154,7 @@ public class X509CRLImpl extends X509CRL {
      * @exception X509ExtensionException on extension handling errors.
      */
     public X509CRLImpl(InputStream inStrm)
-            throws CRLException, X509ExtensionException {
+    throws CRLException, X509ExtensionException {
         try {
             DerValue val = new DerValue(inStrm);
 
@@ -191,14 +191,14 @@ public class X509CRLImpl extends X509CRL {
      */
     public X509CRLImpl(X500Name issuer, Date thisDate, Date nextDate,
                        RevokedCertificate[] badCerts)
-            throws CRLException, X509ExtensionException {
+    throws CRLException, X509ExtensionException {
         this.issuer = issuer;
         this.thisUpdate = thisDate;
         this.nextUpdate = nextDate;
         if (badCerts != null) {
             for (int i = 0; i < badCerts.length; i++)
                 this.revokedCerts.put(badCerts[i].getSerialNumber(),
-                                 badCerts[i]);
+                                      badCerts[i]);
         }
     }
 
@@ -215,8 +215,8 @@ public class X509CRLImpl extends X509CRL {
      * @exception X509ExtensionException on extension handling errors.
      */
     public X509CRLImpl(X500Name issuer, Date thisDate, Date nextDate,
-               RevokedCertificate[] badCerts, CRLExtensions crlExts)
-            throws CRLException, X509ExtensionException {
+                       RevokedCertificate[] badCerts, CRLExtensions crlExts)
+    throws CRLException, X509ExtensionException {
         this.issuer = issuer;
         this.thisUpdate = thisDate;
         this.nextUpdate = nextDate;
@@ -250,8 +250,8 @@ public class X509CRLImpl extends X509CRL {
      * @param crlExts the CRL extensions.
      */
     public X509CRLImpl(X500Name issuer, AlgorithmId algId, Date thisDate, Date nextDate,
-               RevokedCertificate[] badCerts, CRLExtensions crlExts)
-            throws CRLException, X509ExtensionException {
+                       RevokedCertificate[] badCerts, CRLExtensions crlExts)
+    throws CRLException, X509ExtensionException {
         this(issuer, thisDate, nextDate, badCerts, crlExts);
         infoSigAlgId = algId;
     }
@@ -272,7 +272,7 @@ public class X509CRLImpl extends X509CRL {
     public X509CRLImpl(X500Name issuer, AlgorithmId algId,
                        Date thisDate, Date nextDate,
                        Hashtable<BigInteger, RevokedCertificate> badCerts, CRLExtensions crlExts)
-            throws CRLException, X509ExtensionException {
+    throws CRLException, X509ExtensionException {
         this.issuer = issuer;
         this.thisUpdate = thisDate;
         this.nextUpdate = nextDate;
@@ -325,7 +325,7 @@ public class X509CRLImpl extends X509CRL {
      * @exception X509ExtensionException on extension encoding errors.
      */
     public void encodeInfo(OutputStream out)
-            throws CRLException, X509ExtensionException {
+    throws CRLException, X509ExtensionException {
         try (DerOutputStream seq = new DerOutputStream()) {
             DerOutputStream tmp = new DerOutputStream();
             DerOutputStream rCerts = new DerOutputStream();
@@ -373,8 +373,8 @@ public class X509CRLImpl extends X509CRL {
      * @exception CRLException on encoding errors.
      */
     public void verify(PublicKey key)
-            throws CRLException, NoSuchAlgorithmException, InvalidKeyException,
-            NoSuchProviderException, SignatureException {
+    throws CRLException, NoSuchAlgorithmException, InvalidKeyException,
+        NoSuchProviderException, SignatureException {
         String sigProvider = null;
         verify(key, sigProvider);
     }
@@ -396,8 +396,8 @@ public class X509CRLImpl extends X509CRL {
      * @exception CRLException on encoding errors.
      */
     public void verify(PublicKey key, String sigProvider)
-            throws CRLException, NoSuchAlgorithmException, InvalidKeyException,
-            NoSuchProviderException, SignatureException {
+    throws CRLException, NoSuchAlgorithmException, InvalidKeyException,
+        NoSuchProviderException, SignatureException {
         if (signedCRL == null) {
             throw new CRLException("Uninitialized CRL");
         }
@@ -458,8 +458,8 @@ public class X509CRLImpl extends X509CRL {
      * @exception X509ExtensionException on any extension errors.
      */
     public void sign(PrivateKey key, String algorithm)
-            throws CRLException, NoSuchAlgorithmException, InvalidKeyException,
-            NoSuchProviderException, SignatureException, X509ExtensionException {
+    throws CRLException, NoSuchAlgorithmException, InvalidKeyException,
+        NoSuchProviderException, SignatureException, X509ExtensionException {
         sign(key, algorithm, null);
     }
 
@@ -480,9 +480,9 @@ public class X509CRLImpl extends X509CRL {
      * @exception X509ExtensionException on any extension errors.
      */
     public void sign(PrivateKey key, String algorithm, String provider)
-            throws CRLException, NoSuchAlgorithmException, InvalidKeyException,
-            NoSuchProviderException, SignatureException, X509ExtensionException {
-        try (DerOutputStream out = new DerOutputStream()){
+    throws CRLException, NoSuchAlgorithmException, InvalidKeyException,
+        NoSuchProviderException, SignatureException, X509ExtensionException {
+        try (DerOutputStream out = new DerOutputStream()) {
             if (readOnly)
                 throw new CRLException("cannot over-write existing CRL");
             Signature sigEngine = null;
@@ -528,8 +528,8 @@ public class X509CRLImpl extends X509CRL {
      */
     public String toString() {
         StringBuffer sb = new StringBuffer("X.509 CRL v" + (version + 1) + "\n" + "Signature Algorithm: " + sigAlgId +
-                ", OID=" + sigAlgId.getOID() + "\n" + "Issuer: " + issuer + "\n" + "\nThis Update: " + thisUpdate
-                + "\n");
+                                           ", OID=" + sigAlgId.getOID() + "\n" + "Issuer: " + issuer + "\n" + "\nThis Update: " + thisUpdate
+                                           + "\n");
         if (nextUpdate != null)
             sb.append("Next Update: " + nextUpdate + "\n");
         if (revokedCerts.isEmpty())
@@ -545,7 +545,7 @@ public class X509CRLImpl extends X509CRL {
             }
         }
         org.mozilla.jss.netscape.security.util.PrettyPrintFormat pp =
-                new org.mozilla.jss.netscape.security.util.PrettyPrintFormat(" ", 20);
+            new org.mozilla.jss.netscape.security.util.PrettyPrintFormat(" ", 20);
         String signaturebits = pp.toHexString(signature);
         sb.append("\nSignature:\n" + signaturebits);
 
@@ -703,7 +703,7 @@ public class X509CRLImpl extends X509CRL {
      * @exception CRLException on parsing errors.
      */
     public byte[] getTBSCertList()
-            throws CRLException {
+    throws CRLException {
         if (tbsCertList == null)
             throw new CRLException("Uninitialized CRL");
         byte[] dup = new byte[tbsCertList.length];
@@ -952,12 +952,12 @@ public class X509CRLImpl extends X509CRL {
      * Parses an X.509 CRL, should be used only by constructors.
      */
     private void parse(DerValue val)
-            throws CRLException, IOException, X509ExtensionException {
+    throws CRLException, IOException, X509ExtensionException {
         parse(val, true);
     }
 
     private void parse(DerValue val, boolean includeEntries)
-            throws CRLException, IOException, X509ExtensionException {
+    throws CRLException, IOException, X509ExtensionException {
         // check if can over write the certificate
         if (readOnly)
             throw new CRLException("cannot over-write existing CRL");
@@ -971,7 +971,7 @@ public class X509CRLImpl extends X509CRL {
 
         if (val.data.available() != 0)
             throw new CRLException("signed overrun, bytes = "
-                                     + val.data.available());
+                                   + val.data.available());
 
         if (seq[0].tag != DerValue.tag_Sequence)
             throw new CRLException("signed CRL fields invalid");
@@ -1050,7 +1050,7 @@ public class X509CRLImpl extends X509CRL {
                     RevokedCertImpl entry = new RevokedCertImpl(badCerts[i]);
                     if (entry.hasExtensions() && (version == 0))
                         throw new CRLException("Invalid encoding, extensions" +
-                                " not supported in CRL v1 entries.");
+                                               " not supported in CRL v1 entries.");
 
                     revokedCerts.put(entry.getSerialNumber(),
                                      entry);
@@ -1068,7 +1068,7 @@ public class X509CRLImpl extends X509CRL {
         if (tmp.isConstructed() && tmp.isContextSpecific((byte) 0)) {
             if (version == 0)
                 throw new CRLException("Invalid encoding, extensions not" +
-                                   " supported in CRL v1.");
+                                       " supported in CRL v1.");
             extensions = new CRLExtensions(tmp.data);
         }
     }

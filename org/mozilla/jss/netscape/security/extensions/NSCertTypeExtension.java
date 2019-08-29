@@ -56,7 +56,7 @@ public class NSCertTypeExtension extends Extension implements CertAttrSet {
      * Identifies the particular public key used to sign the certificate.
      */
     public static final ObjectIdentifier CertType_Id = new
-            ObjectIdentifier(CertType_data);
+    ObjectIdentifier(CertType_data);
 
     /**
      * Attribute names.
@@ -104,16 +104,16 @@ public class NSCertTypeExtension extends Extension implements CertAttrSet {
     }
 
     private static MapEntry[] mMapData =
-        {
-                new MapEntry(SSL_CLIENT, 0),
-                new MapEntry(SSL_SERVER, 1),
-                new MapEntry(EMAIL, 2),
-                new MapEntry(OBJECT_SIGNING, 3),
-                // note that bit 4 is reserved
-                new MapEntry(SSL_CA, 5),
-                new MapEntry(EMAIL_CA, 6),
-                new MapEntry(OBJECT_SIGNING_CA, 7),
-        };
+    {
+        new MapEntry(SSL_CLIENT, 0),
+        new MapEntry(SSL_SERVER, 1),
+        new MapEntry(EMAIL, 2),
+        new MapEntry(OBJECT_SIGNING, 3),
+        // note that bit 4 is reserved
+        new MapEntry(SSL_CA, 5),
+        new MapEntry(EMAIL_CA, 6),
+        new MapEntry(OBJECT_SIGNING_CA, 7),
+    };
 
     private static Vector<String> mAttributeNames = new Vector<String>();
 
@@ -129,8 +129,8 @@ public class NSCertTypeExtension extends Extension implements CertAttrSet {
                 return mMapData[i].mPosition;
         }
         throw new CertificateException("Attribute name [" + name
-                + "] not recognized by"
-                + " CertAttrSet:NSCertType.");
+                                       + "] not recognized by"
+                                       + " CertAttrSet:NSCertType.");
     }
 
     // Encode this extension value
@@ -228,7 +228,7 @@ public class NSCertTypeExtension extends Extension implements CertAttrSet {
      * @exception IOException on error.
      */
     public NSCertTypeExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
 
         /**
          * logger.trace("NSCertTypeExtension");

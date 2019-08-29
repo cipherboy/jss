@@ -6,6 +6,10 @@ package org.mozilla.jss.util;
 
 public class IncorrectPasswordException extends Exception {
     private static final long serialVersionUID = 1L;
-    public IncorrectPasswordException() { super(); }
-    public IncorrectPasswordException(String mesg) { super(mesg); }
+    public IncorrectPasswordException() {
+        super();
+    }
+    public IncorrectPasswordException(String mesg) {
+        super(mesg);
+    }
 }

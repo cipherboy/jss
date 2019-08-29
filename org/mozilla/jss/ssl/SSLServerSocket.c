@@ -17,11 +17,11 @@
 
 #ifdef WINNT
 #include <private/pprio.h>
-#endif 
+#endif
 
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_ssl_SSLServerSocket_socketListen
-    (JNIEnv *env, jobject self, jint backlog)
+(JNIEnv *env, jobject self, jint backlog)
 {
     JSSL_SocketData *sock;
 
@@ -29,7 +29,7 @@ Java_org_mozilla_jss_ssl_SSLServerSocket_socketListen
 
     if( PR_Listen(sock->fd, backlog) != PR_SUCCESS ) {
         JSSL_throwSSLSocketException(env,
-            "Failed to set listen backlog on socket");
+                                     "Failed to set listen backlog on socket");
         goto finish;
     }
 
@@ -39,8 +39,8 @@ finish:
 
 JNIEXPORT jbyteArray JNICALL
 Java_org_mozilla_jss_ssl_SSLServerSocket_socketAccept
-    (JNIEnv *env, jobject self, jobject newSock, jint timeout,
-        jboolean handshakeAsClient)
+(JNIEnv *env, jobject self, jobject newSock, jint timeout,
+ jboolean handshakeAsClient)
 {
     JSSL_SocketData *sock;
     PRNetAddr addr;
@@ -54,13 +54,13 @@ Java_org_mozilla_jss_ssl_SSLServerSocket_socketAccept
     if( JSSL_getSockData(env, self, &sock) != PR_SUCCESS) goto finish;
 
     ivtimeout = (timeout > 0) ? PR_MillisecondsToInterval(timeout)
-                              : PR_INTERVAL_NO_TIMEOUT;
+                : PR_INTERVAL_NO_TIMEOUT;
 
     if( handshakeAsClient ) {
         status = SSL_OptionSet(sock->fd, SSL_HANDSHAKE_AS_CLIENT, PR_TRUE);
         if( status != SECSuccess ) {
             JSSL_throwSSLSocketException(env,
-                "Failed to set option to handshake as client");
+                                         "Failed to set option to handshake as client");
             goto finish;
         }
     }
@@ -69,10 +69,10 @@ Java_org_mozilla_jss_ssl_SSLServerSocket_socketAccept
     me = PR_GetCurrentThread();
     PR_Lock(sock->lock);
     if ( sock->closePending ) {
-       PR_Unlock(sock->lock);
-       JSSL_throwSSLSocketException(env, 
-                "Accept operation failed: socket is closing");
-       goto finish;
+        PR_Unlock(sock->lock);
+        JSSL_throwSSLSocketException(env,
+                                     "Accept operation failed: socket is closing");
+        goto finish;
     }
     PR_ASSERT(sock->accepter == NULL);
     sock->accepter = me;
@@ -114,10 +114,10 @@ Java_org_mozilla_jss_ssl_SSLServerSocket_socketAccept
 
     /* setup the handshake callback */
     status = SSL_HandshakeCallback(newSD->fd, JSSL_HandshakeCallback,
-                                    newSD);
+                                   newSD);
     if( status != SECSuccess ) {
         JSSL_throwSSLSocketException(env,
-            "Unable to install handshake callback");
+                                     "Unable to install handshake callback");
         goto finish;
     }
 
@@ -149,14 +149,14 @@ Java_org_mozilla_jss_ssl_SSLServerSocket_abortAccept(
     if( JSSL_getSockData(env, self, &sock) != PR_SUCCESS) goto finish;
 
     /*
-     * The java layer prevents I/O once close has been 
+     * The java layer prevents I/O once close has been
      * called but if an accept is in progress then abort it.
      * For WINNT the accept method must check for
      * PR_PENDING_INTERRUPT_ERROR and call PR_NT_CancelIo.
      */
     PR_Lock(sock->lock);
     if ( sock->accepter ) {
-        PR_Interrupt(sock->accepter); 
+        PR_Interrupt(sock->accepter);
     }
     sock->closePending = PR_TRUE;   /* socket is to be closed */
     PR_Unlock(sock->lock);
@@ -183,10 +183,10 @@ Java_org_mozilla_jss_ssl_SSLServerSocket_configServerSessionIDCache(
     dirName = JSS_RefJString(env, nameString);
 
     status = SSL_ConfigServerSessionIDCache(
-                maxEntries, ssl2Timeout, ssl3Timeout, dirName);
+                 maxEntries, ssl2Timeout, ssl3Timeout, dirName);
     if (status != SECSuccess) {
         JSSL_throwSSLSocketException(env,
-                       "Failed to configure server session ID cache");
+                                     "Failed to configure server session ID cache");
         goto finish;
     }
 
@@ -239,7 +239,7 @@ Java_org_mozilla_jss_ssl_SSLServerSocket_setServerCert(
         status = SSL_ConfigServerCert(sock->fd, cert, privKey, NULL, 0);
         if( status != SECSuccess) {
             JSSL_throwSSLSocketException(env,
-                "Failed to configure secure server certificate and key");
+                                         "Failed to configure secure server certificate and key");
             goto finish;
         }
     } else {

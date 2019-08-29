@@ -55,7 +55,7 @@ public class IA5StringConverter implements AVAValueConverter {
      *				available for the conversion.
      */
     public DerValue getValue(String valueString)
-            throws IOException {
+    throws IOException {
         return getValue(valueString, null);
     }
 
@@ -69,7 +69,7 @@ public class IA5StringConverter implements AVAValueConverter {
             ByteBuffer byteBuffer = encoder.encode(charBuffer);
 
             return new DerValue(DerValue.tag_IA5String,
-                    byteBuffer.array(), byteBuffer.arrayOffset(), byteBuffer.limit());
+                                byteBuffer.array(), byteBuffer.arrayOffset(), byteBuffer.limit());
 
         } catch (CharacterCodingException e) {
             throw new IllegalArgumentException("Invalid IA5String AVA Value string");
@@ -90,7 +90,7 @@ public class IA5StringConverter implements AVAValueConverter {
      *				to a IA5String DER value.
      */
     public DerValue getValue(byte[] berStream)
-            throws IOException {
+    throws IOException {
         DerValue value = new DerValue(berStream);
         if (value.tag == DerValue.tag_IA5String)
             return value;
@@ -112,7 +112,7 @@ public class IA5StringConverter implements AVAValueConverter {
      *				with IA5String characters.
      */
     public String getAsString(DerValue avaValue)
-            throws IOException {
+    throws IOException {
         if (avaValue.tag == DerValue.tag_IA5String)
             return avaValue.getIA5String();
         if (avaValue.tag == DerValue.tag_PrintableString)

@@ -57,7 +57,7 @@ public final class X500Signer {
      * @exception SignatureException on errors.
      */
     public void update(byte buf[], int offset, int len)
-            throws SignatureException {
+    throws SignatureException {
         sig.update(buf, offset, len);
     }
 

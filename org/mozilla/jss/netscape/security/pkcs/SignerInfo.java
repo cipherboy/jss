@@ -55,10 +55,10 @@ public class SignerInfo implements DerEncoder {
     PKCS9Attributes unauthenticatedAttributes;
 
     public SignerInfo(X500Name issuerName,
-              BigInt serial,
-              AlgorithmId digestAlgorithmId,
-              AlgorithmId digestEncryptionAlgorithmId,
-              byte[] encryptedDigest) {
+                      BigInt serial,
+                      AlgorithmId digestAlgorithmId,
+                      AlgorithmId digestEncryptionAlgorithmId,
+                      byte[] encryptedDigest) {
         this.version = new BigInt(1);
         this.issuerName = issuerName;
         this.certificateSerialNumber = serial;
@@ -68,12 +68,12 @@ public class SignerInfo implements DerEncoder {
     }
 
     public SignerInfo(X500Name issuerName,
-              BigInt serial,
-              AlgorithmId digestAlgorithmId,
-              PKCS9Attributes authenticatedAttributes,
-              AlgorithmId digestEncryptionAlgorithmId,
-              byte[] encryptedDigest,
-              PKCS9Attributes unauthenticatedAttributes) {
+                      BigInt serial,
+                      AlgorithmId digestAlgorithmId,
+                      PKCS9Attributes authenticatedAttributes,
+                      AlgorithmId digestEncryptionAlgorithmId,
+                      byte[] encryptedDigest,
+                      PKCS9Attributes unauthenticatedAttributes) {
         this.version = new BigInt(1);
         this.issuerName = issuerName;
         this.certificateSerialNumber = serial;
@@ -85,7 +85,7 @@ public class SignerInfo implements DerEncoder {
     }
 
     public SignerInfo(DerInputStream derin)
-            throws IOException, ParsingException {
+    throws IOException, ParsingException {
 
         // version
         version = derin.getInteger();
@@ -94,7 +94,7 @@ public class SignerInfo implements DerEncoder {
         DerValue[] issuerAndSerialNumber = derin.getSequence(2);
         byte[] issuerBytes = issuerAndSerialNumber[0].toByteArray();
         issuerName = new X500Name(new DerValue(DerValue.tag_Sequence,
-                           issuerBytes));
+                                               issuerBytes));
         certificateSerialNumber = issuerAndSerialNumber[1].getInteger();
 
         // digestAlgorithmId
@@ -177,14 +177,14 @@ public class SignerInfo implements DerEncoder {
     }
 
     public X509Certificate getCertificate(PKCS7 block)
-            throws IOException {
+    throws IOException {
         return block.getCertificate(certificateSerialNumber, issuerName);
     }
 
     /* Returns null if verify fails, this signerInfo if
        verify succeeds. */
     SignerInfo verify(PKCS7 block, byte[] data)
-            throws NoSuchAlgorithmException, SignatureException {
+    throws NoSuchAlgorithmException, SignatureException {
 
         try {
 
@@ -194,7 +194,7 @@ public class SignerInfo implements DerEncoder {
             }
 
             String digestAlgname =
-                    getDigestAlgorithmId().getName();
+                getDigestAlgorithmId().getName();
 
             byte[] dataSigned;
 
@@ -206,16 +206,16 @@ public class SignerInfo implements DerEncoder {
 
                 // first, check content type
                 ObjectIdentifier contentType = (ObjectIdentifier)
-                        authenticatedAttributes.getAttributeValue(
-                                PKCS9Attribute.CONTENT_TYPE_OID);
+                                               authenticatedAttributes.getAttributeValue(
+                                                   PKCS9Attribute.CONTENT_TYPE_OID);
                 if (contentType == null ||
                         !contentType.equals(content.contentType))
                     return null; // contentType does not match, bad SignerInfo
 
                 // now, check message digest
                 byte[] messageDigest = (byte[])
-                        authenticatedAttributes.getAttributeValue(
-                                PKCS9Attribute.MESSAGE_DIGEST_OID);
+                                       authenticatedAttributes.getAttributeValue(
+                                           PKCS9Attribute.MESSAGE_DIGEST_OID);
 
                 if (messageDigest == null) // fail if there is no message digest
                     return null;
@@ -242,7 +242,7 @@ public class SignerInfo implements DerEncoder {
             // put together digest algorithm and encryption algorithm
             // to form signing algorithm
             String encryptionAlgname =
-                    getDigestEncryptionAlgorithmId().getName();
+                getDigestEncryptionAlgorithmId().getName();
 
             String algname;
             if (encryptionAlgname.equals("DSA") ||
@@ -270,7 +270,7 @@ public class SignerInfo implements DerEncoder {
 
         } catch (IOException e) {
             throw new SignatureException("IO error verifying signature:\n" +
-                     e.getMessage());
+                                         e.getMessage());
 
         } catch (InvalidKeyException e) {
             throw new SignatureException("InvalidKey: " + e.getMessage());
@@ -281,7 +281,7 @@ public class SignerInfo implements DerEncoder {
 
     /* Verify the content of the pkcs7 block. */
     SignerInfo verify(PKCS7 block)
-            throws NoSuchAlgorithmException, SignatureException {
+    throws NoSuchAlgorithmException, SignatureException {
         return verify(block, null);
     }
 
@@ -319,7 +319,7 @@ public class SignerInfo implements DerEncoder {
 
     public String toString() {
         org.mozilla.jss.netscape.security.util.PrettyPrintFormat pp =
-                new org.mozilla.jss.netscape.security.util.PrettyPrintFormat(" ", 20);
+            new org.mozilla.jss.netscape.security.util.PrettyPrintFormat(" ", 20);
         String digestbits = pp.toHexString(encryptedDigest);
 
         String out = "";
@@ -327,20 +327,20 @@ public class SignerInfo implements DerEncoder {
         out += "Signer Info for (issuer): " + issuerName + "\n";
         out += "\tversion: " + version + "\n";
         out += "\tcertificateSerialNumber: " + certificateSerialNumber +
-                "\n";
+               "\n";
         out += "\tdigestAlgorithmId: " + digestAlgorithmId + "\n";
         if (authenticatedAttributes != null) {
             out += "\tauthenticatedAttributes: " + authenticatedAttributes +
-                    "\n";
+                   "\n";
         }
         out += "\tdigestEncryptionAlgorithmId: " + digestEncryptionAlgorithmId +
-                "\n";
+               "\n";
 
         out += "\tencryptedDigest: " + "\n" +
-                digestbits + "\n";
+               digestbits + "\n";
         if (unauthenticatedAttributes != null) {
             out += "\tunauthenticatedAttributes: " +
-                    unauthenticatedAttributes + "\n";
+                   unauthenticatedAttributes + "\n";
         }
         return out;
     }

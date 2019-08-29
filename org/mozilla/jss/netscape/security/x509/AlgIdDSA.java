@@ -88,10 +88,10 @@ public final class AlgIdDSA extends AlgorithmId implements DSAParams {
      * @param g the DSS/DSA paramter "G"
      */
     public AlgIdDSA(byte p[], byte q[], byte g[])
-            throws IOException {
+    throws IOException {
         this(new BigInteger(1, p),
-                new BigInteger(1, q),
-                new BigInteger(1, g));
+             new BigInteger(1, q),
+             new BigInteger(1, g));
     }
 
     /**
@@ -129,7 +129,7 @@ public final class AlgIdDSA extends AlgorithmId implements DSAParams {
      * value, "params" must be created.
      */
     private void initializeParams()
-            throws IOException {
+    throws IOException {
         try (DerOutputStream out = new DerOutputStream()) {
             out.putInteger(new BigInt(p.toByteArray()));
             out.putInteger(new BigInt(q.toByteArray()));
@@ -143,7 +143,7 @@ public final class AlgIdDSA extends AlgorithmId implements DSAParams {
      * in the "params" member, which never needs to be changed.
      */
     protected void decodeParams()
-            throws IOException {
+    throws IOException {
         if (params == null || params.tag != DerValue.tag_Sequence)
             throw new IOException("DSA alg parsing error");
 
@@ -155,7 +155,7 @@ public final class AlgIdDSA extends AlgorithmId implements DSAParams {
 
         if (params.data.available() != 0)
             throw new IOException("AlgIdDSA params, extra=" +
-                    params.data.available());
+                                  params.data.available());
     }
 
     /*
@@ -170,9 +170,9 @@ public final class AlgIdDSA extends AlgorithmId implements DSAParams {
      */
     protected String paramsToString() {
         return "\n    p:\n" + (new BigInt(p)).toString() +
-                "\n    q:\n" + (new BigInt(q)).toString() +
-                "\n    g:\n" + (new BigInt(g)).toString() +
-                "\n";
+               "\n    q:\n" + (new BigInt(q)).toString() +
+               "\n    g:\n" + (new BigInt(g)).toString() +
+               "\n";
     }
 
     @Override

@@ -84,7 +84,7 @@ public final class SafeBag implements ASN1Value {
      * <code>org.mozilla.jss.pkix.primitive.Attribute</code>.
      */
     public SET getBagAttributes() {
-       return bagAttributes;
+        return bagAttributes;
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -95,13 +95,13 @@ public final class SafeBag implements ASN1Value {
      * The OID branch for PKCS #12, version 1.0.
      */
     public static final OBJECT_IDENTIFIER PKCS12_VERSION_1=
-                OBJECT_IDENTIFIER.PKCS12.subBranch(10);
+        OBJECT_IDENTIFIER.PKCS12.subBranch(10);
 
     /**
      * The OID branch for the PKCS #12 bag types.
      */
     public static final OBJECT_IDENTIFIER PKCS12_BAG_IDS =
-                PKCS12_VERSION_1.subBranch(1);
+        PKCS12_VERSION_1.subBranch(1);
 
     /**
      * A bag containing a private key.  The bag content is a <i>KeyBag</i>,
@@ -114,46 +114,46 @@ public final class SafeBag implements ASN1Value {
      * content is a PKCS #8 <i>EncryptedPrivateKeyInfo</i>.
      */
     public static final OBJECT_IDENTIFIER PKCS8_SHROUDED_KEY_BAG =
-            PKCS12_BAG_IDS.subBranch(2);
+        PKCS12_BAG_IDS.subBranch(2);
 
     /**
      * A bag containing a certificate.  The bag content is <code>CertBag</code>.
      */
     public static final OBJECT_IDENTIFIER CERT_BAG =
-            PKCS12_BAG_IDS.subBranch(3);
+        PKCS12_BAG_IDS.subBranch(3);
 
     /**
      * A bag containing a certificate revocation list.
      * The bag content is <code>CRLBag</code>.
      */
     public static final OBJECT_IDENTIFIER CRL_BAG =
-            PKCS12_BAG_IDS.subBranch(4);
+        PKCS12_BAG_IDS.subBranch(4);
 
     /**
      * A bag containing an arbitrary secret.  The bag content is
      * <code>SecretBag</code>.
      */
     public static final OBJECT_IDENTIFIER SECRET_BAG =
-            PKCS12_BAG_IDS.subBranch(5);
+        PKCS12_BAG_IDS.subBranch(5);
 
     /**
      * A bag containing a nested SafeContent .  The bag content is
      * <i>SafeContents</i>, which is merely a SEQUENCE of SafeBag.
      */
     public static final OBJECT_IDENTIFIER SAFE_CONTENTS_BAG =
-            PKCS12_BAG_IDS.subBranch(6);
+        PKCS12_BAG_IDS.subBranch(6);
 
     /**
      * A FriendlyName attribute. The value is a BMPString.
      */
     public static final OBJECT_IDENTIFIER FRIENDLY_NAME =
-            OBJECT_IDENTIFIER.PKCS9.subBranch(20);
+        OBJECT_IDENTIFIER.PKCS9.subBranch(20);
 
     /**
      * A LocalKeyID attribute.  The value is an octet string.
      */
     public static final OBJECT_IDENTIFIER LOCAL_KEY_ID =
-            OBJECT_IDENTIFIER.PKCS9.subBranch(21);
+        OBJECT_IDENTIFIER.PKCS9.subBranch(21);
 
     ///////////////////////////////////////////////////////////////////////
     // Constructors
@@ -170,7 +170,7 @@ public final class SafeBag implements ASN1Value {
      *      attributes are optional, this parameter may be null.
      */
     public SafeBag(OBJECT_IDENTIFIER bagType, ASN1Value bagContent,
-                SET bagAttributes)
+                   SET bagAttributes)
     {
         if( bagType==null || bagContent==null ) {
             throw new IllegalArgumentException("bagType or bagContent is null");
@@ -204,8 +204,8 @@ public final class SafeBag implements ASN1Value {
      */
     public static SafeBag
     createCertBag(byte[] cert, String friendlyName)
-            throws DigestException, NoSuchAlgorithmException,
-            InvalidBERException {
+    throws DigestException, NoSuchAlgorithmException,
+        InvalidBERException {
         return createCertBag(cert, friendlyName, getLocalKeyIDFromCert(cert));
     }
 
@@ -227,27 +227,27 @@ public final class SafeBag implements ASN1Value {
      */
     public static SafeBag
     createCertBag(byte[] cert, String friendlyName, byte[] localKeyID)
-            throws InvalidBERException {
-      try {
+    throws InvalidBERException {
+        try {
 
-        // create CertBag
-        CertBag cb = new CertBag(CertBag.X509_CERT_TYPE, new ANY(cert) );
+            // create CertBag
+            CertBag cb = new CertBag(CertBag.X509_CERT_TYPE, new ANY(cert) );
 
-        // setup attributes
-        SET attributes = new SET();
-        // friendly name should be cert nickname
-        attributes.addElement(new Attribute(
-                    FRIENDLY_NAME,
-                    new BMPString(friendlyName) ));
-        attributes.addElement( new Attribute(
-                    LOCAL_KEY_ID,
-                    new OCTET_STRING(localKeyID) ));
+            // setup attributes
+            SET attributes = new SET();
+            // friendly name should be cert nickname
+            attributes.addElement(new Attribute(
+                                      FRIENDLY_NAME,
+                                      new BMPString(friendlyName) ));
+            attributes.addElement( new Attribute(
+                                       LOCAL_KEY_ID,
+                                       new OCTET_STRING(localKeyID) ));
 
-        return new SafeBag(CERT_BAG, cb, attributes);
-      } catch( CharConversionException e ) {
-        throw new AssertionException("CharConversionException converting"+
-            " Unicode to BMPString");
-      }
+            return new SafeBag(CERT_BAG, cb, attributes);
+        } catch( CharConversionException e ) {
+            throw new AssertionException("CharConversionException converting"+
+                                         " Unicode to BMPString");
+        }
     }
 
     /**
@@ -260,7 +260,7 @@ public final class SafeBag implements ASN1Value {
      */
     public static final byte[]
     getLocalKeyIDFromCert(byte[] derCert)
-            throws DigestException, NoSuchAlgorithmException {
+    throws DigestException, NoSuchAlgorithmException {
         MessageDigest digester = MessageDigest.getInstance("SHA-1");
         return digester.digest(derCert);
     }
@@ -280,46 +280,46 @@ public final class SafeBag implements ASN1Value {
      */
     public static SafeBag
     createEncryptedPrivateKeyBag(PrivateKeyInfo privk, String friendlyName,
-            byte[] localKeyID, Password password)
-            throws NotInitializedException, TokenException
+                                 byte[] localKeyID, Password password)
+    throws NotInitializedException, TokenException
     {
-      try {
+        try {
 
-        PBEAlgorithm pbeAlg = PBEAlgorithm.PBE_SHA1_DES3_CBC;
-        final int DEFAULT_ITERATIONS = 1;
-        byte[] salt = new byte[pbeAlg.getSaltLength()];
+            PBEAlgorithm pbeAlg = PBEAlgorithm.PBE_SHA1_DES3_CBC;
+            final int DEFAULT_ITERATIONS = 1;
+            byte[] salt = new byte[pbeAlg.getSaltLength()];
 
-        JSSSecureRandom rand = CryptoManager.getInstance().getSecureRNG();
-        rand.nextBytes(salt);
+            JSSSecureRandom rand = CryptoManager.getInstance().getSecureRNG();
+            rand.nextBytes(salt);
 
-        EncryptedPrivateKeyInfo epki= EncryptedPrivateKeyInfo.createPBE(
-                PBEAlgorithm.PBE_SHA1_DES3_CBC, password, salt,
-                DEFAULT_ITERATIONS, new PasswordConverter(), privk);
+            EncryptedPrivateKeyInfo epki= EncryptedPrivateKeyInfo.createPBE(
+                                              PBEAlgorithm.PBE_SHA1_DES3_CBC, password, salt,
+                                              DEFAULT_ITERATIONS, new PasswordConverter(), privk);
 
-        SET attributes = new SET();
-        attributes.addElement(new Attribute(
-                    FRIENDLY_NAME,
-                    new BMPString(friendlyName) ));
-        attributes.addElement( new Attribute(
-                    LOCAL_KEY_ID,
-                    new OCTET_STRING(localKeyID) ));
+            SET attributes = new SET();
+            attributes.addElement(new Attribute(
+                                      FRIENDLY_NAME,
+                                      new BMPString(friendlyName) ));
+            attributes.addElement( new Attribute(
+                                       LOCAL_KEY_ID,
+                                       new OCTET_STRING(localKeyID) ));
 
-        return new SafeBag(PKCS8_SHROUDED_KEY_BAG , epki, attributes);
-      } catch(java.security.NoSuchAlgorithmException e) {
+            return new SafeBag(PKCS8_SHROUDED_KEY_BAG, epki, attributes);
+        } catch(java.security.NoSuchAlgorithmException e) {
             throw new AssertionException(
                 "Unable to find PBE algorithm: "+e);
-      } catch(java.security.InvalidKeyException e) {
+        } catch(java.security.InvalidKeyException e) {
             throw new AssertionException(
                 "InvalidKeyException while creating EncryptedContentInfo: "+e);
-      } catch(java.security.InvalidAlgorithmParameterException e) {
+        } catch(java.security.InvalidAlgorithmParameterException e) {
             throw new AssertionException(
                 "InvalidAlgorithmParameterException while creating"+
                 " EncryptedContentInfo: "+e);
-      } catch(java.io.CharConversionException e) {
+        } catch(java.io.CharConversionException e) {
             throw new AssertionException(
                 "CharConversionException while creating EncryptedContentInfo: "+
                 e);
-      }
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -335,7 +335,7 @@ public final class SafeBag implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         SEQUENCE seq = new SEQUENCE();
 
@@ -365,11 +365,11 @@ public final class SafeBag implements ASN1Value {
 
             seqt.addElement( OBJECT_IDENTIFIER.getTemplate() );
             seqt.addElement( new EXPLICIT.Template(
-                                    new Tag(0),
-                                    ANY.getTemplate() )
-                            );
+                                 new Tag(0),
+                                 ANY.getTemplate() )
+                           );
             seqt.addOptionalElement( new SET.OF_Template(
-                                            Attribute.getTemplate() ) );
+                                         Attribute.getTemplate() ) );
         }
 
         public boolean tagMatch(Tag tag) {
@@ -377,25 +377,25 @@ public final class SafeBag implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
-          try {
+            try {
 
-            SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
+                SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
-            return new SafeBag( (OBJECT_IDENTIFIER) seq.elementAt(0),
-                                ((EXPLICIT)seq.elementAt(1)).getContent(),
-                                (SET) seq.elementAt(2) );
+                return new SafeBag( (OBJECT_IDENTIFIER) seq.elementAt(0),
+                                    ((EXPLICIT)seq.elementAt(1)).getContent(),
+                                    (SET) seq.elementAt(2) );
 
-          } catch( InvalidBERException e ) {
-            throw new InvalidBERException(e, "SafeBag");
-          }
+            } catch( InvalidBERException e ) {
+                throw new InvalidBERException(e, "SafeBag");
+            }
         }
     }
 }

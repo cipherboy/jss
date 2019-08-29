@@ -49,12 +49,12 @@ public class DigestedData implements ASN1Value {
     ///////////////////////////////////////////////////////////////////////
 
     public DigestedData(INTEGER version, AlgorithmIdentifier digestAlgorithm,
-                ContentInfo contentInfo, OCTET_STRING digest)
+                        ContentInfo contentInfo, OCTET_STRING digest)
     {
         if( version==null || digestAlgorithm==null || contentInfo==null ||
                 digest==null ) {
             throw new IllegalArgumentException("DigestedData constructor"
-                +" parameter is null");
+                                               +" parameter is null");
         }
 
         this.version = version;
@@ -84,7 +84,7 @@ public class DigestedData implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
         sequence.encode(implicitTag, ostream);
     }
 
@@ -109,20 +109,20 @@ public class DigestedData implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
 
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
             return new DigestedData(
-                            (INTEGER) seq.elementAt(0),
-                            (AlgorithmIdentifier) seq.elementAt(1),
-                            (ContentInfo) seq.elementAt(2),
-                            (OCTET_STRING) seq.elementAt(3) );
+                       (INTEGER) seq.elementAt(0),
+                       (AlgorithmIdentifier) seq.elementAt(1),
+                       (ContentInfo) seq.elementAt(2),
+                       (OCTET_STRING) seq.elementAt(3) );
         }
     }
 }

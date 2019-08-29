@@ -71,38 +71,38 @@ public class RDN implements ASN1Value {
     }
 
     public void encode(Tag implicit, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         avas.encode(implicit, ostream);
     }
 
-public static class Template implements ASN1Template {
+    public static class Template implements ASN1Template {
 
-    public boolean tagMatch(Tag tag) {
-        return TAG.equals(tag);
-    }
-
-    public ASN1Value decode(InputStream istream)
-        throws IOException, InvalidBERException
-    {
-        return decode(TAG, istream);
-    }
-
-    public ASN1Value decode(Tag implicit, InputStream istream)
-        throws IOException, InvalidBERException
-    {
-        AVA.Template avatemp = new AVA.Template();
-        SET.OF_Template sett = new SET.OF_Template( avatemp );
-
-        SET set =  (SET) sett.decode(implicit, istream);
-
-        if(set.size() < 1) {
-            throw new InvalidBERException("RDN with zero elements; "+
-                "an RDN must have at least one element");
+        public boolean tagMatch(Tag tag) {
+            return TAG.equals(tag);
         }
 
-        return new RDN(set);
+        public ASN1Value decode(InputStream istream)
+        throws IOException, InvalidBERException
+        {
+            return decode(TAG, istream);
+        }
+
+        public ASN1Value decode(Tag implicit, InputStream istream)
+        throws IOException, InvalidBERException
+        {
+            AVA.Template avatemp = new AVA.Template();
+            SET.OF_Template sett = new SET.OF_Template( avatemp );
+
+            SET set =  (SET) sett.decode(implicit, istream);
+
+            if(set.size() < 1) {
+                throw new InvalidBERException("RDN with zero elements; "+
+                                              "an RDN must have at least one element");
+            }
+
+            return new RDN(set);
+        }
     }
-}
 
 }

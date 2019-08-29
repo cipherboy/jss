@@ -397,7 +397,7 @@ JSS_ConvertNativeErrcodeToJava(PRErrorCode nativeErrcode) {
     key.native = nativeErrcode;
     key.java = -1;
     target = bsearch( &key, errcodeTable, numErrcodes, sizeof(Errcode),
-        errcodeCompare );
+                      errcodeCompare );
 
     if( target == NULL ) {
         return -1;

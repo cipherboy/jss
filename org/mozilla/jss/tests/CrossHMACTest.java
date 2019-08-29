@@ -31,14 +31,14 @@ public class CrossHMACTest {
      * List all the HMAC Algorithms that JSS implements.
      */
     static final String JSS_HMAC_Algs[] = {"HmacSHA1", "HmacSHA256",
-        "HmacSHA384", "HmacSHA512"
-    };
+                                           "HmacSHA384", "HmacSHA512"
+                                          };
 
     public CrossHMACTest(String[] argv) throws Exception {
         if (argv.length < 1) {
             System.out.println(
-                    "Usage: java org.mozilla.jss.tests.CrossHMACTest " +
-                    "<dbdir> [password file only needed in FIPS mode]");
+                "Usage: java org.mozilla.jss.tests.CrossHMACTest " +
+                "<dbdir> [password file only needed in FIPS mode]");
             System.exit(1);
         }
         CryptoManager.initialize(argv[0]);
@@ -56,8 +56,8 @@ public class CrossHMACTest {
     }
 
     public boolean compareHMAC(String alg, SecretKeyFacade sk,
-            String clearText)
-            throws Exception {
+                               String clearText)
+    throws Exception {
         byte[] providerHmacOut;
         byte[] mozillaHmacOut;
         boolean bTested = false;
@@ -86,19 +86,19 @@ public class CrossHMACTest {
 
             if (MessageDigest.isEqual(mozillaHmacOut, providerHmacOut)) {
                 System.out.println(provider + " and " + MOZ_PROVIDER_NAME +
-                        " give same " + alg);
+                                   " give same " + alg);
                 bTested = true;
             } else {
                 throw new Exception("ERROR: " + provider + " and " +
-                        MOZ_PROVIDER_NAME + " give different " +
-                        alg);
+                                    MOZ_PROVIDER_NAME + " give different " +
+                                    alg);
             }
         }
         return bTested;
     }
 
     public void doHMAC(String alg, SecretKeyFacade sk, String clearText)
-            throws Exception {
+    throws Exception {
         byte[] mozillaHmacOut;
 
         //Get the Mozilla HMAC
@@ -108,11 +108,11 @@ public class CrossHMACTest {
 
         if (mozillaHmacOut.length == mozillaHmac.getMacLength()) {
             System.out.println(MOZ_PROVIDER_NAME + " supports " +
-                    mozillaHmac.getAlgorithm() + "  and the output size is " + mozillaHmac.getMacLength());
+                               mozillaHmac.getAlgorithm() + "  and the output size is " + mozillaHmac.getMacLength());
         } else {
             throw new Exception("ERROR: hmac output size is " +
-                    mozillaHmacOut.length + ", should be " +
-                    mozillaHmac.getMacLength());
+                                mozillaHmacOut.length + ", should be " +
+                                mozillaHmac.getMacLength());
         }
     }
 
@@ -129,11 +129,11 @@ public class CrossHMACTest {
         try {
             CrossHMACTest hmacTest = new CrossHMACTest(argv);
 
-            //The secret key must be a JSS key. That is, it must be an 
+            //The secret key must be a JSS key. That is, it must be an
             //instanceof org.mozilla.jss.crypto.SecretKeyFacade.
 
             //Generate the secret key using PKCS # 5 password Based Encryption
-            //we have to specify a salt and an iteration count.  
+            //we have to specify a salt and an iteration count.
 
             PBEKeySpec pbeKeySpec;
             SecretKeyFactory keyFac;
@@ -145,9 +145,9 @@ public class CrossHMACTest {
             int iterationCount = 7;
 
             pbeKeySpec = new PBEKeySpec("password".toCharArray(),
-                    salt, iterationCount);
+                                        salt, iterationCount);
             keyFac = SecretKeyFactory.getInstance("PBEWithSHA1AndDES3",
-                    "Mozilla-JSS");
+                                                  "Mozilla-JSS");
             sk = (SecretKeyFacade) keyFac.generateSecret(pbeKeySpec);
 
             /////////////////////////////////////////////////////////////
@@ -169,7 +169,7 @@ public class CrossHMACTest {
                     // compare MOZ_PROVIDER_NAME implementation with all
                     // providers that also support the given algorithm
                     if (!hmacTest.compareHMAC(
-                            JSS_HMAC_Algs[i], sk, clearText)) {
+                                JSS_HMAC_Algs[i], sk, clearText)) {
                         // no provider to compare results with so just test JSS
                         hmacTest.doHMAC(JSS_HMAC_Algs[i], sk, clearText);
                     }

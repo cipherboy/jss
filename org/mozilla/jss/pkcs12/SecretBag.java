@@ -85,7 +85,7 @@ public class SecretBag implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         sequence.encode(implicitTag, ostream);
     }
@@ -106,7 +106,7 @@ public class SecretBag implements ASN1Value {
             seqt = new SEQUENCE.Template();
             seqt.addElement( OBJECT_IDENTIFIER.getTemplate() );
             seqt.addElement( new EXPLICIT.Template(
-                                new Tag(0), ANY.getTemplate()) );
+                                 new Tag(0), ANY.getTemplate()) );
         }
 
         public boolean tagMatch(Tag tag) {
@@ -114,18 +114,18 @@ public class SecretBag implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
             return new SecretBag( (OBJECT_IDENTIFIER)seq.elementAt(0),
-                            ((EXPLICIT)seq.elementAt(1)).getContent() );
+                                  ((EXPLICIT)seq.elementAt(1)).getContent() );
         }
     }
 }

@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PK11PubKey extends org.mozilla.jss.pkcs11.PK11Key
-	implements java.security.PublicKey {
+    implements java.security.PublicKey {
 
     private static final long serialVersionUID = 1L;
 
@@ -20,11 +20,11 @@ public class PK11PubKey extends org.mozilla.jss.pkcs11.PK11Key
         keyProxy = new PublicKeyProxy(pointer);
     }
 
-	/**
-	 * Make sure this key lives on the given token.
-	 */
-	public native void verifyKeyIsOnToken(PK11Token token)
-		throws org.mozilla.jss.crypto.NoSuchItemOnTokenException;
+    /**
+     * Make sure this key lives on the given token.
+     */
+    public native void verifyKeyIsOnToken(PK11Token token)
+    throws org.mozilla.jss.crypto.NoSuchItemOnTokenException;
 
     public native KeyType getKeyType();
 
@@ -47,7 +47,7 @@ public class PK11PubKey extends org.mozilla.jss.pkcs11.PK11Key
      */
     @Deprecated
     public static PK11PubKey fromRaw(PrivateKey.Type type, byte[] rawKey)
-        throws InvalidKeyFormatException
+    throws InvalidKeyFormatException
     {
         if( type != PrivateKey.Type.RSA ) {
             throw new InvalidKeyFormatException(
@@ -60,7 +60,7 @@ public class PK11PubKey extends org.mozilla.jss.pkcs11.PK11Key
      * param type The PKCS #11 type of the key (CKK_).
      */
     private static native PK11PubKey fromRawNative(int type, byte[] rawKey)
-        throws InvalidKeyFormatException;
+    throws InvalidKeyFormatException;
 
     /**
      * Creates a PK11PubKey from a SubjectPublicKeyInfo.
@@ -70,7 +70,7 @@ public class PK11PubKey extends org.mozilla.jss.pkcs11.PK11Key
      *      decoded.
      */
     public static native PK11PubKey fromSPKI(byte[] spki)
-        throws InvalidKeyFormatException;
+    throws InvalidKeyFormatException;
 
     /**
      * deprecated Use fromRawNative instead.

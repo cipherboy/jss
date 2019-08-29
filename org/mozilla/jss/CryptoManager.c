@@ -93,7 +93,7 @@ handleSigChild(JNIEnv *env) {
 
     if( result != 0 ) {
         JSS_throwMsg(env, GENERAL_SECURITY_EXCEPTION,
-            "Failed to set SIGCHLD handler");
+                     "Failed to set SIGCHLD handler");
         return PR_FAILURE;
     }
 
@@ -104,10 +104,10 @@ handleSigChild(JNIEnv *env) {
 
 
 int ConfigureOCSP(
-        JNIEnv *env,
-        jboolean ocspCheckingEnabled,
-        jstring ocspResponderURL,
-        jstring ocspResponderCertNickname )
+    JNIEnv *env,
+    jboolean ocspCheckingEnabled,
+    jstring ocspResponderURL,
+    jstring ocspResponderCertNickname )
 {
     const char *ocspResponderURL_string = NULL;
     const char *ocspResponderCertNickname_string = NULL;
@@ -133,29 +133,29 @@ int ConfigureOCSP(
     if (ocspResponderURL_string) {
         /* if ocspResponderURL is set they must specify the
            ocspResponderCertNickname */
-                if (ocspResponderCertNickname == NULL ) {
+        if (ocspResponderCertNickname == NULL ) {
+            JSS_throwMsg(env, GENERAL_SECURITY_EXCEPTION,
+                         "if OCSP responderURL is set, the Responder Cert nickname must be set");
+            result = SECFailure;
+            goto finish;
+        } else {
+            CERTCertificate *cert;
+            /* if the nickname is set */
+            cert = CERT_FindCertByNickname(certdb, ocspResponderCertNickname_string);
+            if (cert == NULL) {
+                /*
+                 * look for the cert on an external token.
+                */
+                cert = PK11_FindCertFromNickname(ocspResponderCertNickname_string, NULL);
+            }
+            if (cert == NULL) {
                 JSS_throwMsg(env, GENERAL_SECURITY_EXCEPTION,
-                "if OCSP responderURL is set, the Responder Cert nickname must be set");
-                        result = SECFailure;
-                        goto finish;
-                } else {
-                        CERTCertificate *cert;
-                        /* if the nickname is set */
-       cert = CERT_FindCertByNickname(certdb, ocspResponderCertNickname_string);
-                        if (cert == NULL) {
-                          /*
-                           * look for the cert on an external token.
-                        */
-       cert = PK11_FindCertFromNickname(ocspResponderCertNickname_string, NULL);
-                       }
-                        if (cert == NULL) {
-                                JSS_throwMsg(env, GENERAL_SECURITY_EXCEPTION,
-                    "Unable to find the OCSP Responder Certificate nickname.");
-                        result = SECFailure;
-                        goto finish;
-	               }
-                        CERT_DestroyCertificate(cert);
-	}
+                             "Unable to find the OCSP Responder Certificate nickname.");
+                result = SECFailure;
+                goto finish;
+            }
+            CERT_DestroyCertificate(cert);
+        }
         status =
             CERT_SetOCSPDefaultResponder(   certdb,
                                             ocspResponderURL_string,
@@ -164,7 +164,7 @@ int ConfigureOCSP(
         if (status == SECFailure) {
             /* deal with error */
             JSS_throwMsg(env, GENERAL_SECURITY_EXCEPTION,
-                    "OCSP Could not set responder");
+                         "OCSP Could not set responder");
             result = SECFailure;
             goto finish;
         }
@@ -173,14 +173,14 @@ int ConfigureOCSP(
         /* if no defaultresponder is set, disable it */
         CERT_DisableOCSPDefaultResponder(certdb);
     }
-        
+
 
     /* enable OCSP checking if requested */
 
     if (ocspCheckingEnabled) {
         CERT_EnableOCSPChecking(certdb);
     }
-    
+
 finish:
     JSS_DerefJString(env, ocspResponderURL, ocspResponderURL_string);
     JSS_DerefJString(env, ocspResponderCertNickname, ocspResponderCertNickname_string);
@@ -204,34 +204,34 @@ JavaVM * JSS_javaVM;
 
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_CryptoManager_initializeAllNative
-    (JNIEnv *env, jclass clazz,
-        jstring configDir,
-        jstring certPrefix,
-        jstring keyPrefix,
-        jstring secmodName,
-        jboolean readOnly,
-        jstring manuString,
-        jstring libraryString,
-        jstring tokString,
-        jstring keyTokString,
-        jstring slotString,
-        jstring keySlotString,
-        jstring fipsString,
-        jstring fipsKeyString,
-        jboolean ocspCheckingEnabled,
-        jstring ocspResponderURL,
-        jstring ocspResponderCertNickname,
-        jboolean initializeJavaOnly, 
-        jboolean PKIXVerify,
-        jboolean noCertDB,
-        jboolean noModDB, 
-        jboolean forceOpen,
-        jboolean noRootInit,
-        jboolean optimizeSpace,
-        jboolean PK11ThreadSafe,
-        jboolean PK11Reload,
-        jboolean noPK11Finalize,
-        jboolean cooperate)
+(JNIEnv *env, jclass clazz,
+ jstring configDir,
+ jstring certPrefix,
+ jstring keyPrefix,
+ jstring secmodName,
+ jboolean readOnly,
+ jstring manuString,
+ jstring libraryString,
+ jstring tokString,
+ jstring keyTokString,
+ jstring slotString,
+ jstring keySlotString,
+ jstring fipsString,
+ jstring fipsKeyString,
+ jboolean ocspCheckingEnabled,
+ jstring ocspResponderURL,
+ jstring ocspResponderCertNickname,
+ jboolean initializeJavaOnly,
+ jboolean PKIXVerify,
+ jboolean noCertDB,
+ jboolean noModDB,
+ jboolean forceOpen,
+ jboolean noRootInit,
+ jboolean optimizeSpace,
+ jboolean PK11ThreadSafe,
+ jboolean PK11Reload,
+ jboolean noPK11Finalize,
+ jboolean cooperate)
 {
     Java_org_mozilla_jss_CryptoManager_initializeAllNative2(
         env,
@@ -268,34 +268,34 @@ Java_org_mozilla_jss_CryptoManager_initializeAllNative
 
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_CryptoManager_initializeAllNative2
-    (JNIEnv *env, jclass clazz,
-        jstring configDir,
-        jstring certPrefix,
-        jstring keyPrefix,
-        jstring secmodName,
-        jboolean readOnly,
-        jstring manuString,
-        jstring libraryString,
-        jstring tokString,
-        jstring keyTokString,
-        jstring slotString,
-        jstring keySlotString,
-        jstring fipsString,
-        jstring fipsKeyString,
-        jboolean ocspCheckingEnabled,
-        jstring ocspResponderURL,
-        jstring ocspResponderCertNickname,
-        jboolean initializeJavaOnly,
-        jboolean PKIXVerify,
-        jboolean noCertDB,
-        jboolean noModDB, 
-        jboolean forceOpen,
-        jboolean noRootInit,
-        jboolean optimizeSpace,
-        jboolean PK11ThreadSafe,
-        jboolean PK11Reload,
-        jboolean noPK11Finalize,
-        jboolean cooperate)
+(JNIEnv *env, jclass clazz,
+ jstring configDir,
+ jstring certPrefix,
+ jstring keyPrefix,
+ jstring secmodName,
+ jboolean readOnly,
+ jstring manuString,
+ jstring libraryString,
+ jstring tokString,
+ jstring keyTokString,
+ jstring slotString,
+ jstring keySlotString,
+ jstring fipsString,
+ jstring fipsKeyString,
+ jboolean ocspCheckingEnabled,
+ jstring ocspResponderURL,
+ jstring ocspResponderCertNickname,
+ jboolean initializeJavaOnly,
+ jboolean PKIXVerify,
+ jboolean noCertDB,
+ jboolean noModDB,
+ jboolean forceOpen,
+ jboolean noRootInit,
+ jboolean optimizeSpace,
+ jboolean PK11ThreadSafe,
+ jboolean PK11Reload,
+ jboolean noPK11Finalize,
+ jboolean cooperate)
 {
     SECStatus rv = SECFailure;
     const char *szConfigDir = NULL;
@@ -316,14 +316,14 @@ Java_org_mozilla_jss_CryptoManager_initializeAllNative2
     static PRBool initialized=PR_FALSE;
 
     if( configDir == NULL ||
-        manuString == NULL ||
-        libraryString == NULL ||
-        tokString == NULL ||
-        keyTokString == NULL ||
-        slotString == NULL ||
-        keySlotString == NULL ||
-        fipsString == NULL ||
-        fipsKeyString == NULL )
+            manuString == NULL ||
+            libraryString == NULL ||
+            tokString == NULL ||
+            keyTokString == NULL ||
+            slotString == NULL ||
+            keySlotString == NULL ||
+            fipsString == NULL ||
+            fipsKeyString == NULL )
     {
         JSS_throw(env, NULL_POINTER_EXCEPTION);
         goto finish;
@@ -341,7 +341,7 @@ Java_org_mozilla_jss_CryptoManager_initializeAllNative2
      */
     if( (*env)->GetJavaVM(env, &JSS_javaVM) != 0 ) {
         JSS_trace(env, JSS_TRACE_ERROR,
-                    "Unable to to access Java virtual machine");
+                  "Unable to to access Java virtual machine");
         PR_ASSERT(PR_FALSE);
         goto finish;
     }
@@ -399,9 +399,9 @@ Java_org_mozilla_jss_CryptoManager_initializeAllNative2
 
     szConfigDir = JSS_RefJString(env, configDir);
     if( certPrefix != NULL || keyPrefix != NULL || secmodName != NULL ||
-        noCertDB || noModDB || forceOpen || noRootInit ||
-        optimizeSpace || PK11ThreadSafe || PK11Reload || 
-        noPK11Finalize || cooperate) {
+            noCertDB || noModDB || forceOpen || noRootInit ||
+            optimizeSpace || PK11ThreadSafe || PK11Reload ||
+            noPK11Finalize || cooperate) {
         /*
         * Set up arguments to NSS_Initialize
         */
@@ -418,7 +418,7 @@ Java_org_mozilla_jss_CryptoManager_initializeAllNative2
         }
         if( noModDB ) {
             initFlags |= NSS_INIT_NOMODDB;
-        } 
+        }
         if( forceOpen ) {
             initFlags |= NSS_INIT_FORCEOPEN;
         }
@@ -445,7 +445,7 @@ Java_org_mozilla_jss_CryptoManager_initializeAllNative2
         * Initialize NSS.
         */
         rv = NSS_Initialize(szConfigDir, szCertPrefix, szKeyPrefix,
-                szSecmodName, initFlags);
+                            szSecmodName, initFlags);
     } else {
         if( readOnly ) {
             rv = NSS_Init(szConfigDir);
@@ -456,7 +456,7 @@ Java_org_mozilla_jss_CryptoManager_initializeAllNative2
 
     if( rv != SECSuccess ) {
         JSS_throwMsg(env, SECURITY_EXCEPTION,
-            "Unable to initialize security library");
+                     "Unable to initialize security library");
         goto finish;
     }
 
@@ -470,10 +470,10 @@ Java_org_mozilla_jss_CryptoManager_initializeAllNative2
      * Setup NSS to call the specified OCSP responder
      */
     rv = ConfigureOCSP(
-        env,
-        ocspCheckingEnabled,
-        ocspResponderURL,
-        ocspResponderCertNickname );
+             env,
+             ocspCheckingEnabled,
+             ocspResponderURL,
+             ocspResponderCertNickname );
 
     if (rv != SECSuccess) {
         goto finish;
@@ -545,7 +545,7 @@ JSS_setPasswordCallback(JNIEnv *env, jobject callback)
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_CryptoManager_setNativePasswordCallback
-    (JNIEnv *env, jclass clazz, jobject callback)
+(JNIEnv *env, jclass clazz, jobject callback)
 {
     JSS_setPasswordCallback(env, callback);
 }
@@ -604,7 +604,7 @@ getPWFromCallback(PK11SlotInfo *slot, PRBool retry, void *arg)
     }
 
     /* Get the JNI environment */
-    if((*JSS_javaVM)->AttachCurrentThread(JSS_javaVM, (void**)&env, NULL) != 0){
+    if((*JSS_javaVM)->AttachCurrentThread(JSS_javaVM, (void**)&env, NULL) != 0) {
         PR_ASSERT(PR_FALSE);
         goto finish;
     }
@@ -624,25 +624,25 @@ getPWFromCallback(PK11SlotInfo *slot, PRBool retry, void *arg)
     callbackClass = (*env)->GetObjectClass(env, callback);
     if(callbackClass == NULL) {
         JSS_trace(env, JSS_TRACE_ERROR, "Failed to find password "
-            "callback class");
+                  "callback class");
         PR_ASSERT(PR_FALSE);
     }
     if(retry) {
         getPWMethod = (*env)->GetMethodID(
-                        env,
-                        callbackClass,
-                        PW_CALLBACK_GET_PW_AGAIN_NAME,
-                        PW_CALLBACK_GET_PW_AGAIN_SIG);
+                          env,
+                          callbackClass,
+                          PW_CALLBACK_GET_PW_AGAIN_NAME,
+                          PW_CALLBACK_GET_PW_AGAIN_SIG);
     } else {
         getPWMethod = (*env)->GetMethodID(
-                        env,
-                        callbackClass,
-                        PW_CALLBACK_GET_PW_FIRST_NAME,
-                        PW_CALLBACK_GET_PW_FIRST_SIG);
+                          env,
+                          callbackClass,
+                          PW_CALLBACK_GET_PW_FIRST_NAME,
+                          PW_CALLBACK_GET_PW_FIRST_SIG);
     }
     if(getPWMethod == NULL) {
         JSS_trace(env, JSS_TRACE_ERROR,
-            "Failed to find password callback accessor method");
+                  "Failed to find password callback accessor method");
         ASSERT_OUTOFMEM(env);
         goto finish;
     }
@@ -651,10 +651,10 @@ getPWFromCallback(PK11SlotInfo *slot, PRBool retry, void *arg)
      * Get the password from the callback
      *****************************************/
     pwObject = (*env)->CallObjectMethod(
-                                        env,
-                                        callback,
-                                        getPWMethod,
-                                        pwcbInfo);
+                   env,
+                   callback,
+                   getPWMethod,
+                   pwcbInfo);
     if( (*env)->ExceptionOccurred(env) != NULL) {
         goto finish;
     }
@@ -673,18 +673,18 @@ getPWFromCallback(PK11SlotInfo *slot, PRBool retry, void *arg)
         goto finish;
     }
     getByteCopyMethod = (*env)->GetMethodID(
-                                            env,
-                                            passwordClass,
-                                            PW_GET_BYTE_COPY_NAME,
-                                            PW_GET_BYTE_COPY_SIG);
+                            env,
+                            passwordClass,
+                            PW_GET_BYTE_COPY_NAME,
+                            PW_GET_BYTE_COPY_SIG);
     clearMethod = (*env)->GetMethodID(  env,
                                         passwordClass,
                                         PW_CLEAR_NAME,
                                         PW_CLEAR_SIG);
     if(getByteCopyMethod==NULL || clearMethod==NULL) {
         JSS_trace(env, JSS_TRACE_ERROR,
-            "Failed to find Password manipulation methods from native "
-            "implementation");
+                  "Failed to find Password manipulation methods from native "
+                  "implementation");
         ASSERT_OUTOFMEM(env);
         goto finish;
     }
@@ -727,7 +727,7 @@ finish:
         if( ! (*env)->IsInstanceOf(env, exception, giveupClass) ) {
             excepClass = (*env)->GetObjectClass(env, exception);
             printStackTrace = (*env)->GetMethodID(env, excepClass,
-                "printStackTrace", "()V");
+                                                  "printStackTrace", "()V");
             (*env)->CallVoidMethod(env, exception, printStackTrace);
             PR_ASSERT( PR_FALSE );
         }
@@ -773,7 +773,7 @@ makePWCBInfo(JNIEnv *env, PK11SlotInfo *slot)
     infoClass = (*env)->FindClass(env, TOKEN_CBINFO_CLASS_NAME);
     if(infoClass == NULL) {
         JSS_trace(env, JSS_TRACE_ERROR, "Unable to find TokenCallbackInfo "
-            "class");
+                  "class");
         ASSERT_OUTOFMEM(env);
         goto finish;
     }
@@ -783,7 +783,7 @@ makePWCBInfo(JNIEnv *env, PK11SlotInfo *slot)
                                         TOKEN_CBINFO_CONSTRUCTOR_SIG);
     if(constructor == NULL) {
         JSS_trace(env, JSS_TRACE_ERROR, "Unable to find "
-            "TokenCallbackInfo constructor");
+                  "TokenCallbackInfo constructor");
         ASSERT_OUTOFMEM(env);
         goto finish;
     }
@@ -809,7 +809,7 @@ finish:
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_CryptoManager_putModulesInVector
-    (JNIEnv *env, jobject this, jobject vector)
+(JNIEnv *env, jobject this, jobject vector)
 {
     SECMODListLock *listLock=NULL;
     SECMODModuleList *list;
@@ -888,14 +888,14 @@ finish:
  */
 JNIEXPORT jboolean JNICALL
 Java_org_mozilla_jss_CryptoManager_enableFIPS
-    (JNIEnv *env, jclass clazz, jboolean fips)
+(JNIEnv *env, jclass clazz, jboolean fips)
 {
     char *name=NULL;
     jboolean switched = JNI_FALSE;
     SECStatus status = SECSuccess;
 
     if( ((fips==JNI_TRUE)  && !PK11_IsFIPS()) ||
-        ((fips==JNI_FALSE) &&  PK11_IsFIPS())  )
+            ((fips==JNI_FALSE) &&  PK11_IsFIPS())  )
     {
         name = PL_strdup(SECMOD_GetInternalModule()->commonName);
         status = SECMOD_DeleteInternalModule(name);
@@ -935,7 +935,7 @@ Java_org_mozilla_jss_CryptoManager_FIPSEnabled(JNIEnv *env, jobject this)
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_DatabaseCloser_closeDatabases
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     NSS_Shutdown();
 }
@@ -947,20 +947,20 @@ Java_org_mozilla_jss_DatabaseCloser_closeDatabases
 */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_CryptoManager_configureOCSPNative(
-        JNIEnv *env, jobject this,
-        jboolean ocspCheckingEnabled,
-        jstring ocspResponderURL,
-        jstring ocspResponderCertNickname )
+    JNIEnv *env, jobject this,
+    jboolean ocspCheckingEnabled,
+    jstring ocspResponderURL,
+    jstring ocspResponderCertNickname )
 {
     SECStatus rv = SECFailure;
 
     rv =  ConfigureOCSP(env,ocspCheckingEnabled,
-        ocspResponderURL, ocspResponderCertNickname);
+                        ocspResponderURL, ocspResponderCertNickname);
 
     if (rv != SECSuccess) {
         JSS_throwMsgPrErr(env,
-                     GENERAL_SECURITY_EXCEPTION,
-                     "Failed to configure OCSP");
+                          GENERAL_SECURITY_EXCEPTION,
+                          "Failed to configure OCSP");
     }
 }
 
@@ -972,27 +972,27 @@ Java_org_mozilla_jss_CryptoManager_configureOCSPNative(
 */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_CryptoManager_OCSPCacheSettingsNative(
-        JNIEnv *env, jobject this,
-        jint ocsp_cache_size,
-        jint ocsp_min_cache_entry_duration,
-        jint ocsp_max_cache_entry_duration)
+    JNIEnv *env, jobject this,
+    jint ocsp_cache_size,
+    jint ocsp_min_cache_entry_duration,
+    jint ocsp_max_cache_entry_duration)
 {
     SECStatus rv = SECFailure;
 
     rv = CERT_OCSPCacheSettings(
-        ocsp_cache_size, ocsp_min_cache_entry_duration,
-        ocsp_max_cache_entry_duration);
+             ocsp_cache_size, ocsp_min_cache_entry_duration,
+             ocsp_max_cache_entry_duration);
 
     if (rv != SECSuccess) {
         JSS_throwMsgPrErrArg(env, GENERAL_SECURITY_EXCEPTION,
-            "Failed to set OCSP cache: error", PORT_GetError());
+                             "Failed to set OCSP cache: error", PORT_GetError());
     }
 }
 
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_CryptoManager_setOCSPTimeoutNative(
-        JNIEnv *env, jobject this,
-        jint ocsp_timeout )
+    JNIEnv *env, jobject this,
+    jint ocsp_timeout )
 {
     SECStatus rv = SECFailure;
 
@@ -1000,27 +1000,27 @@ Java_org_mozilla_jss_CryptoManager_setOCSPTimeoutNative(
 
     if (rv != SECSuccess) {
         JSS_throwMsgPrErrArg(env, GENERAL_SECURITY_EXCEPTION,
-            "Failed to set OCSP timeout: error ", PORT_GetError());
+                             "Failed to set OCSP timeout: error ", PORT_GetError());
     }
 }
 
 JNIEXPORT int JNICALL
 Java_org_mozilla_jss_CryptoManager_getJSSMajorVersion(
-        JNIEnv *env, jobject this)
+    JNIEnv *env, jobject this)
 {
     return JSS_VMAJOR;
 }
 
 JNIEXPORT int JNICALL
 Java_org_mozilla_jss_CryptoManager_getJSSMinorVersion(
-        JNIEnv * env, jobject this)
+    JNIEnv * env, jobject this)
 {
     return JSS_VMINOR;
 }
 
 JNIEXPORT int JNICALL
 Java_org_mozilla_jss_CryptoManager_getJSSPatchVersion(
-        JNIEnv *env, jobject this)
+    JNIEnv *env, jobject this)
 {
     return JSS_VPATCH;
 }

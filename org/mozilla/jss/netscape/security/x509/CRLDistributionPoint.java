@@ -97,7 +97,7 @@ public class CRLDistributionPoint implements ASN1Value {
      *                name.
      */
     public void setFullName(GeneralNames fullName)
-            throws GeneralNamesException, IOException {
+    throws GeneralNamesException, IOException {
         this.fullName = fullName;
         if (fullName != null) {
             // encode the name to catch any problems with it
@@ -160,7 +160,7 @@ public class CRLDistributionPoint implements ASN1Value {
      * @exception GeneralNamesException If an error occurs encoding the name.
      */
     public void setCRLIssuer(GeneralNames CRLIssuer)
-            throws GeneralNamesException, IOException {
+    throws GeneralNamesException, IOException {
         this.CRLIssuer = CRLIssuer;
 
         if (CRLIssuer != null) {
@@ -193,7 +193,7 @@ public class CRLDistributionPoint implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
         SEQUENCE seq = new SEQUENCE();
         DerOutputStream derOut;
 
@@ -275,7 +275,7 @@ public class CRLDistributionPoint implements ASN1Value {
             // DN only
             cdp = new CRLDistributionPoint();
             X500Name dn = new X500Name("CN=Otis Smith,E=otis@fedoraproject.org" +
-                    ",OU=Certificate Server,O=Fedora,C=US");
+                                       ",OU=Certificate Server,O=Fedora,C=US");
             generalNames = new GeneralNames();
             generalNames.addElement(dn);
             cdp.setFullName(generalNames);
@@ -360,12 +360,12 @@ public class CRLDistributionPoint implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws IOException, InvalidBERException {
+        throws IOException, InvalidBERException {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws IOException, InvalidBERException {
+        throws IOException, InvalidBERException {
             CRLDistributionPoint cdp = new CRLDistributionPoint();
 
             //
@@ -376,7 +376,7 @@ public class CRLDistributionPoint implements ASN1Value {
 
             // distributionPoint
             seqt.addOptionalElement(
-                    new EXPLICIT.Template(Tag.get(0), ANY.getTemplate()));
+                new EXPLICIT.Template(Tag.get(0), ANY.getTemplate()));
 
             // reasons
             seqt.addOptionalElement(Tag.get(1), BIT_STRING.getTemplate());
@@ -436,12 +436,12 @@ public class CRLDistributionPoint implements ASN1Value {
                         cdp.setRelativeName(new RDN(dv));
                     } catch (IOException e) {
                         throw new InvalidBERException("relativeName " +
-                                e.toString());
+                                                      e.toString());
                     }
                 } else {
                     throw new InvalidBERException(
-                            "Unknown tag " + distPoint.getTag() +
-                                    " in distributionPoint");
+                        "Unknown tag " + distPoint.getTag() +
+                        " in distributionPoint");
                 }
             }
 
@@ -450,7 +450,7 @@ public class CRLDistributionPoint implements ASN1Value {
                 BIT_STRING bs = (BIT_STRING) top.elementAt(1);
                 byte[] bits = bs.getBits();
                 cdp.setReasons(
-                        new BitArray((bits.length * 8) - bs.getPadCount(), bits));
+                    new BitArray((bits.length * 8) - bs.getPadCount(), bits));
             }
 
             // decode the cRLIssuer

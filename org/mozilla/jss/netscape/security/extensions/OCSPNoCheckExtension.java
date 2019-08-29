@@ -46,7 +46,7 @@ public class OCSPNoCheckExtension extends Extension implements CertAttrSet {
     static {
         try {
             OIDMap.addAttribute(OCSPNoCheckExtension.class.getName(),
-                    OID, NAME);
+                                OID, NAME);
         } catch (CertificateException e) {
         }
     }
@@ -115,12 +115,12 @@ public class OCSPNoCheckExtension extends Extension implements CertAttrSet {
     }
 
     public void decode(InputStream in)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         // NOT USED
     }
 
     public void encode(OutputStream out)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         if (mCached == null) {
             DerOutputStream temp = new DerOutputStream();
 
@@ -130,7 +130,7 @@ public class OCSPNoCheckExtension extends Extension implements CertAttrSet {
     }
 
     public void set(String name, Object obj)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         // NOT USED
     }
 
@@ -149,7 +149,7 @@ public class OCSPNoCheckExtension extends Extension implements CertAttrSet {
     }
 
     public void delete(String name)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         // NOT USED
     }
 }

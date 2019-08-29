@@ -80,23 +80,23 @@ public class EncryptedContentInfo implements ASN1Value {
      * Create a EnvelopedData ASN1 object.
      */
     public EncryptedContentInfo(
-                OBJECT_IDENTIFIER contentType,
-                AlgorithmIdentifier contentEncryptionAlgorithm,
-                OCTET_STRING encryptedContent)
-        {
-			this(contentType,
-								 contentEncryptionAlgorithm,
-								 encryptedContent,
-								 false);
+        OBJECT_IDENTIFIER contentType,
+        AlgorithmIdentifier contentEncryptionAlgorithm,
+        OCTET_STRING encryptedContent)
+    {
+        this(contentType,
+             contentEncryptionAlgorithm,
+             encryptedContent,
+             false);
 
     }
 
     public EncryptedContentInfo(
-				 OBJECT_IDENTIFIER contentType,
-				 AlgorithmIdentifier contentEncryptionAlgorithm,
-				 OCTET_STRING encryptedContent,
-                 boolean createHackedCRSCompatibleECI)
-	{
+        OBJECT_IDENTIFIER contentType,
+        AlgorithmIdentifier contentEncryptionAlgorithm,
+        OCTET_STRING encryptedContent,
+        boolean createHackedCRSCompatibleECI)
+    {
         this.contentType = contentType;
         this.contentEncryptionAlgorithm = contentEncryptionAlgorithm;
         this.encryptedContent = encryptedContent;
@@ -104,24 +104,24 @@ public class EncryptedContentInfo implements ASN1Value {
         sequence.addElement(contentType);
         sequence.addElement(contentEncryptionAlgorithm);
         if(encryptedContent != null) {
-			if (createHackedCRSCompatibleECI) {
-				sequence.addElement(new EXPLICIT(new Tag(0), encryptedContent));
-			}
-			else {
-				sequence.addElement(new Tag(0), encryptedContent);
-			}
+            if (createHackedCRSCompatibleECI) {
+                sequence.addElement(new EXPLICIT(new Tag(0), encryptedContent));
+            }
+            else {
+                sequence.addElement(new Tag(0), encryptedContent);
+            }
         }
-	}
+    }
 
-	public static EncryptedContentInfo createCRSCompatibleEncryptedContentInfo(OBJECT_IDENTIFIER contentType,
-				 AlgorithmIdentifier contentEncryptionAlgorithm,
-				 OCTET_STRING encryptedContent)
-	{
-		return new EncryptedContentInfo(contentType,
-										contentEncryptionAlgorithm,
-										encryptedContent,
-										true);
-	}
+    public static EncryptedContentInfo createCRSCompatibleEncryptedContentInfo(OBJECT_IDENTIFIER contentType,
+            AlgorithmIdentifier contentEncryptionAlgorithm,
+            OCTET_STRING encryptedContent)
+    {
+        return new EncryptedContentInfo(contentType,
+                                        contentEncryptionAlgorithm,
+                                        encryptedContent,
+                                        true);
+    }
 
 
     ///////////////////////////////////////////////////////////////////////
@@ -147,73 +147,73 @@ public class EncryptedContentInfo implements ASN1Value {
      */
     public static EncryptedContentInfo
     createPBE(PBEAlgorithm keyGenAlg, Password password, byte[] salt,
-            int iterationCount,
-            KeyGenerator.CharToByteConverter charToByteConverter,
-            byte[] toBeEncrypted)
-        throws NotInitializedException, NoSuchAlgorithmException,
-        InvalidKeyException, InvalidAlgorithmParameterException, TokenException,
-        CharConversionException
+              int iterationCount,
+              KeyGenerator.CharToByteConverter charToByteConverter,
+              byte[] toBeEncrypted)
+    throws NotInitializedException, NoSuchAlgorithmException,
+               InvalidKeyException, InvalidAlgorithmParameterException, TokenException,
+               CharConversionException
     {
 
-      try {
+        try {
 
-        // check key gen algorithm
-        if( ! (keyGenAlg instanceof PBEAlgorithm) ) {
-            throw new NoSuchAlgorithmException("Key generation algorithm"+
-                " is not a PBE algorithm");
-        }
-        PBEAlgorithm pbeAlg = keyGenAlg;
-
-        CryptoManager cman = CryptoManager.getInstance();
-
-        // generate key
-        CryptoToken token = cman.getInternalCryptoToken();
-        KeyGenerator kg = token.getKeyGenerator( keyGenAlg );
-        PBEKeyGenParams pbekgParams = new PBEKeyGenParams(
-            password, salt, iterationCount);
-        if( charToByteConverter != null ) {
-            kg.setCharToByteConverter( charToByteConverter );
-        }
-        kg.initialize(pbekgParams);
-        SymmetricKey key = kg.generate();
-
-        // generate IV
-        EncryptionAlgorithm encAlg = pbeAlg.getEncryptionAlg();
-        AlgorithmParameterSpec params=null;
-        Class<?> [] paramClasses = pbeAlg.getParameterClasses();
-        for (int i = 0; i < paramClasses.length; i ++) {
-            if ( paramClasses[i].equals( IVParameterSpec.class ) ) {
-                params = new IVParameterSpec( kg.generatePBE_IV() );
-                break;
+            // check key gen algorithm
+            if( ! (keyGenAlg instanceof PBEAlgorithm) ) {
+                throw new NoSuchAlgorithmException("Key generation algorithm"+
+                                                   " is not a PBE algorithm");
             }
-        }
+            PBEAlgorithm pbeAlg = keyGenAlg;
 
-        // perform encryption
-        Cipher cipher = token.getCipherContext( encAlg );
-        cipher.initEncrypt( key, params );
-        byte[] encrypted = cipher.doFinal( Cipher.pad(
-                toBeEncrypted, encAlg.getBlockSize()) );
+            CryptoManager cman = CryptoManager.getInstance();
 
-        // make encryption algorithm identifier
-        PBEParameter pbeParam = new PBEParameter( salt, iterationCount );
-        AlgorithmIdentifier encAlgID = new AlgorithmIdentifier(
+            // generate key
+            CryptoToken token = cman.getInternalCryptoToken();
+            KeyGenerator kg = token.getKeyGenerator( keyGenAlg );
+            PBEKeyGenParams pbekgParams = new PBEKeyGenParams(
+                password, salt, iterationCount);
+            if( charToByteConverter != null ) {
+                kg.setCharToByteConverter( charToByteConverter );
+            }
+            kg.initialize(pbekgParams);
+            SymmetricKey key = kg.generate();
+
+            // generate IV
+            EncryptionAlgorithm encAlg = pbeAlg.getEncryptionAlg();
+            AlgorithmParameterSpec params=null;
+            Class<?> [] paramClasses = pbeAlg.getParameterClasses();
+            for (int i = 0; i < paramClasses.length; i ++) {
+                if ( paramClasses[i].equals( IVParameterSpec.class ) ) {
+                    params = new IVParameterSpec( kg.generatePBE_IV() );
+                    break;
+                }
+            }
+
+            // perform encryption
+            Cipher cipher = token.getCipherContext( encAlg );
+            cipher.initEncrypt( key, params );
+            byte[] encrypted = cipher.doFinal( Cipher.pad(
+                                                   toBeEncrypted, encAlg.getBlockSize()) );
+
+            // make encryption algorithm identifier
+            PBEParameter pbeParam = new PBEParameter( salt, iterationCount );
+            AlgorithmIdentifier encAlgID = new AlgorithmIdentifier(
                 keyGenAlg.toOID(), pbeParam);
 
-        // create EncryptedContentInfo
-        EncryptedContentInfo encCI = new EncryptedContentInfo(
+            // create EncryptedContentInfo
+            EncryptedContentInfo encCI = new EncryptedContentInfo(
                 ContentInfo.DATA,
                 encAlgID,
                 new OCTET_STRING(encrypted) );
 
-        return encCI;
+            return encCI;
 
-      } catch( IllegalBlockSizeException e ) {
-          throw new RuntimeException("IllegalBlockSizeException in EncryptedContentInfo"
-            +".createPBE: " + e.getMessage(), e);
-      } catch( BadPaddingException e ) {
-          throw new RuntimeException("BadPaddingException in EncryptedContentInfo"
-            +".createPBE: " + e.getMessage(), e);
-      }
+        } catch( IllegalBlockSizeException e ) {
+            throw new RuntimeException("IllegalBlockSizeException in EncryptedContentInfo"
+                                       +".createPBE: " + e.getMessage(), e);
+        } catch( BadPaddingException e ) {
+            throw new RuntimeException("BadPaddingException in EncryptedContentInfo"
+                                       +".createPBE: " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -228,7 +228,7 @@ public class EncryptedContentInfo implements ASN1Value {
      */
     public byte[]
     decrypt(Password pass, KeyGenerator.CharToByteConverter charToByteConverter)
-        throws IllegalStateException,NotInitializedException,
+    throws IllegalStateException,NotInitializedException,
         NoSuchAlgorithmException, InvalidBERException, IOException,
         InvalidKeyException, InvalidAlgorithmParameterException, TokenException,
         IllegalBlockSizeException, BadPaddingException
@@ -242,7 +242,7 @@ public class EncryptedContentInfo implements ASN1Value {
         KeyGenAlgorithm kgAlg = KeyGenAlgorithm.fromOID( algid.getOID() );
         if( !(kgAlg instanceof PBEAlgorithm) ) {
             throw new NoSuchAlgorithmException("KeyGenAlgorithm is not a"+
-                " PBE algorithm");
+                                               " PBE algorithm");
         }
         ASN1Value params = algid.getParameters();
         if( params == null ) {
@@ -255,10 +255,10 @@ public class EncryptedContentInfo implements ASN1Value {
         } else {
             byte[] encodedParams = ASN1Util.encode(params);
             pbeParams = (PBEParameter)
-                ASN1Util.decode( PBEParameter.getTemplate(), encodedParams );
+                        ASN1Util.decode( PBEParameter.getTemplate(), encodedParams );
         }
         PBEKeyGenParams kgp = new PBEKeyGenParams(pass,
-                    pbeParams.getSalt(), pbeParams.getIterations() );
+                pbeParams.getSalt(), pbeParams.getIterations() );
 
 
         // compute the key and IV
@@ -277,7 +277,7 @@ public class EncryptedContentInfo implements ASN1Value {
         Class<?> [] paramClasses = encAlg.getParameterClasses();
         for (int i = 0; i < paramClasses.length; i ++) {
             if ( paramClasses[i].equals(
-                       javax.crypto.spec.IvParameterSpec.class ) ) {
+                        javax.crypto.spec.IvParameterSpec.class ) ) {
                 algParams = new IVParameterSpec( kg.generatePBE_IV() );
                 break;
             }
@@ -324,28 +324,28 @@ public class EncryptedContentInfo implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws IOException, InvalidBERException
-            {
-                return decode(TAG,istream);
-            }
+        throws IOException, InvalidBERException
+        {
+            return decode(TAG,istream);
+        }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws IOException, InvalidBERException
-            {
-                SEQUENCE.Template seqt = new SEQUENCE.Template();
-                seqt.addElement(new OBJECT_IDENTIFIER.Template());
-                seqt.addElement(new AlgorithmIdentifier.Template());
-                seqt.addOptionalElement(new Tag(0), new OCTET_STRING.Template());
+        throws IOException, InvalidBERException
+        {
+            SEQUENCE.Template seqt = new SEQUENCE.Template();
+            seqt.addElement(new OBJECT_IDENTIFIER.Template());
+            seqt.addElement(new AlgorithmIdentifier.Template());
+            seqt.addOptionalElement(new Tag(0), new OCTET_STRING.Template());
 
-                SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag,istream);
-                assert(seq.size() ==3);
+            SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag,istream);
+            assert(seq.size() ==3);
 
-                return new EncryptedContentInfo(
-                    (OBJECT_IDENTIFIER)   seq.elementAt(0),
-                    (AlgorithmIdentifier) seq.elementAt(1),
-                    (OCTET_STRING)        seq.elementAt(2)
-                    );
-            }
+            return new EncryptedContentInfo(
+                       (OBJECT_IDENTIFIER)   seq.elementAt(0),
+                       (AlgorithmIdentifier) seq.elementAt(1),
+                       (OCTET_STRING)        seq.elementAt(2)
+                   );
+        }
     } // end of template
 
 }

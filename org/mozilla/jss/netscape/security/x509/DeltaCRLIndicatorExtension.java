@@ -42,7 +42,7 @@ import org.mozilla.jss.netscape.security.util.DerValue;
  * @see CertAttrSet
  */
 public class DeltaCRLIndicatorExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
 
     /**
      *
@@ -112,7 +112,7 @@ public class DeltaCRLIndicatorExtension extends Extension
      * @param baseCRLNum the value to be set for the extension.
      */
     public DeltaCRLIndicatorExtension(Boolean critical, BigInteger baseCRLNum)
-            throws IOException {
+    throws IOException {
         this.baseCRLNumber = new BigInt(baseCRLNum);
         this.extensionId = PKIXExtensions.DeltaCRLIndicator_Id;
         this.critical = critical.booleanValue();
@@ -127,7 +127,7 @@ public class DeltaCRLIndicatorExtension extends Extension
      * @exception IOException on error.
      */
     public DeltaCRLIndicatorExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = PKIXExtensions.DeltaCRLIndicator_Id;
         this.critical = critical.booleanValue();
 

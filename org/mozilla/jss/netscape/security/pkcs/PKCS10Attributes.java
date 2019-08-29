@@ -57,7 +57,7 @@ public class PKCS10Attributes extends Vector<PKCS10Attribute> implements DerEnco
      * @exception IOException on decoding errors.
      */
     public PKCS10Attributes(DerInputStream in)
-            throws IOException {
+    throws IOException {
 
         map = new Hashtable<String, PKCS10Attribute>();
         DerValue[] attrs = in.getSet(5, true);
@@ -67,7 +67,7 @@ public class PKCS10Attributes extends Vector<PKCS10Attribute> implements DerEnco
                 PKCS10Attribute attr = new PKCS10Attribute(attrs[i]);
                 addElement(attr);
                 System.out.println("PKCS10Attributes: adding attribute: " +
-                        attr.getAttributeValue().getName());
+                                   attr.getAttributeValue().getName());
                 map.put(attr.getAttributeValue().getName(), attr);
             }
         }
@@ -81,7 +81,7 @@ public class PKCS10Attributes extends Vector<PKCS10Attribute> implements DerEnco
      * @exception IOException on encoding errors.
      */
     public void encode(OutputStream out)
-            throws IOException {
+    throws IOException {
         derEncode(out);
     }
 
@@ -93,14 +93,14 @@ public class PKCS10Attributes extends Vector<PKCS10Attribute> implements DerEnco
      * @exception IOException on encoding errors.
      */
     public void derEncode(OutputStream out)
-            throws IOException {
+    throws IOException {
         try (DerOutputStream attrOut = new DerOutputStream()) {
             // first copy the elements into an array
             PKCS10Attribute[] attribs = new PKCS10Attribute[size()];
             copyInto(attribs);
 
             attrOut.putOrderedSetOf(DerValue.createTag(DerValue.TAG_CONTEXT, true, (byte) 0),
-                    attribs);
+                                    attribs);
 
             out.write(attrOut.toByteArray());
         } catch (IOException e) {

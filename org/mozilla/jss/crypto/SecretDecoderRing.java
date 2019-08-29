@@ -38,20 +38,20 @@ public class SecretDecoderRing {
      * in the NSS key database.
      */
     public native byte[] encrypt(byte[] plaintext)
-        throws TokenException;
+    throws TokenException;
 
     /**
      * Encrypts the given plaintext string with the Secret Decoder Ring key
      * stored in the NSS key database.
      */
     public byte[] encrypt(String plaintext) throws TokenException {
-      try {
-        return encrypt(plaintext.getBytes(encodingFormat));
-      } catch(UnsupportedEncodingException e) {
-        // this shouldn't happen, because we use a universally-supported
-        // charset
-        throw new RuntimeException(e.getMessage());
-      }
+        try {
+            return encrypt(plaintext.getBytes(encodingFormat));
+        } catch(UnsupportedEncodingException e) {
+            // this shouldn't happen, because we use a universally-supported
+            // charset
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     /**
@@ -59,20 +59,20 @@ public class SecretDecoderRing {
      * in the NSS key database.
      */
     public native byte[] decrypt(byte[] ciphertext)
-        throws TokenException;
+    throws TokenException;
 
     /**
      * Decrypts the given ciphertext with the Secret Decoder Ring key stored
      * in the NSS key database, returning the original plaintext string.
      */
     public String decryptToString(byte[] ciphertext)
-            throws TokenException {
-      try {
-        return new String(decrypt(ciphertext), encodingFormat);
-      } catch(UnsupportedEncodingException e) {
-        // this shouldn't happen, because we use a universally-supported
-        // charset
-        throw new RuntimeException(e.getMessage());
-      }
+    throws TokenException {
+        try {
+            return new String(decrypt(ciphertext), encodingFormat);
+        } catch(UnsupportedEncodingException e) {
+            // this shouldn't happen, because we use a universally-supported
+            // charset
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

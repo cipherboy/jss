@@ -149,7 +149,7 @@ final public class ObjectIdentifier implements Serializable {
      * @exception IOException indicates a decoding error
      */
     public ObjectIdentifier(DerInputStream in)
-            throws IOException {
+    throws IOException {
         byte type_id;
         int bufferEnd;
 
@@ -165,13 +165,13 @@ final public class ObjectIdentifier implements Serializable {
         type_id = (byte) in.getByte();
         if (type_id != DerValue.tag_ObjectId)
             throw new IOException(
-                    "X509.ObjectIdentifier() -- data isn't an object ID"
-                            + " (tag = " + type_id + ")");
+                "X509.ObjectIdentifier() -- data isn't an object ID"
+                + " (tag = " + type_id + ")");
 
         bufferEnd = in.available() - in.getLength() - 1;
         if (bufferEnd < 0)
             throw new IOException(
-                    "X509.ObjectIdentifier() -- not enough data");
+                "X509.ObjectIdentifier() -- not enough data");
 
         initFromEncoding(in, bufferEnd);
     }
@@ -189,7 +189,7 @@ final public class ObjectIdentifier implements Serializable {
      * length are verified.
      */
     private void initFromEncoding(DerInputStream in, int bufferEnd)
-            throws IOException {
+    throws IOException {
 
         /*
          * Now get the components ("sub IDs") one at a time.  We fill a
@@ -237,9 +237,9 @@ final public class ObjectIdentifier implements Serializable {
                     BigInteger tmp_components[];
 
                     tmp_components = new BigInteger[components.length
-                            + allocationQuantum];
+                                                    + allocationQuantum];
                     System.arraycopy(components, 0, tmp_components, 0,
-                            components.length);
+                                     components.length);
                     components = tmp_components;
                 }
                 components[componentLen++] = component;
@@ -252,7 +252,7 @@ final public class ObjectIdentifier implements Serializable {
          */
         if (in.available() != bufferEnd) {
             throw new IOException(
-                    "X509.ObjectIdentifier() -- malformed input data");
+                "X509.ObjectIdentifier() -- malformed input data");
         }
     }
 
@@ -283,7 +283,7 @@ final public class ObjectIdentifier implements Serializable {
      * Also, notice this parses in big-endian format.
      */
     private static BigInteger getComponentBigInt(DerInputStream in)
-            throws IOException {
+    throws IOException {
 
         BigInteger retval = BigInteger.valueOf(0);
         int tmp;
@@ -304,7 +304,7 @@ final public class ObjectIdentifier implements Serializable {
      * (Minimum length encoding is a DER requirement.)
      */
     private static void putComponentBigInt(DerOutputStream out, BigInteger val)
-            throws IOException {
+    throws IOException {
         int i;
         int blockSize = 100;
         byte buf[] = new byte[blockSize];
@@ -434,7 +434,7 @@ final public class ObjectIdentifier implements Serializable {
     public static Hashtable<String, ObjectIdentifier> mOIDs = new Hashtable<String, ObjectIdentifier>();
 
     public static ObjectIdentifier getObjectIdentifier(String oid)
-            throws IOException {
+    throws IOException {
         int value;
 
         if (oid == null)
@@ -466,7 +466,7 @@ final public class ObjectIdentifier implements Serializable {
     }
 
     public static ObjectIdentifier getObjectIdentifier(int values[])
-            throws IOException {
+    throws IOException {
         StringBuffer retval = new StringBuffer();
         int i;
 

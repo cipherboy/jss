@@ -14,7 +14,9 @@ class PK11ECPrivateKey
 
     private static final long serialVersionUID = 1L;
 
-    private PK11ECPrivateKey() { super(null); }
+    private PK11ECPrivateKey() {
+        super(null);
+    }
 
     protected PK11ECPrivateKey(byte[] pointer) {
         super(pointer);

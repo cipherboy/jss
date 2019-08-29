@@ -108,7 +108,7 @@ public class CertPrettyPrint {
         ContentInfo ci = null;
         try {
             ci = (ContentInfo)
-                    ASN1Util.decode(ContentInfo.getTemplate(), mCert_b);
+                 ASN1Util.decode(ContentInfo.getTemplate(), mCert_b);
         } catch (Exception e) {
             return "";
         }
@@ -126,11 +126,11 @@ public class CertPrettyPrint {
 
                 for (int i = 0; i < certs.size(); i++) {
                     org.mozilla.jss.pkix.cert.Certificate cert =
-                            (org.mozilla.jss.pkix.cert.Certificate) certs.elementAt(i);
+                        (org.mozilla.jss.pkix.cert.Certificate) certs.elementAt(i);
                     X509CertImpl certImpl = null;
                     try {
                         certImpl = new X509CertImpl(
-                                ASN1Util.encode(cert));
+                            ASN1Util.encode(cert));
                     } catch (Exception e) {
                     }
 
@@ -187,9 +187,9 @@ public class CertPrettyPrint {
 
         //get I18N resources
         ResourceBundle resource = ResourceBundle.getBundle(
-                PrettyPrintResources.class.getName());
+                                      PrettyPrintResources.class.getName());
         DateFormat dateFormater = DateFormat.getDateTimeInstance(
-                DateFormat.FULL, DateFormat.FULL, clientLocale);
+                                      DateFormat.FULL, DateFormat.FULL, clientLocale);
         //get timezone and timezone ID
         String tz = " ";
         String tzid = " ";
@@ -198,7 +198,7 @@ public class CertPrettyPrint {
 
         try {
             X509CertInfo info = (X509CertInfo) mX509Cert.get(
-                    X509CertImpl.NAME + "." + X509CertImpl.INFO);
+                                    X509CertImpl.NAME + "." + X509CertImpl.INFO);
             String serial2 = mX509Cert.getSerialNumber().toString(16).toUpperCase();
 
             //get correct instance of key
@@ -216,82 +216,82 @@ public class CertPrettyPrint {
 
             //take care of spki
             sb.append(pp.indent(4) + resource.getString(
-                    PrettyPrintResources.TOKEN_CERTIFICATE) + "\n");
+                          PrettyPrintResources.TOKEN_CERTIFICATE) + "\n");
             sb.append(pp.indent(8) + resource.getString(
-                    PrettyPrintResources.TOKEN_DATA) + "\n");
+                          PrettyPrintResources.TOKEN_DATA) + "\n");
             sb.append(pp.indent(12) + resource.getString(
-                    PrettyPrintResources.TOKEN_VERSION) + " v");
+                          PrettyPrintResources.TOKEN_VERSION) + " v");
             sb.append((mX509Cert.getVersion() + 1) + "\n");
             sb.append(pp.indent(12) + resource.getString(
-                    PrettyPrintResources.TOKEN_SERIAL) + "0x" + serial2 + "\n");
+                          PrettyPrintResources.TOKEN_SERIAL) + "0x" + serial2 + "\n");
             //XXX I18N Algorithm Name ?
             sb.append(pp.indent(12) + resource.getString(
-                    PrettyPrintResources.TOKEN_SIGALG) + mX509Cert.getSigAlgName() +
-                    " - " + mX509Cert.getSigAlgOID() + "\n");
+                          PrettyPrintResources.TOKEN_SIGALG) + mX509Cert.getSigAlgName() +
+                      " - " + mX509Cert.getSigAlgOID() + "\n");
             //XXX I18N IssuerDN ?
             sb.append(pp.indent(12) + resource.getString(
-                    PrettyPrintResources.TOKEN_ISSUER) +
-                    mX509Cert.getIssuerDN().toString() + "\n");
+                          PrettyPrintResources.TOKEN_ISSUER) +
+                      mX509Cert.getIssuerDN().toString() + "\n");
             sb.append(pp.indent(12) + resource.getString(
-                    PrettyPrintResources.TOKEN_VALIDITY) + "\n");
+                          PrettyPrintResources.TOKEN_VALIDITY) + "\n");
             String notBefore = dateFormater.format(mX509Cert.getNotBefore());
             String notAfter = dateFormater.format(mX509Cert.getNotAfter());
 
             //get timezone and timezone ID
             if (TimeZone.getDefault() != null) {
                 tz = TimeZone.getDefault().getDisplayName(
-                            TimeZone.getDefault().inDaylightTime(
-                                    mX509Cert.getNotBefore()),
-                            TimeZone.SHORT,
-                            clientLocale);
+                         TimeZone.getDefault().inDaylightTime(
+                             mX509Cert.getNotBefore()),
+                         TimeZone.SHORT,
+                         clientLocale);
                 tzid = TimeZone.getDefault().getID();
             }
             // Specify notBefore
             if (tz.equals(tzid) || tzid.equals(CUSTOM_LOCALE)) {
                 // Do NOT append timezone ID
                 sb.append(pp.indent(16)
-                        + resource.getString(
-                                PrettyPrintResources.TOKEN_NOT_BEFORE)
-                        + notBefore
-                        + "\n");
+                          + resource.getString(
+                              PrettyPrintResources.TOKEN_NOT_BEFORE)
+                          + notBefore
+                          + "\n");
             } else {
                 // Append timezone ID
                 sb.append(pp.indent(16)
-                        + resource.getString(
-                                PrettyPrintResources.TOKEN_NOT_BEFORE)
-                        + notBefore
-                        + " " + tzid + "\n");
+                          + resource.getString(
+                              PrettyPrintResources.TOKEN_NOT_BEFORE)
+                          + notBefore
+                          + " " + tzid + "\n");
             }
             // re-get timezone (just in case it is different . . .)
             if (TimeZone.getDefault() != null) {
                 tz = TimeZone.getDefault().getDisplayName(
-                            TimeZone.getDefault().inDaylightTime(
-                                    mX509Cert.getNotAfter()),
-                            TimeZone.SHORT,
-                            clientLocale);
+                         TimeZone.getDefault().inDaylightTime(
+                             mX509Cert.getNotAfter()),
+                         TimeZone.SHORT,
+                         clientLocale);
             }
             // Specify notAfter
             if (tz.equals(tzid) || tzid.equals(CUSTOM_LOCALE)) {
                 // Do NOT append timezone ID
                 sb.append(pp.indent(16)
-                        + resource.getString(
-                                PrettyPrintResources.TOKEN_NOT_AFTER)
-                        + notAfter
-                        + "\n");
+                          + resource.getString(
+                              PrettyPrintResources.TOKEN_NOT_AFTER)
+                          + notAfter
+                          + "\n");
             } else {
                 // Append timezone ID
                 sb.append(pp.indent(16)
-                        + resource.getString(
-                                PrettyPrintResources.TOKEN_NOT_AFTER)
-                        + notAfter
-                        + " " + tzid + "\n");
+                          + resource.getString(
+                              PrettyPrintResources.TOKEN_NOT_AFTER)
+                          + notAfter
+                          + " " + tzid + "\n");
             }
             //XXX I18N SubjectDN ?
             sb.append(pp.indent(12) + resource.getString(
-                    PrettyPrintResources.TOKEN_SUBJECT) +
-                    mX509Cert.getSubjectDN().toString() + "\n");
+                          PrettyPrintResources.TOKEN_SUBJECT) +
+                      mX509Cert.getSubjectDN().toString() + "\n");
             sb.append(pp.indent(12) + resource.getString(
-                    PrettyPrintResources.TOKEN_SPKI) + "\n");
+                          PrettyPrintResources.TOKEN_SPKI) + "\n");
 
             PubKeyPrettyPrint pkpp = new PubKeyPrettyPrint(key);
 
@@ -299,10 +299,10 @@ public class CertPrettyPrint {
 
             //take care of extensions
             CertificateExtensions extensions = (CertificateExtensions)
-                    info.get(X509CertInfo.EXTENSIONS);
+                                               info.get(X509CertInfo.EXTENSIONS);
 
             sb.append(pp.indent(12) + resource.getString(
-                    PrettyPrintResources.TOKEN_EXTENSIONS) + "\n");
+                          PrettyPrintResources.TOKEN_EXTENSIONS) + "\n");
             if (extensions != null)
                 for (int i = 0; i < extensions.size(); i++) {
                     Extension ext = extensions.elementAt(i);
@@ -313,13 +313,13 @@ public class CertPrettyPrint {
 
             //take care of signature
             sb.append(pp.indent(8) + resource.getString(
-                    PrettyPrintResources.TOKEN_SIGNATURE) + "\n");
+                          PrettyPrintResources.TOKEN_SIGNATURE) + "\n");
             //XXX I18N Algorithm Name ?
             sb.append(pp.indent(12) + resource.getString(
-                    PrettyPrintResources.TOKEN_ALGORITHM) +
-                    mX509Cert.getSigAlgName() + " - " + mX509Cert.getSigAlgOID() + "\n");
+                          PrettyPrintResources.TOKEN_ALGORITHM) +
+                      mX509Cert.getSigAlgName() + " - " + mX509Cert.getSigAlgOID() + "\n");
             sb.append(pp.indent(12) + resource.getString(
-                    PrettyPrintResources.TOKEN_SIGNATURE) + "\n");
+                          PrettyPrintResources.TOKEN_SIGNATURE) + "\n");
             sb.append(pp.toHexString(mX509Cert.getSignature(), 16, 16));
 
             // fingerprints
@@ -332,7 +332,7 @@ public class CertPrettyPrint {
 
                 md.update(mX509Cert.getEncoded());
                 certFingerprints.append(pp.indent(12) + hashes[i] + ":\n" +
-                        pp.toHexString(md.digest(), 16, 16));
+                                        pp.toHexString(md.digest(), 16, 16));
             }
 
             sb.append(certFingerprints.toString());

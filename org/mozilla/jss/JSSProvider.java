@@ -15,12 +15,12 @@ public final class JSSProvider extends java.security.Provider {
     private static int JSS_MINOR_VERSION  = CryptoManager.getJSSMinorVersion();
     private static int JSS_PATCH_VERSION  = CryptoManager.getJSSPatchVersion();
     private static double JSS_VERSION     = JSS_MAJOR_VERSION +
-                                           (JSS_MINOR_VERSION * 100 +
-                                            JSS_PATCH_VERSION)/10000.0;
+                                            (JSS_MINOR_VERSION * 100 +
+                                                    JSS_PATCH_VERSION)/10000.0;
 
     public JSSProvider() {
         super("Mozilla-JSS", JSS_VERSION,
-                "Provides Signature, Message Digesting, and RNG");
+              "Provides Signature, Message Digesting, and RNG");
 
         /////////////////////////////////////////////////////////////
         // Signature
@@ -98,17 +98,17 @@ public final class JSSProvider extends java.security.Provider {
         /////////////////////////////////////////////////////////////
 
         put("MessageDigest.SHA-1",
-                "org.mozilla.jss.provider.java.security.JSSMessageDigestSpi$SHA1");
+            "org.mozilla.jss.provider.java.security.JSSMessageDigestSpi$SHA1");
         put("MessageDigest.MD2",
-                "org.mozilla.jss.provider.java.security.JSSMessageDigestSpi$MD2");
+            "org.mozilla.jss.provider.java.security.JSSMessageDigestSpi$MD2");
         put("MessageDigest.MD5",
-                "org.mozilla.jss.provider.java.security.JSSMessageDigestSpi$MD5");
+            "org.mozilla.jss.provider.java.security.JSSMessageDigestSpi$MD5");
         put("MessageDigest.SHA-256",
-                "org.mozilla.jss.provider.java.security.JSSMessageDigestSpi$SHA256");
+            "org.mozilla.jss.provider.java.security.JSSMessageDigestSpi$SHA256");
         put("MessageDigest.SHA-384",
-                "org.mozilla.jss.provider.java.security.JSSMessageDigestSpi$SHA384");
+            "org.mozilla.jss.provider.java.security.JSSMessageDigestSpi$SHA384");
         put("MessageDigest.SHA-512",
-                "org.mozilla.jss.provider.java.security.JSSMessageDigestSpi$SHA512");
+            "org.mozilla.jss.provider.java.security.JSSMessageDigestSpi$SHA512");
 
         put("Alg.Alias.MessageDigest.SHA1", "SHA-1");
         put("Alg.Alias.MessageDigest.SHA", "SHA-1");
@@ -146,7 +146,7 @@ public final class JSSProvider extends java.security.Provider {
         // KeyStore
         /////////////////////////////////////////////////////////////
         put("KeyStore.PKCS11",
-                "org.mozilla.jss.provider.java.security.JSSKeyStoreSpi");
+            "org.mozilla.jss.provider.java.security.JSSKeyStoreSpi");
 
         /////////////////////////////////////////////////////////////
         // AlgorithmParameters
@@ -188,9 +188,9 @@ public final class JSSProvider extends java.security.Provider {
         put("KeyGenerator.RC2",
             "org.mozilla.jss.provider.javax.crypto.JSSKeyGeneratorSpi$RC2");
         put("KeyGenerator.HmacSHA1",
-           "org.mozilla.jss.provider.javax.crypto.JSSKeyGeneratorSpi$HmacSHA1");
+            "org.mozilla.jss.provider.javax.crypto.JSSKeyGeneratorSpi$HmacSHA1");
         put("KeyGenerator.PBAHmacSHA1",
-           "org.mozilla.jss.provider.javax.crypto.JSSKeyGeneratorSpi$PBAHmacSHA1");
+            "org.mozilla.jss.provider.javax.crypto.JSSKeyGeneratorSpi$PBAHmacSHA1");
 
         /////////////////////////////////////////////////////////////
         // SecretKeyFactory
@@ -198,7 +198,7 @@ public final class JSSProvider extends java.security.Provider {
         put("SecretKeyFactory.DES",
             "org.mozilla.jss.provider.javax.crypto.JSSSecretKeyFactorySpi$DES");
         put("SecretKeyFactory.DESede",
-         "org.mozilla.jss.provider.javax.crypto.JSSSecretKeyFactorySpi$DESede");
+            "org.mozilla.jss.provider.javax.crypto.JSSSecretKeyFactorySpi$DESede");
         put("Alg.Alias.SecretKeyFactory.DES3", "DESede");
         put("SecretKeyFactory.AES",
             "org.mozilla.jss.provider.javax.crypto.JSSSecretKeyFactorySpi$AES");
@@ -263,7 +263,7 @@ public final class JSSProvider extends java.security.Provider {
     }
 
     public String toString() {
-        String mozillaProviderVersion = JSS_MAJOR_VERSION + "." + 
+        String mozillaProviderVersion = JSS_MAJOR_VERSION + "." +
                                         JSS_MINOR_VERSION;
         if ( JSS_PATCH_VERSION != 0 ) {
             mozillaProviderVersion = mozillaProviderVersion + "." +

@@ -21,7 +21,7 @@ public class UTCTime extends TimeBase implements ASN1Value {
     }
 
     private static final UTCTime.Template templateInstance =
-                                                new UTCTime.Template();
+        new UTCTime.Template();
     public static UTCTime.Template getTemplate() {
         return templateInstance;
     }

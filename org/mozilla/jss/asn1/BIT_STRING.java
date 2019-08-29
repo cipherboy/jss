@@ -34,7 +34,7 @@ public class BIT_STRING implements ASN1Value {
      *      empty and <code>padCount</code> is non-zero.
      */
     public BIT_STRING(byte[] bits, int padCount)
-        throws NumberFormatException
+    throws NumberFormatException
     {
         if(padCount < 0 || padCount > 7) {
             throw new NumberFormatException();
@@ -57,7 +57,7 @@ public class BIT_STRING implements ASN1Value {
      *      than <code>bs.size()</code> or less than zero.
      */
     public BIT_STRING(BitSet bs, int numBits)
-        throws NumberFormatException
+    throws NumberFormatException
     {
         if( numBits < 0 || numBits > bs.size() ) {
             throw new NumberFormatException();
@@ -169,7 +169,7 @@ public class BIT_STRING implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         // force all unused bits to be zero, in support of DER standard.
         if( bits.length > 0 ) {
@@ -219,73 +219,73 @@ public class BIT_STRING implements ASN1Value {
         return templateInstance;
     }
 
-/**
- * A class for decoding a <code>BIT_STRING</code> from its BER encoding.
- */
-public static class Template implements ASN1Template {
+    /**
+     * A class for decoding a <code>BIT_STRING</code> from its BER encoding.
+     */
+    public static class Template implements ASN1Template {
 
 
-    public boolean tagMatch(Tag tag) {
-        return( TAG.equals(tag) );
-    }
+        public boolean tagMatch(Tag tag) {
+            return( TAG.equals(tag) );
+        }
 
-    public ASN1Value decode(InputStream istream)
+        public ASN1Value decode(InputStream istream)
         throws IOException, InvalidBERException
-    {
-        return decode(TAG, istream);
-    }
+        {
+            return decode(TAG, istream);
+        }
 
-    public ASN1Value decode(Tag implicitTag, InputStream istream)
+        public ASN1Value decode(Tag implicitTag, InputStream istream)
         throws IOException, InvalidBERException
-    {
-      try {
-        ASN1Header head = new ASN1Header( istream );
-        head.validate( implicitTag );
+        {
+            try {
+                ASN1Header head = new ASN1Header( istream );
+                head.validate( implicitTag );
 
-        if( head.getContentLength() == -1 ) {
-            // indefinite length encoding
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            int padCount=0;
-            ASN1Header ahead;
-            do {
-                ahead = ASN1Header.lookAhead(istream);
-                if( ! ahead.isEOC() ) {
-                    if(padCount != 0 ) {
-                      throw new InvalidBERException("Element of constructed "+
-                        "BIT STRING has nonzero unused bits, but is not\n"+
-                        "the last element of the construction.");
-                    }
-                    BIT_STRING.Template bst = new BIT_STRING.Template();
-                    BIT_STRING bs = (BIT_STRING) bst.decode(istream);
-                    bos.write( bs.getBits() );
-                    padCount = bs.getPadCount();
+                if( head.getContentLength() == -1 ) {
+                    // indefinite length encoding
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    int padCount=0;
+                    ASN1Header ahead;
+                    do {
+                        ahead = ASN1Header.lookAhead(istream);
+                        if( ! ahead.isEOC() ) {
+                            if(padCount != 0 ) {
+                                throw new InvalidBERException("Element of constructed "+
+                                                              "BIT STRING has nonzero unused bits, but is not\n"+
+                                                              "the last element of the construction.");
+                            }
+                            BIT_STRING.Template bst = new BIT_STRING.Template();
+                            BIT_STRING bs = (BIT_STRING) bst.decode(istream);
+                            bos.write( bs.getBits() );
+                            padCount = bs.getPadCount();
+                        }
+                    } while( ! ahead.isEOC() );
+
+                    // consume the EOC
+                    ahead = new ASN1Header(istream);
+
+                    return new BIT_STRING( bos.toByteArray(), padCount );
                 }
-            } while( ! ahead.isEOC() );
 
-            // consume the EOC
-            ahead = new ASN1Header(istream);
+                // First octet is the number of unused bits in last octet
+                int padCount = istream.read();
+                if( padCount == -1 ) {
+                    throw new InvalidBERException.EOF();
+                } else if( padCount < 0 || padCount > 7 ) {
+                    throw new InvalidBERException("Unused bits not in range [0,7]");
+                }
 
-            return new BIT_STRING( bos.toByteArray(), padCount );
+                // get the rest of the octets
+                byte[] bits = new byte[ (int) head.getContentLength() - 1];
+                ASN1Util.readFully(bits, istream);
+
+                return new BIT_STRING(bits, padCount);
+
+            } catch(InvalidBERException e) {
+                throw new InvalidBERException(e, "BIT STRING");
+            }
         }
-
-        // First octet is the number of unused bits in last octet
-        int padCount = istream.read();
-        if( padCount == -1 ) {
-            throw new InvalidBERException.EOF();
-        } else if( padCount < 0 || padCount > 7 ) {
-            throw new InvalidBERException("Unused bits not in range [0,7]");
-        }
-
-        // get the rest of the octets
-        byte[] bits = new byte[ (int) head.getContentLength() - 1];
-        ASN1Util.readFully(bits, istream);
-
-        return new BIT_STRING(bits, padCount);
-
-      } catch(InvalidBERException e) {
-        throw new InvalidBERException(e, "BIT STRING");
-      }
-    }
-} // end of Template
+    } // end of Template
 
 }

@@ -19,5 +19,7 @@ public class CipherPolicy {
 
     private CipherPolicy(int _enum) { }
 
-    int getEnum() { return _enum; }
+    int getEnum() {
+        return _enum;
+    }
 }

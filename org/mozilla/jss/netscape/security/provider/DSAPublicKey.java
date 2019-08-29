@@ -44,7 +44,7 @@ import org.mozilla.jss.netscape.security.x509.X509Key;
  */
 
 public final class DSAPublicKey extends X509Key
-        implements java.security.interfaces.DSAPublicKey, Serializable {
+    implements java.security.interfaces.DSAPublicKey, Serializable {
 
     /** use serialVersionUID from JDK 1.1. for interoperability */
     private static final long serialVersionUID = -2994193307391104133L;
@@ -62,18 +62,18 @@ public final class DSAPublicKey extends X509Key
      * Make a DSA public key out of a public key and three parameters.
      */
     public DSAPublicKey(BigInteger y, BigInteger p, BigInteger q,
-            BigInteger g)
-            throws InvalidKeyException {
+                        BigInteger g)
+    throws InvalidKeyException {
         this.y = y;
         algid = new AlgIdDSA(p, q, g);
 
         try {
             key = new DerValue(DerValue.tag_Integer,
-                    y.toByteArray()).toByteArray();
+                               y.toByteArray()).toByteArray();
             encode();
         } catch (IOException e) {
             throw new InvalidKeyException("could not DER encode y: " +
-                      e.getMessage());
+                                          e.getMessage());
         }
     }
 
@@ -99,7 +99,7 @@ public final class DSAPublicKey extends X509Key
                     return null;
                 }
                 paramSpec = algParams.getParameterSpec
-                        (DSAParameterSpec.class);
+                            (DSAParameterSpec.class);
                 return paramSpec;
             }
         } catch (InvalidParameterSpecException e) {
@@ -117,7 +117,7 @@ public final class DSAPublicKey extends X509Key
 
     public String toString() {
         return "Sun DSA Public Key\n    Parameters:" + algid
-                + "\n  y:\n" + (new BigInt(y)).toString() + "\n";
+               + "\n  y:\n" + (new BigInt(y)).toString() + "\n";
     }
 
     protected void parseKeyBits() throws InvalidKeyException {
@@ -126,7 +126,7 @@ public final class DSAPublicKey extends X509Key
             y = in.getInteger().toBigInteger();
         } catch (IOException e) {
             throw new InvalidKeyException("Invalid key: y value\n" +
-                      e.getMessage());
+                                          e.getMessage());
         }
     }
 

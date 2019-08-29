@@ -32,15 +32,15 @@ public abstract class Cipher {
      * Initializes a encryption context with a symmetric key.
      */
     public abstract void initEncrypt(SymmetricKey key)
-        throws InvalidKeyException, InvalidAlgorithmParameterException,
-        TokenException;
+    throws InvalidKeyException, InvalidAlgorithmParameterException,
+               TokenException;
 
     /**
      * Initializes a decryption context with a symmetric key.
      */
     public abstract void initDecrypt(SymmetricKey key)
-        throws InvalidKeyException, InvalidAlgorithmParameterException,
-        TokenException;
+    throws InvalidKeyException, InvalidAlgorithmParameterException,
+               TokenException;
 
     /**
      * Initializes an encryption context with a symmetric key and
@@ -48,8 +48,8 @@ public abstract class Cipher {
      */
     public abstract void
     initEncrypt(SymmetricKey key, AlgorithmParameterSpec parameters)
-        throws InvalidKeyException, InvalidAlgorithmParameterException,
-        TokenException;
+    throws InvalidKeyException, InvalidAlgorithmParameterException,
+               TokenException;
 
     /**
      * Initializes a decryption context with a symmetric key and
@@ -57,8 +57,8 @@ public abstract class Cipher {
      */
     public abstract void
     initDecrypt(SymmetricKey key, AlgorithmParameterSpec parameters)
-        throws InvalidKeyException, InvalidAlgorithmParameterException,
-        TokenException;
+    throws InvalidKeyException, InvalidAlgorithmParameterException,
+               TokenException;
 
     /**
      * Updates the encryption context with additional input.
@@ -67,7 +67,7 @@ public abstract class Cipher {
      * @return Bytes of ciphertext (if encrypting) or plaintext (if decrypting).
      */
     public abstract byte[] update(byte[] bytes)
-        throws IllegalStateException, TokenException;
+    throws IllegalStateException, TokenException;
 
     /**
      * Updates the encryption context with additional plaintext.
@@ -78,7 +78,7 @@ public abstract class Cipher {
      * @return Bytes of ciphertext (if encrypting) or plaintext (if decrypting).
      */
     public abstract byte[] update(byte[] bytes, int offset, int length)
-        throws IllegalStateException, TokenException;
+    throws IllegalStateException, TokenException;
 
     /**
      * Completes an cipher operation. This can be called directly after
@@ -89,8 +89,8 @@ public abstract class Cipher {
      * @return The last of the output.
      */
     public abstract byte[] doFinal(byte[] bytes)
-        throws IllegalStateException, IllegalBlockSizeException,
-        BadPaddingException, TokenException;
+    throws IllegalStateException, IllegalBlockSizeException,
+               BadPaddingException, TokenException;
 
     /**
      * Completes an cipher operation.
@@ -101,16 +101,16 @@ public abstract class Cipher {
      * @return The last of the output.
      */
     public abstract byte[] doFinal(byte[] bytes, int offset, int length)
-        throws IllegalStateException, IllegalBlockSizeException,
-        BadPaddingException, TokenException;
+    throws IllegalStateException, IllegalBlockSizeException,
+               BadPaddingException, TokenException;
 
     /**
      * Completes an cipher operation.
      * @return The last of the output.
      */
     public abstract byte[] doFinal()
-        throws IllegalStateException, IllegalBlockSizeException,
-        BadPaddingException, TokenException;
+    throws IllegalStateException, IllegalBlockSizeException,
+               BadPaddingException, TokenException;
 
     /**
      * Pads a byte array so that its length is a multiple of the given
@@ -159,12 +159,12 @@ public abstract class Cipher {
 
         if( padded.length < blockSize ) {
             throw new BadPaddingException("Length of padded array is less than"+
-                " one block");
+                                          " one block");
         }
         byte padOctet = padded[padded.length-1];
         if(padOctet > blockSize) {
             throw new BadPaddingException("Padding octet ("+padOctet+") is "+
-                "larger than block size ("+blockSize+")");
+                                          "larger than block size ("+blockSize+")");
         }
         if(padOctet < 1) {
             throw new BadPaddingException("Padding octet is less than 1");
@@ -194,7 +194,7 @@ public abstract class Cipher {
             throw new BadPaddingException("Padding octet is less than 1");
         } else if(padOctet >= padded.length) {
             throw new BadPaddingException("Padding is larger than entire"+
-                " array");
+                                          " array");
         }
 
         byte[] unpadded = new byte[padded.length - padOctet];

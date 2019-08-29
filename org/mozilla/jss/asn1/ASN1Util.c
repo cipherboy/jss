@@ -62,7 +62,7 @@ Java_org_mozilla_jss_asn1_ASN1Util_getTagDescriptionByOid(JNIEnv *env, jobject t
 
     if (oidBA == NULL) {
         JSS_throwMsg(env, INVALID_PARAMETER_EXCEPTION,
-            "JSS getTagDescriptionByOid: oidBA null");
+                     "JSS getTagDescriptionByOid: oidBA null");
         goto finish;
     } else {
         /**************************************************
@@ -71,7 +71,7 @@ Java_org_mozilla_jss_asn1_ASN1Util_getTagDescriptionByOid(JNIEnv *env, jobject t
         oid = JSS_ByteArrayToSECItem(env, oidBA);
         if (oid == NULL) {
             JSS_throwMsg(env, INVALID_PARAMETER_EXCEPTION,
-                "JSS getTagDescriptionByOid: JSS_ByteArrayToSECItem failed");
+                         "JSS getTagDescriptionByOid: JSS_ByteArrayToSECItem failed");
             goto finish;
         }
 
@@ -81,7 +81,7 @@ Java_org_mozilla_jss_asn1_ASN1Util_getTagDescriptionByOid(JNIEnv *env, jobject t
         oidTag = SECOID_FindOIDTag(oid);
         if (oidTag == SEC_OID_UNKNOWN) {
             JSS_throwMsg(env, INVALID_PARAMETER_EXCEPTION,
-                "JSS getTagDescriptionByOid: OID UNKNOWN");
+                         "JSS getTagDescriptionByOid: OID UNKNOWN");
             goto finish;
         }
 

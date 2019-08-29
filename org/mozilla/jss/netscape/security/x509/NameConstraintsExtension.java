@@ -92,13 +92,13 @@ public class NameConstraintsExtension extends Extension implements CertAttrSet {
                 DerOutputStream tmp = new DerOutputStream();
                 permitted.encode(tmp);
                 tagged.writeImplicit(DerValue.createTag(DerValue.TAG_CONTEXT,
-                        true, TAG_PERMITTED), tmp);
+                                                        true, TAG_PERMITTED), tmp);
             }
             if ((excluded != null) && (excluded.getSubtrees().size() > 0)) {
                 DerOutputStream tmp = new DerOutputStream();
                 excluded.encode(tmp);
                 tagged.writeImplicit(DerValue.createTag(DerValue.TAG_CONTEXT,
-                        true, TAG_EXCLUDED), tmp);
+                                                        true, TAG_EXCLUDED), tmp);
             }
             if (permitted == null && excluded == null) {
                 extensionValue = null; // no need to encode this extension
@@ -119,19 +119,19 @@ public class NameConstraintsExtension extends Extension implements CertAttrSet {
      */
     public NameConstraintsExtension(GeneralSubtrees permitted,
                                     GeneralSubtrees excluded)
-            throws IOException {
+    throws IOException {
         init(false, permitted, excluded);
     }
 
     public NameConstraintsExtension(boolean critical,
-            GeneralSubtrees permitted, GeneralSubtrees excluded)
-            throws IOException {
+                                    GeneralSubtrees permitted, GeneralSubtrees excluded)
+    throws IOException {
         init(critical, permitted, excluded);
     }
 
     private void init(boolean critical,
-            GeneralSubtrees permitted, GeneralSubtrees excluded)
-            throws IOException {
+                      GeneralSubtrees permitted, GeneralSubtrees excluded)
+    throws IOException {
         if (permitted == null && excluded == null) {
             throw new IOException("NameConstraints: Invalid arguments");
         }
@@ -151,7 +151,7 @@ public class NameConstraintsExtension extends Extension implements CertAttrSet {
      * @exception IOException on error.
      */
     public NameConstraintsExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = PKIXExtensions.NameConstraints_Id;
         this.critical = critical.booleanValue();
 
@@ -178,7 +178,7 @@ public class NameConstraintsExtension extends Extension implements CertAttrSet {
             if (opt.isContextSpecific(TAG_PERMITTED) && opt.isConstructed()) {
                 if (permitted != null) {
                     throw new IOException("Duplicate permitted " +
-                            "GeneralSubtrees in NameConstraintsExtension.");
+                                          "GeneralSubtrees in NameConstraintsExtension.");
                 }
                 opt.resetTag(DerValue.tag_Sequence);
                 permitted = new GeneralSubtrees(opt);
@@ -187,7 +187,7 @@ public class NameConstraintsExtension extends Extension implements CertAttrSet {
                        opt.isConstructed()) {
                 if (excluded != null) {
                     throw new IOException("Duplicate excluded " +
-                             "GeneralSubtrees in NameConstraintsExtension.");
+                                          "GeneralSubtrees in NameConstraintsExtension.");
                 }
                 opt.resetTag(DerValue.tag_Sequence);
                 excluded = new GeneralSubtrees(opt);
@@ -203,17 +203,17 @@ public class NameConstraintsExtension extends Extension implements CertAttrSet {
     public String toString() {
         return (super.toString() + "NameConstraints: [" +
                 ((permitted == null) ? "" :
-                        ("\n    Permitted:" + permitted.toString())) +
+                 ("\n    Permitted:" + permitted.toString())) +
                 ((excluded == null) ? "" :
-                        ("\n    Excluded:" + excluded.toString())) + "   ]\n");
+                 ("\n    Excluded:" + excluded.toString())) + "   ]\n");
     }
 
     public String toPrint(int indent) {
         return ("GeneralSubtrees: " +
                 ((permitted == null) ? "" :
-                        ("\n" + pp.indent(indent + 2) + "Permitted:" + permitted.toPrint(indent + 4))) +
+                 ("\n" + pp.indent(indent + 2) + "Permitted:" + permitted.toPrint(indent + 4))) +
                 ((excluded == null) ? "" :
-                        ("\n" + pp.indent(indent + 2) + "Excluded:" + excluded.toPrint(indent + 4))) + "\n");
+                 ("\n" + pp.indent(indent + 2) + "Excluded:" + excluded.toPrint(indent + 4))) + "\n");
 
     }
 
@@ -251,18 +251,18 @@ public class NameConstraintsExtension extends Extension implements CertAttrSet {
         if (name.equalsIgnoreCase(PERMITTED_SUBTREES)) {
             if (!(obj instanceof GeneralSubtrees)) {
                 throw new IOException("Attribute value should be"
-                                    + " of type GeneralSubtrees.");
+                                      + " of type GeneralSubtrees.");
             }
             permitted = (GeneralSubtrees) obj;
         } else if (name.equalsIgnoreCase(EXCLUDED_SUBTREES)) {
             if (!(obj instanceof GeneralSubtrees)) {
                 throw new IOException("Attribute value should be "
-                                    + "of type GeneralSubtrees.");
+                                      + "of type GeneralSubtrees.");
             }
             excluded = (GeneralSubtrees) obj;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:NameConstraintsExtension.");
+                                  "CertAttrSet:NameConstraintsExtension.");
         }
     }
 
@@ -276,7 +276,7 @@ public class NameConstraintsExtension extends Extension implements CertAttrSet {
             return (excluded);
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:NameConstraintsExtension.");
+                                  "CertAttrSet:NameConstraintsExtension.");
         }
     }
 
@@ -290,7 +290,7 @@ public class NameConstraintsExtension extends Extension implements CertAttrSet {
             excluded = null;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:NameConstraintsExtension.");
+                                  "CertAttrSet:NameConstraintsExtension.");
         }
     }
 

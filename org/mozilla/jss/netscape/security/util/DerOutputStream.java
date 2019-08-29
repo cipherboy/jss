@@ -48,7 +48,7 @@ import java.util.TimeZone;
  * @author Hemma Prafullchandra
  */
 public class DerOutputStream
-        extends ByteArrayOutputStream implements DerEncoder {
+    extends ByteArrayOutputStream implements DerEncoder {
     /**
      * Construct an DER output stream.
      *
@@ -112,7 +112,7 @@ public class DerOutputStream
      * @param value original value being implicitly tagged
      */
     public void writeImplicit(byte tag, DerOutputStream value)
-            throws IOException {
+    throws IOException {
         write(tag);
         write(value.buf, 1, value.count - 1);
     }
@@ -460,7 +460,7 @@ public class DerOutputStream
      * @param order the order to use when sorting encodings of components.
      */
     private void putOrderedSet(byte tag, DerEncoder[] set,
-                   Comparator<byte[]> order) throws IOException {
+                               Comparator<byte[]> order) throws IOException {
         DerOutputStream[] streams = new DerOutputStream[set.length];
 
         for (int i = 0; i < set.length; i++) {

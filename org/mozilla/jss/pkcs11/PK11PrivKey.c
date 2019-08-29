@@ -29,57 +29,57 @@
 jobject
 JSS_PK11_wrapPrivKey(JNIEnv *env, SECKEYPrivateKey **privk)
 {
-	jclass keyClass;
-	jmethodID constructor;
-	jbyteArray ptrArray;
-	jobject Key=NULL;
+    jclass keyClass;
+    jmethodID constructor;
+    jbyteArray ptrArray;
+    jobject Key=NULL;
     const char *className = NULL;
 
-	PR_ASSERT(env!=NULL && privk!=NULL && *privk!=NULL);
+    PR_ASSERT(env!=NULL && privk!=NULL && *privk!=NULL);
 
-	/* Find the class */
+    /* Find the class */
     switch( (*privk)->keyType ) {
-      case rsaKey:
+    case rsaKey:
         className = "org/mozilla/jss/pkcs11/PK11RSAPrivateKey";
         break;
-      case dsaKey:
+    case dsaKey:
         className = "org/mozilla/jss/pkcs11/PK11DSAPrivateKey";
         break;
-      case ecKey:
+    case ecKey:
         className = "org/mozilla/jss/pkcs11/PK11ECPrivateKey";
         break;
-      default:
+    default:
         className = "org/mozilla/jss/pkcs11/PK11PrivKey";
         break;
     }
-      
-	keyClass = (*env)->FindClass(env, className);
-	if(keyClass == NULL) {
-		ASSERT_OUTOFMEM(env);
-		goto finish;
-	}
 
-	/* find the constructor */
-	constructor = (*env)->GetMethodID(env, keyClass, "<init>", "([B)V");
-	if(constructor == NULL) {
-		ASSERT_OUTOFMEM(env);
-		goto finish;
-	}
+    keyClass = (*env)->FindClass(env, className);
+    if(keyClass == NULL) {
+        ASSERT_OUTOFMEM(env);
+        goto finish;
+    }
 
-	/* convert the pointer to a byte array */
-	ptrArray = JSS_ptrToByteArray(env, (void*)*privk);
-	if(ptrArray == NULL) {
-		goto finish;
-	}
-	/* call the constructor */
+    /* find the constructor */
+    constructor = (*env)->GetMethodID(env, keyClass, "<init>", "([B)V");
+    if(constructor == NULL) {
+        ASSERT_OUTOFMEM(env);
+        goto finish;
+    }
+
+    /* convert the pointer to a byte array */
+    ptrArray = JSS_ptrToByteArray(env, (void*)*privk);
+    if(ptrArray == NULL) {
+        goto finish;
+    }
+    /* call the constructor */
     Key = (*env)->NewObject(env, keyClass, constructor, ptrArray);
 
 finish:
-	if(Key == NULL) {
-		SECKEY_DestroyPrivateKey(*privk);
-	}
-	*privk = NULL;
-	return Key;
+    if(Key == NULL) {
+        SECKEY_DestroyPrivateKey(*privk);
+    }
+    *privk = NULL;
+    return Key;
 }
 
 /***********************************************************************
@@ -87,50 +87,50 @@ finish:
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PK11PrivKey_verifyKeyIsOnToken
-  (JNIEnv *env, jobject this, jobject token)
+(JNIEnv *env, jobject this, jobject token)
 {
-	SECKEYPrivateKey *key = NULL;
-	PK11SlotInfo *slot = NULL;
-	PK11SlotInfo *keySlot = NULL;
-	PK11SlotInfo *dbSlot = NULL;
-	PK11SlotInfo *cryptoSlot = NULL;
+    SECKEYPrivateKey *key = NULL;
+    PK11SlotInfo *slot = NULL;
+    PK11SlotInfo *keySlot = NULL;
+    PK11SlotInfo *dbSlot = NULL;
+    PK11SlotInfo *cryptoSlot = NULL;
 
-	if( JSS_PK11_getPrivKeyPtr(env, this, &key) != PR_SUCCESS) {
-		PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
-		goto finish;
-	}
+    if( JSS_PK11_getPrivKeyPtr(env, this, &key) != PR_SUCCESS) {
+        PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
+        goto finish;
+    }
 
-	if( JSS_PK11_getTokenSlotPtr(env, token, &slot) != PR_SUCCESS) {
-		PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
-		goto finish;
-	}
+    if( JSS_PK11_getTokenSlotPtr(env, token, &slot) != PR_SUCCESS) {
+        PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
+        goto finish;
+    }
 
-	keySlot = PK11_GetSlotFromPrivateKey(key);
-	dbSlot = PK11_GetInternalKeySlot();
-	if(keySlot == dbSlot) {
-		cryptoSlot = PK11_GetInternalSlot();
-		/* hack for internal module */
-		if(slot != keySlot && slot != cryptoSlot) {
-			JSS_throwMsg(env, NO_SUCH_ITEM_ON_TOKEN_EXCEPTION,
-				"Key is not present on this token");
-			goto finish;
-		}
-	} else if(keySlot != slot) {
-		JSS_throwMsg(env, NO_SUCH_ITEM_ON_TOKEN_EXCEPTION,
-			"Key is not present on this token");
-		goto finish;
-	}
+    keySlot = PK11_GetSlotFromPrivateKey(key);
+    dbSlot = PK11_GetInternalKeySlot();
+    if(keySlot == dbSlot) {
+        cryptoSlot = PK11_GetInternalSlot();
+        /* hack for internal module */
+        if(slot != keySlot && slot != cryptoSlot) {
+            JSS_throwMsg(env, NO_SUCH_ITEM_ON_TOKEN_EXCEPTION,
+                         "Key is not present on this token");
+            goto finish;
+        }
+    } else if(keySlot != slot) {
+        JSS_throwMsg(env, NO_SUCH_ITEM_ON_TOKEN_EXCEPTION,
+                     "Key is not present on this token");
+        goto finish;
+    }
 
 finish:
-	if(keySlot != NULL) {
-		PK11_FreeSlot(keySlot);
-	}
-        if(dbSlot != NULL) {
-		PK11_FreeSlot(dbSlot);
-	}
-        if(cryptoSlot != NULL) {
-		PK11_FreeSlot(cryptoSlot);
-	}
+    if(keySlot != NULL) {
+        PK11_FreeSlot(keySlot);
+    }
+    if(dbSlot != NULL) {
+        PK11_FreeSlot(dbSlot);
+    }
+    if(cryptoSlot != NULL) {
+        PK11_FreeSlot(cryptoSlot);
+    }
 }
 
 /*
@@ -140,7 +140,7 @@ finish:
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11PrivKey_getKeyType
-  (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     PRThread * VARIABLE_MAY_NOT_BE_USED pThread;
     SECKEYPrivateKey *privk;
@@ -155,7 +155,7 @@ Java_org_mozilla_jss_pkcs11_PK11PrivKey_getKeyType
     pThread = PR_AttachThread(PR_SYSTEM_THREAD, 0, NULL);
     PR_ASSERT(pThread != NULL);
 
-	if(JSS_PK11_getPrivKeyPtr(env, this, &privk) != PR_SUCCESS) {
+    if(JSS_PK11_getPrivKeyPtr(env, this, &privk) != PR_SUCCESS) {
         PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL );
         goto finish;
     }
@@ -198,16 +198,16 @@ Java_org_mozilla_jss_pkcs11_PK11PrivKey_getKeyType
     }
 
     keyTypeField = (*env)->GetStaticFieldID(env, keyTypeClass,
-        keyTypeFieldName, KEYTYPE_FIELD_SIG);
+                                            keyTypeFieldName, KEYTYPE_FIELD_SIG);
     if(keyTypeField==NULL) {
         ASSERT_OUTOFMEM(env);
         goto finish;
     }
 
     keyTypeObject = (*env)->GetStaticObjectField(
-                                env,
-                                keyTypeClass,
-                                keyTypeField);
+                        env,
+                        keyTypeClass,
+                        keyTypeField);
     if(keyTypeObject == NULL) {
         ASSERT_OUTOFMEM(env);
         goto finish;
@@ -224,7 +224,7 @@ finish:
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PrivateKeyProxy_releaseNativeResources
-  (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     SECKEYPrivateKey *privk;
     PRThread * VARIABLE_MAY_NOT_BE_USED pThread;
@@ -259,14 +259,14 @@ finish:
  */
 PRStatus
 JSS_PK11_getPrivKeyPtr(JNIEnv *env, jobject privkObject,
-    SECKEYPrivateKey** ptr)
+                       SECKEYPrivateKey** ptr)
 {
     PR_ASSERT(env!=NULL && privkObject!=NULL);
 
     /* Get the pointer from the key proxy */
     PR_ASSERT(sizeof(SECKEYPrivateKey*) == sizeof(void*));
     return JSS_getPtrFromProxyOwner(env, privkObject, KEY_PROXY_FIELD,
-		KEY_PROXY_SIG, (void**)ptr);
+                                    KEY_PROXY_SIG, (void**)ptr);
 }
 
 /***********************************************************************
@@ -280,24 +280,24 @@ JSS_PK11_getPrivKeyPtr(JNIEnv *env, jobject privkObject,
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11PrivKey_getOwningToken
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
-	SECKEYPrivateKey *key = NULL;
-	PK11SlotInfo *keySlot = NULL;
+    SECKEYPrivateKey *key = NULL;
+    PK11SlotInfo *keySlot = NULL;
     jobject token = NULL;
 
     PR_ASSERT(env!=NULL && this!=NULL);
 
     /* Get the C key structure */
-	if( JSS_PK11_getPrivKeyPtr(env, this, &key) != PR_SUCCESS) {
-		PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
-		goto finish;
-	}
+    if( JSS_PK11_getPrivKeyPtr(env, this, &key) != PR_SUCCESS) {
+        PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
+        goto finish;
+    }
 
     /* Get the slot that this key lives on */
-	keySlot = PK11_GetSlotFromPrivateKey(key);
+    keySlot = PK11_GetSlotFromPrivateKey(key);
     PR_ASSERT(keySlot != NULL);
-    
+
     /* Turn the slot into a Java PK11Token */
     token = JSS_PK11_wrapPK11Token(env, &keySlot);
     if(token == NULL) {
@@ -306,9 +306,9 @@ Java_org_mozilla_jss_pkcs11_PK11PrivKey_getOwningToken
     }
 
 finish:
-	if(keySlot != NULL) {
-		PK11_FreeSlot(keySlot);
-	}
+    if(keySlot != NULL) {
+        PK11_FreeSlot(keySlot);
+    }
     return token;
 }
 
@@ -323,7 +323,7 @@ PK11_GetLowLevelKeyIDForPrivateKey(SECKEYPrivateKey*);
  */
 JNIEXPORT jbyteArray JNICALL
 Java_org_mozilla_jss_pkcs11_PK11PrivKey_getUniqueID
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     SECKEYPrivateKey *key = NULL;
     SECItem *idItem = NULL;
@@ -362,7 +362,7 @@ finish:
     if(idItem != NULL) {
         SECITEM_FreeItem(idItem, PR_TRUE /*freeit*/);
     }
-    
+
     return byteArray;
 }
 
@@ -371,7 +371,7 @@ finish:
  */
 JNIEXPORT jint JNICALL
 Java_org_mozilla_jss_pkcs11_PK11PrivKey_getStrength
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     SECKEYPrivateKey *key = NULL;
     PK11SlotInfo *slot = NULL;
@@ -429,15 +429,17 @@ JSS_PK11_getKeyType(JNIEnv *env, jobject keyTypeObj)
         FORTEZZA_KEYTYPE_FIELD,
         DH_KEYTYPE_FIELD,
         KEA_KEYTYPE_FIELD,
-	EC_KEYTYPE_FIELD };
+        EC_KEYTYPE_FIELD
+    };
     int numTypes = 6;
     KeyType keyTypes[] = {
         rsaKey,
         dsaKey,
-	fortezzaKey,
-	dhKey,
-	keaKey,
-	ecKey };
+        fortezzaKey,
+        dhKey,
+        keaKey,
+        ecKey
+    };
     jobject field;
     int i;
 
@@ -451,7 +453,7 @@ JSS_PK11_getKeyType(JNIEnv *env, jobject keyTypeObj)
 
     for(i=0; i < numTypes; i++) {
         fieldID = (*env)->GetStaticFieldID(env, keyTypeClass, fieldNames[i],
-                        PRIVKEYTYPE_SIG);
+                                           PRIVKEYTYPE_SIG);
         if( fieldID == NULL ) {
             PR_ASSERT( (*env)->ExceptionOccurred(env) );
             goto finish;
@@ -478,12 +480,12 @@ finish:
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11PrivKey_fromPrivateKeyInfo
-    (   JNIEnv *env,
-        jclass clazz,
-        jbyteArray keyArray,
-        jobject tokenObj,
-        jbyteArray publicValueArray
-    )
+(   JNIEnv *env,
+    jclass clazz,
+    jbyteArray keyArray,
+    jobject tokenObj,
+    jbyteArray publicValueArray
+)
 {
     SECItem *derPK = NULL;
     jthrowable excep;
@@ -522,9 +524,9 @@ Java_org_mozilla_jss_pkcs11_PK11PrivKey_fromPrivateKeyInfo
      * get the slot
      */
     if( JSS_PK11_getTokenSlotPtr(env, tokenObj, &slot) != PR_SUCCESS) {
-		PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
-		goto finish;
-	}
+        PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
+        goto finish;
+    }
 
     nickname.len = 0;
     nickname.data = NULL;
@@ -535,11 +537,11 @@ Java_org_mozilla_jss_pkcs11_PK11PrivKey_fromPrivateKeyInfo
     keyUsage =  KU_ALL;
 
     status = PK11_ImportDERPrivateKeyInfoAndReturnKey(slot, derPK, &nickname,
-                publicValue, PR_FALSE /*isPerm*/,
-                PR_TRUE /*isPrivate*/, keyUsage, &privk, NULL /*wincx*/);
+             publicValue, PR_FALSE /*isPerm*/,
+             PR_TRUE /*isPrivate*/, keyUsage, &privk, NULL /*wincx*/);
     if(status != SECSuccess) {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION,
-            "Failed to import private key info");
+                          "Failed to import private key info");
         goto finish;
     }
 
@@ -574,7 +576,7 @@ finish:
 
 JNIEXPORT jobjectArray JNICALL
 Java_org_mozilla_jss_pkcs11_PK11PrivKey_getDSAParamsNative
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     SECKEYPrivateKey *key = NULL;
     PQGParams *pqgParams = NULL;
@@ -611,16 +613,16 @@ Java_org_mozilla_jss_pkcs11_PK11PrivKey_getDSAParamsNative
     pqgParams = (PQGParams*)PK11_GetPQGParamsFromPrivateKey(key);
     if( pqgParams == NULL ) {
         JSS_throwMsg(env, TOKEN_EXCEPTION,
-            "Unable to extract PQG parameters from private key");
+                     "Unable to extract PQG parameters from private key");
         goto finish;
     }
 
     if( PK11_PQG_GetPrimeFromParams( pqgParams, &P) ||
-        PK11_PQG_GetSubPrimeFromParams( pqgParams, &Q) ||
-        PK11_PQG_GetBaseFromParams( pqgParams, &G) )
+            PK11_PQG_GetSubPrimeFromParams( pqgParams, &Q) ||
+            PK11_PQG_GetBaseFromParams( pqgParams, &G) )
     {
         JSS_throwMsg(env, TOKEN_EXCEPTION,
-            "Unable to extract PQG parameters from private key");
+                     "Unable to extract PQG parameters from private key");
         goto finish;
     }
 
@@ -628,8 +630,8 @@ Java_org_mozilla_jss_pkcs11_PK11PrivKey_getDSAParamsNative
      * Now turn them into byte arrays
      */
     if( !(jP = JSS_OctetStringToByteArray(env, &P)) ||
-        !(jQ = JSS_OctetStringToByteArray(env, &Q)) ||
-        !(jG = JSS_OctetStringToByteArray(env, &G)) )
+            !(jQ = JSS_OctetStringToByteArray(env, &Q)) ||
+            !(jG = JSS_OctetStringToByteArray(env, &G)) )
     {
         goto finish;
     }
@@ -665,7 +667,7 @@ finish:
  */
 JNIEXPORT jbyteArray JNICALL
 Java_org_mozilla_jss_pkcs11_PK11RSAPrivateKey_getModulusByteArray
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     SECKEYPrivateKey *privateKey = NULL;
     SECKEYPublicKey *publicKey = NULL;
@@ -728,7 +730,7 @@ finish:
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11PrivKey_getPublicKey
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     SECKEYPrivateKey *privKey;
     SECKEYPublicKey *pubKey;

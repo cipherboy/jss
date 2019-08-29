@@ -40,17 +40,17 @@ class SocketBase {
     }
 
     native byte[] socketCreate(Object socketObject,
-            SSLCertificateApprovalCallback certApprovalCallback,
-            SSLClientCertificateSelectionCallback clientCertSelectionCallback,
-            java.net.Socket javaSock, String host, int family)
-            throws SocketException;
+                               SSLCertificateApprovalCallback certApprovalCallback,
+                               SSLClientCertificateSelectionCallback clientCertSelectionCallback,
+                               java.net.Socket javaSock, String host, int family)
+    throws SocketException;
 
     byte[] socketCreate(Object socketObject,
-            SSLCertificateApprovalCallback certApprovalCallback,
-            SSLClientCertificateSelectionCallback clientCertSelectionCallback, int family)
-            throws SocketException {
+                        SSLCertificateApprovalCallback certApprovalCallback,
+                        SSLClientCertificateSelectionCallback clientCertSelectionCallback, int family)
+    throws SocketException {
         return socketCreate(socketObject, certApprovalCallback,
-                clientCertSelectionCallback, null, null, family);
+                            clientCertSelectionCallback, null, null, family);
     }
 
     native void socketBind(byte[] addrBA, int port) throws SocketException;
@@ -122,13 +122,13 @@ class SocketBase {
     }
 
     public void requestClientAuthNoExpiryCheck(boolean b)
-            throws SocketException {
+    throws SocketException {
         requestingClientAuth = b;
         requestClientAuthNoExpiryCheckNative(b);
     }
 
     private native void requestClientAuthNoExpiryCheckNative(boolean b)
-            throws SocketException;
+    throws SocketException;
 
     void enableSSL2(boolean enable) throws SocketException {
         setSSLOption(SSL_ENABLE_SSL2, enable);
@@ -147,7 +147,7 @@ class SocketBase {
     }
 
     void enableRenegotiation(int mode)
-            throws SocketException {
+    throws SocketException {
         setSSLOptionMode(SocketBase.SSL_ENABLE_RENEGOTIATION, mode);
     }
 
@@ -172,7 +172,7 @@ class SocketBase {
     }
 
     void setSSLOption(int option, boolean on)
-            throws SocketException {
+    throws SocketException {
         setSSLOption(option, on ? 1 : 0);
     }
 
@@ -181,10 +181,10 @@ class SocketBase {
      * enable/disable values.
      */
     native void setSSLOption(int option, int on)
-            throws SocketException;
+    throws SocketException;
 
     void setSSLVersionRange(SSLVersionRange range)
-            throws SocketException {
+    throws SocketException {
         setSSLVersionRange(range.getMinVersion().value(), range.getMaxVersion().value());
     }
 
@@ -192,35 +192,35 @@ class SocketBase {
      * Sets SSL Version Range for this socket to support TLS v1.1 to v1.3
      */
     native void setSSLVersionRange(int min, int max)
-            throws SocketException;
+    throws SocketException;
 
     /**
      * Sets the SSL option setting mode value use for options
      * that have more values than just enable/disable.
      */
     native void setSSLOptionMode(int option, int option2)
-            throws SocketException;
+    throws SocketException;
 
     /* return 0 for option disabled 1 for option enabled. */
     native int getSSLOption(int option)
-            throws SocketException;
+    throws SocketException;
 
     public String getSSLOptions() {
         StringBuffer buf = new StringBuffer();
         try {
             buf.append("SSL Options configured for this SSLSocket:");
             buf.append("\nSSL_ENABLE_SSL2" +
-                    ((getSSLOption(SocketBase.SSL_ENABLE_SSL2) != 0)
-                            ? "=on"
-                            : "=off"));
+                       ((getSSLOption(SocketBase.SSL_ENABLE_SSL2) != 0)
+                        ? "=on"
+                        : "=off"));
             buf.append("\nSSL_ENABLE_SSL3" +
-                    ((getSSLOption(SocketBase.SSL_ENABLE_SSL3) != 0)
-                            ? "=on"
-                            : "=off"));
+                       ((getSSLOption(SocketBase.SSL_ENABLE_SSL3) != 0)
+                        ? "=on"
+                        : "=off"));
             buf.append("\nSSL_ENABLE_TLS" +
-                    ((getSSLOption(SocketBase.SSL_ENABLE_TLS) != 0)
-                            ? "=on"
-                            : "=off"));
+                       ((getSSLOption(SocketBase.SSL_ENABLE_TLS) != 0)
+                        ? "=on"
+                        : "=off"));
             buf.append("\nSSL_REQUIRE_CERTIFICATE");
             switch (getSSLOption(SocketBase.SSL_REQUIRE_CERTIFICATE)) {
             case 0:
@@ -240,31 +240,31 @@ class SocketBase {
                 break;
             } //end switch
             buf.append("\nSSL_REQUEST_CERTIFICATE" +
-                    ((getSSLOption(SocketBase.SSL_REQUEST_CERTIFICATE) != 0)
-                            ? "=on"
-                            : "=off"));
+                       ((getSSLOption(SocketBase.SSL_REQUEST_CERTIFICATE) != 0)
+                        ? "=on"
+                        : "=off"));
             buf.append("\nSSL_NO_CACHE" +
-                    ((getSSLOption(SocketBase.SSL_NO_CACHE) != 0)
-                            ? "=on"
-                            : "=off"));
+                       ((getSSLOption(SocketBase.SSL_NO_CACHE) != 0)
+                        ? "=on"
+                        : "=off"));
             buf.append("\nSSL_ROLLBACK_DETECTION" +
-                    ((getSSLOption(SocketBase.SSL_ROLLBACK_DETECTION) != 0)
-                            ? "=on"
-                            : "=off"));
+                       ((getSSLOption(SocketBase.SSL_ROLLBACK_DETECTION) != 0)
+                        ? "=on"
+                        : "=off"));
             buf.append("\nSSL_NO_STEP_DOWN" +
-                    ((getSSLOption(SocketBase.SSL_NO_STEP_DOWN) != 0)
-                            ? "=on"
-                            : "=off"));
+                       ((getSSLOption(SocketBase.SSL_NO_STEP_DOWN) != 0)
+                        ? "=on"
+                        : "=off"));
             buf.append("\nSSL_ENABLE_FDX" +
-                    ((getSSLOption(SocketBase.SSL_ENABLE_FDX) != 0)
-                            ? "=on"
-                            : "=off"));
+                       ((getSSLOption(SocketBase.SSL_ENABLE_FDX) != 0)
+                        ? "=on"
+                        : "=off"));
             buf.append("\nSSL_V2_COMPATIBLE_HELLO" +
-                    ((getSSLOption(SocketBase.SSL_V2_COMPATIBLE_HELLO) != 0)
-                            ? "=on"
-                            : "=off"));
+                       ((getSSLOption(SocketBase.SSL_V2_COMPATIBLE_HELLO) != 0)
+                        ? "=on"
+                        : "=off"));
             buf.append("\nSSL_ENABLE_SESSION_TICKETS" +
-                    ((getSSLOption(SocketBase.SSL_ENABLE_SESSION_TICKETS) != 0) ? "=on" : "=off"));
+                       ((getSSLOption(SocketBase.SSL_ENABLE_SESSION_TICKETS) != 0) ? "=on" : "=off"));
             buf.append("\nSSL_ENABLE_RENEGOTIATION");
             switch (getSSLOption(SocketBase.SSL_ENABLE_RENEGOTIATION)) {
             case 0:
@@ -284,9 +284,9 @@ class SocketBase {
                 break;
             } //end switch
             buf.append("\nSSL_REQUIRE_SAFE_NEGOTIATION" +
-                    ((getSSLOption(SocketBase.SSL_REQUIRE_SAFE_NEGOTIATION) != 0)
-                            ? "=on"
-                            : "=off"));
+                       ((getSSLOption(SocketBase.SSL_REQUIRE_SAFE_NEGOTIATION) != 0)
+                        ? "=on"
+                        : "=off"));
 
         } catch (SocketException e) {
             buf.append("\ngetSSLOptions exception " + e.getMessage());
@@ -311,7 +311,7 @@ class SocketBase {
         addr[3] = ((intAddr) & 0xff);
         try {
             in = InetAddress.getByName(
-                    addr[0] + "." + addr[1] + "." + addr[2] + "." + addr[3]);
+                     addr[0] + "." + addr[1] + "." + addr[2] + "." + addr[3]);
         } catch (java.net.UnknownHostException e) {
             in = null;
         }
@@ -379,7 +379,7 @@ class SocketBase {
     private native int getLocalPortNative() throws SocketException;
 
     void requireClientAuth(boolean require, boolean onRedo)
-            throws SocketException {
+    throws SocketException {
         if (require && !requestingClientAuth) {
             requestClientAuth(true);
         }
@@ -387,7 +387,7 @@ class SocketBase {
     }
 
     void requireClientAuth(int mode)
-            throws SocketException {
+    throws SocketException {
         if (mode > 0 && !requestingClientAuth) {
             requestClientAuth(true);
         }
@@ -415,14 +415,14 @@ class SocketBase {
     }
 
     native void setClientCert(org.mozilla.jss.crypto.X509Certificate cert)
-            throws SocketException;
+    throws SocketException;
 
     void useCache(boolean b) throws SocketException {
         setSSLOption(SSL_NO_CACHE, !b);
     }
 
     static Throwable processExceptions(Throwable topException,
-            Throwable bottomException) {
+                                       Throwable bottomException) {
         try {
             StringBuffer strBuf;
             strBuf = new StringBuffer(topException.toString());

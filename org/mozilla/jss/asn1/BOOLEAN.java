@@ -28,7 +28,7 @@ public class BOOLEAN implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         getHeader(implicitTag).encode(ostream);
         if( val ) {
@@ -80,34 +80,34 @@ public class BOOLEAN implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag tag, InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
-          try {
-            ASN1Header head = new ASN1Header(istream);
+            try {
+                ASN1Header head = new ASN1Header(istream);
 
-            head.validate(tag, FORM);
+                head.validate(tag, FORM);
 
-            int b = istream.read();
-            if( b == -1 ) {
-                throw new InvalidBERException("End-of-file reached while "+
-                    "decoding BOOLEAN");
+                int b = istream.read();
+                if( b == -1 ) {
+                    throw new InvalidBERException("End-of-file reached while "+
+                                                  "decoding BOOLEAN");
+                }
+
+                if( b == 0x00 ) {
+                    return new BOOLEAN(false);
+                } else {
+                    return new BOOLEAN(true);
+                }
+
+            } catch(InvalidBERException e) {
+                throw new InvalidBERException(e, "BOOLEAN");
             }
-
-            if( b == 0x00 ) {
-                return new BOOLEAN(false);
-            } else {
-                return new BOOLEAN(true);
-            }
-
-          } catch(InvalidBERException e) {
-            throw new InvalidBERException(e, "BOOLEAN");
-          }
         }
     }
 }

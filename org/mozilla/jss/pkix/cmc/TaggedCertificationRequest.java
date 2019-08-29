@@ -30,14 +30,14 @@ import org.mozilla.jss.util.Assert;
  * </pre>
  */
 public class TaggedCertificationRequest implements ASN1Value {
-	public static final INTEGER BODYIDMAX = new INTEGER("4294967295");
+    public static final INTEGER BODYIDMAX = new INTEGER("4294967295");
 
     ///////////////////////////////////////////////////////////////////////
     // Members
     ///////////////////////////////////////////////////////////////////////
     private SEQUENCE sequence;
     private INTEGER bodyPartID;
-	private CertificationRequest certificationRequest;
+    private CertificationRequest certificationRequest;
 
     ///////////////////////////////////////////////////////////////////////
     // Construction
@@ -56,7 +56,7 @@ public class TaggedCertificationRequest implements ASN1Value {
         sequence.addElement(bodyPartID);
         this.certificationRequest = certificationRequest;
         sequence.addElement(certificationRequest);
-	}
+    }
 
     ///////////////////////////////////////////////////////////////////////
     // accessors
@@ -83,7 +83,7 @@ public class TaggedCertificationRequest implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         sequence.encode(implicitTag, ostream);
     }
@@ -110,21 +110,21 @@ public class TaggedCertificationRequest implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
             assert(seq.size() == 2);
 
             return new TaggedCertificationRequest(
-                            (INTEGER)      seq.elementAt(0),
-                            (CertificationRequest)      seq.elementAt(1));
+                       (INTEGER)      seq.elementAt(0),
+                       (CertificationRequest)      seq.elementAt(1));
         }
     }
 }

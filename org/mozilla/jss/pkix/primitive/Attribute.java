@@ -65,7 +65,7 @@ public class Attribute implements ASN1Value {
     }
 
     public void encode(Tag implicit, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         SEQUENCE seq = new SEQUENCE();
         seq.addElement(type);
@@ -79,37 +79,37 @@ public class Attribute implements ASN1Value {
     }
     private static Template templateInstance = new Template();
 
-/**
- * A Template for decoding an Attribute.
- */
-public static class Template implements ASN1Template {
+    /**
+     * A Template for decoding an Attribute.
+     */
+    public static class Template implements ASN1Template {
 
-    public boolean tagMatch(Tag tag) {
-        return TAG.equals(tag);
-    }
+        public boolean tagMatch(Tag tag) {
+            return TAG.equals(tag);
+        }
 
-    public ASN1Value decode(InputStream istream)
+        public ASN1Value decode(InputStream istream)
         throws IOException, InvalidBERException
-    {
-        return decode(TAG, istream);
-    }
+        {
+            return decode(TAG, istream);
+        }
 
-    public ASN1Value decode(Tag implicit, InputStream istream)
+        public ASN1Value decode(Tag implicit, InputStream istream)
         throws IOException, InvalidBERException
-    {
-        SEQUENCE.Template seqt = new SEQUENCE.Template();
+        {
+            SEQUENCE.Template seqt = new SEQUENCE.Template();
 
-        seqt.addElement( new OBJECT_IDENTIFIER.Template()   );
-        seqt.addElement( new SET.OF_Template(new ANY.Template()));
+            seqt.addElement( new OBJECT_IDENTIFIER.Template()   );
+            seqt.addElement( new SET.OF_Template(new ANY.Template()));
 
-        SEQUENCE seq = (SEQUENCE) seqt.decode(implicit, istream);
+            SEQUENCE seq = (SEQUENCE) seqt.decode(implicit, istream);
 
-        // The template should have enforced this
-        assert(seq.size() == 2);
+            // The template should have enforced this
+            assert(seq.size() == 2);
 
-        return new Attribute( (OBJECT_IDENTIFIER) seq.elementAt(0),
-                              (SET)               seq.elementAt(1));
+            return new Attribute( (OBJECT_IDENTIFIER) seq.elementAt(0),
+                                  (SET)               seq.elementAt(1));
+        }
     }
-}
 
 }

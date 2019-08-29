@@ -103,7 +103,7 @@ public class POPOPrivKey implements ASN1Value {
     private POPOPrivKey() { }
 
     private POPOPrivKey(Type type, BIT_STRING thisMessage,
-                INTEGER subsequentMessage, BIT_STRING dhMAC) {
+                        INTEGER subsequentMessage, BIT_STRING dhMAC) {
         this.type = type;
         this.thisMessage = thisMessage;
         this.subsequentMessage = subsequentMessage;
@@ -127,7 +127,7 @@ public class POPOPrivKey implements ASN1Value {
         }
 
         return new POPOPrivKey(SUBSEQUENT_MESSAGE, null,
-                        new INTEGER(subsequentMessage), null);
+                               new INTEGER(subsequentMessage), null);
     }
 
     /**
@@ -168,7 +168,7 @@ public class POPOPrivKey implements ASN1Value {
      * an implicit tag.
      */
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
         throw new RuntimeException("POPOPrivKey is a CHOICE and cannot have an implicit tag");
         // encode(ostream);
     }
@@ -202,13 +202,13 @@ public class POPOPrivKey implements ASN1Value {
          * have an implicit tag.
          */
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             throw new RuntimeException("POPOPrivKey is a CHOICE and cannot have an implicitTag");
             // return decode(istream);
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
 
             CHOICE choice = (CHOICE) choicet.decode(istream);
 

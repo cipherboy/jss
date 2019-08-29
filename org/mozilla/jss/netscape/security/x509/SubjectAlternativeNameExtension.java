@@ -52,7 +52,7 @@ import org.mozilla.jss.netscape.security.util.DerValue;
  * @see CertAttrSet
  */
 public class SubjectAlternativeNameExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
     /**
      *
      */
@@ -62,7 +62,7 @@ public class SubjectAlternativeNameExtension extends Extension
      * get, set, delete methods of Certificate, x509 type.
      */
     public static final String IDENT =
-                         "x509.info.extensions.SubjectAlternativeName";
+        "x509.info.extensions.SubjectAlternativeName";
     /**
      * Attribute names.
      */
@@ -90,7 +90,7 @@ public class SubjectAlternativeNameExtension extends Extension
      * @exception IOException on error.
      */
     public SubjectAlternativeNameExtension(boolean critical, GeneralNames names)
-            throws IOException {
+    throws IOException {
         this.names = names;
         this.extensionId = PKIXExtensions.SubjectAlternativeName_Id;
         this.critical = critical;
@@ -98,7 +98,7 @@ public class SubjectAlternativeNameExtension extends Extension
     }
 
     public SubjectAlternativeNameExtension(GeneralNames names)
-            throws IOException {
+    throws IOException {
         this.names = names;
         this.extensionId = PKIXExtensions.SubjectAlternativeName_Id;
         this.critical = false;
@@ -122,7 +122,7 @@ public class SubjectAlternativeNameExtension extends Extension
      * @exception IOException on error.
      */
     public SubjectAlternativeNameExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = PKIXExtensions.SubjectAlternativeName_Id;
         this.critical = critical.booleanValue();
 
@@ -150,7 +150,7 @@ public class SubjectAlternativeNameExtension extends Extension
         if (names == null)
             return "";
         String s = super.toString() + "SubjectAlternativeName [\n"
-                  + names.toString() + "]\n";
+                   + names.toString() + "]\n";
         return (s);
     }
 
@@ -189,12 +189,12 @@ public class SubjectAlternativeNameExtension extends Extension
         if (name.equalsIgnoreCase(SUBJECT_NAME)) {
             if (!(obj instanceof GeneralNames)) {
                 throw new IOException("Attribute value should be of " +
-                                    "type GeneralNames.");
+                                      "type GeneralNames.");
             }
             names = (GeneralNames) obj;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:SubjectAlternativeName.");
+                                  "CertAttrSet:SubjectAlternativeName.");
         }
     }
 
@@ -221,7 +221,7 @@ public class SubjectAlternativeNameExtension extends Extension
             return (names);
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:SubjectAlternativeName.");
+                                  "CertAttrSet:SubjectAlternativeName.");
         }
     }
 
@@ -233,7 +233,7 @@ public class SubjectAlternativeNameExtension extends Extension
             names = null;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:SubjectAlternativeName.");
+                                  "CertAttrSet:SubjectAlternativeName.");
         }
     }
 

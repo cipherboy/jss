@@ -100,7 +100,7 @@ public class CertificateVersion implements CertAttrSet {
             this.version = version;
         else {
             throw new IOException("X.509 Certificate version " +
-                                   version + " not supported.\n");
+                                  version + " not supported.\n");
         }
     }
 
@@ -161,11 +161,11 @@ public class CertificateVersion implements CertAttrSet {
             return;
         }
         try (DerOutputStream tmp = new DerOutputStream();
-                DerOutputStream seq = new DerOutputStream()) {
+                    DerOutputStream seq = new DerOutputStream()) {
             tmp.putInteger(new BigInt(version));
 
             seq.write(DerValue.createTag(DerValue.TAG_CONTEXT, true, (byte) 0),
-                    tmp);
+                      tmp);
 
             out.write(seq.toByteArray());
         }

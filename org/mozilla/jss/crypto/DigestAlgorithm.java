@@ -15,7 +15,7 @@ public class DigestAlgorithm extends Algorithm {
     private int outputSize;
 
     protected DigestAlgorithm(int oidIndex, String name,
-            OBJECT_IDENTIFIER oid, int outputSize)
+                              OBJECT_IDENTIFIER oid, int outputSize)
     {
         super(oidIndex, name, oid);
 
@@ -34,7 +34,7 @@ public class DigestAlgorithm extends Algorithm {
     private static Hashtable<OBJECT_IDENTIFIER, DigestAlgorithm> oidMap = new Hashtable<>();
 
     public static DigestAlgorithm fromOID(OBJECT_IDENTIFIER oid)
-        throws NoSuchAlgorithmException
+    throws NoSuchAlgorithmException
     {
         DigestAlgorithm alg = oidMap.get(oid);
         if( alg == null ) {
@@ -55,36 +55,36 @@ public class DigestAlgorithm extends Algorithm {
      * The MD2 digest algorithm, from RSA.
      */
     public static final DigestAlgorithm MD2 = new DigestAlgorithm
-        (SEC_OID_MD2, "MD2", OBJECT_IDENTIFIER.RSA_DIGEST.subBranch(2), 16 );
+    (SEC_OID_MD2, "MD2", OBJECT_IDENTIFIER.RSA_DIGEST.subBranch(2), 16 );
 
     /**
      * The MD5 digest algorithm, from RSA.
      */
     public static final DigestAlgorithm MD5 = new DigestAlgorithm
-        (SEC_OID_MD5, "MD5", OBJECT_IDENTIFIER.RSA_DIGEST.subBranch(5), 16 );
+    (SEC_OID_MD5, "MD5", OBJECT_IDENTIFIER.RSA_DIGEST.subBranch(5), 16 );
 
     /**
      * The SHA-1 digest algorithm, from Uncle Sam.
      */
     public static final DigestAlgorithm SHA1 = new DigestAlgorithm
-        (SEC_OID_SHA1, "SHA-1", OBJECT_IDENTIFIER.ALGORITHM.subBranch(26), 20);
+    (SEC_OID_SHA1, "SHA-1", OBJECT_IDENTIFIER.ALGORITHM.subBranch(26), 20);
 
     /*
     * The SHA-256 digest Algorithm from FIPS 180-2
     */
     public static final DigestAlgorithm SHA256 = new DigestAlgorithm
-        (SEC_OID_SHA256, "SHA-256", OBJECT_IDENTIFIER.HASH_ALGORITHM.subBranch(1), 32);
+    (SEC_OID_SHA256, "SHA-256", OBJECT_IDENTIFIER.HASH_ALGORITHM.subBranch(1), 32);
 
     /*
     * The SHA-384 digest Algorithm from FIPS 180-2
     */
     public static final DigestAlgorithm SHA384 = new DigestAlgorithm
-        (SEC_OID_SHA384, "SHA-384", OBJECT_IDENTIFIER.HASH_ALGORITHM.subBranch(2), 48);
+    (SEC_OID_SHA384, "SHA-384", OBJECT_IDENTIFIER.HASH_ALGORITHM.subBranch(2), 48);
 
     /*
     * The SHA-512 digest Algorithm from FIPS 180-2
     */
     public static final DigestAlgorithm SHA512 = new DigestAlgorithm
-        (SEC_OID_SHA512, "SHA-512", OBJECT_IDENTIFIER.HASH_ALGORITHM.subBranch(3), 64);
+    (SEC_OID_SHA512, "SHA-512", OBJECT_IDENTIFIER.HASH_ALGORITHM.subBranch(3), 64);
 
 }

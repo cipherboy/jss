@@ -79,7 +79,7 @@ public class X509Key implements PublicKey {
      * about this particular algorithm is available.
      */
     public X509Key(AlgorithmId algid, byte[] key)
-            throws InvalidKeyException {
+    throws InvalidKeyException {
         this.algid = algid;
         this.key = key;
         encode();
@@ -143,7 +143,7 @@ public class X509Key implements PublicKey {
      * See the description above.
      */
     static X509Key buildX509Key(AlgorithmId algid, byte[] key)
-            throws IOException, InvalidKeyException {
+    throws IOException, InvalidKeyException {
         /*
          * Use the algid and key parameters to produce the ASN.1 encoding
          * of the key, which will then be used as the input to the
@@ -160,7 +160,7 @@ public class X509Key implements PublicKey {
                 keyFac = KeyFactory.getInstance(algid.getName());
             } else {
                 keyFac = KeyFactory.getInstance(algid.getName(),
-                        "Mozilla-JSS");
+                                                "Mozilla-JSS");
             }
 
             // Generate the public key
@@ -192,7 +192,7 @@ public class X509Key implements PublicKey {
             if (sunProvider == null)
                 throw new InstantiationException();
             classname = sunProvider.getProperty("PublicKey.X.509." +
-                    algid.getName());
+                                                algid.getName());
             if (classname == null) {
                 throw new InstantiationException();
             }
@@ -202,7 +202,7 @@ public class X509Key implements PublicKey {
             X509Key result;
 
             inst = keyClass.getConstructor().newInstance(
-                    sunProvider.getProperty("PublicKey.X.509." + algid.getName()));
+                       sunProvider.getProperty("PublicKey.X.509." + algid.getName()));
             if (inst instanceof X509Key) {
                 result = (X509Key) inst;
                 result.algid = algid;
@@ -214,11 +214,11 @@ public class X509Key implements PublicKey {
         } catch (InstantiationException e) {
         } catch (IllegalAccessException e) {
             throw new IOException("IllegalAccessException : " +
-                      e.getMessage(), e);
+                                  e.getMessage(), e);
         } catch (NoSuchMethodException e) {
         } catch (InvocationTargetException e) {
             throw new IOException("InvocationTargetException : " +
-                      e.getMessage(), e);
+                                  e.getMessage(), e);
         }
 
         X509Key result = new X509Key();
@@ -292,7 +292,7 @@ public class X509Key implements PublicKey {
 
             } catch (IOException e) {
                 throw new InvalidKeyException("IOException : " +
-                           e.getMessage());
+                                              e.getMessage());
             }
         }
         return copyEncodedKey(encodedKey);
@@ -303,11 +303,11 @@ public class X509Key implements PublicKey {
      */
     public String toString() {
         org.mozilla.jss.netscape.security.util.PrettyPrintFormat pp =
-                new org.mozilla.jss.netscape.security.util.PrettyPrintFormat(" ", 20);
+            new org.mozilla.jss.netscape.security.util.PrettyPrintFormat(" ", 20);
         String keybits = pp.toHexString(key);
 
         return "algorithm = " + algid.toString()
-                + ", unparsed keybits = \n" + keybits;
+               + ", unparsed keybits = \n" + keybits;
     }
 
     /**
@@ -332,7 +332,7 @@ public class X509Key implements PublicKey {
      * @exception InvalidKeyException on parsing errors.
      */
     public void decode(InputStream in)
-            throws InvalidKeyException {
+    throws InvalidKeyException {
         DerValue val;
 
         try {
@@ -349,7 +349,7 @@ public class X509Key implements PublicKey {
         } catch (IOException e) {
             // e.printStackTrace ();
             throw new InvalidKeyException("IOException : " +
-                      e.getMessage());
+                                          e.getMessage());
         }
     }
 
@@ -428,7 +428,7 @@ public class X509Key implements PublicKey {
      * Produce SubjectPublicKey encoding from algorithm id and key material.
      */
     static void encode(DerOutputStream out, AlgorithmId algid, byte[] key)
-            throws IOException {
+    throws IOException {
         DerOutputStream tmp = new DerOutputStream();
         algid.encode(tmp);
         tmp.putBitString(key);
@@ -466,7 +466,7 @@ public class X509Key implements PublicKey {
      * to using the JSS package.
      */
     static PublicKey buildPublicKey(AlgorithmId algid, byte[] key)
-            throws IOException, InvalidKeyException {
+    throws IOException, InvalidKeyException {
         /*
          * Use the algid and key parameters to produce the ASN.1 encoding
          * of the key, which will then be used as the input to the
@@ -483,7 +483,7 @@ public class X509Key implements PublicKey {
                 keyFac = KeyFactory.getInstance(algid.getName());
             } else {
                 keyFac = KeyFactory.getInstance(algid.getName(),
-                        "Mozilla-JSS");
+                                                "Mozilla-JSS");
             }
 
             // Generate the public key

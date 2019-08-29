@@ -23,7 +23,7 @@ public class DigestInfo implements ASN1Value {
     private OCTET_STRING digest;
     private SEQUENCE sequence;
 
-    public DigestInfo(AlgorithmIdentifier digestAlgorithm, OCTET_STRING digest){
+    public DigestInfo(AlgorithmIdentifier digestAlgorithm, OCTET_STRING digest) {
         if( digestAlgorithm==null || digest==null ) {
             throw new IllegalArgumentException();
         }
@@ -84,7 +84,7 @@ public class DigestInfo implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         sequence.encode(implicitTag, ostream);
     }
@@ -112,19 +112,19 @@ public class DigestInfo implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream ostream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             return decode(TAG, ostream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream ostream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, ostream);
 
             return new DigestInfo(
-                    (AlgorithmIdentifier)       seq.elementAt(0),
-                    (OCTET_STRING)              seq.elementAt(1) );
+                       (AlgorithmIdentifier)       seq.elementAt(0),
+                       (OCTET_STRING)              seq.elementAt(1) );
         }
     }
 }

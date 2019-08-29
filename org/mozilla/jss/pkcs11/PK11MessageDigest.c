@@ -25,7 +25,7 @@
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11MessageDigest_initDigest
-    (JNIEnv *env, jclass clazz, jobject algObj)
+(JNIEnv *env, jclass clazz, jobject algObj)
 {
     SECOidTag alg;
     PK11Context *context=NULL;
@@ -49,8 +49,8 @@ Java_org_mozilla_jss_pkcs11_PK11MessageDigest_initDigest
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11MessageDigest_initHMAC
-    (JNIEnv *env, jclass clazz, jobject tokenObj, jobject algObj,
-     jobject keyObj)
+(JNIEnv *env, jclass clazz, jobject tokenObj, jobject algObj,
+ jobject keyObj)
 {
     PK11SymKey *origKey = NULL, *newKey=NULL;
     PK11Context *context = NULL;
@@ -67,7 +67,7 @@ Java_org_mozilla_jss_pkcs11_PK11MessageDigest_initHMAC
     }
 
     /* copy the key, setting the CKA_SIGN attribute */
-    
+
     newKey = PK11_CopySymKeyForSigning(origKey, mech);
 
     /* For some key on the hsm, this call could fail, but the key may work anyway */
@@ -82,7 +82,7 @@ Java_org_mozilla_jss_pkcs11_PK11MessageDigest_initHMAC
     context = PK11_CreateContextBySymKey(mech, CKA_SIGN, newKey, &param);
     if( context == NULL ) {
         JSS_throwMsg(env, DIGEST_EXCEPTION,
-            "Unable to initialize digest context");
+                     "Unable to initialize digest context");
         goto finish;
     }
 
@@ -105,8 +105,8 @@ finish:
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PK11MessageDigest_update
-    (JNIEnv *env, jclass clazz, jobject proxyObj, jbyteArray inbufBA,
-        jint offset, jint len)
+(JNIEnv *env, jclass clazz, jobject proxyObj, jbyteArray inbufBA,
+ jint offset, jint len)
 {
 
     PK11Context *context = NULL;
@@ -143,8 +143,8 @@ finish:
  */
 JNIEXPORT jint JNICALL
 Java_org_mozilla_jss_pkcs11_PK11MessageDigest_digest
-    (JNIEnv *env, jclass clazz, jobject proxyObj, jbyteArray outbuf,
-        jint offset, jint len)
+(JNIEnv *env, jclass clazz, jobject proxyObj, jbyteArray outbuf,
+ jint offset, jint len)
 {
     PK11Context *context=NULL;
     jbyte *bytes=NULL;
@@ -164,10 +164,10 @@ Java_org_mozilla_jss_pkcs11_PK11MessageDigest_digest
     }
 
     status = PK11_DigestFinal(context, (unsigned char*)(bytes+offset),
-                    &outLen, len);
+                              &outLen, len);
     if( status != SECSuccess ) {
         JSS_throwMsg(env, DIGEST_EXCEPTION, "Error occurred while performing"
-            " digest operation");
+                     " digest operation");
         goto finish;
     }
 

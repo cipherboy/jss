@@ -63,7 +63,7 @@ public class SSLServerSocket extends java.net.ServerSocket {
      *      unspecified local address will be bound to.
      */
     public SSLServerSocket(int port, int backlog, InetAddress bindAddr)
-        throws IOException
+    throws IOException
     {
         this(port, backlog, bindAddr, null);
     }
@@ -77,8 +77,8 @@ public class SSLServerSocket extends java.net.ServerSocket {
      *      presented by the client.
      */
     public SSLServerSocket(int port, int backlog, InetAddress bindAddr,
-                SSLCertificateApprovalCallback certApprovalCallback)
-        throws IOException
+                           SSLCertificateApprovalCallback certApprovalCallback)
+    throws IOException
     {
         this(port,backlog, bindAddr, certApprovalCallback, false);
     }
@@ -96,9 +96,9 @@ public class SSLServerSocket extends java.net.ServerSocket {
      *      compatibility.
      */
     public SSLServerSocket(int port, int backlog, InetAddress bindAddr,
-                SSLCertificateApprovalCallback certApprovalCallback,
-                boolean reuseAddr)
-        throws IOException
+                           SSLCertificateApprovalCallback certApprovalCallback,
+                           boolean reuseAddr)
+    throws IOException
     {
         // Dance the dance of fools.  The superclass doesn't have a default
         // constructor, so we have to trick it here. This is an example
@@ -150,7 +150,7 @@ public class SSLServerSocket extends java.net.ServerSocket {
             synchronized (this) {
                 if (isClosed) {
                     throw new IOException(
-                    "SSLServerSocket has been closed, and cannot be reused.");
+                        "SSLServerSocket has been closed, and cannot be reused.");
                 }
                 inAccept = true;
             }
@@ -164,7 +164,7 @@ public class SSLServerSocket extends java.net.ServerSocket {
                  */
                 byte[] socketPointer = null;
                 socketPointer = socketAccept(s, base.getTimeout(),
-                    handshakeAsClient);
+                                             handshakeAsClient);
                 SocketProxy sp = new SocketProxy(socketPointer);
                 s.setSockProxy(sp);
             } finally {
@@ -196,8 +196,8 @@ public class SSLServerSocket extends java.net.ServerSocket {
     public native boolean getReuseAddress() throws SocketException;
     private native void abortAccept() throws SocketException;
     private native byte[] socketAccept(SSLSocket s, int timeout,
-        boolean handshakeAsClient)
-        throws SocketException, SocketTimeoutException;
+                                       boolean handshakeAsClient)
+    throws SocketException, SocketTimeoutException;
 
     /**
      * Empties the SSL client session ID cache.
@@ -267,23 +267,23 @@ public class SSLServerSocket extends java.net.ServerSocket {
      *  is used: <code>/tmp</code> on Unix and <code>\\temp</code> on Windows.
      */
     public static native void configServerSessionIDCache(int maxSidEntries,
-        int ssl2EntryTimeout, int ssl3EntryTimeout, String cacheFileDirectory)
-        throws SocketException;
+            int ssl2EntryTimeout, int ssl3EntryTimeout, String cacheFileDirectory)
+    throws SocketException;
 
     /**
      * Sets the certificate to use for server authentication.
      */
     public void setServerCertNickname(String nick) throws SocketException
     {
-      try {
-        setServerCert( CryptoManager.getInstance().findCertByNickname(nick) );
-      } catch(NotInitializedException nie) {
-        throw new SocketException("CryptoManager not initialized");
-      } catch(ObjectNotFoundException onfe) {
-        throw new SocketException("Object not found: " + onfe);
-      } catch(TokenException te) {
-        throw new SocketException("Token Exception: " + te);
-      }
+        try {
+            setServerCert( CryptoManager.getInstance().findCertByNickname(nick) );
+        } catch(NotInitializedException nie) {
+            throw new SocketException("CryptoManager not initialized");
+        } catch(ObjectNotFoundException onfe) {
+            throw new SocketException("Object not found: " + onfe);
+        } catch(TokenException te) {
+            throw new SocketException("Token Exception: " + te);
+        }
     }
 
     /**
@@ -291,7 +291,7 @@ public class SSLServerSocket extends java.net.ServerSocket {
      */
     public native void setServerCert(
         org.mozilla.jss.crypto.X509Certificate certnickname)
-        throws SocketException;
+    throws SocketException;
 
     /**
      * Enables/disables the request of client authentication. This is only
@@ -331,7 +331,7 @@ public class SSLServerSocket extends java.net.ServerSocket {
      */
     @Deprecated
     public void setNeedClientAuthNoExpiryCheck(boolean b)
-        throws SocketException
+    throws SocketException
     {
         base.requestClientAuthNoExpiryCheck(b);
     }
@@ -393,15 +393,15 @@ public class SSLServerSocket extends java.net.ServerSocket {
      */
 
     public void enableRenegotiation(int mode)
-            throws SocketException
+    throws SocketException
     {
         if (mode >= SocketBase.SSL_RENEGOTIATE_NEVER &&
-            mode <= SocketBase.SSL_RENEGOTIATE_TRANSITIONAL) {
+                mode <= SocketBase.SSL_RENEGOTIATE_TRANSITIONAL) {
             base.enableRenegotiation(mode);
         } else {
             throw new SocketException("Incorrect input value.");
         }
-     }
+    }
 
     /**
      * For this socket require that the peer must send
@@ -411,7 +411,7 @@ public class SSLServerSocket extends java.net.ServerSocket {
      * <code>SSLSocket.enableRequireSafeNegotiationDefault</code>.
      */
     public void enableRequireSafeNegotiation(boolean enable)
-            throws SocketException {
+    throws SocketException {
         base.enableRequireSafeNegotiation(enable);
     }
 
@@ -485,7 +485,7 @@ public class SSLServerSocket extends java.net.ServerSocket {
      */
     @Deprecated
     public void requireClientAuth(boolean require, boolean onRedo)
-            throws SocketException
+    throws SocketException
     {
         base.requireClientAuth(require, onRedo);
     }
@@ -502,15 +502,15 @@ public class SSLServerSocket extends java.net.ServerSocket {
      */
 
     public void requireClientAuth(int mode)
-            throws SocketException
+    throws SocketException
     {
         if (mode >= SocketBase.SSL_REQUIRE_NEVER &&
-            mode <= SocketBase.SSL_REQUIRE_NO_ERROR) {
+                mode <= SocketBase.SSL_REQUIRE_NO_ERROR) {
             base.requireClientAuth(mode);
         } else {
             throw new SocketException("Incorrect input value.");
         }
-     }
+    }
 
 
     /**
@@ -524,7 +524,7 @@ public class SSLServerSocket extends java.net.ServerSocket {
      * Sets the certificate to use for client authentication.
      */
     public void setClientCert(org.mozilla.jss.crypto.X509Certificate cert)
-        throws SocketException
+    throws SocketException
     {
         base.setClientCert(cert);
     }

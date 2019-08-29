@@ -69,11 +69,11 @@ public class POPOSigningKey implements ASN1Value {
      * @param poposkInput May be null.
      */
     public POPOSigningKey(ANY poposkInput,
-                AlgorithmIdentifier algorithmIdentifier, BIT_STRING signature) {
+                          AlgorithmIdentifier algorithmIdentifier, BIT_STRING signature) {
 
         if(algorithmIdentifier==null || signature==null) {
             throw new IllegalArgumentException("parameter to POPOSigningKey"+
-                " constructor is null");
+                                               " constructor is null");
         }
 
         this.poposkInput = poposkInput;
@@ -102,7 +102,7 @@ public class POPOSigningKey implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
         sequence.encode(implicitTag, ostream);
     }
 
@@ -121,7 +121,7 @@ public class POPOSigningKey implements ASN1Value {
         public Template() {
             seqt = new SEQUENCE.Template();
             seqt.addOptionalElement( new EXPLICIT.Template(
-                    Tag.get(0), ANY.getTemplate()) );
+                                         Tag.get(0), ANY.getTemplate()) );
             seqt.addElement( AlgorithmIdentifier.getTemplate());
             seqt.addElement( BIT_STRING.getTemplate() );
         }
@@ -131,18 +131,18 @@ public class POPOSigningKey implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
             return new POPOSigningKey(
-                        (ANY) seq.elementAt(0),
-                        (AlgorithmIdentifier) seq.elementAt(1),
-                        (BIT_STRING)          seq.elementAt(2) );
+                       (ANY) seq.elementAt(0),
+                       (AlgorithmIdentifier) seq.elementAt(1),
+                       (BIT_STRING)          seq.elementAt(2) );
         }
     }
 }

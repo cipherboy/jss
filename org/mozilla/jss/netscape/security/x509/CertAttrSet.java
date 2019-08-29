@@ -56,7 +56,7 @@ public interface CertAttrSet {
      * @exception IOException on other errors.
      */
     void encode(OutputStream out)
-            throws CertificateException, IOException;
+    throws CertificateException, IOException;
 
     /**
      * Decodes the attribute in the input stream.
@@ -67,7 +67,7 @@ public interface CertAttrSet {
      * @exception IOException on other errors.
      */
     void decode(InputStream in)
-            throws CertificateException, IOException;
+    throws CertificateException, IOException;
 
     /**
      * Sets an attribute value within this CertAttrSet.
@@ -79,7 +79,7 @@ public interface CertAttrSet {
      * @exception IOException on other errors.
      */
     void set(String name, Object obj)
-            throws CertificateException, IOException;
+    throws CertificateException, IOException;
 
     /**
      * Gets an attribute value for this CertAttrSet.
@@ -90,7 +90,7 @@ public interface CertAttrSet {
      * @exception IOException on other errors.
      */
     Object get(String name)
-            throws CertificateException, IOException;
+    throws CertificateException, IOException;
 
     /**
      * Deletes an attribute value from this CertAttrSet.
@@ -101,7 +101,7 @@ public interface CertAttrSet {
      * @exception IOException on other errors.
      */
     void delete(String name)
-            throws CertificateException, IOException;
+    throws CertificateException, IOException;
 
     /**
      * Returns an enumeration of the names of the attributes existing within

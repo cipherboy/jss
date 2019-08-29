@@ -155,7 +155,7 @@ public class RevokedCertImpl extends RevokedCertificate implements Serializable 
      *                on extension handling errors.
      */
     public RevokedCertImpl(byte[] revokedCert) throws CRLException,
-            X509ExtensionException {
+        X509ExtensionException {
         try {
             DerValue derValue = new DerValue(revokedCert);
             parse(derValue);
@@ -175,7 +175,7 @@ public class RevokedCertImpl extends RevokedCertificate implements Serializable 
      *                on extension handling errors.
      */
     public RevokedCertImpl(DerValue derValue) throws CRLException,
-            X509ExtensionException {
+        X509ExtensionException {
         parse(derValue);
     }
 
@@ -203,7 +203,7 @@ public class RevokedCertImpl extends RevokedCertificate implements Serializable 
      *                on extension handling errors.
      */
     public void decode(InputStream inStrm) throws CRLException,
-            X509ExtensionException {
+        X509ExtensionException {
         try {
             DerValue derValue = new DerValue(inStrm);
             parse(derValue);
@@ -224,7 +224,7 @@ public class RevokedCertImpl extends RevokedCertificate implements Serializable 
      *                on extension handling errors.
      */
     public void encode(DerOutputStream outStrm) throws CRLException,
-            X509ExtensionException {
+        X509ExtensionException {
         try (DerOutputStream seq = new DerOutputStream()) {
             if (revokedCert == null) {
                 DerOutputStream tmp = new DerOutputStream();
@@ -286,7 +286,7 @@ public class RevokedCertImpl extends RevokedCertificate implements Serializable 
             sb.append("\n");
             for (int i = 0; i < extensions.size(); i++)
                 sb.append("Entry Extension[" + i + "]: "
-                        + (extensions.elementAt(i)).toString());
+                          + (extensions.elementAt(i)).toString());
         }
         sb.append("\n");
         return (sb.toString());
@@ -379,11 +379,11 @@ public class RevokedCertImpl extends RevokedCertificate implements Serializable 
     }
 
     private void parse(DerValue derVal)
-            throws CRLException, X509ExtensionException {
+    throws CRLException, X509ExtensionException {
 
         if (derVal.tag != DerValue.tag_Sequence) {
             throw new CRLException("Invalid encoded RevokedCertificate, " +
-                                  "starting sequence tag missing.");
+                                   "starting sequence tag missing.");
         }
         if (derVal.data.available() == 0)
             throw new CRLException("No data encoded for RevokedCertificates");

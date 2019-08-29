@@ -159,7 +159,7 @@ public class CertException extends SecurityException {
      */
     public String getMessage() {
         return getVerfDescription()
-                + ((moreData != null)
-                        ? ("\n  (" + moreData + ")") : "");
+               + ((moreData != null)
+                  ? ("\n  (" + moreData + ")") : "");
     }
 }

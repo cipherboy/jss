@@ -115,7 +115,7 @@ public class Cert {
 
     // private static BASE64Decoder mDecoder = new BASE64Decoder();
     public static X509CertImpl mapCert(String mime64)
-            throws IOException {
+    throws IOException {
         mime64 = stripCertBrackets(mime64.trim());
         String newval = normalizeCertStr(mime64);
         // byte rawPub[] = mDecoder.decodeBuffer(newval);
@@ -130,7 +130,7 @@ public class Cert {
     }
 
     public static X509Certificate[] mapCertFromPKCS7(String mime64)
-            throws IOException {
+    throws IOException {
         mime64 = stripCertBrackets(mime64.trim());
         String newval = normalizeCertStr(mime64);
         // byte rawPub[] = mDecoder.decodeBuffer(newval);
@@ -146,7 +146,7 @@ public class Cert {
     }
 
     public static X509CRL mapCRL(String mime64)
-            throws IOException {
+    throws IOException {
         mime64 = stripCRLBrackets(mime64.trim());
         String newval = normalizeCertStr(mime64);
         // byte rawPub[] = mDecoder.decodeBuffer(newval);
@@ -161,7 +161,7 @@ public class Cert {
     }
 
     public static X509CRL mapCRL1(String mime64)
-            throws IOException {
+    throws IOException {
         mime64 = stripCRLBrackets(mime64.trim());
 
         byte rawPub[] = Utils.base64decode(mime64);
@@ -330,8 +330,8 @@ public class Cert {
     }
 
     public static java.security.cert.X509Certificate[] sortCertificateChain(
-            java.security.cert.X509Certificate[] certs,
-            boolean reverse) throws Exception {
+        java.security.cert.X509Certificate[] certs,
+        boolean reverse) throws Exception {
 
         certs = sortCertificateChain(certs);
 

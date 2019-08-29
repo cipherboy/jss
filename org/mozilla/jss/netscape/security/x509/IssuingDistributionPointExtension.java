@@ -91,7 +91,7 @@ import org.mozilla.jss.netscape.security.util.DerValue;
  * </pre>
  */
 public class IssuingDistributionPointExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
     /**
      *
      */
@@ -127,7 +127,7 @@ public class IssuingDistributionPointExtension extends Extension
      * by the system.
      */
     public IssuingDistributionPointExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
 
         this.extensionId = PKIXExtensions.IssuingDistributionPoint_Id;
         this.critical = critical.booleanValue();
@@ -294,7 +294,7 @@ public class IssuingDistributionPointExtension extends Extension
      * DER-encodes this extension to the given OutputStream.
      */
     public void encode(OutputStream ostream)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         if (cachedEncoding == null) {
             // only re-encode if necessary
             DerOutputStream tmp = new DerOutputStream();
@@ -305,12 +305,12 @@ public class IssuingDistributionPointExtension extends Extension
     }
 
     public void decode(InputStream in)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         throw new IOException("Not supported");
     }
 
     public void set(String name, Object obj)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         if (name.equalsIgnoreCase(ISSUING_DISTRIBUTION_POINT)) {
             if (!(obj instanceof IssuingDistributionPoint)) {
                 throw new IOException("Attribute value should be of type IssuingDistributionPoint.");
@@ -318,27 +318,27 @@ public class IssuingDistributionPointExtension extends Extension
             issuingDistributionPoint = (IssuingDistributionPoint) obj;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:IssuingDistributionPointExtension");
+                                  "CertAttrSet:IssuingDistributionPointExtension");
         }
     }
 
     public Object get(String name)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         if (name.equalsIgnoreCase(ISSUING_DISTRIBUTION_POINT)) {
             return issuingDistributionPoint;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:IssuingDistributionPointExtension");
+                                  "CertAttrSet:IssuingDistributionPointExtension");
         }
     }
 
     public void delete(String name)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         if (name.equalsIgnoreCase(ISSUING_DISTRIBUTION_POINT)) {
             issuingDistributionPoint = null;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:IssuingDistributionPointExtension");
+                                  "CertAttrSet:IssuingDistributionPointExtension");
         }
     }
 
@@ -363,12 +363,12 @@ public class IssuingDistributionPointExtension extends Extension
 
             if (args.length != 1) {
                 System.out.println("Usage: IssuingDistributionPointExtension " +
-                        "<outfile>");
+                                   "<outfile>");
                 System.exit(-1);
             }
 
             bos = new BufferedOutputStream(
-                    new FileOutputStream(args[0]));
+                new FileOutputStream(args[0]));
 
             // URI only
             IssuingDistributionPoint idp = new IssuingDistributionPoint();
@@ -377,12 +377,12 @@ public class IssuingDistributionPointExtension extends Extension
             generalNames.addElement(uri);
             idp.setFullName(generalNames);
             IssuingDistributionPointExtension idpExt =
-                    new IssuingDistributionPointExtension(idp);
+                new IssuingDistributionPointExtension(idp);
 
             // DN only
             idp = new IssuingDistributionPoint();
             X500Name dn = new X500Name("CN=Otis Smith,E=otis@fedoraproject.org" +
-                    ",OU=Certificate Server,O=Fedora,C=US");
+                                       ",OU=Certificate Server,O=Fedora,C=US");
             generalNames = new GeneralNames();
             generalNames.addElement(dn);
             idp.setFullName(generalNames);

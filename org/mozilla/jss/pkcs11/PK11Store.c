@@ -38,7 +38,7 @@ SECItem *preparePassword(JNIEnv *env, jobject conv, jobject pwObj);
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Store_putSymKeysInVector
-    (JNIEnv *env, jobject this, jobject keyVector)
+(JNIEnv *env, jobject this, jobject keyVector)
 {
     PK11SlotInfo *slot;
     jobject object = NULL;
@@ -79,7 +79,7 @@ Java_org_mozilla_jss_pkcs11_PK11Store_putSymKeysInVector
     PK11_Authenticate(slot, PR_TRUE /*load certs*/, NULL /*wincx*/);
 
     /* Obtain the symmetric key list. */
-    firstSymKey = PK11_ListFixedKeysInSlot( slot , NULL, ( void *) &pwdata );
+    firstSymKey = PK11_ListFixedKeysInSlot( slot, NULL, ( void *) &pwdata );
     sk = firstSymKey;
 
     while(( sk != NULL ))
@@ -113,7 +113,7 @@ finish:
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Store_loadPrivateKeys
-    (JNIEnv *env, jobject this, jobject collection)
+(JNIEnv *env, jobject this, jobject collection)
 {
     PK11SlotInfo *slot;
     SECKEYPrivateKeyList *list = NULL;
@@ -146,7 +146,7 @@ Java_org_mozilla_jss_pkcs11_PK11Store_loadPrivateKeys
 
     if (list == NULL) {
         JSS_throwMsg(env, TOKEN_EXCEPTION, "PK11_ListPrivateKeysInSlot "
-            "returned an error");
+                     "returned an error");
         goto finish;
     }
 
@@ -160,9 +160,9 @@ Java_org_mozilla_jss_pkcs11_PK11Store_loadPrivateKeys
 
     // get Collection.add() method
     collectionAdd = (*env)->GetMethodID(env,
-                                     collectionClass,
-                                     COLLECTION_ADD_NAME,
-                                     COLLECTION_ADD_SIG);
+                                        collectionClass,
+                                        COLLECTION_ADD_NAME,
+                                        COLLECTION_ADD_SIG);
 
     if (collectionAdd == NULL) {
         ASSERT_OUTOFMEM(env);
@@ -197,7 +197,7 @@ finish:
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Store_loadPublicKeys
-    (JNIEnv *env, jobject this, jobject collection)
+(JNIEnv *env, jobject this, jobject collection)
 {
     PK11SlotInfo *slot;
     SECKEYPublicKeyList *list = NULL;
@@ -230,7 +230,7 @@ Java_org_mozilla_jss_pkcs11_PK11Store_loadPublicKeys
 
     if (list == NULL) {
         JSS_throwMsg(env, TOKEN_EXCEPTION, "PK11_ListPublicKeysInSlot "
-            "returned an error");
+                     "returned an error");
         goto finish;
     }
 
@@ -244,9 +244,9 @@ Java_org_mozilla_jss_pkcs11_PK11Store_loadPublicKeys
 
     // get Collection.add() method
     collectionAdd = (*env)->GetMethodID(env,
-                                     collectionClass,
-                                     COLLECTION_ADD_NAME,
-                                     COLLECTION_ADD_SIG);
+                                        collectionClass,
+                                        COLLECTION_ADD_NAME,
+                                        COLLECTION_ADD_SIG);
 
     if (collectionAdd == NULL) {
         ASSERT_OUTOFMEM(env);
@@ -281,7 +281,7 @@ finish:
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Store_putCertsInVector
-    (JNIEnv *env, jobject this, jobject certVector)
+(JNIEnv *env, jobject this, jobject certVector)
 {
     PK11SlotInfo *slot;
     PK11SlotInfo *slotCopy;
@@ -310,7 +310,7 @@ Java_org_mozilla_jss_pkcs11_PK11Store_putCertsInVector
     certList = PK11_ListCertsInSlot(slot);
     if( certList == NULL ) {
         JSS_throwMsg(env, TOKEN_EXCEPTION, "PK11_ListCertsInSlot "
-            "returned an error");
+                     "returned an error");
         goto finish;
     }
 
@@ -341,7 +341,7 @@ Java_org_mozilla_jss_pkcs11_PK11Store_putCertsInVector
         certCopy = CERT_DupCertificate(node->cert);
         slotCopy = PK11_ReferenceSlot(slot);
         object = JSS_PK11_wrapCertAndSlotAndNickname(env,
-            &certCopy, &slotCopy, node->appData);
+                 &certCopy, &slotCopy, node->appData);
         if(object == NULL) {
             PR_ASSERT( (*env)->ExceptionOccurred(env) );
             goto finish;
@@ -382,7 +382,7 @@ JSS_PK11_getStoreSlotPtr(JNIEnv *env, jobject store, PK11SlotInfo **slot)
     PR_ASSERT(env!=NULL && store!=NULL && slot!=NULL);
 
     return JSS_getPtrFromProxyOwner(env, store, PK11STORE_PROXY_FIELD,
-                PK11STORE_PROXY_SIG, (void**)slot);
+                                    PK11STORE_PROXY_SIG, (void**)slot);
 }
 
 /**********************************************************************
@@ -390,7 +390,7 @@ JSS_PK11_getStoreSlotPtr(JNIEnv *env, jobject store, PK11SlotInfo **slot)
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Store_deletePrivateKey
-    (JNIEnv *env, jobject this, jobject privateKeyObj)
+(JNIEnv *env, jobject this, jobject privateKeyObj)
 {
     PK11SlotInfo *slot;
     SECKEYPrivateKey *privateKey;
@@ -417,7 +417,7 @@ Java_org_mozilla_jss_pkcs11_PK11Store_deletePrivateKey
     if (privateKey->pkcs11IsTemp) {
         PR_ASSERT(PR_FALSE);
         JSS_throwMsg(env, TOKEN_EXCEPTION,
-            "Private Key is not a permanent PKCS #11 object");
+                     "Private Key is not a permanent PKCS #11 object");
         goto finish;
     }
 
@@ -440,7 +440,7 @@ finish:
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Store_deletePublicKey
-    (JNIEnv *env, jobject this, jobject publicKeyObj)
+(JNIEnv *env, jobject this, jobject publicKeyObj)
 {
     PK11SlotInfo *slot;
     SECKEYPublicKey *publicKey;
@@ -479,12 +479,12 @@ finish:
 /**********************************************************************
  * PK11Store.deleteCert
  *
- * This function deletes the specified certificate and its associated 
+ * This function deletes the specified certificate and its associated
  * private key.
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Store_deleteCert
-    (JNIEnv *env, jobject this, jobject certObject)
+(JNIEnv *env, jobject this, jobject certObject)
 {
     CERTCertificate *cert;
     SECStatus VARIABLE_MAY_NOT_BE_USED status;
@@ -503,7 +503,7 @@ Java_org_mozilla_jss_pkcs11_PK11Store_deleteCert
     status = PK11_DeleteTokenCertAndKey(cert, NULL);
     status = SEC_DeletePermCertificate(cert);
 
-finish: 
+finish:
     return;
 }
 
@@ -514,7 +514,7 @@ finish:
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Store_deleteCertOnly
-    (JNIEnv *env, jobject this, jobject certObject)
+(JNIEnv *env, jobject this, jobject certObject)
 {
     CERTCertificate *cert;
     SECStatus VARIABLE_MAY_NOT_BE_USED status;
@@ -532,7 +532,7 @@ Java_org_mozilla_jss_pkcs11_PK11Store_deleteCertOnly
 
     status = SEC_DeletePermCertificate(cert);
 
-finish: 
+finish:
     return;
 }
 
@@ -545,11 +545,11 @@ int PK11_NumberObjectsFor(PK11SlotInfo*, CK_ATTRIBUTE*, int);
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Store_importPrivateKey
-    (   JNIEnv *env,
-        jobject this,
-        jbyteArray keyArray,
-        jobject keyTypeObj,
-        jboolean temporary            )
+(   JNIEnv *env,
+    jobject this,
+    jbyteArray keyArray,
+    jobject keyTypeObj,
+    jboolean temporary            )
 {
     SECItem derPK;
     PK11SlotInfo *slot;
@@ -596,10 +596,10 @@ Java_org_mozilla_jss_pkcs11_PK11Store_importPrivateKey
 
     SECKEYPrivateKey *privk = NULL;
     status = PK11_ImportDERPrivateKeyInfoAndReturnKey(
-                slot, &derPK, &nickname,
-                NULL /*public value*/, !temporary /*isPerm*/,
-                PR_TRUE /*isPrivate*/, 0 /*keyUsage*/,
-                &privk, NULL /*wincx*/);
+                 slot, &derPK, &nickname,
+                 NULL /*public value*/, !temporary /*isPerm*/,
+                 PR_TRUE /*isPrivate*/, 0 /*keyUsage*/,
+                 &privk, NULL /*wincx*/);
     if(status != SECSuccess) {
         JSS_throwMsg(env, TOKEN_EXCEPTION, "Failed to import private key info");
         goto finish;
@@ -686,7 +686,7 @@ Java_org_mozilla_jss_pkcs11_PK11Store_getEncryptedPrivateKeyInfo(
 
     // export the epki
     epki = PK11_ExportEncryptedPrivKeyInfo(
-        slot, algTag, pwItem, privk, iterations, NULL /*wincx*/);
+               slot, algTag, pwItem, privk, iterations, NULL /*wincx*/);
     if (epki == NULL) {
         JSS_throwMsgPrErr(
             env, TOKEN_EXCEPTION, "Failed to export EncryptedPrivateKeyInfo");
@@ -695,7 +695,7 @@ Java_org_mozilla_jss_pkcs11_PK11Store_getEncryptedPrivateKeyInfo(
 
     // DER-encode the epki
     if (SEC_ASN1EncodeItem(NULL, &epkiItem, epki,
-        SEC_ASN1_GET(SECKEY_EncryptedPrivateKeyInfoTemplate)) == NULL) {
+                           SEC_ASN1_GET(SECKEY_EncryptedPrivateKeyInfoTemplate)) == NULL) {
         JSS_throwMsg(
             env, TOKEN_EXCEPTION,
             "Failed to ASN1-encode EncryptedPrivateKeyInfo");
@@ -763,7 +763,7 @@ Java_org_mozilla_jss_pkcs11_PK11Store_importEncryptedPrivateKeyInfo(
                 epkiItem
             ) != SECSuccess) {
         JSS_throwMsg(env, INVALID_DER_EXCEPTION,
-            "Failed to decode EncryptedPrivateKeyInfo");
+                     "Failed to decode EncryptedPrivateKeyInfo");
         goto finish;
     }
 
@@ -780,13 +780,13 @@ Java_org_mozilla_jss_pkcs11_PK11Store_importEncryptedPrivateKeyInfo(
         goto finish;
     }
     jmethodID getEncoded = (*env)->GetMethodID(
-        env, pubKeyClass, "getEncoded", "()[B");
+                               env, pubKeyClass, "getEncoded", "()[B");
     if (getEncoded == NULL) {
         ASSERT_OUTOFMEM(env);
         goto finish;
     }
     jbyteArray spkiBytes = (*env)->CallObjectMethod(
-        env, pubKeyObj, getEncoded);
+                               env, pubKeyObj, getEncoded);
     spkiItem = JSS_ByteArrayToSECItem(env, spkiBytes);
     spki = PR_Calloc(1, sizeof(CERTSubjectPublicKeyInfo));
     if (SEC_ASN1DecodeItem(
@@ -796,33 +796,33 @@ Java_org_mozilla_jss_pkcs11_PK11Store_importEncryptedPrivateKeyInfo(
                 spkiItem
             ) != SECSuccess) {
         JSS_throwMsg(env, INVALID_DER_EXCEPTION,
-            "Failed to decode SubjectPublicKeyInfo");
+                     "Failed to decode SubjectPublicKeyInfo");
         goto finish;
     }
 
     pubKey = SECKEY_ExtractPublicKey(spki);
     if (pubKey == NULL) {
         JSS_throwMsgPrErr(env, INVALID_DER_EXCEPTION,
-            "Failed to extract public key from SubjectPublicKeyInfo");
+                          "Failed to extract public key from SubjectPublicKeyInfo");
         goto finish;
     }
 
     SECItem *pubValue;
     switch (pubKey->keyType) {
-        case dsaKey:
-            pubValue = &pubKey->u.dsa.publicValue;
-            break;
-        case dhKey:
-            pubValue = &pubKey->u.dh.publicValue;
-            break;
-        case rsaKey:
-            pubValue = &pubKey->u.rsa.modulus;
-            break;
-        case ecKey:
-            pubValue = &pubKey->u.ec.publicValue;
-            break;
-        default:
-            pubValue = NULL;
+    case dsaKey:
+        pubValue = &pubKey->u.dsa.publicValue;
+        break;
+    case dhKey:
+        pubValue = &pubKey->u.dh.publicValue;
+        break;
+    case rsaKey:
+        pubValue = &pubKey->u.rsa.modulus;
+        break;
+    case ecKey:
+        pubValue = &pubKey->u.ec.publicValue;
+        break;
+    default:
+        pubValue = NULL;
     }
 
     // prepare nickname
@@ -841,9 +841,9 @@ Java_org_mozilla_jss_pkcs11_PK11Store_importEncryptedPrivateKeyInfo(
 
     // perform import
     SECStatus result = PK11_ImportEncryptedPrivateKeyInfo(
-        slot, epki, pwItem, &nickItem, pubValue,
-        PR_TRUE /* isperm */, PR_TRUE /* isprivate */,
-        pubKey->keyType, keyUsage, NULL /* wincx */);
+                           slot, epki, pwItem, &nickItem, pubValue,
+                           PR_TRUE /* isperm */, PR_TRUE /* isprivate */,
+                           pubKey->keyType, keyUsage, NULL /* wincx */);
     if (result != SECSuccess) {
         JSS_throwMsgPrErr(
             env, TOKEN_EXCEPTION,
@@ -896,7 +896,7 @@ SECItem *preparePassword(JNIEnv *env, jobject conv, jobject pwObj) {
 
     if (conv == NULL) {
         jmethodID getByteCopy = (*env)->GetMethodID(
-            env, passwordClass, PW_GET_BYTE_COPY_NAME, PW_GET_BYTE_COPY_SIG);
+                                    env, passwordClass, PW_GET_BYTE_COPY_NAME, PW_GET_BYTE_COPY_SIG);
         if (getByteCopy == NULL) {
             ASSERT_OUTOFMEM(env);
             return NULL;
@@ -904,7 +904,7 @@ SECItem *preparePassword(JNIEnv *env, jobject conv, jobject pwObj) {
         pwBytes = (*env)->CallObjectMethod(env, pwObj, getByteCopy);
     } else {
         jmethodID getChars = (*env)->GetMethodID(
-            env, passwordClass, "getChars", "()[C");
+                                 env, passwordClass, "getChars", "()[C");
         if (getChars == NULL) {
             ASSERT_OUTOFMEM(env);
             return NULL;
@@ -917,7 +917,7 @@ SECItem *preparePassword(JNIEnv *env, jobject conv, jobject pwObj) {
             return NULL;
         }
         jmethodID convert = (*env)->GetMethodID(
-            env, convClass, "convert", "([C)[B");
+                                env, convClass, "convert", "([C)[B");
         if (convert == NULL) {
             ASSERT_OUTOFMEM(env);
             return NULL;

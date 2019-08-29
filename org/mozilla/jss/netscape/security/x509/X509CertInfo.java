@@ -186,7 +186,7 @@ public class X509CertInfo implements CertAttrSet, Serializable {
      * @exception IOException on other errors.
      */
     public void decode(InputStream in)
-            throws CertificateParsingException, IOException {
+    throws CertificateParsingException, IOException {
         DerValue val = new DerValue(in);
 
         parse(val);
@@ -200,7 +200,7 @@ public class X509CertInfo implements CertAttrSet, Serializable {
      * @exception IOException on other errors.
      */
     public void encode(OutputStream out)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         encode(out, false);
     }
 
@@ -212,7 +212,7 @@ public class X509CertInfo implements CertAttrSet, Serializable {
      *            (the cache can easily become out of date).
      */
     public void encode(OutputStream out, boolean ignoreCache)
-            throws IOException, CertificateException {
+    throws IOException, CertificateException {
         if (ignoreCache || (rawCertInfo == null)) {
             DerOutputStream tmp = new DerOutputStream();
             emit(tmp);
@@ -336,11 +336,11 @@ public class X509CertInfo implements CertAttrSet, Serializable {
             throw new NullPointerException("X.509 cert is incomplete");
         }
         StringBuffer sb = new StringBuffer("[\n" + "  " + version.toString() + "\n" + "  Subject: "
-                + subject.toString() + "\n"
-                + "  Signature Algorithm: " + algId.toString() + "\n" + "  Key:  " + pubKey.toString() + "\n");
+                                           + subject.toString() + "\n"
+                                           + "  Signature Algorithm: " + algId.toString() + "\n" + "  Key:  " + pubKey.toString() + "\n");
 
         sb.append("  " + interval.toString() + "\n" + "  Issuer: " + issuer.toString() + "\n"
-                + "  " + serialNum.toString() + "\n");
+                  + "  " + serialNum.toString() + "\n");
         // optional v2, v3 extras
         if (issuerUniqueId != null) {
             sb.append("  Issuer Id:\n" + issuerUniqueId.toString() + "\n");
@@ -350,7 +350,7 @@ public class X509CertInfo implements CertAttrSet, Serializable {
         }
         if (extensions != null) {
             org.mozilla.jss.netscape.security.util.PrettyPrintFormat pp =
-                    new org.mozilla.jss.netscape.security.util.PrettyPrintFormat(" ", 20);
+                new org.mozilla.jss.netscape.security.util.PrettyPrintFormat(" ", 20);
             for (int i = 0; i < extensions.size(); i++) {
                 sb.append("  Extension[" + i + "] = ");
                 Extension ext = extensions.elementAt(i);
@@ -398,7 +398,7 @@ public class X509CertInfo implements CertAttrSet, Serializable {
      * @exception IOException on other errors.
      */
     public void set(String name, Object val)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         X509AttributeName attrName = new X509AttributeName(name);
 
         int attr = attributeMap(attrName.getPrefix());
@@ -500,7 +500,7 @@ public class X509CertInfo implements CertAttrSet, Serializable {
      * @exception IOException on other errors.
      */
     public void delete(String name)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         X509AttributeName attrName = new X509AttributeName(name);
 
         int attr = attributeMap(attrName.getPrefix());
@@ -594,13 +594,13 @@ public class X509CertInfo implements CertAttrSet, Serializable {
      * @exception IOException on other errors.
      */
     public Object get(String name)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         X509AttributeName attrName = new X509AttributeName(name);
 
         int attr = attributeMap(attrName.getPrefix());
         if (attr == 0) {
             throw new CertificateParsingException(
-                          "Attribute name not recognized: " + name);
+                "Attribute name not recognized: " + name);
         }
 
         switch (attr) {
@@ -681,7 +681,7 @@ public class X509CertInfo implements CertAttrSet, Serializable {
      * This routine unmarshals the certificate information.
      */
     private void parse(DerValue val)
-            throws CertificateParsingException, IOException {
+    throws CertificateParsingException, IOException {
         DerInputStream in;
         DerValue tmp;
 
@@ -758,7 +758,7 @@ public class X509CertInfo implements CertAttrSet, Serializable {
      * Marshal the contents of a "raw" certificate into a DER sequence.
      */
     private void emit(DerOutputStream out)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         DerOutputStream tmp = new DerOutputStream();
 
         // version number, iff not V1
@@ -856,7 +856,7 @@ public class X509CertInfo implements CertAttrSet, Serializable {
     private void setAlgorithmId(Object val) throws CertificateException {
         if (!(val instanceof CertificateAlgorithmId)) {
             throw new CertificateException(
-                    "AlgorithmId class type invalid.");
+                "AlgorithmId class type invalid.");
         }
         algId = (CertificateAlgorithmId) val;
     }
@@ -870,7 +870,7 @@ public class X509CertInfo implements CertAttrSet, Serializable {
     private void setIssuer(Object val) throws CertificateException {
         if (!(val instanceof CertificateIssuerName)) {
             throw new CertificateException(
-                    "Issuer class type invalid.");
+                "Issuer class type invalid.");
         }
         issuer = (CertificateIssuerName) val;
     }
@@ -888,7 +888,7 @@ public class X509CertInfo implements CertAttrSet, Serializable {
     private void setValidity(Object val) throws CertificateException {
         if (!(val instanceof CertificateValidity)) {
             throw new CertificateException(
-                    "CertificateValidity class type invalid.");
+                "CertificateValidity class type invalid.");
         }
         interval = (CertificateValidity) val;
     }
@@ -902,7 +902,7 @@ public class X509CertInfo implements CertAttrSet, Serializable {
     private void setSubject(Object val) throws CertificateException {
         if (!(val instanceof CertificateSubjectName)) {
             throw new CertificateException(
-                    "Subject class type invalid.");
+                "Subject class type invalid.");
         }
         subject = (CertificateSubjectName) val;
     }
@@ -920,7 +920,7 @@ public class X509CertInfo implements CertAttrSet, Serializable {
     private void setKey(Object val) throws CertificateException {
         if (!(val instanceof CertificateX509Key)) {
             throw new CertificateException(
-                    "Key class type invalid.");
+                "Key class type invalid.");
         }
         pubKey = (CertificateX509Key) val;
     }
@@ -937,7 +937,7 @@ public class X509CertInfo implements CertAttrSet, Serializable {
         }
         if (!(val instanceof CertificateIssuerUniqueIdentity)) {
             throw new CertificateException(
-                    "IssuerUniqueId class type invalid.");
+                "IssuerUniqueId class type invalid.");
         }
         issuerUniqueId = (CertificateIssuerUniqueIdentity) val;
     }
@@ -954,7 +954,7 @@ public class X509CertInfo implements CertAttrSet, Serializable {
         }
         if (!(val instanceof CertificateSubjectUniqueIdentity)) {
             throw new CertificateException(
-                    "SubjectUniqueId class type invalid.");
+                "SubjectUniqueId class type invalid.");
         }
         subjectUniqueId = (CertificateSubjectUniqueIdentity) val;
     }
@@ -971,7 +971,7 @@ public class X509CertInfo implements CertAttrSet, Serializable {
         }
         if (!(val instanceof CertificateExtensions)) {
             throw new CertificateException(
-                    "Extensions class type invalid.");
+                "Extensions class type invalid.");
         }
         extensions = (CertificateExtensions) val;
     }

@@ -75,8 +75,8 @@ public class PBEKeyGenParams implements AlgorithmParameterSpec, KeySpec {
      *      PBE algorithms for determining the KDF output length.
      */
     public PBEKeyGenParams(
-            char[] pass, byte[] salt, int iterations,
-            EncryptionAlgorithm encAlg) {
+        char[] pass, byte[] salt, int iterations,
+        EncryptionAlgorithm encAlg) {
         if (pass == null || salt == null) {
             throw new NullPointerException();
         }

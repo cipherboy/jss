@@ -15,10 +15,10 @@ public class PBEAlgorithm extends KeyGenAlgorithm {
     private int saltLength;
 
     protected PBEAlgorithm(int oidTag, String name, int validStrength,
-            OBJECT_IDENTIFIER oid, EncryptionAlgorithm encAlg, int saltLength)
+                           OBJECT_IDENTIFIER oid, EncryptionAlgorithm encAlg, int saltLength)
     {
         super(oidTag, name, new FixedKeyStrengthValidator(validStrength),
-            oid, PBEKeyGenParams.class);
+              oid, PBEKeyGenParams.class);
         this.encAlg = encAlg;
         this.saltLength = saltLength;
     }
@@ -52,7 +52,7 @@ public class PBEAlgorithm extends KeyGenAlgorithm {
     ///////////////////////////////////////////////////////////////////////
     private static final OBJECT_IDENTIFIER PKCS5 = OBJECT_IDENTIFIER.PKCS5;
     private static final OBJECT_IDENTIFIER PKCS12_PBE =
-            OBJECT_IDENTIFIER.PKCS12.subBranch(1);
+        OBJECT_IDENTIFIER.PKCS12.subBranch(1);
 
     ///////////////////////////////////////////////////////////////////////
     // OID mapping
@@ -63,72 +63,72 @@ public class PBEAlgorithm extends KeyGenAlgorithm {
     public static final PBEAlgorithm
     PBE_PKCS5_PBKDF2 = new PBEAlgorithm(
         SEC_OID_PKCS5_PBKDF2, "PBKDF2", 128,
-            PKCS5.subBranch(12), EncryptionAlgorithm.AES_128_CBC, 8 );
+        PKCS5.subBranch(12), EncryptionAlgorithm.AES_128_CBC, 8 );
 
     //////////////////////////////////////////////////////////////
     // PKCS 5 v2
     public static final PBEAlgorithm
     PBE_PKCS5_PBES2 = new PBEAlgorithm(
         SEC_OID_PKCS5_PBES2, "PBES2", 128,
-            PKCS5.subBranch(13), EncryptionAlgorithm.AES_128_CBC, 8 );
+        PKCS5.subBranch(13), EncryptionAlgorithm.AES_128_CBC, 8 );
 
     //////////////////////////////////////////////////////////////
     // PKCS 5 v2
     public static final PBEAlgorithm
     PBE_PKCS5_PBMAC1 = new PBEAlgorithm(
         SEC_OID_PKCS5_PBMAC1, "PBMAC1", 128,
-            PKCS5.subBranch(14), EncryptionAlgorithm.AES_128_CBC, 8 );
+        PKCS5.subBranch(14), EncryptionAlgorithm.AES_128_CBC, 8 );
 
     //////////////////////////////////////////////////////////////
     public static final PBEAlgorithm
     PBE_MD2_DES_CBC = new PBEAlgorithm(
         SEC_OID_PKCS5_PBE_WITH_MD2_AND_DES_CBC, "PBE/MD2/DES/CBC", 56,
-            PKCS5.subBranch(1), EncryptionAlgorithm.DES_CBC, 8 );
+        PKCS5.subBranch(1), EncryptionAlgorithm.DES_CBC, 8 );
 
     //////////////////////////////////////////////////////////////
     public static final PBEAlgorithm
     PBE_MD5_DES_CBC = new PBEAlgorithm(
         SEC_OID_PKCS5_PBE_WITH_MD5_AND_DES_CBC, "PBE/MD5/DES/CBC", 56,
-            PKCS5.subBranch(3), EncryptionAlgorithm.DES_CBC, 8 );
+        PKCS5.subBranch(3), EncryptionAlgorithm.DES_CBC, 8 );
 
     //////////////////////////////////////////////////////////////
     public static final PBEAlgorithm
     PBE_SHA1_DES_CBC = new PBEAlgorithm(
         SEC_OID_PKCS5_PBE_WITH_SHA1_AND_DES_CBC, "PBE/SHA1/DES/CBC", 56,
-            PKCS5.subBranch(10), EncryptionAlgorithm.DES_CBC, 8 );
+        PKCS5.subBranch(10), EncryptionAlgorithm.DES_CBC, 8 );
 
     //////////////////////////////////////////////////////////////
     public static final PBEAlgorithm
     PBE_SHA1_RC4_128 = new PBEAlgorithm(
         SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_128_BIT_RC4,
-            "PBE/SHA1/RC4-128", 128, PKCS12_PBE.subBranch(1),
-            EncryptionAlgorithm.RC4, 20 );
+        "PBE/SHA1/RC4-128", 128, PKCS12_PBE.subBranch(1),
+        EncryptionAlgorithm.RC4, 20 );
 
     //////////////////////////////////////////////////////////////
     public static final PBEAlgorithm
     PBE_SHA1_RC4_40 = new PBEAlgorithm(
         SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_40_BIT_RC4,
-            "PBE/SHA1/RC4-40", 40, PKCS12_PBE.subBranch(2),
-            EncryptionAlgorithm.RC4, 20 );
+        "PBE/SHA1/RC4-40", 40, PKCS12_PBE.subBranch(2),
+        EncryptionAlgorithm.RC4, 20 );
 
     //////////////////////////////////////////////////////////////
     public static final PBEAlgorithm
     PBE_SHA1_DES3_CBC = new PBEAlgorithm(
         SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_3KEY_TRIPLE_DES_CBC,
-            "PBE/SHA1/DES3/CBC", 168, PKCS12_PBE.subBranch(3),
-            EncryptionAlgorithm.DES3_CBC, 20 );
+        "PBE/SHA1/DES3/CBC", 168, PKCS12_PBE.subBranch(3),
+        EncryptionAlgorithm.DES3_CBC, 20 );
 
     //////////////////////////////////////////////////////////////
     public static final PBEAlgorithm
     PBE_SHA1_RC2_128_CBC = new PBEAlgorithm(
         SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_128_BIT_RC2_CBC,
-            "PBE/SHA1/RC2-128", 128, PKCS12_PBE.subBranch(5),
-            EncryptionAlgorithm.RC2_CBC, 20 );
+        "PBE/SHA1/RC2-128", 128, PKCS12_PBE.subBranch(5),
+        EncryptionAlgorithm.RC2_CBC, 20 );
 
     //////////////////////////////////////////////////////////////
     public static final PBEAlgorithm
     PBE_SHA1_RC2_40_CBC = new PBEAlgorithm(
         SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_40_BIT_RC2_CBC,
-            "PBE/SHA1/RC2-40", 40, PKCS12_PBE.subBranch(6),
-            EncryptionAlgorithm.RC2_CBC, 20 );
+        "PBE/SHA1/RC2-40", 40, PKCS12_PBE.subBranch(6),
+        EncryptionAlgorithm.RC2_CBC, 20 );
 }

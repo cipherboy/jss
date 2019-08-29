@@ -54,7 +54,7 @@ public class AuthenticatedSafes implements ASN1Value {
      * The default PBE key generation algorithm: SHA-1 with RC2 40-bit CBC.
      */
     public static final PBEAlgorithm DEFAULT_KEY_GEN_ALG =
-                PBEAlgorithm.PBE_SHA1_RC2_40_CBC;
+        PBEAlgorithm.PBE_SHA1_RC2_40_CBC;
 
     // security dynamics has a weird way of packaging things, we'll
     // work with it for debugging
@@ -76,12 +76,12 @@ public class AuthenticatedSafes implements ASN1Value {
             throw new IllegalArgumentException("parameter is null");
         }
 
-            for( int i = 0; i < sequence.size(); i++ ) {
-                if( ! (sequence.elementAt(i) instanceof ContentInfo) ) {
-                    throw new IllegalArgumentException(
-                        "element "+i+" of sequence is not a ContentInfo");
-                }
+        for( int i = 0; i < sequence.size(); i++ ) {
+            if( ! (sequence.elementAt(i) instanceof ContentInfo) ) {
+                throw new IllegalArgumentException(
+                    "element "+i+" of sequence is not a ContentInfo");
             }
+        }
 
         this.sequence = sequence;
     }
@@ -142,10 +142,10 @@ public class AuthenticatedSafes implements ASN1Value {
      *      but the SafeContents is encrypted.
      */
     public SEQUENCE getSafeContentsAt(Password password, int index)
-        throws IllegalStateException, NotInitializedException,
-        NoSuchAlgorithmException, InvalidBERException, IOException,
-        InvalidKeyException, InvalidAlgorithmParameterException, TokenException,
-        IllegalBlockSizeException, BadPaddingException
+    throws IllegalStateException, NotInitializedException,
+               NoSuchAlgorithmException, InvalidBERException, IOException,
+               InvalidKeyException, InvalidAlgorithmParameterException, TokenException,
+               IllegalBlockSizeException, BadPaddingException
     {
 
         ContentInfo ci = (ContentInfo) sequence.elementAt(index);
@@ -156,50 +156,50 @@ public class AuthenticatedSafes implements ASN1Value {
             if( password == null ) {
                 // can't decrypt if we don't have a password
                 throw new IllegalStateException("No password to decode "+
-                    "encrypted SafeContents");
+                                                "encrypted SafeContents");
             }
 
             EncryptedContentInfo encCI = ((EncryptedData)ci.getInterpretedContent()).
-                getEncryptedContentInfo();
+                                         getEncryptedContentInfo();
 
             // this should be a BER-encoded SafeContents
             byte[] decrypted = encCI.decrypt(password,
-                                    new PasswordConverter());
+                                             new PasswordConverter());
 
             //print_byte_array(decrypted);
 
             try {
                 SEQUENCE.OF_Template seqt = new SEQUENCE.OF_Template(
-                                                SafeBag.getTemplate() );
+                    SafeBag.getTemplate() );
                 return (SEQUENCE) ASN1Util.decode(seqt, decrypted);
             } catch(InvalidBERException e) {
-              if( ACCEPT_SECURITY_DYNAMICS ) {
-                // try the security dynamics approach
-                ContentInfo.Template cit = ContentInfo.getTemplate();
-                ci = (ContentInfo) ASN1Util.decode(cit, decrypted);
-                if( ! ci.getContentType().equals(ContentInfo.DATA) ) {
-                    throw new InvalidBERException("");
+                if( ACCEPT_SECURITY_DYNAMICS ) {
+                    // try the security dynamics approach
+                    ContentInfo.Template cit = ContentInfo.getTemplate();
+                    ci = (ContentInfo) ASN1Util.decode(cit, decrypted);
+                    if( ! ci.getContentType().equals(ContentInfo.DATA) ) {
+                        throw new InvalidBERException("");
+                    }
+                    OCTET_STRING os = (OCTET_STRING) ci.getInterpretedContent();
+                    SEQUENCE.OF_Template seqt = new SEQUENCE.OF_Template(
+                        SafeBag.getTemplate() );
+                    return (SEQUENCE) ASN1Util.decode(seqt, os.toByteArray());
+                } else {
+                    throw e;
                 }
-                OCTET_STRING os = (OCTET_STRING) ci.getInterpretedContent();
-                SEQUENCE.OF_Template seqt = new SEQUENCE.OF_Template(
-                                                    SafeBag.getTemplate() );
-                return (SEQUENCE) ASN1Util.decode(seqt, os.toByteArray());
-              } else {
-                throw e;
-              }
             }
 
         } else if( ci.getContentType().equals(ContentInfo.DATA) )  {
             // This SafeContents is not encrypted
 
             SEQUENCE.OF_Template seqt = new SEQUENCE.OF_Template(
-                                                SafeBag.getTemplate() );
+                SafeBag.getTemplate() );
             return (SEQUENCE) ASN1Util.decode(seqt,
-                        ((OCTET_STRING)ci.getInterpretedContent()).
-                            toByteArray() );
+                                              ((OCTET_STRING)ci.getInterpretedContent()).
+                                              toByteArray() );
         } else {
             throw new InvalidBERException("AuthenticatedSafes element is"+
-                " neither a Data or an EncryptedData");
+                                          " neither a Data or an EncryptedData");
         }
     }
 
@@ -315,37 +315,37 @@ public class AuthenticatedSafes implements ASN1Value {
      *      <code>SafeBag</code>.
      */
     public void addEncryptedSafeContents(PBEAlgorithm keyGenAlg,
-                Password password, byte[] salt, int iterationCount,
-                SEQUENCE safeContents)
-        throws NotInitializedException, InvalidKeyException,
-            InvalidAlgorithmParameterException, TokenException,
-            NoSuchAlgorithmException, BadPaddingException,
-            IllegalBlockSizeException
+                                         Password password, byte[] salt, int iterationCount,
+                                         SEQUENCE safeContents)
+    throws NotInitializedException, InvalidKeyException,
+        InvalidAlgorithmParameterException, TokenException,
+        NoSuchAlgorithmException, BadPaddingException,
+        IllegalBlockSizeException
     {
-      try {
+        try {
 
-        // generate salt if necessary
-        if( salt == null ) {
-            // generate random salt
-            JSSSecureRandom rand = CryptoManager.getInstance().
-                                        createPseudoRandomNumberGenerator();
-            salt = new byte[SALT_LENGTH];
-            rand.nextBytes(salt);
-        }
+            // generate salt if necessary
+            if( salt == null ) {
+                // generate random salt
+                JSSSecureRandom rand = CryptoManager.getInstance().
+                                       createPseudoRandomNumberGenerator();
+                salt = new byte[SALT_LENGTH];
+                rand.nextBytes(salt);
+            }
 
-        EncryptedContentInfo encCI =
+            EncryptedContentInfo encCI =
                 EncryptedContentInfo.createPBE(keyGenAlg, password, salt,
-                    iterationCount, new PasswordConverter(),
-                    ASN1Util.encode(safeContents));
+                                               iterationCount, new PasswordConverter(),
+                                               ASN1Util.encode(safeContents));
 
-        EncryptedData encData = new EncryptedData(encCI);
+            EncryptedData encData = new EncryptedData(encCI);
 
-        ContentInfo ci = new ContentInfo(encData);
+            ContentInfo ci = new ContentInfo(encData);
 
-        sequence.addElement( ci );
-      } catch( CharConversionException e ) {
-          throw new RuntimeException("Unable to convert password: " + e.getMessage(), e);
-      }
+            sequence.addElement( ci );
+        } catch( CharConversionException e ) {
+            throw new RuntimeException("Unable to convert password: " + e.getMessage(), e);
+        }
     }
 
     /*
@@ -456,7 +456,7 @@ public class AuthenticatedSafes implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         sequence.encode(implicitTag, ostream);
     }
@@ -485,13 +485,13 @@ public class AuthenticatedSafes implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 

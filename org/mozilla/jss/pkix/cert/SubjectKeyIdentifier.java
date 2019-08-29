@@ -35,24 +35,24 @@ public class SubjectKeyIdentifier extends Extension {
     // Members
     ///////////////////////////////////////////////////////////////////////
     private OCTET_STRING keyIdentifier;
-	private static OBJECT_IDENTIFIER OID = new
-	OBJECT_IDENTIFIER("2.5.29.14");
+    private static OBJECT_IDENTIFIER OID = new
+    OBJECT_IDENTIFIER("2.5.29.14");
 
     ///////////////////////////////////////////////////////////////////////
     // Construction
     ///////////////////////////////////////////////////////////////////////
 
-    /** 
+    /**
      * Constructs an SubjectKeyIdentifier from its components.
      *
      * @param keyIdentifier must not be null.
      */
     public SubjectKeyIdentifier(OCTET_STRING keyIdentifier) {
-		super(OID,false,keyIdentifier);
+        super(OID,false,keyIdentifier);
     }
 
     public SubjectKeyIdentifier(boolean critical, OCTET_STRING keyIdentifier) {
-		super(OID,critical,keyIdentifier);
+        super(OID,critical,keyIdentifier);
     }
 
     public static class Template implements ASN1Template {
@@ -71,21 +71,21 @@ public class SubjectKeyIdentifier extends Extension {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicit, InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicit, istream);
             assert( ((OBJECT_IDENTIFIER) seq.elementAt(0)).equals(OID) );
 
             return new SubjectKeyIdentifier(
-                ((BOOLEAN) seq.elementAt(1)).toBoolean(),
-                (OCTET_STRING) seq.elementAt(2)
-            );
+                       ((BOOLEAN) seq.elementAt(1)).toBoolean(),
+                       (OCTET_STRING) seq.elementAt(2)
+                   );
         }
     }
 }

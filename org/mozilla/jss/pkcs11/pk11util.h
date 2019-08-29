@@ -49,7 +49,7 @@ JSS_PK11_wrapPubKey(JNIEnv *env, SECKEYPublicKey **pubk);
  */
 PRStatus
 JSS_PK11_getPrivKeyPtr(JNIEnv *env, jobject privkObject,
-    SECKEYPrivateKey** ptr);
+                       SECKEYPrivateKey** ptr);
 
 /***********************************************************************
  * Given a PublicKey object, extracts the SECKEYPublicKey* and stores it
@@ -61,7 +61,7 @@ JSS_PK11_getPrivKeyPtr(JNIEnv *env, jobject privkObject,
  */
 PRStatus
 JSS_PK11_getPubKeyPtr(JNIEnv *env, jobject pubkObject,
-    SECKEYPublicKey** ptr);
+                      SECKEYPublicKey** ptr);
 
 /***********************************************************************
  * J S S _ P K 1 1 _ g e t S y m K e y P t r
@@ -122,14 +122,14 @@ JSS_PK11_getKeyType(JNIEnv *env, jobject keyTypeObj);
  */
 SECStatus
 JSS_PK11_generateKeyPair(JNIEnv *env, CK_MECHANISM_TYPE mechanism,
-    PK11SlotInfo *slot, SECKEYPublicKey **pubk, SECKEYPrivateKey **privK,
-    void *params, PRBool temporary, jint senstive, jint extractable);
+                         PK11SlotInfo *slot, SECKEYPublicKey **pubk, SECKEYPrivateKey **privK,
+                         void *params, PRBool temporary, jint senstive, jint extractable);
 
 SECStatus
 JSS_PK11_generateKeyPair_withOpFlags(JNIEnv *env, CK_MECHANISM_TYPE mechanism,
-    PK11SlotInfo *slot, SECKEYPublicKey **pubk, SECKEYPrivateKey **privk,
-    void *params, PRBool temporary, jint sensitive, jint extractable,
-    jint op_flags, jint op_flags_mask);
+                                     PK11SlotInfo *slot, SECKEYPublicKey **pubk, SECKEYPrivateKey **privk,
+                                     void *params, PRBool temporary, jint sensitive, jint extractable,
+                                     jint op_flags, jint op_flags_mask);
 
 /*=====================================================================
                        C E R T I F I C A T E S
@@ -180,7 +180,7 @@ JSS_PK11_getCertSlotPtr(JNIEnv *env, jobject certObject, PK11SlotInfo **ptr);
  */
 CERTCertificate *
 JSS_PK11_findCertAndSlotFromNickname(const char *nickname, void *wincx,
-    PK11SlotInfo **ppSlot);
+                                     PK11SlotInfo **ppSlot);
 
 
 /***************************************************************************
@@ -196,7 +196,7 @@ JSS_PK11_findCertAndSlotFromNickname(const char *nickname, void *wincx,
  */
 CERTCertList *
 JSS_PK11_findCertsAndSlotFromNickname(char *nickname, void *wincx,
-    PK11SlotInfo **ppSlot);
+                                      PK11SlotInfo **ppSlot);
 
 
 /***********************************************************************
@@ -220,7 +220,7 @@ JSS_PK11_findCertsAndSlotFromNickname(char *nickname, void *wincx,
  */
 jobject
 JSS_PK11_wrapCertAndSlotAndNickname(JNIEnv *env, CERTCertificate **ppCert,
-    PK11SlotInfo **ppSlot, const char *nickname);
+                                    PK11SlotInfo **ppSlot, const char *nickname);
 
 
 /****************************************************************
@@ -242,7 +242,7 @@ JSS_PK11_wrapCertAndSlotAndNickname(JNIEnv *env, CERTCertificate **ppCert,
  */
 jobject
 JSS_PK11_wrapCertAndSlot(JNIEnv *env, CERTCertificate **ppCert,
-    PK11SlotInfo **ppSlot);
+                         PK11SlotInfo **ppSlot);
 
 
 /****************************************************************
@@ -416,7 +416,7 @@ typedef struct SigContextProxyStr SigContextProxy;
  */
 PRStatus
 JSS_PK11_getSigContext(JNIEnv *env, jobject proxy, void**pContext,
-        SigContextType* pType);
+                       SigContextType* pType);
 
 /**********************************************************************
  *
@@ -515,7 +515,7 @@ JSS_PK11_getNewSession(PK11SlotInfo *slot, PRBool *owner);
  */
 void
 JSS_PK11_closeSession(PK11SlotInfo *slot, CK_SESSION_HANDLE session,
-        PRBool owner);
+                      PRBool owner);
 
 /***********************************************************************
  *
@@ -530,7 +530,7 @@ JSS_PK11_getErrorString(CK_RV crv);
  *
  * getSupportedWrappingMechanism
  *
- * Returns a 
+ * Returns a
  */
 CK_MECHANISM_TYPE getSupportedWrappingMechanism(JNIEnv *env, jobject algObj, PK11SlotInfo *slot);
 

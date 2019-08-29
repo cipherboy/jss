@@ -66,7 +66,7 @@ public class CertificateIssuerUniqueIdentity implements CertAttrSet {
      * @exception IOException on decoding errors.
      */
     public CertificateIssuerUniqueIdentity(DerInputStream in)
-            throws IOException {
+    throws IOException {
         id = new UniqueIdentity(in);
     }
 
@@ -77,7 +77,7 @@ public class CertificateIssuerUniqueIdentity implements CertAttrSet {
      * @exception IOException on decoding errors.
      */
     public CertificateIssuerUniqueIdentity(InputStream in)
-            throws IOException {
+    throws IOException {
         DerValue val = new DerValue(in);
         id = new UniqueIdentity(val);
     }
@@ -89,7 +89,7 @@ public class CertificateIssuerUniqueIdentity implements CertAttrSet {
      * @exception IOException on decoding errors.
      */
     public CertificateIssuerUniqueIdentity(DerValue val)
-            throws IOException {
+    throws IOException {
         id = new UniqueIdentity(val);
     }
 
@@ -137,7 +137,7 @@ public class CertificateIssuerUniqueIdentity implements CertAttrSet {
             id = (UniqueIdentity) obj;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                      "CertAttrSet: CertificateIssuerUniqueIdentity.");
+                                  "CertAttrSet: CertificateIssuerUniqueIdentity.");
         }
     }
 
@@ -149,7 +149,7 @@ public class CertificateIssuerUniqueIdentity implements CertAttrSet {
             return (id);
         } else {
             throw new IOException("Attribute name not recognized by " +
-                      "CertAttrSet: CertificateIssuerUniqueIdentity.");
+                                  "CertAttrSet: CertificateIssuerUniqueIdentity.");
         }
     }
 
@@ -161,7 +161,7 @@ public class CertificateIssuerUniqueIdentity implements CertAttrSet {
             id = null;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                      "CertAttrSet: CertificateIssuerUniqueIdentity.");
+                                  "CertAttrSet: CertificateIssuerUniqueIdentity.");
         }
     }
 

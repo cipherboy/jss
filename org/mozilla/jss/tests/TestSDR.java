@@ -12,7 +12,7 @@ import javax.crypto.*;
 
 /**
 * Secret Decoder ring tests.
-*/ 
+*/
 public class TestSDR {
 
     public static final EncryptionAlgorithm encAlg =

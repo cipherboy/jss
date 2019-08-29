@@ -173,10 +173,10 @@ public class CertificateValidity implements CertAttrSet, Serializable {
         // null values
         if (notBefore == null || notAfter == null) {
             throw new IOException("CertAttrSet:CertificateValidity:" +
-                    " null values to encode.\n");
+                                  " null values to encode.\n");
         }
         try (DerOutputStream pair = new DerOutputStream();
-             DerOutputStream seq = new DerOutputStream()) {
+                    DerOutputStream seq = new DerOutputStream()) {
             if (notBefore.getTime() < YR_2050) {
                 pair.putUTCTime(notBefore);
             } else
@@ -206,7 +206,7 @@ public class CertificateValidity implements CertAttrSet, Serializable {
             notAfter = (Date) obj;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                            "CertAttrSet: CertificateValidity.");
+                                  "CertAttrSet: CertificateValidity.");
         }
     }
 
@@ -220,7 +220,7 @@ public class CertificateValidity implements CertAttrSet, Serializable {
             return (getNotAfter());
         } else {
             throw new IOException("Attribute name not recognized by " +
-                            "CertAttrSet: CertificateValidity.");
+                                  "CertAttrSet: CertificateValidity.");
         }
     }
 
@@ -234,7 +234,7 @@ public class CertificateValidity implements CertAttrSet, Serializable {
             notAfter = null;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                            "CertAttrSet: CertificateValidity.");
+                                  "CertAttrSet: CertificateValidity.");
         }
     }
 
@@ -265,7 +265,7 @@ public class CertificateValidity implements CertAttrSet, Serializable {
      *                yet valid.
      */
     public void valid()
-            throws CertificateNotYetValidException, CertificateExpiredException {
+    throws CertificateNotYetValidException, CertificateExpiredException {
         Date now = new Date();
         valid(now);
     }
@@ -283,7 +283,7 @@ public class CertificateValidity implements CertAttrSet, Serializable {
      *
      */
     public void valid(Date now)
-            throws CertificateNotYetValidException, CertificateExpiredException {
+    throws CertificateNotYetValidException, CertificateExpiredException {
         /*
          * we use the internal Dates rather than the passed in Date
          * because someone could override the Date methods after()
@@ -291,7 +291,7 @@ public class CertificateValidity implements CertAttrSet, Serializable {
          */
         if (notBefore.after(now)) {
             throw new CertificateNotYetValidException("NotBefore: " +
-                                                      notBefore.toString());
+                    notBefore.toString());
         }
         if (notAfter.before(now)) {
             throw new CertificateExpiredException("NotAfter: " +

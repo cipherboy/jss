@@ -164,27 +164,27 @@ public class X509CertTest {
     }
 
     public static X509CertInfo createX509CertInfo(X509Key x509key, BigInteger serialno,
-                                                  CertificateIssuerName issuernameObj,
-                                                  String subjname, Date notBefore,
-                                                  Date notAfter, String alg)
-            throws Exception
+            CertificateIssuerName issuernameObj,
+            String subjname, Date notBefore,
+            Date notAfter, String alg)
+    throws Exception
     {
         X509CertInfo info = new X509CertInfo();
 
         info.set(X509CertInfo.VERSION, new
-                CertificateVersion(CertificateVersion.V3));
+                 CertificateVersion(CertificateVersion.V3));
         info.set(X509CertInfo.SERIAL_NUMBER, new
-                CertificateSerialNumber(serialno));
+                 CertificateSerialNumber(serialno));
         if (issuernameObj != null) {
             info.set(X509CertInfo.ISSUER,
-                    issuernameObj);
+                     issuernameObj);
         }
         info.set(X509CertInfo.SUBJECT, new
-                CertificateSubjectName(new X500Name(subjname)));
+                 CertificateSubjectName(new X500Name(subjname)));
         info.set(X509CertInfo.VALIDITY, new
-                CertificateValidity(notBefore, notAfter));
+                 CertificateValidity(notBefore, notAfter));
         info.set(X509CertInfo.ALGORITHM_ID, new
-                CertificateAlgorithmId(AlgorithmId.get(alg)));
+                 CertificateAlgorithmId(AlgorithmId.get(alg)));
         info.set(X509CertInfo.KEY, new CertificateX509Key(x509key));
         info.set(X509CertInfo.EXTENSIONS, new CertificateExtensions());
         return info;
@@ -197,8 +197,8 @@ public class X509CertTest {
             RSAPublicKey rsaKey = (RSAPublicKey) pubk;
 
             xKey = new org.mozilla.jss.netscape.security.provider.RSAPublicKey(
-                    new BigInt(rsaKey.getModulus()),
-                    new BigInt(rsaKey.getPublicExponent()));
+                new BigInt(rsaKey.getModulus()),
+                new BigInt(rsaKey.getPublicExponent()));
         } else if (pubk instanceof PK11ECPublicKey) {
             byte encoded[] = pubk.getEncoded();
 

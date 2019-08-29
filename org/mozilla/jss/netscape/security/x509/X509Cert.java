@@ -77,7 +77,7 @@ public class X509Cert implements Certificate, Serializable {
      * @exception IOException when the certificate is improperly encoded.
      */
     public X509Cert(
-            byte cert[]) throws IOException {
+        byte cert[]) throws IOException {
         DerValue in = new DerValue(cert);
 
         parse(in);
@@ -99,9 +99,9 @@ public class X509Cert implements Certificate, Serializable {
      * @exception IOException when the certificate is improperly encoded.
      */
     public X509Cert(
-            byte buf[],
-            int offset,
-            int len) throws IOException {
+        byte buf[],
+        int offset,
+        int len) throws IOException {
         DerValue in = new DerValue(buf, offset, len);
 
         parse(in);
@@ -154,15 +154,15 @@ public class X509Cert implements Certificate, Serializable {
      * @exception CertException if the public key is inappropriate
      */
     public X509Cert(
-            X500Name subjectName,
-            X509Key subjectPublicKey,
-            Date notBefore,
-            Date notAfter) throws CertException {
+        X500Name subjectName,
+        X509Key subjectPublicKey,
+        Date notBefore,
+        Date notAfter) throws CertException {
         subject = subjectName;
 
         if (subjectPublicKey == null)
             throw new CertException(CertException.err_INVALID_PUBLIC_KEY,
-                    "Public Key is NULL");
+                                    "Public Key is NULL");
 
         /*
          * The X509 cert API requires X509 keys, else things break.
@@ -277,7 +277,7 @@ public class X509Cert implements Certificate, Serializable {
      * @exception CertException when the certificate is not valid.
      */
     public void verify(PublicKey issuerPublicKey)
-            throws CertException {
+    throws CertException {
         Date now = new Date();
 
         if (now.before(notbefore))
@@ -286,7 +286,7 @@ public class X509Cert implements Certificate, Serializable {
             throw new CertException(CertException.verf_INVALID_EXPIRED);
         if (signedCert == null)
             throw new CertException(CertException.verf_INVALID_SIG,
-                    "?? certificate is not signed yet ??");
+                                    "?? certificate is not signed yet ??");
 
         //
         // Verify the signature ...
@@ -303,23 +303,23 @@ public class X509Cert implements Certificate, Serializable {
 
             if (!sigVerf.verify(signature)) {
                 throw new CertException(CertException.verf_INVALID_SIG,
-                        "Signature ... by <" + issuer + "> for <" + subject + ">");
+                                        "Signature ... by <" + issuer + "> for <" + subject + ">");
             }
 
             // Gag -- too many catch clauses, let most through.
 
         } catch (NoSuchAlgorithmException e) {
             throw new CertException(CertException.verf_INVALID_SIG,
-                    "Unsupported signature algorithm (" + algName + ")");
+                                    "Unsupported signature algorithm (" + algName + ")");
 
         } catch (InvalidKeyException e) {
             // e.printStackTrace();
             throw new CertException(CertException.err_INVALID_PUBLIC_KEY,
-                    "Algorithm (" + algName + ") rejected public key");
+                                    "Algorithm (" + algName + ") rejected public key");
 
         } catch (SignatureException e) {
             throw new CertException(CertException.verf_INVALID_SIG,
-                    "Signature by <" + issuer + "> for <" + subject + ">");
+                                    "Signature by <" + issuer + "> for <" + subject + ">");
         }
     }
 
@@ -342,10 +342,10 @@ public class X509Cert implements Certificate, Serializable {
      * @exception SignatureException on signing failures
      */
     public byte[]
-            encodeAndSign(
-                    BigInt serial,
-                    X500Signer issuer
-            ) throws IOException, SignatureException {
+    encodeAndSign(
+        BigInt serial,
+        X500Signer issuer
+    ) throws IOException, SignatureException {
         rawCert = null;
 
         /*
@@ -398,8 +398,8 @@ public class X509Cert implements Certificate, Serializable {
      *                signature algorithm
      */
     public X500Signer getSigner(AlgorithmId algorithmId,
-                   PrivateKey privateKey)
-            throws NoSuchAlgorithmException, InvalidKeyException {
+                                PrivateKey privateKey)
+    throws NoSuchAlgorithmException, InvalidKeyException {
         String algorithm;
         Signature sig;
 
@@ -415,9 +415,9 @@ public class X509Cert implements Certificate, Serializable {
         if (!pubkey.getAlgorithm().equals(algorithm)) {
 
             throw new InvalidKeyException("Private key algorithm " +
-                     algorithm +
-                     " incompatible with certificate " +
-                     pubkey.getAlgorithm());
+                                          algorithm +
+                                          " incompatible with certificate " +
+                                          pubkey.getAlgorithm());
         }
         sig.initSign(privateKey);
         return new X500Signer(sig, subject);
@@ -444,7 +444,7 @@ public class X509Cert implements Certificate, Serializable {
      *                does not support the requested signature algorithm
      */
     public Signature getVerifier(String algorithm)
-            throws NoSuchAlgorithmException, InvalidKeyException {
+    throws NoSuchAlgorithmException, InvalidKeyException {
         Signature sig;
 
         sig = Signature.getInstance(algorithm);
@@ -630,7 +630,7 @@ public class X509Cert implements Certificate, Serializable {
      * parts away for later verification.
      */
     private void parse(DerValue val)
-            throws IOException {
+    throws IOException {
         DerValue seq[] = new DerValue[3];
 
         seq[0] = val.data.getDerValue();
@@ -639,7 +639,7 @@ public class X509Cert implements Certificate, Serializable {
 
         if (val.data.available() != 0)
             throw new CertParseError("signed overrun, bytes = "
-                    + val.data.available());
+                                     + val.data.available());
         if (seq[0].tag != DerValue.tag_Sequence)
             throw new CertParseError("signed fields invalid");
 
@@ -801,7 +801,7 @@ public class X509Cert implements Certificate, Serializable {
      * description of the signing algorithm.
      */
     private byte[] sign(X500Signer issuer, byte data[])
-            throws IOException, SignatureException {
+    throws IOException, SignatureException {
         /*
          * Encode the to-be-signed data, then the algorithm used
          * to create the signature.

@@ -48,25 +48,25 @@ class JSSSecretKeyFactorySpi extends SecretKeyFactorySpi {
 
     private SecretKey
     generateKeyFromBits(byte[] bits, SymmetricKey.Type keyType)
-        throws NoSuchAlgorithmException, TokenException,
-        InvalidKeySpecException, InvalidAlgorithmParameterException
+    throws NoSuchAlgorithmException, TokenException,
+               InvalidKeySpecException, InvalidAlgorithmParameterException
     {
-      try {
-        KeyWrapper wrapper = token.getKeyWrapper(KeyWrapAlgorithm.PLAINTEXT);
+        try {
+            KeyWrapper wrapper = token.getKeyWrapper(KeyWrapAlgorithm.PLAINTEXT);
 
-        wrapper.initUnwrap();
+            wrapper.initUnwrap();
 
-        SymmetricKey symk = wrapper.unwrapSymmetric(bits, keyType, 0);
+            SymmetricKey symk = wrapper.unwrapSymmetric(bits, keyType, 0);
 
-        return new SecretKeyFacade(symk);
-      } catch(InvalidKeyException e) {
+            return new SecretKeyFacade(symk);
+        } catch(InvalidKeyException e) {
             throw new InvalidKeySpecException(e.getMessage());
-      }
+        }
     }
 
     private static PBEKeyGenParams
     makePBEKeyGenParams(PBEKeySpec spec)
-        throws InvalidKeySpecException
+    throws InvalidKeySpecException
     {
         // The PBEKeySpec in JCE 1.2.1 does not contain salt or iteration.
         // The PBEKeySpec in JDK 1.4 does contain salt and iteration.
@@ -78,13 +78,13 @@ class JSSSecretKeyFactorySpi extends SecretKeyFactorySpi {
         Class<?> specClass = spec.getClass();
         try {
             Method getSaltMethod = specClass.getMethod("getSalt",
-                                       (java.lang.Class[]) null);
+                                   (java.lang.Class[]) null);
             Method getIterationMethod =
                 specClass.getMethod("getIterationCount",
                                     (java.lang.Class[]) null);
 
             byte[] salt = (byte[]) getSaltMethod.invoke(spec,
-                                       (java.lang.Object[]) null);
+                          (java.lang.Object[]) null);
 
             Integer itCountObj =
                 (Integer) getIterationMethod.invoke(spec,
@@ -128,103 +128,103 @@ class JSSSecretKeyFactorySpi extends SecretKeyFactorySpi {
     public SecretKey
     engineGenerateSecret(KeySpec spec) throws InvalidKeySpecException
     {
-      try {
-        if( spec instanceof PBEKeySpec ||
-            spec instanceof PBEKeyGenParams) {
+        try {
+            if( spec instanceof PBEKeySpec ||
+                    spec instanceof PBEKeyGenParams) {
 
-            PBEKeyGenParams params;
-            if( spec instanceof PBEKeySpec ) {
-                params = makePBEKeyGenParams((PBEKeySpec)spec);
+                PBEKeyGenParams params;
+                if( spec instanceof PBEKeySpec ) {
+                    params = makePBEKeyGenParams((PBEKeySpec)spec);
+                } else {
+                    params = (org.mozilla.jss.crypto.PBEKeyGenParams) spec;
+                }
+                org.mozilla.jss.crypto.KeyGenerator gen =token.getKeyGenerator(alg);
+                gen.initialize(params);
+                SymmetricKey symk = gen.generate();
+                params.clear();
+                return new SecretKeyFacade(symk);
+            } else if (spec instanceof DESedeKeySpec) {
+                if( alg != KeyGenAlgorithm.DES3 ) {
+                    throw new InvalidKeySpecException(
+                        "Incorrect KeySpec type (" + spec.getClass().getName() +
+                        ") for algorithm (" + alg.toString() + ")");
+                }
+                return generateKeyFromBits(
+                           ((DESedeKeySpec)spec).getKey(), SymmetricKey.Type.DES3 );
+            } else if (spec instanceof DESKeySpec) {
+                if( alg != KeyGenAlgorithm.DES ) {
+                    throw new InvalidKeySpecException(
+                        "Incorrect KeySpec type (" + spec.getClass().getName() +
+                        ") for algorithm (" + alg.toString() + ")");
+                }
+                return generateKeyFromBits(
+                           ((DESKeySpec)spec).getKey(), SymmetricKey.Type.DES );
+            } else if( spec instanceof SecretKeySpec ) {
+                SecretKeySpec kspec = (SecretKeySpec) spec;
+                SymmetricKey.Type type =
+                    SymmetricKey.Type.fromName( kspec.getAlgorithm());
+                return generateKeyFromBits( kspec.getEncoded(), type);
             } else {
-                params = (org.mozilla.jss.crypto.PBEKeyGenParams) spec;
-            }
-            org.mozilla.jss.crypto.KeyGenerator gen =token.getKeyGenerator(alg);
-            gen.initialize(params);
-            SymmetricKey symk = gen.generate();
-            params.clear();
-            return new SecretKeyFacade(symk);
-        } else if (spec instanceof DESedeKeySpec) {
-            if( alg != KeyGenAlgorithm.DES3 ) {
                 throw new InvalidKeySpecException(
-                    "Incorrect KeySpec type (" + spec.getClass().getName() +
-                    ") for algorithm (" + alg.toString() + ")");
+                    "Unsupported KeySpec: " + spec.getClass().getName());
             }
-            return generateKeyFromBits(
-                ((DESedeKeySpec)spec).getKey(), SymmetricKey.Type.DES3 );
-        } else if (spec instanceof DESKeySpec) {
-            if( alg != KeyGenAlgorithm.DES ) {
-                throw new InvalidKeySpecException(
-                    "Incorrect KeySpec type (" + spec.getClass().getName() +
-                    ") for algorithm (" + alg.toString() + ")");
-            }
-            return generateKeyFromBits(
-                ((DESKeySpec)spec).getKey(), SymmetricKey.Type.DES );
-        } else if( spec instanceof SecretKeySpec ) {
-            SecretKeySpec kspec = (SecretKeySpec) spec;
-            SymmetricKey.Type type =
-                SymmetricKey.Type.fromName( kspec.getAlgorithm());
-            return generateKeyFromBits( kspec.getEncoded(), type);
-        } else {
-            throw new InvalidKeySpecException(
-                "Unsupported KeySpec: " + spec.getClass().getName());
-        }
-      } catch(TokenException te) {
+        } catch(TokenException te) {
             throw new TokenRuntimeException(te.getMessage());
-      } catch(InvalidAlgorithmParameterException iape) {
+        } catch(InvalidAlgorithmParameterException iape) {
             throw new InvalidKeySpecException(
                 "InvalidAlgorithmParameterException: " + iape.getMessage());
-      } catch(IllegalStateException e) {
+        } catch(IllegalStateException e) {
             throw (TokenRuntimeException) new TokenRuntimeException("IllegalStateException: " +
-                e.getMessage()).initCause(e);
-      } catch(CharConversionException e) {
+                    e.getMessage()).initCause(e);
+        } catch(CharConversionException e) {
             throw new InvalidKeySpecException("CharConversionException: " +
-                e.getMessage(), e);
-      } catch(NoSuchAlgorithmException e) {
+                                              e.getMessage(), e);
+        } catch(NoSuchAlgorithmException e) {
             throw new InvalidKeySpecException("NoSuchAlgorithmException: " +
-                e.getMessage(), e);
-      }
+                                              e.getMessage(), e);
+        }
     }
 
     public KeySpec engineGetKeySpec(SecretKey key, Class<?> keySpec)
-            throws InvalidKeySpecException
+    throws InvalidKeySpecException
     {
-      try {
-        if( ! (key instanceof SecretKeyFacade) ) {
-            throw new InvalidKeySpecException("key is not a JSS key");
-        }
-        SymmetricKey symkey = ((SecretKeyFacade)key).key;
-        byte[] keyBits = symkey.getKeyData();
-        SymmetricKey.Type keyType = symkey.getType();
-        if( keySpec.equals(DESedeKeySpec.class) ) {
-            if( keyType != SymmetricKey.Type.DES3 ) {
-                throw new InvalidKeySpecException(
-                    "key/spec mismatch: " + keyType + " key, DESede spec");
+        try {
+            if( ! (key instanceof SecretKeyFacade) ) {
+                throw new InvalidKeySpecException("key is not a JSS key");
             }
-            return new DESedeKeySpec(keyBits);
-        } else if( keySpec.equals(DESKeySpec.class) ) {
-            if( keyType != SymmetricKey.Type.DES ) {
+            SymmetricKey symkey = ((SecretKeyFacade)key).key;
+            byte[] keyBits = symkey.getKeyData();
+            SymmetricKey.Type keyType = symkey.getType();
+            if( keySpec.equals(DESedeKeySpec.class) ) {
+                if( keyType != SymmetricKey.Type.DES3 ) {
+                    throw new InvalidKeySpecException(
+                        "key/spec mismatch: " + keyType + " key, DESede spec");
+                }
+                return new DESedeKeySpec(keyBits);
+            } else if( keySpec.equals(DESKeySpec.class) ) {
+                if( keyType != SymmetricKey.Type.DES ) {
+                    throw new InvalidKeySpecException(
+                        "key/spec mismatch: " + keyType + " key, DES spec");
+                }
+                return new DESKeySpec(keyBits);
+            } else if( keySpec.equals(SecretKeySpec.class) ) {
+                return new SecretKeySpec(keyBits, keyType.toString());
+            } else {
                 throw new InvalidKeySpecException(
-                    "key/spec mismatch: " + keyType + " key, DES spec");
+                    "Unsupported key spec: " + keySpec.getName());
             }
-            return new DESKeySpec(keyBits);
-        } else if( keySpec.equals(SecretKeySpec.class) ) {
-            return new SecretKeySpec(keyBits, keyType.toString());
-        } else {
-            throw new InvalidKeySpecException(
-                "Unsupported key spec: " + keySpec.getName());
+        } catch(SymmetricKey.NotExtractableException e) {
+            throw new InvalidKeySpecException("Key is not extractable: " + e.getMessage(), e);
+        } catch(InvalidKeyException e) {
+            // This gets thrown by the key spec constructor if there's something
+            // wrong with the key bits. But since those key bits came from
+            // a real key, this should never happen.
+            throw new InvalidKeySpecException("Invalid key: " + e.getMessage(), e);
         }
-      } catch(SymmetricKey.NotExtractableException e) {
-          throw new InvalidKeySpecException("Key is not extractable: " + e.getMessage(), e);
-      } catch(InvalidKeyException e) {
-          // This gets thrown by the key spec constructor if there's something
-          // wrong with the key bits. But since those key bits came from
-          // a real key, this should never happen.
-          throw new InvalidKeySpecException("Invalid key: " + e.getMessage(), e);
-      }
     }
 
     public SecretKey engineTranslateKey(SecretKey key)
-        throws InvalidKeyException
+    throws InvalidKeyException
     {
         if( key instanceof SecretKeyFacade ) {
             // try cloning the key
@@ -244,7 +244,7 @@ class JSSSecretKeyFactorySpi extends SecretKeyFactorySpi {
                 // fall through and try doing it the long way
             } catch(NoSuchAlgorithmException nsae) {
                 throw new InvalidKeyException("Unsupported algorithm: " +
-                    nsae.getMessage());
+                                              nsae.getMessage());
             }
         }
 
@@ -259,97 +259,97 @@ class JSSSecretKeyFactorySpi extends SecretKeyFactorySpi {
             return generateKeyFromBits( keyBits, keyType);
         } catch( NoSuchAlgorithmException nsae ) {
             throw new InvalidKeyException("Unsupported algorithm: "
-                + key.getAlgorithm());
+                                          + key.getAlgorithm());
         } catch(TokenException te) {
             throw new InvalidKeyException("Token failed to process key: " +
-                te.getMessage());
+                                          te.getMessage());
         } catch(InvalidKeySpecException ikse) {
             throw new InvalidKeyException("Invalid key spec: "
-                + ikse.getMessage());
+                                          + ikse.getMessage());
         } catch(InvalidAlgorithmParameterException iape) {
             throw new InvalidKeyException("Invalid algorithm parameters: " +
-                iape.getMessage());
+                                          iape.getMessage());
         }
     }
 
     public static void main(String args[]) {
 
-      try {
-        CryptoManager.initialize(".");
+        try {
+            CryptoManager.initialize(".");
 
-        CryptoManager cm = CryptoManager.getInstance();
-        CryptoToken tok = cm.getInternalCryptoToken();
-        cm.setThreadToken(tok);
+            CryptoManager cm = CryptoManager.getInstance();
+            CryptoToken tok = cm.getInternalCryptoToken();
+            cm.setThreadToken(tok);
 
-        org.mozilla.jss.crypto.KeyGenerator keygen =
-            tok.getKeyGenerator(KeyGenAlgorithm.DES3);
+            org.mozilla.jss.crypto.KeyGenerator keygen =
+                tok.getKeyGenerator(KeyGenAlgorithm.DES3);
 
-        SymmetricKey symk = keygen.generate();
-        SecretKeyFacade origKey = new SecretKeyFacade(symk);
+            SymmetricKey symk = keygen.generate();
+            SecretKeyFacade origKey = new SecretKeyFacade(symk);
 
-        JSSSecretKeyFactorySpi fact =
-            new JSSSecretKeyFactorySpi(KeyGenAlgorithm.DES3);
+            JSSSecretKeyFactorySpi fact =
+                new JSSSecretKeyFactorySpi(KeyGenAlgorithm.DES3);
 
-        DESedeKeySpec kspec = (DESedeKeySpec)
-                fact.engineGetKeySpec(origKey, DESedeKeySpec.class);
+            DESedeKeySpec kspec = (DESedeKeySpec)
+                                  fact.engineGetKeySpec(origKey, DESedeKeySpec.class);
 
-        SecretKeyFacade newKey = (SecretKeyFacade)
-                fact.engineGenerateSecret(kspec);
+            SecretKeyFacade newKey = (SecretKeyFacade)
+                                     fact.engineGenerateSecret(kspec);
 
-        org.mozilla.jss.crypto.Cipher cipher =
-            tok.getCipherContext(EncryptionAlgorithm.DES3_ECB);
-        cipher.initEncrypt(origKey.key);
-        String original = "Hello, World!!!!";
-        byte[] cipherText = cipher.doFinal( original.getBytes("UTF-8") );
-        System.out.println("ciphertext is " + cipherText.length + " bytes");
+            org.mozilla.jss.crypto.Cipher cipher =
+                tok.getCipherContext(EncryptionAlgorithm.DES3_ECB);
+            cipher.initEncrypt(origKey.key);
+            String original = "Hello, World!!!!";
+            byte[] cipherText = cipher.doFinal( original.getBytes("UTF-8") );
+            System.out.println("ciphertext is " + cipherText.length + " bytes");
 
-        cipher.initDecrypt(newKey.key);
-        byte[] plainText = cipher.doFinal(cipherText);
-        System.out.println("recovered plaintext is " + plainText.length +
-            " bytes");
+            cipher.initDecrypt(newKey.key);
+            byte[] plainText = cipher.doFinal(cipherText);
+            System.out.println("recovered plaintext is " + plainText.length +
+                               " bytes");
 
-        String recovered = new String(plainText, "UTF-8");
-        System.out.println("Recovered '" + recovered + "'");
-        if( ! recovered.equals(original) ) {
-            throw new Exception("recovered string is different from original");
-        }
+            String recovered = new String(plainText, "UTF-8");
+            System.out.println("Recovered '" + recovered + "'");
+            if( ! recovered.equals(original) ) {
+                throw new Exception("recovered string is different from original");
+            }
 
-        char[] pw = "foobarpw".toCharArray();
-        byte[] salt = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 };
-        int iterationCount = 2;
+            char[] pw = "foobarpw".toCharArray();
+            byte[] salt = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 };
+            int iterationCount = 2;
 
-        // generate a PBE key the old-fashioned way
-        keygen = tok.getKeyGenerator(PBEAlgorithm.PBE_SHA1_DES3_CBC);
-        PBEKeyGenParams jssKeySpec =
-            new PBEKeyGenParams(pw, salt, iterationCount);
-        keygen.initialize(jssKeySpec);
-        symk = keygen.generate();
-        byte[] keydata = symk.getKeyData();
+            // generate a PBE key the old-fashioned way
+            keygen = tok.getKeyGenerator(PBEAlgorithm.PBE_SHA1_DES3_CBC);
+            PBEKeyGenParams jssKeySpec =
+                new PBEKeyGenParams(pw, salt, iterationCount);
+            keygen.initialize(jssKeySpec);
+            symk = keygen.generate();
+            byte[] keydata = symk.getKeyData();
 
-        // generate a PBE key with the JCE
-        SecretKeyFactory keyFact = SecretKeyFactory.getInstance("PBEWithSHA1AndDESede", "Mozilla-JSS");
-        newKey = (SecretKeyFacade) keyFact.generateSecret(jssKeySpec);
-        byte[] newkeydata = newKey.key.getKeyData();
-        if( ! java.util.Arrays.equals(keydata, newkeydata) ) {
-            throw new Exception("generated PBE keys are different");
-        }
-        System.out.println("generated PBE keys are the same");
+            // generate a PBE key with the JCE
+            SecretKeyFactory keyFact = SecretKeyFactory.getInstance("PBEWithSHA1AndDESede", "Mozilla-JSS");
+            newKey = (SecretKeyFacade) keyFact.generateSecret(jssKeySpec);
+            byte[] newkeydata = newKey.key.getKeyData();
+            if( ! java.util.Arrays.equals(keydata, newkeydata) ) {
+                throw new Exception("generated PBE keys are different");
+            }
+            System.out.println("generated PBE keys are the same");
 
-/* XXX JDK 1.4 ONLY
-        // now try with a JDK 1.4 PBEKeySpec
-        PBEKeySpec keySpec = new PBEKeySpec(pw, salt, iterationCount);
-        newKey = (SecretKeyFacade) keyFact.generateSecret(keySpec);
-        if( ! java.util.Arrays.equals(keydata, newKey.key.getKeyData()) ) {
-            throw new Exception("generated PBE keys are different");
-        }
-        System.out.println("generated PBE keys are the same");
-*/
+            /* XXX JDK 1.4 ONLY
+                    // now try with a JDK 1.4 PBEKeySpec
+                    PBEKeySpec keySpec = new PBEKeySpec(pw, salt, iterationCount);
+                    newKey = (SecretKeyFacade) keyFact.generateSecret(keySpec);
+                    if( ! java.util.Arrays.equals(keydata, newKey.key.getKeyData()) ) {
+                        throw new Exception("generated PBE keys are different");
+                    }
+                    System.out.println("generated PBE keys are the same");
+            */
 
-        System.exit(0);
-      } catch(Throwable t) {
+            System.exit(0);
+        } catch(Throwable t) {
             t.printStackTrace();
             System.exit(-1);
-      }
+        }
     }
 
     public static class DES extends JSSSecretKeyFactorySpi {

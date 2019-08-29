@@ -147,7 +147,7 @@ public class SSL {
      */
     @Deprecated
     public static native int ConfigSecureServer(PRFDProxy fd, PK11Cert cert,
-        PK11PrivKey key, int kea);
+            PK11PrivKey key, int kea);
 
     /**
      * Configure the certificate and private key for a server socket. This
@@ -156,7 +156,7 @@ public class SSL {
      * See also: SSL_ConfigServerCert in /usr/include/nss3/ssl.h
      */
     public static native int ConfigServerCert(PRFDProxy fd, PK11Cert cert,
-        PK11PrivKey key);
+            PK11PrivKey key);
 
     /**
      * Configure the server's session cache.
@@ -164,7 +164,7 @@ public class SSL {
      * See also: SSL_ConfigServerSessionIDCache in /usr/include/nss3/ssl.h
      */
     public static native int ConfigServerSessionIDCache(int maxCacheEntries,
-        long timeout, long ssl3_timeout, String directory);
+            long timeout, long ssl3_timeout, String directory);
 
     /**
      * Introspect the peer's certificate.

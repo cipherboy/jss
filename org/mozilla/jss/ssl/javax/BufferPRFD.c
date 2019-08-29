@@ -142,7 +142,7 @@ static PRStatus PRBufferGetPeerName(PRFileDesc *fd, PRNetAddr *addr)
 
 // Respond to send requests
 static PRInt32 PRBufferSend(PRFileDesc *fd, const void *buf, PRInt32 amount,
-        PRIntn flags, PRIntervalTime timeout)
+                            PRIntn flags, PRIntervalTime timeout)
 {
     /* Send takes a PRFileDesc and attempts to send some amount of bytes from
      * the start of buf to the other party before timeout is reached. Because
@@ -339,7 +339,7 @@ void freeBufferPRFileDesc(PRFileDesc *fd)
  * or IPv6 address. Note that this value is not used to validate the hostname
  * in any way (see SSL_SetURL to validate the peer). */
 PRFileDesc *newBufferPRFileDesc(j_buffer *read_buf, j_buffer *write_buf,
-    uint8_t *peer_info, size_t peer_info_len)
+                                uint8_t *peer_info, size_t peer_info_len)
 {
     PRFileDesc *fd;
 
@@ -352,7 +352,9 @@ PRFileDesc *newBufferPRFileDesc(j_buffer *read_buf, j_buffer *write_buf,
         fd->secret->write_buffer = write_buf;
 
         size_t len = peer_info_len;
-        if (len > 16) { len = 16; }
+        if (len > 16) {
+            len = 16;
+        }
 
         fd->secret->peer_addr = calloc(16, sizeof(uint8_t));
         memcpy(fd->secret->peer_addr, peer_info, len);

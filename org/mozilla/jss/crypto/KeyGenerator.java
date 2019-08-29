@@ -19,10 +19,10 @@ public interface KeyGenerator {
      * @throws InvalidAlgorithmParameterException If parameter is invalid.
      */
     public void initialize(int strength)
-        throws InvalidAlgorithmParameterException;
+    throws InvalidAlgorithmParameterException;
 
     public void initialize(AlgorithmParameterSpec parameters)
-        throws InvalidAlgorithmParameterException;
+    throws InvalidAlgorithmParameterException;
 
     /**
      * @param usages The operations the key will be used for after it is
@@ -60,7 +60,7 @@ public interface KeyGenerator {
      * @throws CharConversionException If an encoding error occurred.
      */
     public SymmetricKey generate()
-        throws IllegalStateException, TokenException, CharConversionException;
+    throws IllegalStateException, TokenException, CharConversionException;
 
     /**
      * Generates an Initialization Vector using a PBE algorithm.
@@ -78,7 +78,7 @@ public interface KeyGenerator {
      * @exception CharConversionException If an encoding error occurred.
      */
     public byte[] generatePBE_IV()
-        throws IllegalStateException, TokenException, CharConversionException;
+    throws IllegalStateException, TokenException, CharConversionException;
 
     /**
      * Allows a SymmetricKey to be cloned on a different token.
@@ -92,8 +92,8 @@ public interface KeyGenerator {
      * @exception TokenException If an error occurred in the token.
      */
     public SymmetricKey clone(SymmetricKey key)
-        throws SymmetricKey.NotExtractableException,
-            InvalidKeyException, TokenException;
+    throws SymmetricKey.NotExtractableException,
+               InvalidKeyException, TokenException;
 
     /**
      * An interface for converting a password of Java characters into an array

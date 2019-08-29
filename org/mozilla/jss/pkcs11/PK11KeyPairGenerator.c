@@ -36,7 +36,7 @@
  */
 static jobject
 keysToKeyPair(JNIEnv *env, SECKEYPrivateKey **pPrivk,
-    SECKEYPublicKey **pPubk)
+              SECKEYPublicKey **pPubk)
 {
     jobject privateKey;
     jobject publicKey;
@@ -64,9 +64,9 @@ keysToKeyPair(JNIEnv *env, SECKEYPrivateKey **pPrivk,
         goto finish;
     }
     keyPairConstructor = (*env)->GetMethodID(   env,
-                                                keyPairClass,
-                                                KEY_PAIR_CONSTRUCTOR_NAME,
-                                                KEY_PAIR_CONSTRUCTOR_SIG);
+                         keyPairClass,
+                         KEY_PAIR_CONSTRUCTOR_NAME,
+                         KEY_PAIR_CONSTRUCTOR_SIG);
     if(keyPairConstructor == NULL) {
         ASSERT_OUTOFMEM(env);
         goto finish;
@@ -80,7 +80,7 @@ keysToKeyPair(JNIEnv *env, SECKEYPrivateKey **pPrivk,
         ASSERT_OUTOFMEM(env);
         goto finish;
     }
-        
+
 
 finish:
     return keyPair;
@@ -89,10 +89,10 @@ finish:
 int PK11_NumberObjectsFor(PK11SlotInfo*, CK_ATTRIBUTE*, int);
 
 SECStatus
-JSS_PK11_generateKeyPairWithOpFlags(JNIEnv *env, CK_MECHANISM_TYPE mechanism, 
-    PK11SlotInfo *slot, SECKEYPublicKey **pubk, SECKEYPrivateKey **privk,
-    void *params, PRBool temporary, jint sensitive, jint extractable,
-    jint op_flags, jint op_flags_mask)
+JSS_PK11_generateKeyPairWithOpFlags(JNIEnv *env, CK_MECHANISM_TYPE mechanism,
+                                    PK11SlotInfo *slot, SECKEYPublicKey **pubk, SECKEYPrivateKey **privk,
+                                    void *params, PRBool temporary, jint sensitive, jint extractable,
+                                    jint op_flags, jint op_flags_mask)
 {
     PK11AttrFlags attrFlags = 0;
     *privk=NULL;
@@ -104,7 +104,7 @@ JSS_PK11_generateKeyPairWithOpFlags(JNIEnv *env, CK_MECHANISM_TYPE mechanism,
      * login to the token if necessary
      *************************************************/
     if( PK11_Authenticate(slot, PR_TRUE /*loadcerts*/, NULL)
-           != SECSuccess)
+            != SECSuccess)
     {
         JSS_throwMsg(env, TOKEN_EXCEPTION, "unable to login to token");
         goto finish;
@@ -141,14 +141,14 @@ JSS_PK11_generateKeyPairWithOpFlags(JNIEnv *env, CK_MECHANISM_TYPE mechanism,
     }
 
     *privk = PK11_GenerateKeyPairWithOpFlags(slot,
-                                          mechanism,
-                                          params, 
-                                          pubk,
-                                          attrFlags,
-                                          (CK_FLAGS) op_flags,
-                                          (CK_FLAGS) op_flags_mask
-                                          /* the ones we don't want*/,
-                                          NULL /* default PW callback */ );
+             mechanism,
+             params,
+             pubk,
+             attrFlags,
+             (CK_FLAGS) op_flags,
+             (CK_FLAGS) op_flags_mask
+             /* the ones we don't want*/,
+             NULL /* default PW callback */ );
 
     if( *privk == NULL ) {
         int errLength;
@@ -165,8 +165,8 @@ JSS_PK11_generateKeyPairWithOpFlags(JNIEnv *env, CK_MECHANISM_TYPE mechanism,
             PR_GetErrorText(errBuf);
         }
         msgBuf = PR_smprintf("Keypair Generation failed on token with error: %d : %s",
-            PR_GetError(),
-            errLength>0? errBuf : "");
+                             PR_GetError(),
+                             errLength>0? errBuf : "");
         if(errLength>0) {
             PR_Free(errBuf);
         }
@@ -180,11 +180,11 @@ JSS_PK11_generateKeyPairWithOpFlags(JNIEnv *env, CK_MECHANISM_TYPE mechanism,
 finish:
     if(*privk!=NULL) {
         SECKEY_DestroyPrivateKey(*privk);
-	*privk = NULL;
+        *privk = NULL;
     }
     if(*pubk!=NULL) {
         SECKEY_DestroyPublicKey(*pubk);
-	*pubk = NULL;
+        *pubk = NULL;
     }
     return SECFailure;
 }
@@ -194,12 +194,12 @@ finish:
  */
 SECStatus
 JSS_PK11_generateKeyPair(JNIEnv *env, CK_MECHANISM_TYPE mechanism,
-    PK11SlotInfo *slot, SECKEYPublicKey **pubk, SECKEYPrivateKey **privk,
-    void *params, PRBool temporary, jint sensitive, jint extractable)
+                         PK11SlotInfo *slot, SECKEYPublicKey **pubk, SECKEYPrivateKey **privk,
+                         void *params, PRBool temporary, jint sensitive, jint extractable)
 {
 
-    return JSS_PK11_generateKeyPairWithOpFlags(env, mechanism, slot, pubk, 
-                   privk, params, temporary, sensitive, extractable, 0, 0);
+    return JSS_PK11_generateKeyPairWithOpFlags(env, mechanism, slot, pubk,
+            privk, params, temporary, sensitive, extractable, 0, 0);
 }
 
 
@@ -207,11 +207,11 @@ JSS_PK11_generateKeyPair(JNIEnv *env, CK_MECHANISM_TYPE mechanism,
  * Local generic helpers
  */
 
-static jobject 
-PK11KeyPairGeneratorWithOpFlags(JNIEnv *env, jobject this, jobject token, 
-    CK_MECHANISM_TYPE mechanism, void *params, 
-    jboolean temporary, jint sensitive, jint extractable,
-    jint op_flags, jint op_flags_mask)
+static jobject
+PK11KeyPairGeneratorWithOpFlags(JNIEnv *env, jobject this, jobject token,
+                                CK_MECHANISM_TYPE mechanism, void *params,
+                                jboolean temporary, jint sensitive, jint extractable,
+                                jint op_flags, jint op_flags_mask)
 {
     PK11SlotInfo* slot;
     SECKEYPrivateKey *privk=NULL;
@@ -231,7 +231,7 @@ PK11KeyPairGeneratorWithOpFlags(JNIEnv *env, jobject this, jobject token,
     PR_ASSERT(slot != NULL);
 
     rv = JSS_PK11_generateKeyPairWithOpFlags(env, mechanism, slot, &pubk, &privk,
-    	params, temporary, sensitive, extractable, op_flags, op_flags_mask);
+            params, temporary, sensitive, extractable, op_flags, op_flags_mask);
     if (rv != SECSuccess) {
         goto finish;
     }
@@ -257,11 +257,11 @@ finish:
 
 static jobject
 PK11KeyPairGenerator(JNIEnv *env, jobject this, jobject token,
-    CK_MECHANISM_TYPE mechanism, void *params,
-    jboolean temporary, jint sensitive, jint extractable)
+                     CK_MECHANISM_TYPE mechanism, void *params,
+                     jboolean temporary, jint sensitive, jint extractable)
 {
     return PK11KeyPairGeneratorWithOpFlags(env, this, token, mechanism,
-                      params, temporary, sensitive, extractable, 0, 0);
+                                           params, temporary, sensitive, extractable, 0, 0);
 }
 
 /**********************************************************************
@@ -269,8 +269,8 @@ PK11KeyPairGenerator(JNIEnv *env, jobject this, jobject token,
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11KeyPairGenerator_generateRSAKeyPair
-  (JNIEnv *env, jobject this, jobject token, jint keySize, jlong publicExponent,
-    jboolean temporary, jint sensitive, jint extractable)
+(JNIEnv *env, jobject this, jobject token, jint keySize, jlong publicExponent,
+ jboolean temporary, jint sensitive, jint extractable)
 {
     PK11RSAGenParams params;
 
@@ -283,7 +283,7 @@ Java_org_mozilla_jss_pkcs11_PK11KeyPairGenerator_generateRSAKeyPair
     params.pe = publicExponent;
 
     return PK11KeyPairGenerator(env, this, token, CKM_RSA_PKCS_KEY_PAIR_GEN,
-     &params, temporary, sensitive, extractable);
+                                &params, temporary, sensitive, extractable);
 }
 
 /**********************************************************************
@@ -291,9 +291,9 @@ Java_org_mozilla_jss_pkcs11_PK11KeyPairGenerator_generateRSAKeyPair
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11KeyPairGenerator_generateRSAKeyPairWithOpFlags
-  (JNIEnv *env, jobject this, jobject token, jint keySize, jlong publicExponent,
-    jboolean temporary, jint sensitive, jint extractable,
-    jint op_flags, jint op_flags_mask)
+(JNIEnv *env, jobject this, jobject token, jint keySize, jlong publicExponent,
+ jboolean temporary, jint sensitive, jint extractable,
+ jint op_flags, jint op_flags_mask)
 {
     PK11RSAGenParams params;
 
@@ -306,7 +306,7 @@ Java_org_mozilla_jss_pkcs11_PK11KeyPairGenerator_generateRSAKeyPairWithOpFlags
     params.pe = publicExponent;
 
     return PK11KeyPairGeneratorWithOpFlags(env, this, token, CKM_RSA_PKCS_KEY_PAIR_GEN,
-     &params, temporary, sensitive, extractable, op_flags, op_flags_mask);
+                                           &params, temporary, sensitive, extractable, op_flags, op_flags_mask);
 }
 
 
@@ -319,15 +319,15 @@ Java_org_mozilla_jss_pkcs11_PK11KeyPairGenerator_generateRSAKeyPairWithOpFlags
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11KeyPairGenerator_generateDSAKeyPair
-  (JNIEnv *env, jobject this, jobject token, jbyteArray P, jbyteArray Q,
-    jbyteArray G, jboolean temporary, jint sensitive, jint extractable)
+(JNIEnv *env, jobject this, jobject token, jbyteArray P, jbyteArray Q,
+ jbyteArray G, jboolean temporary, jint sensitive, jint extractable)
 {
     SECItem p, q, g;
     PQGParams *params=NULL;
     jobject keyPair=NULL;
 
     PR_ASSERT(env!=NULL && this!=NULL && token!=NULL && P!=NULL && Q!=NULL
-                && G!=NULL);
+              && G!=NULL);
 
     /* zero these so we can free them indiscriminately later */
     ZERO_SECITEM(p);
@@ -338,8 +338,8 @@ Java_org_mozilla_jss_pkcs11_PK11KeyPairGenerator_generateDSAKeyPair
      * Setup the parameters
      *************************************************/
     if( JSS_ByteArrayToOctetString(env, P, &p) ||
-        JSS_ByteArrayToOctetString(env, Q, &q) ||
-        JSS_ByteArrayToOctetString(env, G, &g) )
+            JSS_ByteArrayToOctetString(env, Q, &q) ||
+            JSS_ByteArrayToOctetString(env, G, &g) )
     {
         PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
         goto finish;
@@ -350,7 +350,7 @@ Java_org_mozilla_jss_pkcs11_PK11KeyPairGenerator_generateDSAKeyPair
         goto finish;
     }
     keyPair = PK11KeyPairGenerator(env, this, token, CKM_DSA_KEY_PAIR_GEN,
-     			params, temporary, sensitive, extractable);
+                                   params, temporary, sensitive, extractable);
 
 finish:
     SECITEM_FreeItem(&p, PR_FALSE);
@@ -367,16 +367,16 @@ finish:
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11KeyPairGenerator_generateDSAKeyPairWithOpFlags
-  (JNIEnv *env, jobject this, jobject token, jbyteArray P, jbyteArray Q,
-    jbyteArray G, jboolean temporary, jint sensitive, jint extractable,
-    jint op_flags, jint op_flags_mask)
+(JNIEnv *env, jobject this, jobject token, jbyteArray P, jbyteArray Q,
+ jbyteArray G, jboolean temporary, jint sensitive, jint extractable,
+ jint op_flags, jint op_flags_mask)
 {
     SECItem p, q, g;
     PQGParams *params=NULL;
     jobject keyPair=NULL;
 
     PR_ASSERT(env!=NULL && this!=NULL && token!=NULL && P!=NULL && Q!=NULL
-                && G!=NULL);
+              && G!=NULL);
 
     /* zero these so we can free them indiscriminately later */
     ZERO_SECITEM(p);
@@ -387,8 +387,8 @@ Java_org_mozilla_jss_pkcs11_PK11KeyPairGenerator_generateDSAKeyPairWithOpFlags
      * Setup the parameters
      *************************************************/
     if( JSS_ByteArrayToOctetString(env, P, &p) ||
-        JSS_ByteArrayToOctetString(env, Q, &q) ||
-        JSS_ByteArrayToOctetString(env, G, &g) )
+            JSS_ByteArrayToOctetString(env, Q, &q) ||
+            JSS_ByteArrayToOctetString(env, G, &g) )
     {
         PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
         goto finish;
@@ -399,9 +399,9 @@ Java_org_mozilla_jss_pkcs11_PK11KeyPairGenerator_generateDSAKeyPairWithOpFlags
         goto finish;
     }
     keyPair = PK11KeyPairGeneratorWithOpFlags(env, this, token,
-                        CKM_DSA_KEY_PAIR_GEN, params,
-                        temporary, sensitive, extractable,
-                        op_flags, op_flags_mask);
+              CKM_DSA_KEY_PAIR_GEN, params,
+              temporary, sensitive, extractable,
+              op_flags, op_flags_mask);
 
 finish:
     SECITEM_FreeItem(&p, PR_FALSE);
@@ -415,13 +415,13 @@ finish:
 void
 DumpItem(SECItem *item)
 {
-  unsigned char *data = item->data;
-  unsigned int i;
+    unsigned char *data = item->data;
+    unsigned int i;
 
-  for (i=0; i < item->len; i++) {
-    printf(" %02x",data[i]);
-  }
-  printf(" : %8p %d\n", data, item->len);
+    for (i=0; i < item->len; i++) {
+        printf(" %02x",data[i]);
+    }
+    printf(" : %8p %d\n", data, item->len);
 }
 
 /**********************************************************************
@@ -431,8 +431,8 @@ DumpItem(SECItem *item)
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11KeyPairGenerator_generateECKeyPair
-  (JNIEnv *env, jobject this, jobject token, jbyteArray Curve, 
-    jboolean temporary, jint sensitive, jint extractable)
+(JNIEnv *env, jobject this, jobject token, jbyteArray Curve,
+ jboolean temporary, jint sensitive, jint extractable)
 {
 
     SECItem curve;
@@ -453,7 +453,7 @@ Java_org_mozilla_jss_pkcs11_PK11KeyPairGenerator_generateECKeyPair
     }
 
     keyPair = PK11KeyPairGenerator(env, this, token, CKM_EC_KEY_PAIR_GEN,
-     			&curve, temporary, sensitive, extractable);
+                                   &curve, temporary, sensitive, extractable);
 
 finish:
     SECITEM_FreeItem(&curve, PR_FALSE);
@@ -467,9 +467,9 @@ finish:
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11KeyPairGenerator_generateECKeyPairWithOpFlags
-  (JNIEnv *env, jobject this, jobject token, jbyteArray Curve, 
-    jboolean temporary, jint sensitive, jint extractable,
-    jint op_flags, jint op_flags_mask)
+(JNIEnv *env, jobject this, jobject token, jbyteArray Curve,
+ jboolean temporary, jint sensitive, jint extractable,
+ jint op_flags, jint op_flags_mask)
 {
     SECItem curve;
     jobject keyPair=NULL;
@@ -488,9 +488,9 @@ Java_org_mozilla_jss_pkcs11_PK11KeyPairGenerator_generateECKeyPairWithOpFlags
         goto finish;
     }
     keyPair = PK11KeyPairGeneratorWithOpFlags(env, this, token,
-                CKM_EC_KEY_PAIR_GEN, &curve, temporary, 
-                sensitive, extractable,
-                op_flags, op_flags_mask);
+              CKM_EC_KEY_PAIR_GEN, &curve, temporary,
+              sensitive, extractable,
+              op_flags, op_flags_mask);
 
 finish:
     SECITEM_FreeItem(&curve, PR_FALSE);

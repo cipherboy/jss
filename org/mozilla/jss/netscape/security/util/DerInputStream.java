@@ -100,7 +100,7 @@ public class DerInputStream {
      *            same.
      */
     public DerInputStream subStream(int len, boolean do_skip)
-            throws IOException {
+    throws IOException {
         DerInputBuffer newbuf = buffer.dup();
 
         newbuf.truncate(len);
@@ -459,7 +459,7 @@ public class DerInputStream {
 
             utcTime += ((Htmp * 60) + Mtmp) * 60 * 1000L;
         }
-            break;
+        break;
 
         case '-': {
             int Htmp = 10 * Character.digit((char) buffer.read(), 10);
@@ -472,7 +472,7 @@ public class DerInputStream {
 
             utcTime -= ((Htmp * 60) + Mtmp) * 60 * 1000L;
         }
-            break;
+        break;
 
         case 'Z':
             break;
@@ -566,7 +566,7 @@ public class DerInputStream {
 
             utcTime += ((Htmp * 60) + Mtmp) * 60 * 1000L;
         }
-            break;
+        break;
 
         case '-': {
             int Htmp = 10 * Character.digit((char) buffer.read(), 10);
@@ -579,7 +579,7 @@ public class DerInputStream {
 
             utcTime -= ((Htmp * 60) + Mtmp) * 60 * 1000L;
         }
-            break;
+        break;
 
         case 'Z':
             break;
@@ -627,10 +627,10 @@ public class DerInputStream {
              */
             if (tmp <= 0 || tmp > 4)
                 throw new IOException("DerInput.getLength(): lengthTag="
-                        + tmp + ", "
-                        + ((tmp == 0) ? "Indefinite length encoding not supported"
-                                    + " or incorrect DER encoding."
-                                  : "too big."));
+                                      + tmp + ", "
+                                      + ((tmp == 0) ? "Indefinite length encoding not supported"
+                                         + " or incorrect DER encoding."
+                                         : "too big."));
 
             for (value = 0; tmp > 0; tmp--) {
                 value <<= 8;

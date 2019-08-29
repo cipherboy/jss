@@ -49,7 +49,7 @@ public class KerberosName {
 
     public static final int OID[] = { 1, 3, 6, 1, 5, 2, 2 };
     public static final ObjectIdentifier KRB5_PRINCIPAL_NAME = new
-            ObjectIdentifier(OID);
+    ObjectIdentifier(OID);
 
     private String m_realm = null;
     private int m_name_type = 0;
@@ -74,14 +74,14 @@ public class KerberosName {
             DerOutputStream realm = new DerOutputStream();
             realm.putGeneralString(m_realm);
             tmp.write(DerValue.createTag(DerValue.TAG_CONTEXT,
-                    true, (byte) 0), realm);
+                                         true, (byte) 0), realm);
 
             DerOutputStream seq1 = new DerOutputStream();
             DerOutputStream tmp1 = new DerOutputStream();
             DerOutputStream name_type = new DerOutputStream();
             name_type.putInteger(new BigInt(m_name_type));
             tmp1.write(DerValue.createTag(DerValue.TAG_CONTEXT,
-                    true, (byte) 0), name_type);
+                                          true, (byte) 0), name_type);
 
             DerOutputStream name_strings = new DerOutputStream();
             DerOutputStream name_string = new DerOutputStream();
@@ -90,10 +90,10 @@ public class KerberosName {
             }
             name_strings.write(DerValue.tag_SequenceOf, name_string);
             tmp1.write(DerValue.createTag(DerValue.TAG_CONTEXT,
-                    true, (byte) 1), name_strings);
+                                          true, (byte) 1), name_strings);
             seq1.write(DerValue.tag_Sequence, tmp1);
             tmp.write(DerValue.createTag(DerValue.TAG_CONTEXT,
-                    true, (byte) 1), seq1);
+                                         true, (byte) 1), seq1);
 
             seq.write(DerValue.tag_Sequence, tmp);
             out.write(seq.toByteArray());

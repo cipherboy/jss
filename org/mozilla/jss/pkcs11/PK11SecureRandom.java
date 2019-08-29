@@ -33,7 +33,7 @@ class PK11SecureRandom implements org.mozilla.jss.crypto.JSSSecureRandom
 
         // convert long into 8-byte byte array
         for( int i = 0; i < 8; i++ ) {
-             data[i] = ( byte ) ( seed >> ( 8 * i ) );
+            data[i] = ( byte ) ( seed >> ( 8 * i ) );
         }
 
         setSeed( data );

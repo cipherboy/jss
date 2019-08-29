@@ -105,17 +105,17 @@ public abstract class TimeBase implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
             return decode(getTag(), istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
             PrintableString.Template pst = new PrintableString.Template();
             PrintableString ps = (PrintableString)
-                                        pst.decode(implicitTag, istream);
+                                 pst.decode(implicitTag, istream);
             char[] chars = ps.toCharArray();
             int i=0;
             int year, month, day, hour, minute, second, hourOff, minOff;
@@ -203,9 +203,9 @@ public abstract class TimeBase implements ASN1Value {
             //
             if( ! isUTC() ) {
                 while(  i < chars.length &&
-                    chars[i] != '+' &&
-                    chars[i] != '-' &&
-                    chars[i] != 'Z' )
+                        chars[i] != '+' &&
+                        chars[i] != '-' &&
+                        chars[i] != 'Z' )
                 {
                     i++;
                 }
@@ -229,7 +229,7 @@ public abstract class TimeBase implements ASN1Value {
                         hourOff = -hourOff;
                         minOff = -minOff;
                     }
-		    i += 5;
+                    i += 5;
                     tz = (TimeZone) TimeZone.getTimeZone("GMT").clone();
                     tz.setRawOffset( ((hourOff*60)+minOff)*60*1000 );
                 } else if( chars[i] == 'Z' ) {
@@ -238,13 +238,13 @@ public abstract class TimeBase implements ASN1Value {
                     tz = (TimeZone) TimeZone.getTimeZone("GMT").clone();
                 } else {
                     throw new InvalidBERException("Invalid character "+
-                        chars[i]);
+                                                  chars[i]);
                 }
             } else {
                 if( isUTC() ) {
                     // Only UTC requires timezone
                     throw new InvalidBERException("no timezone specified for"+
-                        " UTCTime");
+                                                  " UTCTime");
                 }
                 // No timezone specified, use local time.
                 // This is generally a bad idea, because who knows what the
@@ -267,7 +267,7 @@ public abstract class TimeBase implements ASN1Value {
 
         private static void
         checkRange(int val, int low, int high, String field)
-            throws InvalidBERException
+        throws InvalidBERException
         {
             if( val < low || val > high ) {
                 throw new InvalidBERException("Invalid "+field);
@@ -276,11 +276,11 @@ public abstract class TimeBase implements ASN1Value {
 
         private static void
         checkBounds(int index, int increment, int bound)
-            throws InvalidBERException
+        throws InvalidBERException
         {
             if(index+increment > bound) {
                 throw new InvalidBERException("Too few characters in " +
-                    "TimeBase");
+                                              "TimeBase");
             }
         }
     }

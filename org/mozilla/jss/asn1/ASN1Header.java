@@ -80,7 +80,7 @@ public class ASN1Header {
      * @exception IOException If the input stream does not support look ahead.
      */
     public static ASN1Header lookAhead(InputStream derStream)
-        throws IOException, InvalidBERException
+    throws IOException, InvalidBERException
     {
         if( ! derStream.markSupported() ) {
             throw new IOException("Mark not supported on this input stream");
@@ -101,14 +101,14 @@ public class ASN1Header {
      * @throws IOException If other error occurred.
      */
     public ASN1Header(InputStream istream)
-        throws InvalidBERException, IOException
+    throws InvalidBERException, IOException
     {
         // default BAOS size is 32 bytes, which is plenty
         ByteArrayOutputStream encoding = new ByteArrayOutputStream();
         int inInt = istream.read();
         if( inInt == -1 ) {
             throw new InvalidBERException("End-of-file reached while "+
-                "decoding ASN.1 header");
+                                          "decoding ASN.1 header");
         }
         encoding.write(inInt);
         byte byte1 = (byte) inInt;
@@ -146,7 +146,7 @@ public class ASN1Header {
                 inInt = istream.read();
                 if( inInt == -1 ) {
                     throw new InvalidBERException("End-of-file reached while"
-                        +" decoding ASN.1 header");
+                                                  +" decoding ASN.1 header");
                 }
                 encoding.write(inInt);
                 next = (byte) inInt;
@@ -208,7 +208,7 @@ public class ASN1Header {
         inInt = istream.read();
         if(inInt == -1) {
             throw new InvalidBERException("End-of-file reached while "+
-                "decoding ASN.1 header");
+                                          "decoding ASN.1 header");
         }
         encoding.write(inInt);
         byte lenByte = (byte) inInt;
@@ -252,7 +252,7 @@ public class ASN1Header {
     }
 
     public void encode( OutputStream ostream )
-        throws IOException
+    throws IOException
     {
         ostream.write( encode() );
     }
@@ -313,7 +313,7 @@ public class ASN1Header {
         } else {
             // long form
             byte[] val = unsignedBigIntToByteArray(
-                            BigInteger.valueOf(contentLength) );
+                             BigInteger.valueOf(contentLength) );
             cache.write( ((byte)val.length) | 0x80 );
             cache.write( val, 0, val.length );
         }
@@ -367,12 +367,12 @@ public class ASN1Header {
      *  differ from those passed in.
      */
     public void validate(Tag expectedTag, Form expectedForm)
-        throws InvalidBERException
+    throws InvalidBERException
     {
         validate(expectedTag);
         if( getForm() != expectedForm ) {
             throw new InvalidBERException("Incorrect form: expected ["+
-                expectedForm+"], found ["+getForm());
+                                          expectedForm+"], found ["+getForm());
         }
     }
 
@@ -385,7 +385,7 @@ public class ASN1Header {
     public void validate(Tag expectedTag) throws InvalidBERException {
         if( ! getTag().equals( expectedTag ) ) {
             throw new InvalidBERException("Incorrect tag: expected ["+
-                expectedTag+"], found ["+getTag()+"]");
+                                          expectedTag+"], found ["+getTag()+"]");
         }
     }
 

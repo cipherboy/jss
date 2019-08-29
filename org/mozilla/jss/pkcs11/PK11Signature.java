@@ -25,33 +25,33 @@ import org.slf4j.LoggerFactory;
 
 final class PK11Signature extends org.mozilla.jss.crypto.SignatureSpi {
 
-	public PK11Signature(PK11Token token, SignatureAlgorithm algorithm)
-		throws NoSuchAlgorithmException, TokenException
-	{
+    public PK11Signature(PK11Token token, SignatureAlgorithm algorithm)
+    throws NoSuchAlgorithmException, TokenException
+    {
         assert(token!=null && algorithm!=null);
 
         // Make sure this token supports this algorithm.  It's OK if
         // it only supports the signing part; the hashing can be done
         // on the internal module.
-		if( ! token.doesAlgorithm(algorithm)  &&
-            ! token.doesAlgorithm(algorithm.getSigningAlg()) )
+        if( ! token.doesAlgorithm(algorithm)  &&
+                ! token.doesAlgorithm(algorithm.getSigningAlg()) )
         {
-			throw new NoSuchAlgorithmException();
-		}
+            throw new NoSuchAlgorithmException();
+        }
 
-		this.tokenProxy = token.getProxy();
-		this.token = token;
-		this.algorithm = algorithm;
+        this.tokenProxy = token.getProxy();
+        this.token = token;
+        this.algorithm = algorithm;
         if( algorithm.getRawAlg() == algorithm ) {
             raw = true;
             rawInput = new ByteArrayOutputStream();
         }
-		this.state = UNINITIALIZED;
-	}
+        this.state = UNINITIALIZED;
+    }
 
-	public void engineInitSign(org.mozilla.jss.crypto.PrivateKey privateKey)
-		throws InvalidKeyException, TokenException
-	{
+    public void engineInitSign(org.mozilla.jss.crypto.PrivateKey privateKey)
+    throws InvalidKeyException, TokenException
+    {
         PK11PrivKey privKey;
 
         assert(privateKey!=null);
@@ -62,25 +62,25 @@ final class PK11Signature extends org.mozilla.jss.crypto.SignatureSpi {
         //  -lives on this token
         //  -is the right type for the algorithm
         //
-		if( privateKey == null ) {
-			throw new InvalidKeyException("private key is null");
-		}
-		if( ! (privateKey instanceof PK11PrivKey) ) {
-			throw new InvalidKeyException("privateKey is not a PKCS #11 "+
-				"private key");
-		}
+        if( privateKey == null ) {
+            throw new InvalidKeyException("private key is null");
+        }
+        if( ! (privateKey instanceof PK11PrivKey) ) {
+            throw new InvalidKeyException("privateKey is not a PKCS #11 "+
+                                          "private key");
+        }
 
         privKey = (PK11PrivKey) privateKey;
 
         try {
-    		privKey.verifyKeyIsOnToken(token);
+            privKey.verifyKeyIsOnToken(token);
         } catch(NoSuchItemOnTokenException e) {
             throw new InvalidKeyException(e.toString());
         }
 
         try {
             if( KeyType.getKeyTypeFromAlgorithm(algorithm)
-                             != privKey.getKeyType())
+                    != privKey.getKeyType())
             {
                 throw new InvalidKeyException(
                     "Key type is inconsistent with algorithm");
@@ -90,7 +90,7 @@ final class PK11Signature extends org.mozilla.jss.crypto.SignatureSpi {
         }
 
         // Finally, the key is OK
-		key = privKey;
+        key = privKey;
 
         // Now initialize the signature context
         if( ! raw ) {
@@ -99,34 +99,34 @@ final class PK11Signature extends org.mozilla.jss.crypto.SignatureSpi {
         }
 
         // Don't set state until we know everything worked
-		state = SIGN;
-	}
+        state = SIGN;
+    }
 
     /*************************************************************
     ** This is just here for JCA compliance, we don't take randoms this way.
     */
-	public void
+    public void
     engineInitSign(org.mozilla.jss.crypto.PrivateKey privateKey,
-                    SecureRandom random)
-		throws InvalidKeyException, TokenException
-	{
-		throw new RuntimeException("PK11Signature.engineInitSign() is not supported");
+                   SecureRandom random)
+    throws InvalidKeyException, TokenException
+    {
+        throw new RuntimeException("PK11Signature.engineInitSign() is not supported");
 
-		// engineInitSign(privateKey);
-	}
+        // engineInitSign(privateKey);
+    }
 
     /*************************************************************
     ** Creates a signing context, initializes it,
     ** and sets the sigContext field.
     */
     protected native void initSigContext()
-        throws TokenException;
+    throws TokenException;
 
 
-	public void engineInitVerify(PublicKey publicKey)
-		throws InvalidKeyException, TokenException
-	{
-		PK11PubKey pubKey;
+    public void engineInitVerify(PublicKey publicKey)
+    throws InvalidKeyException, TokenException
+    {
+        PK11PubKey pubKey;
 
         assert(publicKey!=null);
 
@@ -136,21 +136,21 @@ final class PK11Signature extends org.mozilla.jss.crypto.SignatureSpi {
         //  -lives on this token
         //  -is the right type for the algorithm
         //
-		if( ! (publicKey instanceof PK11PubKey) ) {
-			throw new InvalidKeyException("publicKey is not a PKCS #11 "+
-				"public key");
-		}
-		pubKey = (PK11PubKey) publicKey;
+        if( ! (publicKey instanceof PK11PubKey) ) {
+            throw new InvalidKeyException("publicKey is not a PKCS #11 "+
+                                          "public key");
+        }
+        pubKey = (PK11PubKey) publicKey;
 
-		//try {
-		//	pubKey.verifyKeyIsOnToken(token);
-		//} catch( NoSuchItemOnTokenException e) {
-		//	throw new InvalidKeyException(e.toString());
-		//}
+        //try {
+        //	pubKey.verifyKeyIsOnToken(token);
+        //} catch( NoSuchItemOnTokenException e) {
+        //	throw new InvalidKeyException(e.toString());
+        //}
 
         try {
             if( KeyType.getKeyTypeFromAlgorithm(algorithm)
-                             != pubKey.getKeyType())
+                    != pubKey.getKeyType())
             {
                 throw new InvalidKeyException(
                     "Key type is inconsistent with algorithm");
@@ -159,7 +159,7 @@ final class PK11Signature extends org.mozilla.jss.crypto.SignatureSpi {
             throw new InvalidKeyException("Unknown algorithm: " + algorithm, e);
         }
 
-		key = pubKey;
+        key = pubKey;
 
         if( ! raw ) {
             sigContext = null;
@@ -167,19 +167,19 @@ final class PK11Signature extends org.mozilla.jss.crypto.SignatureSpi {
         }
 
         // Don't set state until we know everything worked.
-		state = VERIFY;
-	}
+        state = VERIFY;
+    }
 
     protected native void initVfyContext() throws TokenException;
 
-	public void engineUpdate(byte b)
-        throws SignatureException, TokenException
+    public void engineUpdate(byte b)
+    throws SignatureException, TokenException
     {
         engineUpdate(new byte[] {b}, 0, 1);
     }
 
     public void engineUpdate(byte[] b, int off, int len)
-        throws SignatureException, TokenException
+    throws SignatureException, TokenException
     {
         assert(b != null);
         if( (state==SIGN || state==VERIFY) ) {
@@ -205,11 +205,11 @@ final class PK11Signature extends org.mozilla.jss.crypto.SignatureSpi {
     }
 
     protected native void engineUpdateNative(byte[] b, int off, int len)
-        throws TokenException;
+    throws TokenException;
 
 
     public byte[] engineSign()
-        throws SignatureException, TokenException
+    throws SignatureException, TokenException
     {
         if(state != SIGN) {
             throw new SignatureException("Signature is not initialized");
@@ -227,84 +227,84 @@ final class PK11Signature extends org.mozilla.jss.crypto.SignatureSpi {
         byte[] result;
         if( raw ) {
             result = engineRawSignNative(token, (PK11PrivKey)key,
-                rawInput.toByteArray());
+                                         rawInput.toByteArray());
             rawInput.reset();
         } else {
             result = engineSignNative();
         }
-		state = UNINITIALIZED;
-		sigContext = null;
+        state = UNINITIALIZED;
+        sigContext = null;
 
-		return result;
+        return result;
     }
 
     public int engineSign(byte[] outbuf, int offset, int len)
-        throws SignatureException, TokenException
+    throws SignatureException, TokenException
     {
         assert(outbuf!=null);
         byte[] sig;
         if( raw ) {
             sig = engineRawSignNative(token, (PK11PrivKey)key,
-                rawInput.toByteArray());
+                                      rawInput.toByteArray());
             rawInput.reset();
         } else {
-		    sig = engineSign();
+            sig = engineSign();
         }
-		if(	(outbuf==null) || (outbuf.length <= offset) ||
-			(len < sig.length) || (offset+len > outbuf.length))
-		{
-			throw new SignatureException(
-					"outbuf is not sufficient to hold signature");
-		}
-		System.arraycopy( sig, 0, outbuf, offset, sig.length);
-		return sig.length;
+        if(	(outbuf==null) || (outbuf.length <= offset) ||
+                (len < sig.length) || (offset+len > outbuf.length))
+        {
+            throw new SignatureException(
+                "outbuf is not sufficient to hold signature");
+        }
+        System.arraycopy( sig, 0, outbuf, offset, sig.length);
+        return sig.length;
     }
 
     /**
      * Performs raw signing of the given hash with the given private key.
      */
     private static native byte[] engineRawSignNative(PK11Token token,
-        PrivateKey key, byte[] hash)
-        throws SignatureException, TokenException;
+            PrivateKey key, byte[] hash)
+    throws SignatureException, TokenException;
 
     private native byte[] engineSignNative()
-        throws SignatureException, TokenException;
+    throws SignatureException, TokenException;
 
     public boolean engineVerify(byte[] sigBytes)
-        throws SignatureException, TokenException
+    throws SignatureException, TokenException
     {
         assert(sigBytes!=null);
-		if(state != VERIFY) {
-			throw new SignatureException(
-						"Signature is not initialized properly");
-		}
-		if(!raw && sigContext==null) {
-			throw new SignatureException("Signature has no context");
-		}
+        if(state != VERIFY) {
+            throw new SignatureException(
+                "Signature is not initialized properly");
+        }
+        if(!raw && sigContext==null) {
+            throw new SignatureException("Signature has no context");
+        }
         if(raw && rawInput==null) {
             throw new SignatureException("Signature has no input");
         }
-		assert(token!=null);
-		assert(tokenProxy!=null);
-		assert(algorithm!=null);
-		assert(key!=null);
+        assert(token!=null);
+        assert(tokenProxy!=null);
+        assert(algorithm!=null);
+        assert(key!=null);
 
-		if(sigBytes==null) {
-			return false;
-		}
+        if(sigBytes==null) {
+            return false;
+        }
 
         boolean result;
         if( raw ) {
             result = engineRawVerifyNative(token, (PK11PubKey)key,
-                rawInput.toByteArray(), sigBytes);
+                                           rawInput.toByteArray(), sigBytes);
             rawInput.reset();
         } else {
             result = engineVerifyNative(sigBytes);
         }
-		state = UNINITIALIZED;
-		sigContext = null;
+        state = UNINITIALIZED;
+        sigContext = null;
 
-		return result;
+        return result;
     }
 
     /**
@@ -312,31 +312,31 @@ final class PK11Signature extends org.mozilla.jss.crypto.SignatureSpi {
      * given public key, on the given token.
      */
     protected static native boolean engineRawVerifyNative(PK11Token token,
-        PublicKey key, byte[] hash, byte[] signature)
-        throws SignatureException, TokenException;
+            PublicKey key, byte[] hash, byte[] signature)
+    throws SignatureException, TokenException;
 
-	native protected boolean engineVerifyNative(byte[] sigBytes)
-		throws SignatureException, TokenException;
+    native protected boolean engineVerifyNative(byte[] sigBytes)
+    throws SignatureException, TokenException;
 
     public void engineSetParameter(AlgorithmParameterSpec params)
-        throws InvalidAlgorithmParameterException, TokenException
+    throws InvalidAlgorithmParameterException, TokenException
     {
         throw new RuntimeException("PK11Signature.engineSetParameter() is not yet implemented");
     }
 
-	protected PK11Token token;
-	protected TokenProxy tokenProxy;
-	protected Algorithm algorithm;
-	protected PK11Key key;
-	protected int state;
+    protected PK11Token token;
+    protected TokenProxy tokenProxy;
+    protected Algorithm algorithm;
+    protected PK11Key key;
+    protected int state;
     protected SigContextProxy sigContext;
     protected boolean raw=false; // raw signing only, no hashing
     protected ByteArrayOutputStream rawInput;
 
-	// states
-	static public final int UNINITIALIZED = 0;
-	static public final int SIGN = 1;
-	static public final int VERIFY = 2;
+    // states
+    static public final int UNINITIALIZED = 0;
+    static public final int SIGN = 1;
+    static public final int VERIFY = 2;
 }
 
 class SigContextProxy extends NativeProxy {

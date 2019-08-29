@@ -58,7 +58,7 @@ public class PresenceServerExtension extends Extension implements CertAttrSet {
     */
 
     public PresenceServerExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = new ObjectIdentifier(OID);
         this.critical = critical.booleanValue();
         this.extensionValue = ((byte[]) value).clone();
@@ -66,17 +66,17 @@ public class PresenceServerExtension extends Extension implements CertAttrSet {
     }
 
     public PresenceServerExtension(
-            boolean critical,
-            int version,
-            String streetAddress,
-            String telephoneNumber,
-            String rfc822Name,
-            String ID,
-            String hostName,
-            int portNumber,
-            int maxUsers,
-            int serviceLevel)
-            throws IOException {
+        boolean critical,
+        int version,
+        String streetAddress,
+        String telephoneNumber,
+        String rfc822Name,
+        String ID,
+        String hostName,
+        int portNumber,
+        int maxUsers,
+        int serviceLevel)
+    throws IOException {
         mCritical = critical;
         mVersion = version;
         mStreetAddress = streetAddress;
@@ -199,11 +199,11 @@ public class PresenceServerExtension extends Extension implements CertAttrSet {
     }
 
     public void decode(InputStream in)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
     }
 
     public void encode(OutputStream out)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         DerOutputStream dos = new DerOutputStream();
         super.encode(dos);
         out.write(dos.toByteArray());
@@ -301,10 +301,10 @@ public class PresenceServerExtension extends Extension implements CertAttrSet {
             int serviceLevel = 1;
 
             PresenceServerExtension ext = new PresenceServerExtension(
-                    critical,
-                    version, streetAddress, telephoneNumber,
-                    rfc822Name, ID, hostName, portNumber,
-                    maxUsers, serviceLevel);
+                critical,
+                version, streetAddress, telephoneNumber,
+                rfc822Name, ID, hostName, portNumber,
+                maxUsers, serviceLevel);
 
             // encode
 
@@ -316,7 +316,7 @@ public class PresenceServerExtension extends Extension implements CertAttrSet {
 
             @SuppressWarnings("unused")
             PresenceServerExtension ext2 = new PresenceServerExtension(
-                    Boolean.valueOf(false), ext1.getExtensionValue());
+                Boolean.valueOf(false), ext1.getExtensionValue());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (CertificateException e) {

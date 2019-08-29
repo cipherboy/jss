@@ -42,7 +42,7 @@ import org.mozilla.jss.netscape.security.x509.OIDMap;
  * Represent the AsnInteger Extension.
  */
 public class GenericASN1Extension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
     /**
      *
      */
@@ -51,23 +51,23 @@ public class GenericASN1Extension extends Extension
     protected static final int MAX_ATTR = 10;
 
     protected static final String PROP_CRITICAL =
-              "critical";
+        "critical";
     protected static final String PROP_NAME =
-              "name";
+        "name";
     protected static final String PROP_OID =
-              "oid";
+        "oid";
     protected static final String PROP_PATTERN =
-              "pattern";
+        "pattern";
     protected static final String PROP_ATTRIBUTE =
-              "attribute";
+        "attribute";
     protected static final String PROP_TYPE =
-              "type";
+        "type";
     protected static final String PROP_SOURCE =
-              "source";
+        "source";
     protected static final String PROP_VALUE =
-              "value";
+        "value";
     protected static final String PROP_PREDICATE =
-              "predicate";
+        "predicate";
     /**
      * Identifier for this attribute, to be used with the
      * get, set, delete methods of Certificate, x509 type.
@@ -80,13 +80,13 @@ public class GenericASN1Extension extends Extension
 
     // Encode this value
     private void encodeThis()
-            throws IOException, ParseException {
+    throws IOException, ParseException {
         this.extensionValue = encodePattern();
     }
 
     // Encode pattern
     private byte[] encodePattern()
-            throws IOException, ParseException {
+    throws IOException, ParseException {
         DerOutputStream tmp = new DerOutputStream();
         String type = null;
         String value = null;
@@ -182,8 +182,8 @@ public class GenericASN1Extension extends Extension
      * @param config additional configuration for this extension
      */
     public GenericASN1Extension(String name, String oid, String pattern, boolean critical,
-            Hashtable<String, String> config)
-            throws IOException, ParseException {
+                                Hashtable<String, String> config)
+    throws IOException, ParseException {
         ObjectIdentifier tmpid = new ObjectIdentifier(oid);
         this.name = name;
         OID = oid;
@@ -208,7 +208,7 @@ public class GenericASN1Extension extends Extension
      * @param config the values to be set for the extension.
      */
     public GenericASN1Extension(Hashtable<String, String> config)
-            throws IOException, ParseException {
+    throws IOException, ParseException {
         mConfig = config;
         ObjectIdentifier tmpid = new ObjectIdentifier(mConfig.get(PROP_OID));
         name = mConfig.get(PROP_NAME);
@@ -239,7 +239,7 @@ public class GenericASN1Extension extends Extension
      * @exception IOException on error.
      */
     public GenericASN1Extension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = new ObjectIdentifier(OID);
         this.critical = critical.booleanValue();
 
@@ -297,7 +297,7 @@ public class GenericASN1Extension extends Extension
      * @exception IOException on encoding errors.
      */
     public void encode(OutputStream out)
-            throws IOException {
+    throws IOException {
         DerOutputStream tmp = new DerOutputStream();
 
         try {
@@ -353,19 +353,19 @@ public class GenericASN1Extension extends Extension
     }
 
     private void PutInteger(DerOutputStream os, int number)
-            throws IOException, ParseException {
+    throws IOException, ParseException {
         os.putInteger(new BigInt(number));
         return;
     }
 
     private void PutIA5String(DerOutputStream os, String value)
-            throws IOException, ParseException {
+    throws IOException, ParseException {
         os.putIA5String(value);
         return;
     }
 
     private void PutOctetString(DerOutputStream os, String value)
-            throws IOException, ParseException {
+    throws IOException, ParseException {
         StringTokenizer token = new StringTokenizer(value, ":");
         byte[] octets = new byte[token.countTokens()];
         for (int i = 0; token.hasMoreElements(); i++) {
@@ -378,38 +378,38 @@ public class GenericASN1Extension extends Extension
     }
 
     private void PutBMPString(DerOutputStream os, String value)
-            throws IOException, ParseException {
+    throws IOException, ParseException {
         os.putBMPString(value);
         return;
     }
 
     private void PutPrintableString(DerOutputStream os, String value)
-            throws IOException, ParseException {
+    throws IOException, ParseException {
         os.putPrintableString(value);
         return;
     }
 
     private void PutVisibleString(DerOutputStream os, String value)
-            throws IOException, ParseException {
+    throws IOException, ParseException {
         os.putVisibleString(value);
         return;
     }
 
     private void PutUTCtime(DerOutputStream os, String value)
-            throws IOException, ParseException {
+    throws IOException, ParseException {
         DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
         os.putUTCTime(df.parse(value));
         return;
     }
 
     private void PutOID(DerOutputStream os, String value)
-            throws IOException, ParseException {
+    throws IOException, ParseException {
         os.putOID(new ObjectIdentifier(value));
         return;
     }
 
     private void PutBoolean(DerOutputStream os, boolean value)
-            throws IOException, ParseException {
+    throws IOException, ParseException {
         os.putBoolean(value);
         return;
     }

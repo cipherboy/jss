@@ -43,9 +43,9 @@ public class OIDMap {
      * the local system.
      */
     public static final String EXTENSIONS_HOME =
-            (System.getProperty("java.home") + File.separator + "lib"
-                    + File.separator + "security" + File.separator + "cert"
-            + File.separator);
+        (System.getProperty("java.home") + File.separator + "lib"
+         + File.separator + "security" + File.separator + "cert"
+         + File.separator);
     /**
      * File names for where OIDs and Classes are registered
      * for V3 extensions.
@@ -55,41 +55,41 @@ public class OIDMap {
 
     // Make default names easier
     private static final String ROOT = X509CertImpl.NAME + "." +
-                                 X509CertInfo.NAME + "." +
-                                 X509CertInfo.EXTENSIONS;
+                                       X509CertInfo.NAME + "." +
+                                       X509CertInfo.EXTENSIONS;
     private static final String AUTH_KEY_IDENTIFIER = ROOT + "." +
-                                          AuthorityKeyIdentifierExtension.NAME;
+            AuthorityKeyIdentifierExtension.NAME;
     private static final String SUB_KEY_IDENTIFIER = ROOT + "." +
-                                          SubjectKeyIdentifierExtension.NAME;
+            SubjectKeyIdentifierExtension.NAME;
     private static final String KEY_USAGE = ROOT + "." +
-                                          KeyUsageExtension.NAME;
+                                            KeyUsageExtension.NAME;
     private static final String PRIVATE_KEY_USAGE = ROOT + "." +
-                                          PrivateKeyUsageExtension.NAME;
+            PrivateKeyUsageExtension.NAME;
     private static final String POLICY_MAPPINGS = ROOT + "." +
-                                          PolicyMappingsExtension.NAME;
+            PolicyMappingsExtension.NAME;
     private static final String SUB_ALT_NAME = ROOT + "." +
-                                          SubjectAlternativeNameExtension.NAME;
+            SubjectAlternativeNameExtension.NAME;
     private static final String ISSUER_ALT_NAME = ROOT + "." +
-                                          IssuerAlternativeNameExtension.NAME;
+            IssuerAlternativeNameExtension.NAME;
     private static final String BASIC_CONSTRAINTS = ROOT + "." +
-                                          BasicConstraintsExtension.NAME;
+            BasicConstraintsExtension.NAME;
     private static final String NAME_CONSTRAINTS = ROOT + "." +
-                                          NameConstraintsExtension.NAME;
+            NameConstraintsExtension.NAME;
     private static final String POLICY_CONSTRAINTS = ROOT + "." +
-                                          PolicyConstraintsExtension.NAME;
+            PolicyConstraintsExtension.NAME;
     private static final String CERT_POLICIES = //ROOT + "." +
-            CertificatePoliciesExtension.NAME;
+        CertificatePoliciesExtension.NAME;
     private static final String SUBJ_DIR_ATTR = //ROOT + "." +
-            SubjectDirAttributesExtension.NAME;
+        SubjectDirAttributesExtension.NAME;
     public static final String EXT_KEY_USAGE_NAME = "ExtendedKeyUsageExtension";
     public static final String EXT_INHIBIT_ANY_POLICY_NAME = "InhibitAnyPolicyExtension";
     private static final String EXT_KEY_USAGE = //ROOT + "." +
-            EXT_KEY_USAGE_NAME;
+        EXT_KEY_USAGE_NAME;
 
     private static final String CRL_NUMBER = ROOT + "." +
-                                          CRLNumberExtension.NAME;
+            CRLNumberExtension.NAME;
     private static final String CRL_REASON = ROOT + "." +
-                                          CRLReasonExtension.NAME;
+            CRLReasonExtension.NAME;
 
     private static final Hashtable<ObjectIdentifier, String> oid2Name = new Hashtable<ObjectIdentifier, String>();
     private static final Hashtable<String, ObjectIdentifier> name2OID = new Hashtable<String, ObjectIdentifier>();
@@ -124,7 +124,7 @@ public class OIDMap {
     // Load the default name to class map (EXTENSIONS_CLASSES)
     private static void loadClassDefault(Properties props) {
         props.put(AUTH_KEY_IDENTIFIER,
-                   "org.mozilla.jss.netscape.security.x509.AuthorityKeyIdentifierExtension");
+                  "org.mozilla.jss.netscape.security.x509.AuthorityKeyIdentifierExtension");
         props.put(SUB_KEY_IDENTIFIER,
                   "org.mozilla.jss.netscape.security.x509.SubjectKeyIdentifierExtension");
         props.put(KEY_USAGE,
@@ -236,8 +236,8 @@ public class OIDMap {
     public static void addClass(Class<? extends Extension> clazz) {
         try {
             addAttribute(clazz.getName(),
-                (String) clazz.getField("OID").get(null),
-                (String) clazz.getField("NAME").get(null));
+                         (String) clazz.getField("OID").get(null),
+                         (String) clazz.getField("NAME").get(null));
         } catch (Throwable e) {
             System.out.println(
                 "Error adding class " + clazz.getName() + " to OIDMap: " + e);
@@ -255,7 +255,7 @@ public class OIDMap {
      * @exception CertificateException on errors.
      */
     public static void addAttribute(String className, String oid, String name)
-            throws CertificateException {
+    throws CertificateException {
         ObjectIdentifier objId = new ObjectIdentifier(oid);
         if (oid2Name.get(objId) != null) {
             throw new CertificateException("Object identifier already exists.");
@@ -308,7 +308,7 @@ public class OIDMap {
             return (extClass);
         } catch (Exception e) {
             throw new CertificateException("Error instantiating class for "
-                                + name + " " + e.toString());
+                                           + name + " " + e.toString());
         }
     }
 
@@ -319,7 +319,7 @@ public class OIDMap {
      * @exception CertificateException if class cannot be instatiated.
      */
     public static Class<?> getClass(ObjectIdentifier oid)
-            throws CertificateException {
+    throws CertificateException {
         String name = getName(oid);
         if (name == null)
             return null;
@@ -331,7 +331,7 @@ public class OIDMap {
             return (extClass);
         } catch (Exception e) {
             throw new CertificateException("Error instantiating class for "
-                                   + name + " " + e.toString());
+                                           + name + " " + e.toString());
         }
     }
 }

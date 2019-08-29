@@ -55,14 +55,14 @@ public final class InitializationValues {
          * be altering FIPS mode.
          */
         public static final InitializationValues.FIPSMode UNCHANGED = new FIPSMode();
-            }
+    }
 
     public InitializationValues(String configDir) {
         this.configDir = configDir;
     }
 
     public InitializationValues(String configDir, String certPrefix,
-        String keyPrefix, String secmodName)
+                                String keyPrefix, String secmodName)
     {
         this.configDir = configDir;
         this.certPrefix = certPrefix;
@@ -111,7 +111,9 @@ public final class InitializationValues {
      *
      * @return Manufacturer ID.
      */
-    public String getManufacturerID() { return manufacturerID; }
+    public String getManufacturerID() {
+        return manufacturerID;
+    }
 
     /**
      * Sets the Manufacturer ID of the internal PKCS #11 module.
@@ -140,7 +142,9 @@ public final class InitializationValues {
      *
      * @return Library description.
      */
-    public String getLibraryDescription() { return libraryDescription; }
+    public String getLibraryDescription() {
+        return libraryDescription;
+    }
 
     /**
      * Sets the description of the internal PKCS #11 module.
@@ -152,7 +156,7 @@ public final class InitializationValues {
      *      not exactly <code>LIBRARY_LENGTH</code>.
      */
     public void setLibraryDescription(String s)
-        throws InvalidLengthException
+    throws InvalidLengthException
     {
         if( s.length() != LIBRARY_LENGTH ) {
             throw new InvalidLengthException();
@@ -184,7 +188,7 @@ public final class InitializationValues {
      *      not exactly <code>TOKEN_LENGTH</code>.
      */
     public void setInternalTokenDescription(String s)
-        throws InvalidLengthException
+    throws InvalidLengthException
     {
         if(s.length() != TOKEN_LENGTH) {
             throw new InvalidLengthException();
@@ -216,7 +220,7 @@ public final class InitializationValues {
      *      not exactly <code>TOKEN_LENGTH</code>.
      */
     public void setInternalKeyStorageTokenDescription(String s)
-        throws InvalidLengthException
+    throws InvalidLengthException
     {
         if(s.length() != TOKEN_LENGTH) {
             throw new InvalidLengthException();
@@ -249,7 +253,7 @@ public final class InitializationValues {
      *      not exactly <code>SLOT_LENGTH</code>.
      */
     public void setInternalSlotDescription(String s)
-        throws InvalidLengthException
+    throws InvalidLengthException
     {
         if(s.length() != SLOT_LENGTH)  {
             throw new InvalidLengthException();
@@ -282,7 +286,7 @@ public final class InitializationValues {
      *      not exactly <code>SLOT_LENGTH</code>.
      */
     public void setInternalKeyStorageSlotDescription(String s)
-        throws InvalidLengthException
+    throws InvalidLengthException
     {
         if(s.length() != SLOT_LENGTH) {
             throw new InvalidLengthException();
@@ -316,7 +320,7 @@ public final class InitializationValues {
      *      not exactly <code>SLOT_LENGTH</code>.
      */
     public void setFIPSSlotDescription(String s)
-        throws InvalidLengthException
+    throws InvalidLengthException
     {
         if(s.length() != SLOT_LENGTH) {
             throw new InvalidLengthException();
@@ -351,7 +355,7 @@ public final class InitializationValues {
      *      not exactly <code>SLOT_LENGTH</code>.
      */
     public void setFIPSKeyStorageSlotDescription(String s)
-        throws InvalidLengthException
+    throws InvalidLengthException
     {
         if(s.length() != SLOT_LENGTH) {
             throw new InvalidLengthException();

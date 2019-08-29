@@ -78,7 +78,7 @@ public class ExtendedFailInfo implements ASN1Value {
         } else {
             byte[] encoded = ASN1Util.encode(failInfoValue);
             try {
-              this.failInfoValue = (ANY) ASN1Util.decode(ANY.getTemplate(), encoded);
+                this.failInfoValue = (ANY) ASN1Util.decode(ANY.getTemplate(), encoded);
             } catch( InvalidBERException e ) {
                 throw new RuntimeException("InvalidBERException while decoding as ANY: " + e.getMessage(), e);
             }
@@ -101,7 +101,7 @@ public class ExtendedFailInfo implements ASN1Value {
     }
 
     public void encode(Tag implicit, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         SEQUENCE seq = new SEQUENCE();
         seq.addElement(failInfoOID);
@@ -125,13 +125,13 @@ public class ExtendedFailInfo implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicit, InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
             SEQUENCE.Template seqt = new SEQUENCE.Template();
 
@@ -144,7 +144,7 @@ public class ExtendedFailInfo implements ASN1Value {
             assert(seq.size() == 2);
 
             return new ExtendedFailInfo( (OBJECT_IDENTIFIER) seq.elementAt(0),
-                                            seq.elementAt(1) );
+                                         seq.elementAt(1) );
         }
     }
 

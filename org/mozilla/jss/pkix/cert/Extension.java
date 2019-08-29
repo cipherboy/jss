@@ -42,7 +42,7 @@ public class Extension implements ASN1Value {
     }
 
     public Extension( OBJECT_IDENTIFIER extnId, boolean critical,
-        OCTET_STRING extnValue )
+                      OCTET_STRING extnValue )
     {
         this.extnId = extnId;
         this.critical = critical;
@@ -87,21 +87,21 @@ public class Extension implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicit, InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicit, istream);
 
             return new Extension(
-                (OBJECT_IDENTIFIER) seq.elementAt(0),
-                ((BOOLEAN) seq.elementAt(1)).toBoolean(),
-                (OCTET_STRING) seq.elementAt(2)
-            );
+                       (OBJECT_IDENTIFIER) seq.elementAt(0),
+                       ((BOOLEAN) seq.elementAt(1)).toBoolean(),
+                       (OCTET_STRING) seq.elementAt(2)
+                   );
         }
     }
 }

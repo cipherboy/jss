@@ -86,7 +86,7 @@ public class Base64InputStream extends FilterInputStream {
             }
             cur = in.read();
             switch(state) {
-              case 1:
+            case 1:
                 if( cur == -1 ) {
                     // end of file
                     state = 5;
@@ -101,7 +101,7 @@ public class Base64InputStream extends FilterInputStream {
                     state = 2;
                 }
                 break;
-              case 2:
+            case 2:
                 if( cur == -1 ) {
                     state = 5;
                     throw new EOFException("Unexpected end-of-file");
@@ -117,7 +117,7 @@ public class Base64InputStream extends FilterInputStream {
                     done = true;
                 }
                 break;
-              case 3:
+            case 3:
                 if( cur == -1 ) {
                     state = 5;
                     throw new EOFException("Unexpected end-of-file");
@@ -134,7 +134,7 @@ public class Base64InputStream extends FilterInputStream {
                     done = true;
                 }
                 break;
-              case 4:
+            case 4:
                 if( cur == -1 ) {
                     state = 5;
                     throw new EOFException("Unexpected end-of-file");
@@ -150,11 +150,11 @@ public class Base64InputStream extends FilterInputStream {
                     done = true;
                 }
                 break;
-              case 5:
+            case 5:
                 // end of file
                 return -1;
-                //break;
-              default:
+            //break;
+            default:
                 assert(false);
                 break;
             }
@@ -257,7 +257,7 @@ public class Base64InputStream extends FilterInputStream {
         }
 
         newStream.close();
-        if( ! Arrays.equals(origStream.toByteArray(), newStream.toByteArray())){
+        if( ! Arrays.equals(origStream.toByteArray(), newStream.toByteArray())) {
             throw new Exception("Did not recover original data");
         }
     }

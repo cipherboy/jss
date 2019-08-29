@@ -56,7 +56,7 @@ public class TestBufferPRFD {
     }
 
     public static PRFDProxy Setup_NSS_Server(PRFDProxy fd, String host,
-        PK11Cert cert, PK11PrivKey key) throws Exception
+            PK11Cert cert, PK11PrivKey key) throws Exception
     {
         fd = SSL.ImportFD(null, fd);
         assert(fd != null);

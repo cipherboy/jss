@@ -18,42 +18,42 @@ public class ASN1Util {
 
     public static byte[] encode(Tag implicitTag, ASN1Value val)
     {
-      try {
+        try {
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        val.encode(implicitTag, bos);
-        return bos.toByteArray();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            val.encode(implicitTag, bos);
+            return bos.toByteArray();
 
-      } catch( IOException e ) {
-        throw new RuntimeException("Unable to encode byte array: " + e.getMessage(), e);
-      }
+        } catch( IOException e ) {
+            throw new RuntimeException("Unable to encode byte array: " + e.getMessage(), e);
+        }
     }
 
     public static ASN1Value decode(ASN1Template template, byte[] encoded)
-        throws InvalidBERException
+    throws InvalidBERException
     {
-      try {
+        try {
 
-        ByteArrayInputStream bis = new ByteArrayInputStream(encoded);
-        return template.decode(bis);
+            ByteArrayInputStream bis = new ByteArrayInputStream(encoded);
+            return template.decode(bis);
 
-      } catch( IOException e ) {
-        throw (InvalidBERException) new InvalidBERException("Unable to decode byte array: " + e.getMessage()).initCause(e);
-      }
+        } catch( IOException e ) {
+            throw (InvalidBERException) new InvalidBERException("Unable to decode byte array: " + e.getMessage()).initCause(e);
+        }
     }
 
     public static ASN1Value decode(Tag implicitTag, ASN1Template template,
-                            byte[] encoded)
-        throws InvalidBERException
+                                   byte[] encoded)
+    throws InvalidBERException
     {
-      try {
+        try {
 
-        ByteArrayInputStream bis = new ByteArrayInputStream(encoded);
-        return template.decode(implicitTag, bis);
+            ByteArrayInputStream bis = new ByteArrayInputStream(encoded);
+            return template.decode(implicitTag, bis);
 
-      } catch( IOException e ) {
-        throw (InvalidBERException) new InvalidBERException("Unable to decode byte array: " + e.getMessage()).initCause(e);
-      }
+        } catch( IOException e ) {
+            throw (InvalidBERException) new InvalidBERException("Unable to decode byte array: " + e.getMessage()).initCause(e);
+        }
     }
 
 
@@ -70,7 +70,7 @@ public class ASN1Util {
      *      stream, or EOF is reached before the byte array is filled.
      */
     public static void readFully(byte[] bytes, InputStream istream)
-        throws IOException
+    throws IOException
     {
 
         int numRead=0;
@@ -91,8 +91,8 @@ public class ASN1Util {
      * @return ECC curve byte array.
      */
     public static byte[] getECCurveBytesByX509PublicKeyBytes(byte[] X509PubKeyBytes,
-        boolean withHeader)
-        throws IllegalArgumentException, ArrayIndexOutOfBoundsException,
+            boolean withHeader)
+    throws IllegalArgumentException, ArrayIndexOutOfBoundsException,
                NullPointerException
     {
         if ((X509PubKeyBytes == null) || (X509PubKeyBytes.length == 0)) {
@@ -127,7 +127,7 @@ public class ASN1Util {
             /* actual curve without tag and size */
             byte curve[] =
                 Arrays.copyOfRange(X509PubKeyBytes, curveBeginIndex + 2,
-                    curveBeginIndex + 2 + curveByteArraySize);
+                                   curveBeginIndex + 2 + curveByteArraySize);
             return curve;
         }
     }

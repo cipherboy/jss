@@ -93,7 +93,7 @@ public class PKIPublicationInfo implements ASN1Value {
      */
     public int getPubMethod(int index) {
         return ((INTEGER)((SEQUENCE)pubInfos.elementAt(index)).
-                        elementAt(0)).intValue();
+                elementAt(0)).intValue();
     }
 
     /**
@@ -133,7 +133,7 @@ public class PKIPublicationInfo implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
         SEQUENCE seq = new SEQUENCE();
 
         seq.addElement( new INTEGER(action) );
@@ -171,17 +171,17 @@ public class PKIPublicationInfo implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
             return new PKIPublicationInfo(
-                            ((INTEGER)seq.elementAt(0)).intValue(),
-                            (SEQUENCE) seq.elementAt(1) );
+                       ((INTEGER)seq.elementAt(0)).intValue(),
+                       (SEQUENCE) seq.elementAt(1) );
         }
     }
 }

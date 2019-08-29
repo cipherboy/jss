@@ -72,12 +72,12 @@ public class JCAKeyWrap {
                 p = Security.getProvider(otherProvider);
                 if (p == null) {
                     System.out.println("unable to find IBMJCE or SunJCE " +
-                            "providers");
+                                       "providers");
 
                     Provider[] providers = Security.getProviders();
                     for (int i = 0; i < providers.length; i++) {
                         System.out.println("Provider " + i + ": " +
-                                providers[i].getName());
+                                           providers[i].getName());
                     }
                     System.exit(1);
                 }
@@ -95,20 +95,20 @@ public class JCAKeyWrap {
 
             javax.crypto.SecretKey tripleDESKey;
             KeyGenerator keyGen = KeyGenerator.getInstance("DESede",
-                    MOZ_PROVIDER_NAME);
+                                  MOZ_PROVIDER_NAME);
 
             tripleDESKey = keyGen.generateKey();
 
             keyWrap.wrapSymetricKeyWithRSA(tripleDESKey, rsaKeyPairNSS,
-                    MOZ_PROVIDER_NAME, MOZ_PROVIDER_NAME);
+                                           MOZ_PROVIDER_NAME, MOZ_PROVIDER_NAME);
 
             if (!keyWrap.isBFipsMode()) {
                 keyWrap.wrapSymetricKeyWithRSA(tripleDESKey, rsaKeyPairNSS,
-                        MOZ_PROVIDER_NAME, otherProvider);
+                                               MOZ_PROVIDER_NAME, otherProvider);
             }
 
             keyGen = KeyGenerator.getInstance("AES",
-                    MOZ_PROVIDER_NAME);
+                                              MOZ_PROVIDER_NAME);
             javax.crypto.SecretKey aesKeyToWrap;
             keyGen.init(128);
             aesKeyToWrap = keyGen.generateKey();
@@ -123,25 +123,25 @@ public class JCAKeyWrap {
                 aesKey = keyGen.generateKey();
                 keyGen = KeyGenerator.getInstance("AES", MOZ_PROVIDER_NAME);
                 int keyStrength =
-                        (((SecretKeyFacade) aesKey).key.getStrength());
+                    (((SecretKeyFacade) aesKey).key.getStrength());
 
                 //JDK 1.4 and 1.5 only supports 128 keys for AES
                 //therefore only do comparison testing of providers with
                 //128 key strength
                 if (keyStrength == 128 && !keyWrap.isBFipsMode()) {
                     keyWrap.wrapSymetricKey(tripleDESKey,
-                            "AES/CBC/PKCS5Padding", aesKey,
-                            MOZ_PROVIDER_NAME, otherProvider);
+                                            "AES/CBC/PKCS5Padding", aesKey,
+                                            MOZ_PROVIDER_NAME, otherProvider);
                     keyWrap.wrapSymetricKey(aesKeyToWrap,
-                            "AES/CBC/PKCS5Padding", aesKey,
-                            MOZ_PROVIDER_NAME, otherProvider);
+                                            "AES/CBC/PKCS5Padding", aesKey,
+                                            MOZ_PROVIDER_NAME, otherProvider);
                     keyWrap.wrapSymetricKeyWithRSA(aesKey, rsaKeyPairNSS,
-                            MOZ_PROVIDER_NAME, otherProvider);
+                                                   MOZ_PROVIDER_NAME, otherProvider);
                 } else {
                     keyWrap.wrapSymetricKey(tripleDESKey,
-                            "AES/CBC/PKCS5Padding", aesKey);
+                                            "AES/CBC/PKCS5Padding", aesKey);
                     keyWrap.wrapSymetricKey(aesKeyToWrap,
-                            "AES/CBC/PKCS5Padding", aesKey);
+                                            "AES/CBC/PKCS5Padding", aesKey);
                     keyWrap.wrapSymetricKeyWithRSA(aesKey, rsaKeyPairNSS);
                 }
                 aesKeyToWrap = aesKey;
@@ -160,8 +160,8 @@ public class JCAKeyWrap {
      */
     public static void usage() {
         System.out.println(
-                "Usage: java org.mozilla.jss.tests.JCAKeyWrap " +
-                "<dbdir> <passwordFile>");
+            "Usage: java org.mozilla.jss.tests.JCAKeyWrap " +
+            "<dbdir> <passwordFile>");
     }
     protected boolean bFipsMode = false;
     protected byte[] plainText = "Firefox   rules!Firefox   rules!Firefox   rules!Firefox   rules!Firefox   rules!".getBytes();
@@ -226,16 +226,18 @@ public class JCAKeyWrap {
      * @throws Exception
      */
     public String testCipher(String symKeyType)
-            throws Exception {
+    throws Exception {
         String testCipher;
         String[] cipherDESede = {"DESede/ECB/NoPadding",
-            "DESede/CBC/PKCS5Padding",
-            "DESede/CBC/NoPadding"};
+                                 "DESede/CBC/PKCS5Padding",
+                                 "DESede/CBC/NoPadding"
+                                };
         String[] cipherAES = {"AES/ECB/NoPadding", "AES/CBC/NoPadding",
-            "AES/CBC/PKCS5Padding"};
+                              "AES/CBC/PKCS5Padding"
+                             };
 
         SecureRandom r = SecureRandom.getInstance("pkcs11prng",
-                MOZ_PROVIDER_NAME);
+                         MOZ_PROVIDER_NAME);
 
         if (symKeyType.equalsIgnoreCase("AES")) {
             return cipherAES[r.nextInt(cipherAES.length)];
@@ -256,10 +258,10 @@ public class JCAKeyWrap {
      * @throws Exception
      */
     public void wrapSymetricKeyWithRSA(Key symKey,
-            KeyPair keyPair) throws Exception {
+                                       KeyPair keyPair) throws Exception {
 
         wrapSymetricKeyWithRSA(symKey, keyPair,
-                MOZ_PROVIDER_NAME, MOZ_PROVIDER_NAME);
+                               MOZ_PROVIDER_NAME, MOZ_PROVIDER_NAME);
     }
 
     /**
@@ -271,15 +273,15 @@ public class JCAKeyWrap {
      * @throws Exception
      */
     public void wrapSymetricKeyWithRSA(
-            Key symKey, KeyPair keyPair,
-            String providerA, String providerB) throws Exception {
+        Key symKey, KeyPair keyPair,
+        String providerA, String providerB) throws Exception {
         try {
 
             String symKeyType = new String(symKey.getAlgorithm());
 
             System.out.print("Wrap " + symKeyType + " " +
-                    ((SecretKeyFacade) symKey).key.getStrength() +
-                    " with RSA. ");
+                             ((SecretKeyFacade) symKey).key.getStrength() +
+                             " with RSA. ");
 
             // wrap key
             Cipher cipher = Cipher.getInstance("RSA", providerA);
@@ -290,8 +292,8 @@ public class JCAKeyWrap {
             cipher = Cipher.getInstance("RSA", providerA);
             cipher.init(Cipher.UNWRAP_MODE, keyPair.getPrivate());
             SecretKey unwrappedKey =
-                    (javax.crypto.SecretKey) cipher.unwrap(wrappedData,
-                    symKeyType, Cipher.SECRET_KEY);
+                (javax.crypto.SecretKey) cipher.unwrap(wrappedData,
+                        symKeyType, Cipher.SECRET_KEY);
 
             testKeys(symKey, unwrappedKey, providerA, providerB);
 
@@ -325,10 +327,10 @@ public class JCAKeyWrap {
      * @throws Exception
      */
     public void wrapSymetricKey(Key symKey, String wrapperAlg,
-            Key wrapperKey) throws Exception {
+                                Key wrapperKey) throws Exception {
 
         wrapSymetricKey(symKey, wrapperAlg, wrapperKey,
-                MOZ_PROVIDER_NAME, MOZ_PROVIDER_NAME);
+                        MOZ_PROVIDER_NAME, MOZ_PROVIDER_NAME);
     }
 
     /**
@@ -358,7 +360,7 @@ public class JCAKeyWrap {
      * @throws java.lang.Exception
      */
     protected void testKeys(Key keyA, Key keyB, String providerA,
-            String providerB) throws Exception {
+                            String providerB) throws Exception {
         //ensure keys are equal
         if (bFipsMode) {
             //bFipsMode providerA and providerB mozilla-JSS
@@ -366,11 +368,11 @@ public class JCAKeyWrap {
             if (((SecretKeyFacade) keyA).key.getStrength() !=
                     ((SecretKeyFacade) keyB).key.getStrength()) {
                 throw new Exception("unwrapped key strength does not " +
-                        "match orginal");
+                                    "match orginal");
             }
         } else if (!keysEqual(keyA, keyB)) {
             throw new Exception("unwrapped key " +
-                    "does not match original");
+                                "does not match original");
         }
 
         //As an extra test encrypt with keyA using ProviderA
@@ -378,7 +380,7 @@ public class JCAKeyWrap {
 
         String cipherAlg = testCipher(keyA.getAlgorithm());
         System.out.println("Test " + cipherAlg + " encrypt with " +
-                providerA + " decrypt " + providerB);
+                           providerA + " decrypt " + providerB);
 
         // if no padding is used plainText needs to be fixed length
         // block divisable by 8 bytes
@@ -409,14 +411,14 @@ public class JCAKeyWrap {
         } else {
             //retrieve the algorithmParameters from the encoded array
             AlgorithmParameters aps =
-                    AlgorithmParameters.getInstance(keyB.getAlgorithm());
+                AlgorithmParameters.getInstance(keyB.getAlgorithm());
             aps.init(encodedAlgParams);
             cipher.init(Cipher.DECRYPT_MODE, keyB, aps);
         }
 
         byte[] recovered = new byte[plaintext.length];
         int rLen = cipher.update(encryptedText, 0, encryptedText.length,
-                recovered, 0);
+                                 recovered, 0);
         rLen += cipher.doFinal(recovered, rLen);
 
         if (!java.util.Arrays.equals(plaintext, recovered)) {
@@ -434,16 +436,16 @@ public class JCAKeyWrap {
      * @throws Exception
      */
     public void wrapSymetricKey(Key symKey, String wrapperAlg,
-            Key wrapperKey, String providerA,
-            String providerB) throws Exception {
+                                Key wrapperKey, String providerA,
+                                String providerB) throws Exception {
         try {
 
 
             System.out.print("Wrap " + symKey.getAlgorithm() + " " +
-                    ((SecretKeyFacade) symKey).key.getStrength() +
-                    " with " + wrapperKey.getAlgorithm() + " " +
-                    ((SecretKeyFacade) wrapperKey).key.getStrength() +
-                    " symmetric key. ");
+                             ((SecretKeyFacade) symKey).key.getStrength() +
+                             " with " + wrapperKey.getAlgorithm() + " " +
+                             ((SecretKeyFacade) wrapperKey).key.getStrength() +
+                             " symmetric key. ");
 
             // wrap key
             Cipher cipher = Cipher.getInstance(wrapperAlg, providerA);
@@ -467,14 +469,14 @@ public class JCAKeyWrap {
             } else {
                 //retrieve the algorithmParameters from the encoded array
                 AlgorithmParameters aps =
-                        AlgorithmParameters.getInstance(
+                    AlgorithmParameters.getInstance(
                         wrapperKey.getAlgorithm());
                 aps.init(encodedKeyWrapAP);
                 cipher.init(Cipher.UNWRAP_MODE, wrapperKey, aps);
             }
 
             SecretKey unwrappedKey = (SecretKey) cipher.unwrap(wrappedData,
-                    symKey.getAlgorithm(), Cipher.SECRET_KEY);
+                                     symKey.getAlgorithm(), Cipher.SECRET_KEY);
 
             testKeys(symKey, unwrappedKey, providerA, providerB);
 

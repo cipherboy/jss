@@ -97,7 +97,7 @@ public class ProofOfPossession implements ASN1Value {
     private ProofOfPossession() { }
 
     private ProofOfPossession(Type type, POPOSigningKey signature,
-                POPOPrivKey keyEncipherment, POPOPrivKey keyAgreement) {
+                              POPOPrivKey keyEncipherment, POPOPrivKey keyAgreement) {
         this.type = type;
         this.signature = signature;
         this.keyEncipherment = keyEncipherment;
@@ -126,7 +126,7 @@ public class ProofOfPossession implements ASN1Value {
     public static ProofOfPossession
     createKeyEncipherment(POPOPrivKey keyEncipherment) {
         return new ProofOfPossession(
-            KEY_ENCIPHERMENT, null, keyEncipherment, null );
+                   KEY_ENCIPHERMENT, null, keyEncipherment, null );
     }
 
     /**
@@ -135,7 +135,7 @@ public class ProofOfPossession implements ASN1Value {
     public static ProofOfPossession
     createKeyAgreement(POPOPrivKey keyAgreement) {
         return new ProofOfPossession(
-            KEY_AGREEMENT, null, null, keyAgreement );
+                   KEY_AGREEMENT, null, null, keyAgreement );
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -175,7 +175,7 @@ public class ProofOfPossession implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
         assert(implicitTag.equals(getTag()));
         encode(ostream);
     }
@@ -205,7 +205,7 @@ public class ProofOfPossession implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             CHOICE c = (CHOICE) choicet.decode(istream);
 
             if( c.getTag().equals(Tag.get(0)) ) {
@@ -223,7 +223,7 @@ public class ProofOfPossession implements ASN1Value {
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             throw new RuntimeException("A CHOICE cannot be implicitly tagged");
             // return decode(istream);
         }

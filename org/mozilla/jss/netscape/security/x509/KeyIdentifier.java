@@ -66,7 +66,7 @@ public class KeyIdentifier implements java.io.Serializable {
      */
     public String toString() {
         org.mozilla.jss.netscape.security.util.PrettyPrintFormat pp =
-                new org.mozilla.jss.netscape.security.util.PrettyPrintFormat(" ", 20);
+            new org.mozilla.jss.netscape.security.util.PrettyPrintFormat(" ", 20);
         String octetbits = pp.toHexString(octetString);
 
         String s = "KeyIdentifier [\n";

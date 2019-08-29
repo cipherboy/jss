@@ -65,7 +65,7 @@
 
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PK11SecureRandom_setSeed
-    ( JNIEnv* env, jobject this, jbyteArray jseed )
+( JNIEnv* env, jobject this, jbyteArray jseed )
 {
     /*
      * "JNI" data members
@@ -205,7 +205,7 @@ finish:
 
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PK11SecureRandom_nextBytes
-    ( JNIEnv* env, jobject this, jbyteArray jbytes )
+( JNIEnv* env, jobject this, jbyteArray jbytes )
 {
     /*
      * "JNI" data members

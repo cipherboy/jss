@@ -94,8 +94,8 @@ public class PKCS8Key implements PrivateKey {
         BigInteger parsedVersion = in.data.getInteger().toBigInteger();
         if (!VERSION.equals(parsedVersion)) {
             throw new IOException("version mismatch: (supported: " +
-                    VERSION + ", parsed: " +
-                    parsedVersion);
+                                  VERSION + ", parsed: " +
+                                  parsedVersion);
         }
 
         algorithm = AlgorithmId.parse(in.data.getDerValue());
@@ -136,7 +136,7 @@ public class PKCS8Key implements PrivateKey {
      * See the description above.
      */
     public static PKCS8Key buildPKCS8Key(AlgorithmId algid, byte[] key)
-            throws IOException, InvalidKeyException {
+    throws IOException, InvalidKeyException {
         /*
          * Use the algid and key parameters to produce the ASN.1 encoding
          * of the key, which will then be used as the input to the
@@ -177,7 +177,7 @@ public class PKCS8Key implements PrivateKey {
             if (sunProvider == null)
                 throw new InstantiationException();
             classname = sunProvider.getProperty("PrivateKey.PKCS#8." +
-                    algid.getName());
+                                                algid.getName());
             if (classname == null) {
                 throw new InstantiationException();
             }
@@ -198,11 +198,11 @@ public class PKCS8Key implements PrivateKey {
         } catch (InstantiationException e) {
         } catch (IllegalAccessException e) {
             throw new IOException("IllegalAccessException : " +
-                      e.getMessage(), e);
+                                  e.getMessage(), e);
         } catch (NoSuchMethodException e) {
         } catch (InvocationTargetException e) {
             throw new IOException("InvocationTargetException : " +
-                      e.getMessage(), e);
+                                  e.getMessage(), e);
         }
 
         PKCS8Key result = new PKCS8Key();
@@ -267,7 +267,7 @@ public class PKCS8Key implements PrivateKey {
 
             } catch (IOException e) {
                 throw new InvalidKeyException("IOException : " +
-                           e.getMessage());
+                                              e.getMessage());
             }
         }
         return copyEncodedKey(encodedKey);
@@ -278,11 +278,11 @@ public class PKCS8Key implements PrivateKey {
      */
     public String toString() {
         org.mozilla.jss.netscape.security.util.PrettyPrintFormat pp =
-                new org.mozilla.jss.netscape.security.util.PrettyPrintFormat(" ", 20);
+            new org.mozilla.jss.netscape.security.util.PrettyPrintFormat(" ", 20);
         String keybits = pp.toHexString(key);
 
         return "algorithm = " + algid.toString()
-                + ", unparsed keybits = \n" + keybits;
+               + ", unparsed keybits = \n" + keybits;
     }
 
     /**
@@ -312,8 +312,8 @@ public class PKCS8Key implements PrivateKey {
             BigInteger version = val.data.getInteger().toBigInteger();
             if (!version.equals(PKCS8Key.VERSION)) {
                 throw new IOException("version mismatch: (supported: " +
-                        PKCS8Key.VERSION + ", parsed: " +
-                        version);
+                                      PKCS8Key.VERSION + ", parsed: " +
+                                      version);
             }
             algid = AlgorithmId.parse(val.data.getDerValue());
             key = val.data.getOctetString();
@@ -324,7 +324,7 @@ public class PKCS8Key implements PrivateKey {
         } catch (IOException e) {
             // e.printStackTrace ();
             throw new InvalidKeyException("IOException : " +
-                      e.getMessage());
+                                          e.getMessage());
         }
     }
 
@@ -350,7 +350,7 @@ public class PKCS8Key implements PrivateKey {
         } catch (InvalidKeyException e) {
             e.printStackTrace();
             throw new IOException("deserialized key is invalid: " +
-                    e.getMessage());
+                                  e.getMessage());
         }
     }
 
@@ -368,7 +368,7 @@ public class PKCS8Key implements PrivateKey {
      * Produce PKCS#8 encoding from algorithm id and key material.
      */
     static void encode(DerOutputStream out, AlgorithmId algid, byte[] key)
-            throws IOException {
+    throws IOException {
         DerOutputStream tmp = new DerOutputStream();
         tmp.putInteger(new BigInt(VERSION.toByteArray()));
         algid.encode(tmp);

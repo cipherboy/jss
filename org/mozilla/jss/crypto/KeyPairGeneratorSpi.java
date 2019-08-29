@@ -19,7 +19,7 @@ public abstract class KeyPairGeneratorSpi {
 
     public abstract void initialize(AlgorithmParameterSpec params,
                                     SecureRandom random)
-        throws InvalidAlgorithmParameterException;
+    throws InvalidAlgorithmParameterException;
 
     public abstract KeyPair generateKeyPair() throws TokenException;
 
@@ -46,10 +46,14 @@ public abstract class KeyPairGeneratorSpi {
      */
     public final static class Usage {
         private Usage() { }
-        private Usage(int val) { this.val = val;}
+        private Usage(int val) {
+            this.val = val;
+        }
         private int val;
 
-        public int getVal() { return val; }
+        public int getVal() {
+            return val;
+        }
 
         // these enums must match the
         // opFlagForUsage listed in PK11KeyPairGenerator.java

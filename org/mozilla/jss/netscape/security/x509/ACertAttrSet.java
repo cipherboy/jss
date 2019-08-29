@@ -63,7 +63,7 @@ public class ACertAttrSet implements CertAttrSet {
      * @exception IOException on other errors.
      */
     public void encode(OutputStream out)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         mDerValue.encode((DerOutputStream) out);
     }
 
@@ -76,7 +76,7 @@ public class ACertAttrSet implements CertAttrSet {
      * @exception IOException on other errors.
      */
     public void decode(InputStream in)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         throw new IOException("not supported");
     }
 
@@ -90,7 +90,7 @@ public class ACertAttrSet implements CertAttrSet {
      * @exception IOException on other errors.
      */
     public void set(String name, Object obj)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         throw new IOException("not supported");
     }
 
@@ -103,7 +103,7 @@ public class ACertAttrSet implements CertAttrSet {
      * @exception IOException on other errors.
      */
     public Object get(String name)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         throw new IOException("not supported");
     }
 
@@ -116,7 +116,7 @@ public class ACertAttrSet implements CertAttrSet {
      * @exception IOException on other errors.
      */
     public void delete(String name)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         throw new IOException("not supported");
     }
 

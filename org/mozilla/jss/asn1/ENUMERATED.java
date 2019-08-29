@@ -38,50 +38,50 @@ public class ENUMERATED extends INTEGER implements ASN1Value {
     }
 
     private static final ENUMERATED.Template templateInstance =
-                                            new ENUMERATED.Template();
+        new ENUMERATED.Template();
     public static ASN1Template getTemplate() {
         return templateInstance;
     }
 
 
-/**
- * A template for decoding ENUMERATED values from their BER encodings.
- * The template reads the value as an INTEGER.  It does not check that it
- * is a valid value for the ENUMERATED type.
- */
-public static class Template
-    extends INTEGER.Template implements ASN1Template
-{
-    Tag getTag() {
-        return ENUMERATED.TAG;
-    }
-    public boolean tagMatch(Tag tag) {
-        return( tag.equals(ENUMERATED.TAG) );
-    }
-
-    public ASN1Value
-    decode(Tag tag, InputStream derStream)
-        throws InvalidBERException, IOException
+    /**
+     * A template for decoding ENUMERATED values from their BER encodings.
+     * The template reads the value as an INTEGER.  It does not check that it
+     * is a valid value for the ENUMERATED type.
+     */
+    public static class Template
+        extends INTEGER.Template implements ASN1Template
     {
-      try {
-        ASN1Header wrapper = new ASN1Header(derStream);
-
-        wrapper.validate(tag, FORM);
-
-        // Is length < 1 ?
-        if( wrapper.getContentLength() < 1 ) {
-            throw new InvalidBERException("Invalid 0 length for ENUMERATED");
+        Tag getTag() {
+            return ENUMERATED.TAG;
+        }
+        public boolean tagMatch(Tag tag) {
+            return( tag.equals(ENUMERATED.TAG) );
         }
 
-        byte[] valBytes = new byte[ (int) wrapper.getContentLength() ];
-        ASN1Util.readFully(valBytes, derStream);
-        return new ENUMERATED( valBytes );
+        public ASN1Value
+        decode(Tag tag, InputStream derStream)
+        throws InvalidBERException, IOException
+        {
+            try {
+                ASN1Header wrapper = new ASN1Header(derStream);
 
-      } catch(InvalidBERException e) {
-        throw new InvalidBERException(e, "ENUMERATED");
-      }
-    }
+                wrapper.validate(tag, FORM);
 
-} // end of Template
+                // Is length < 1 ?
+                if( wrapper.getContentLength() < 1 ) {
+                    throw new InvalidBERException("Invalid 0 length for ENUMERATED");
+                }
+
+                byte[] valBytes = new byte[ (int) wrapper.getContentLength() ];
+                ASN1Util.readFully(valBytes, derStream);
+                return new ENUMERATED( valBytes );
+
+            } catch(InvalidBERException e) {
+                throw new InvalidBERException(e, "ENUMERATED");
+            }
+        }
+
+    } // end of Template
 
 }

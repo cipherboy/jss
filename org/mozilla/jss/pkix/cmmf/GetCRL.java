@@ -116,7 +116,7 @@ public class GetCRL implements ASN1Value {
      *      using the constants provided in this class.
      */
     public GetCRL( ANY issuerName, ANY cRLName, GeneralizedTime time,
-                    BIT_STRING reasons ) {
+                   BIT_STRING reasons ) {
         if( issuerName == null ) {
             throw new IllegalArgumentException(
                 "issuerName parameter to GetCRL constructor is null");
@@ -153,7 +153,7 @@ public class GetCRL implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
         sequence.encode(implicitTag, ostream);
     }
 
@@ -183,12 +183,12 @@ public class GetCRL implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
 
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 

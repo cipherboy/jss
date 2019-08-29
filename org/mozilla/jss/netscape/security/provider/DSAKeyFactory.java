@@ -54,14 +54,14 @@ public class DSAKeyFactory extends KeyFactorySpi {
      *                is inappropriate for this key factory to produce a public key.
      */
     protected PublicKey engineGeneratePublic(KeySpec keySpec)
-            throws InvalidKeySpecException {
+    throws InvalidKeySpecException {
         try {
             if (keySpec instanceof DSAPublicKeySpec) {
                 DSAPublicKeySpec dsaPubKeySpec = (DSAPublicKeySpec) keySpec;
                 return new DSAPublicKey(dsaPubKeySpec.getY(),
-                        dsaPubKeySpec.getP(),
-                        dsaPubKeySpec.getQ(),
-                        dsaPubKeySpec.getG());
+                                        dsaPubKeySpec.getP(),
+                                        dsaPubKeySpec.getQ(),
+                                        dsaPubKeySpec.getG());
 
             } else if (keySpec instanceof X509EncodedKeySpec) {
                 return new DSAPublicKey(((X509EncodedKeySpec) keySpec).getEncoded());
@@ -86,14 +86,14 @@ public class DSAKeyFactory extends KeyFactorySpi {
      *                is inappropriate for this key factory to produce a private key.
      */
     protected PrivateKey engineGeneratePrivate(KeySpec keySpec)
-            throws InvalidKeySpecException {
+    throws InvalidKeySpecException {
         try {
             if (keySpec instanceof DSAPrivateKeySpec) {
                 DSAPrivateKeySpec dsaPrivKeySpec = (DSAPrivateKeySpec) keySpec;
                 return new DSAPrivateKey(dsaPrivKeySpec.getX(),
-                        dsaPrivKeySpec.getP(),
-                        dsaPrivKeySpec.getQ(),
-                        dsaPrivKeySpec.getG());
+                                         dsaPrivKeySpec.getP(),
+                                         dsaPrivKeySpec.getQ(),
+                                         dsaPrivKeySpec.getG());
 
             } else if (keySpec instanceof PKCS8EncodedKeySpec) {
                 return new DSAPrivateKey(((PKCS8EncodedKeySpec) keySpec).getEncoded());
@@ -124,7 +124,7 @@ public class DSAKeyFactory extends KeyFactorySpi {
      */
     @SuppressWarnings("unchecked")
     protected <T extends KeySpec> T engineGetKeySpec(Key key, Class<T> keySpec)
-            throws InvalidKeySpecException {
+    throws InvalidKeySpecException {
 
         DSAParams params;
 
@@ -134,17 +134,17 @@ public class DSAKeyFactory extends KeyFactorySpi {
 
                 // Determine valid key specs
                 Class<?> dsaPubKeySpec = Class.forName
-                        ("java.security.spec.DSAPublicKeySpec");
+                                         ("java.security.spec.DSAPublicKeySpec");
                 Class<?> x509KeySpec = Class.forName
-                        ("java.security.spec.X509EncodedKeySpec");
+                                       ("java.security.spec.X509EncodedKeySpec");
 
                 if (dsaPubKeySpec.isAssignableFrom(keySpec)) {
                     java.security.interfaces.DSAPublicKey dsaPubKey = (java.security.interfaces.DSAPublicKey) key;
                     params = dsaPubKey.getParams();
                     return (T) new DSAPublicKeySpec(dsaPubKey.getY(),
-                            params.getP(),
-                            params.getQ(),
-                            params.getG());
+                                                    params.getP(),
+                                                    params.getQ(),
+                                                    params.getG());
 
                 } else if (x509KeySpec.isAssignableFrom(keySpec)) {
                     return (T) new X509EncodedKeySpec(key.getEncoded());
@@ -157,17 +157,17 @@ public class DSAKeyFactory extends KeyFactorySpi {
 
                 // Determine valid key specs
                 Class<?> dsaPrivKeySpec = Class.forName
-                        ("java.security.spec.DSAPrivateKeySpec");
+                                          ("java.security.spec.DSAPrivateKeySpec");
                 Class<?> pkcs8KeySpec = Class.forName
-                        ("java.security.spec.PKCS8EncodedKeySpec");
+                                        ("java.security.spec.PKCS8EncodedKeySpec");
 
                 if (dsaPrivKeySpec.isAssignableFrom(keySpec)) {
                     java.security.interfaces.DSAPrivateKey dsaPrivKey = (java.security.interfaces.DSAPrivateKey) key;
                     params = dsaPrivKey.getParams();
                     return (T) new DSAPrivateKeySpec(dsaPrivKey.getX(),
-                            params.getP(),
-                            params.getQ(),
-                            params.getG());
+                                                     params.getP(),
+                                                     params.getQ(),
+                                                     params.getG());
 
                 } else if (pkcs8KeySpec.isAssignableFrom(keySpec)) {
                     return (T) new PKCS8EncodedKeySpec(key.getEncoded());

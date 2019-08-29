@@ -36,7 +36,7 @@ public class PQGParams extends DSAParameterSpec {
      * @param H The H value used to generate P, Q, and G.
      */
     public PQGParams(BigInteger P, BigInteger Q, BigInteger G,
-                    BigInteger seed, int counter, BigInteger H)
+                     BigInteger seed, int counter, BigInteger H)
     {
         super(P, Q, G);
         this.seed = seed;
@@ -70,8 +70,8 @@ public class PQGParams extends DSAParameterSpec {
      */
     public static PQGParams
     generate(int keySize)
-        throws java.security.InvalidParameterException,
-                PQGParamGenException
+    throws java.security.InvalidParameterException,
+               PQGParamGenException
     {
         PQGParams pqg = generateNative(keySize);
         if( ! pqg.paramsAreValid() ) {
@@ -86,8 +86,8 @@ public class PQGParams extends DSAParameterSpec {
      */
     private static native PQGParams
     generateNative(int keySize)
-        throws java.security.InvalidParameterException,
-                PQGParamGenException;
+    throws java.security.InvalidParameterException,
+        PQGParamGenException;
 
     /**
      * Generates P, Q, and G parameters for DSA key generation.  Also
@@ -117,8 +117,8 @@ public class PQGParams extends DSAParameterSpec {
      */
     public static PQGParams
     generate(int keySize, int seedBytes)
-        throws java.security.InvalidParameterException,
-                PQGParamGenException
+    throws java.security.InvalidParameterException,
+               PQGParamGenException
     {
         PQGParams pqg = generateNative(keySize, seedBytes);
         if( ! pqg.paramsAreValid() ) {
@@ -133,8 +133,8 @@ public class PQGParams extends DSAParameterSpec {
      */
     private static native PQGParams
     generateNative(int keySize, int seedBytes)
-        throws java.security.InvalidParameterException,
-                PQGParamGenException;
+    throws java.security.InvalidParameterException,
+        PQGParamGenException;
 
     /**
      * Produces an unsigned byte-array representation of a BigInteger.
@@ -185,7 +185,7 @@ public class PQGParams extends DSAParameterSpec {
     }
 
     private native boolean paramsAreValidNative(byte[] P, byte[] Q, byte[]G,
-        byte[] seed, int counter, byte[] H);
+            byte[] seed, int counter, byte[] H);
 
     /**
      * @return The Seed used to generate P, Q, and G.

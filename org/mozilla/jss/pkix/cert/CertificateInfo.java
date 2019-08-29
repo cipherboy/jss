@@ -66,7 +66,7 @@ public class CertificateInfo implements ASN1Value {
          * Creates a version number from its numeric encoding.
          */
         public static Version fromInt(int versionNum)
-            throws InvalidBERException
+        throws InvalidBERException
         {
             if( versionNum == 0 ) {
                 return v1;
@@ -111,8 +111,8 @@ public class CertificateInfo implements ASN1Value {
      * Creates a CertificateInfo with the required fields.
      */
     public CertificateInfo(Version version, INTEGER serialNumber,
-        AlgorithmIdentifier signatureAlgId, Name issuer, Date notBefore,
-        Date notAfter, Name subject, SubjectPublicKeyInfo subjectPublicKeyInfo)
+                           AlgorithmIdentifier signatureAlgId, Name issuer, Date notBefore,
+                           Date notAfter, Name subject, SubjectPublicKeyInfo subjectPublicKeyInfo)
     {
         setVersion(version);
         setSerialNumber(serialNumber);
@@ -182,7 +182,7 @@ public class CertificateInfo implements ASN1Value {
     }
 
     public void setSubjectPublicKeyInfo(
-                    SubjectPublicKeyInfo subjectPublicKeyInfo)
+        SubjectPublicKeyInfo subjectPublicKeyInfo)
     {
         verifyNotNull(subjectPublicKeyInfo);
         this.subjectPublicKeyInfo = subjectPublicKeyInfo;
@@ -195,7 +195,7 @@ public class CertificateInfo implements ASN1Value {
      *      the information extracted from the public key.
      */
     public void setSubjectPublicKeyInfo( PublicKey pubk )
-        throws InvalidBERException, IOException
+    throws InvalidBERException, IOException
     {
         verifyNotNull(pubk);
         setSubjectPublicKeyInfo( new SubjectPublicKeyInfo(pubk) );
@@ -208,11 +208,11 @@ public class CertificateInfo implements ASN1Value {
      * @exception CertificateException If the certificate is a v1 certificate.
      */
     public void setIssuerUniqueIdentifier(BIT_STRING issuerUniqueIdentifier)
-        throws CertificateException
+    throws CertificateException
     {
         if(version==v1) {
             throw new CertificateException("issuerUniqueIdentifier cannot"+
-                " be specified for v1 certificate");
+                                           " be specified for v1 certificate");
         }
         verifyNotNull(issuerUniqueIdentifier);
         this.issuerUniqueIdentifier = issuerUniqueIdentifier;
@@ -232,11 +232,11 @@ public class CertificateInfo implements ASN1Value {
      * @exception CertificateException If the certificate is a v1 certificate.
      */
     public void setSubjectUniqueIdentifier(BIT_STRING subjectUniqueIdentifier)
-        throws CertificateException
+    throws CertificateException
     {
         if(version==v1) {
             throw new CertificateException("subjectUniqueIdentifier cannot"+
-                " be specified for v1 certificate");
+                                           " be specified for v1 certificate");
         }
         verifyNotNull(subjectUniqueIdentifier);
         this.subjectUniqueIdentifier = subjectUniqueIdentifier;
@@ -292,13 +292,13 @@ public class CertificateInfo implements ASN1Value {
     public void setExtensions(SEQUENCE extensions) throws CertificateException {
         if(version != v3) {
             throw new CertificateException("extensions can only be added to"+
-                " v3 certificates");
+                                           " v3 certificates");
         }
 
-            int size = extensions.size();
-            for(int i=0; i < size; i++) {
-                assert(extensions.elementAt(i) instanceof Extension);
-            }
+        int size = extensions.size();
+        for(int i=0; i < size; i++) {
+            assert(extensions.elementAt(i) instanceof Extension);
+        }
 
         verifyNotNull(extensions);
         this.extensions = extensions;
@@ -311,7 +311,7 @@ public class CertificateInfo implements ASN1Value {
     public void addExtension(Extension extension) throws CertificateException {
         if(version != v3) {
             throw new CertificateException("extensions can only be added to"+
-                " v3 certificates");
+                                           " v3 certificates");
         }
         extensions.addElement(extension);
     }
@@ -332,7 +332,7 @@ public class CertificateInfo implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         SEQUENCE seq = new SEQUENCE();
 
@@ -411,7 +411,7 @@ public class CertificateInfo implements ASN1Value {
             EXPLICIT.Template versionTemp = EXPLICIT.getTemplate( new Tag(0),
                                             INTEGER.getTemplate() );
             EXPLICIT defVersion =
-                        new EXPLICIT(new Tag(0), new INTEGER(v1.getNumber()) );
+                new EXPLICIT(new Tag(0), new INTEGER(v1.getNumber()) );
             seqt.addElement( versionTemp, defVersion );
             seqt.addElement(INTEGER.getTemplate()); //serial number
             seqt.addElement(AlgorithmIdentifier.getTemplate()); //signatureAlgId
@@ -435,7 +435,7 @@ public class CertificateInfo implements ASN1Value {
             SEQUENCE.OF_Template extnTemp =
                 new SEQUENCE.OF_Template( Extension.getTemplate() );
             seqt.addOptionalElement( new EXPLICIT.Template(
-                                        new Tag(3), extnTemp) );
+                                         new Tag(3), extnTemp) );
         }
 
         public boolean tagMatch(Tag tag) {
@@ -443,28 +443,28 @@ public class CertificateInfo implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
-          try {
-            SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
+            try {
+                SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
-            EXPLICIT exp = (EXPLICIT) seq.elementAt(0);
-            Version version = Version.fromInt(
-                                    ((INTEGER)exp.getContent()).intValue() );
+                EXPLICIT exp = (EXPLICIT) seq.elementAt(0);
+                Version version = Version.fromInt(
+                                      ((INTEGER)exp.getContent()).intValue() );
 
-            SEQUENCE validity = (SEQUENCE) seq.elementAt(4);
-            CHOICE choice = (CHOICE)validity.elementAt(0);
-            Date notBefore = ((TimeBase)choice.getValue()).toDate();
-            choice = (CHOICE)validity.elementAt(1);
-            Date notAfter = ((TimeBase)choice.getValue()).toDate();
+                SEQUENCE validity = (SEQUENCE) seq.elementAt(4);
+                CHOICE choice = (CHOICE)validity.elementAt(0);
+                Date notBefore = ((TimeBase)choice.getValue()).toDate();
+                choice = (CHOICE)validity.elementAt(1);
+                Date notAfter = ((TimeBase)choice.getValue()).toDate();
 
-            CertificateInfo cinfo = new CertificateInfo(
+                CertificateInfo cinfo = new CertificateInfo(
                     version,
                     (INTEGER) seq.elementAt(1),     // serial num
                     (AlgorithmIdentifier) seq.elementAt(2), //sigAlgId
@@ -475,22 +475,22 @@ public class CertificateInfo implements ASN1Value {
                     (SubjectPublicKeyInfo) seq.elementAt(6)
                 );
 
-            if( seq.elementAt(7) != null ) {
-                cinfo.setIssuerUniqueIdentifier( (BIT_STRING)seq.elementAt(7) );
-            }
-            if( seq.elementAt(8) != null ) {
-                cinfo.setSubjectUniqueIdentifier( (BIT_STRING)seq.elementAt(8));
-            }
-            if( seq.elementAt(9) != null ) {
-                exp = (EXPLICIT)seq.elementAt(9);
-                cinfo.setExtensions( (SEQUENCE) exp.getContent() );
-            }
+                if( seq.elementAt(7) != null ) {
+                    cinfo.setIssuerUniqueIdentifier( (BIT_STRING)seq.elementAt(7) );
+                }
+                if( seq.elementAt(8) != null ) {
+                    cinfo.setSubjectUniqueIdentifier( (BIT_STRING)seq.elementAt(8));
+                }
+                if( seq.elementAt(9) != null ) {
+                    exp = (EXPLICIT)seq.elementAt(9);
+                    cinfo.setExtensions( (SEQUENCE) exp.getContent() );
+                }
 
-            return cinfo;
+                return cinfo;
 
-          } catch( CertificateException e ) {
+            } catch( CertificateException e ) {
                 throw new InvalidBERException(e.getMessage());
-          }
+            }
         }
     }
 }

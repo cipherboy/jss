@@ -46,7 +46,7 @@ public class EncapsulatedContentInfo implements ASN1Value {
             } else {
                 // convert content to OCTET_STRING
                 this.content = new OCTET_STRING(
-                                    ASN1Util.encode(content) );
+                    ASN1Util.encode(content) );
             }
             sequence.addElement(new EXPLICIT(new Tag(0), this.content) );
         }
@@ -80,7 +80,7 @@ public class EncapsulatedContentInfo implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         sequence.encode(implicitTag,ostream);
     }
@@ -112,36 +112,36 @@ public class EncapsulatedContentInfo implements ASN1Value {
             seqt = new SEQUENCE.Template();
             seqt.addElement(new OBJECT_IDENTIFIER.Template());
             seqt.addOptionalElement(
-               new EXPLICIT.Template(
-                         new Tag(0), new OCTET_STRING.Template()
-                        ));
+                new EXPLICIT.Template(
+                    new Tag(0), new OCTET_STRING.Template()
+                ));
         }
 
         public ASN1Value decode(InputStream istream)
-            throws IOException, InvalidBERException
-            {
-                return decode(EncapsulatedContentInfo.TAG,istream);
-            }
+        throws IOException, InvalidBERException
+        {
+            return decode(EncapsulatedContentInfo.TAG,istream);
+        }
 
 
         public ASN1Value decode(Tag implicitTag, InputStream istream )
-            throws IOException, InvalidBERException
-            {
-                SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag,istream);
-                assert(seq.size() == 2);
-                ASN1Value content;
+        throws IOException, InvalidBERException
+        {
+            SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag,istream);
+            assert(seq.size() == 2);
+            ASN1Value content;
 
-                if( seq.elementAt(1) == null ) {
-                    content = null;
-                } else {
-                    content = ((EXPLICIT)seq.elementAt(1)).getContent();
-                }
-
-                return new EncapsulatedContentInfo(
-                    (OBJECT_IDENTIFIER) seq.elementAt(0),
-                    content
-                    );
+            if( seq.elementAt(1) == null ) {
+                content = null;
+            } else {
+                content = ((EXPLICIT)seq.elementAt(1)).getContent();
             }
+
+            return new EncapsulatedContentInfo(
+                       (OBJECT_IDENTIFIER) seq.elementAt(0),
+                       content
+                   );
+        }
     } // end of template
 
 }

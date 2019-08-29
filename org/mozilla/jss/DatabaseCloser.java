@@ -12,8 +12,9 @@ package org.mozilla.jss;
 public abstract class DatabaseCloser {
 
     private static final String authorizedClosers[] =
-        {   "org.mozilla.certsetup.apps.CertSetup$DatabaseCloser",
-            "org.mozilla.jss.CloseDBs"                                  };
+    {   "org.mozilla.certsetup.apps.CertSetup$DatabaseCloser",
+        "org.mozilla.jss.CloseDBs"
+    };
 
     /**
      * Creates a new DatabaseCloser.  This should only be called

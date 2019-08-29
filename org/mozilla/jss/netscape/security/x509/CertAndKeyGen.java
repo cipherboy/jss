@@ -71,7 +71,7 @@ public final class CertAndKeyGen {
      * @exception NoSuchAlgorithmException on unrecognized algorithms.
      */
     public CertAndKeyGen(String keyType, String sigAlg)
-            throws NoSuchAlgorithmException {
+    throws NoSuchAlgorithmException {
         keyGen = KeyPairGenerator.getInstance(keyType);
         this.sigAlg = sigAlg;
     }
@@ -109,7 +109,7 @@ public final class CertAndKeyGen {
      *                provide X.509 public keys for this signature algorithm.
      */
     public void generate(int keyBits)
-            throws InvalidKeyException {
+    throws InvalidKeyException {
         KeyPair pair;
 
         try {
@@ -127,7 +127,7 @@ public final class CertAndKeyGen {
 
         } else {
             throw new InvalidKeyException("public key " + publicKey +
-                      " not an X509Key.");
+                                          " not an X509Key.");
         }
         privateKey = pair.getPrivate();
     }
@@ -168,7 +168,7 @@ public final class CertAndKeyGen {
      */
     @Deprecated
     public X509Cert getSelfCert(X500Name myname, long validity)
-            throws InvalidKeyException, SignatureException, NoSuchAlgorithmException {
+    throws InvalidKeyException, SignatureException, NoSuchAlgorithmException {
         X509Certificate cert;
 
         try {
@@ -201,8 +201,8 @@ public final class CertAndKeyGen {
      * @exception NoSuchProviderException on unrecognized providers.
      */
     public X509Certificate getSelfCertificate(X500Name myname, long validity)
-            throws CertificateException, InvalidKeyException, SignatureException,
-            NoSuchAlgorithmException, NoSuchProviderException {
+    throws CertificateException, InvalidKeyException, SignatureException,
+        NoSuchAlgorithmException, NoSuchProviderException {
         X500Signer issuer;
         X509CertImpl cert;
         Date firstDate, lastDate;
@@ -215,14 +215,14 @@ public final class CertAndKeyGen {
             lastDate.setTime(lastDate.getTime() + validity * 1000);
 
             CertificateValidity interval =
-                                   new CertificateValidity(firstDate, lastDate);
+                new CertificateValidity(firstDate, lastDate);
 
             X509CertInfo info = new X509CertInfo();
             // Add all mandatory attributes
             info.set(X509CertInfo.VERSION,
                      new CertificateVersion(CertificateVersion.V1));
             info.set(X509CertInfo.SERIAL_NUMBER,
-                    new CertificateSerialNumber((int) (firstDate.getTime() / 1000)));
+                     new CertificateSerialNumber((int) (firstDate.getTime() / 1000)));
             AlgorithmId algID = issuer.getAlgorithmId();
             info.set(X509CertInfo.ALGORITHM_ID,
                      new CertificateAlgorithmId(algID));
@@ -239,7 +239,7 @@ public final class CertAndKeyGen {
 
         } catch (IOException e) {
             throw new CertificateEncodingException("getSelfCert: " +
-                                                    e.getMessage());
+                                                   e.getMessage());
         }
     }
 
@@ -257,7 +257,7 @@ public final class CertAndKeyGen {
      * @exception SignatureException on signature handling errors.
      */
     public PKCS10 getCertRequest(X500Name myname)
-            throws InvalidKeyException, SignatureException {
+    throws InvalidKeyException, SignatureException {
         PKCS10 req = new PKCS10(publicKey);
 
         try {
@@ -277,7 +277,7 @@ public final class CertAndKeyGen {
     }
 
     private X500Signer getSigner(X500Name me)
-            throws InvalidKeyException, NoSuchAlgorithmException {
+    throws InvalidKeyException, NoSuchAlgorithmException {
         Signature signature = Signature.getInstance(sigAlg);
 
         signature.initSign(privateKey);

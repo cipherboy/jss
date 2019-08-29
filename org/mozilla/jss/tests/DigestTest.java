@@ -22,7 +22,8 @@ public class DigestTest {
      * List all the Digest Algorithms that JSS implements.
      */
     static final String JSS_Digest_Algs[] = { "MD2", "MD5", "SHA-1",
-                                            "SHA-256", "SHA-384","SHA-512"};
+                                              "SHA-256", "SHA-384","SHA-512"
+                                            };
 
     public static boolean messageDigestCompare(String alg, byte[] toBeDigested)
     throws Exception {
@@ -32,8 +33,8 @@ public class DigestTest {
 
         // get the digest for the Mozilla-JSS provider
         java.security.MessageDigest mozillaDigest =
-                java.security.MessageDigest.getInstance(alg,
-                MOZ_PROVIDER_NAME);
+            java.security.MessageDigest.getInstance(alg,
+                    MOZ_PROVIDER_NAME);
         mozillaDigestOut = mozillaDigest.digest(toBeDigested);
 
         // loop through all the providers that support the algorithm
@@ -49,10 +50,10 @@ public class DigestTest {
             }
 
             java.security.MessageDigest otherDigest =
-                    java.security.MessageDigest.getInstance(alg, provider);
+                java.security.MessageDigest.getInstance(alg, provider);
 
             otherDigestOut =
-                    otherDigest.digest(toBeDigested);
+                otherDigest.digest(toBeDigested);
 
             if( MessageDigest.isEqual(mozillaDigestOut, otherDigestOut) ) {
                 System.out.println(provider + " and " + MOZ_PROVIDER_NAME +
@@ -73,17 +74,17 @@ public class DigestTest {
         byte[] mozillaDigestOut;
 
         java.security.MessageDigest mozillaDigest =
-                java.security.MessageDigest.getInstance(alg, MOZ_PROVIDER_NAME);
+            java.security.MessageDigest.getInstance(alg, MOZ_PROVIDER_NAME);
 
         mozillaDigestOut = mozillaDigest.digest(toBeDigested);
 
         if( mozillaDigestOut.length == mozillaDigest.getDigestLength() ) {
             System.out.println(mozillaDigest.getAlgorithm() + " " +
-                    " digest output size is " + mozillaDigestOut.length);
+                               " digest output size is " + mozillaDigestOut.length);
         } else {
             throw new Exception("ERROR: digest output size is "+
-                    mozillaDigestOut.length + ", should be "+
-                    mozillaDigest.getDigestLength() );
+                                mozillaDigestOut.length + ", should be "+
+                                mozillaDigest.getDigestLength() );
         }
 
         return true;
@@ -96,8 +97,8 @@ public class DigestTest {
 
             if( argv.length != 2 ) {
                 System.out.println(
-                        "Usage: java org.mozilla.jss.tests.DigestTest " +
-                        "<dbdir> <File>");
+                    "Usage: java org.mozilla.jss.tests.DigestTest " +
+                    "<dbdir> <File>");
                 System.exit(1);
             }
             String dbdir = argv[0];
@@ -123,7 +124,7 @@ public class DigestTest {
                 // compare Mozilla-JSS implementation with all providers
                 // that also support the given algorithm
                 if (messageDigestCompare(JSS_Digest_Algs[i], toBeDigested)
-                    == false) {
+                        == false) {
                     // no provider to compare results with
                     testJSSDigest(JSS_Digest_Algs[i], toBeDigested);
                 }

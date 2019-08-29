@@ -128,53 +128,53 @@ public class PFX implements ASN1Value {
      *      this PFX does not contain a MacData, returns false.
      */
     public boolean verifyAuthSafes(Password password, StringBuffer reason)
-        throws NotInitializedException
+    throws NotInitializedException
     {
-      try {
+        try {
 
-        if(reason == null) {
-            // this is just so we don't get a null pointer exception
-            reason = new StringBuffer();
-        }
+            if(reason == null) {
+                // this is just so we don't get a null pointer exception
+                reason = new StringBuffer();
+            }
 
-        if( macData == null ) {
-            reason.append("No MAC present in PFX");
+            if( macData == null ) {
+                reason.append("No MAC present in PFX");
+                return false;
+            }
+
+            if( encodedAuthSafes == null ) {
+                // We weren't decoded from a template, we were constructed,
+                // so just verify the encoding of the AuthSafes provided to
+                // the constructor.
+                encodedAuthSafes = ASN1Util.encode(authSafes);
+            }
+
+            // create a new MacData based on the encoded Auth Safes
+            DigestInfo macDataMac = macData.getMac();
+            MacData testMac = new MacData( password,
+                                           macData.getMacSalt().toByteArray(),
+                                           macData.getMacIterationCount().intValue(),
+                                           encodedAuthSafes );
+
+            if( testMac.getMac().equals(macDataMac) ) {
+                return true;
+            } else {
+                reason.append("Digests do not match");
+                return false;
+            }
+
+        } catch( java.security.DigestException e ) {
+            e.printStackTrace();
+            reason.append("A DigestException occurred");
+            return false;
+        } catch( TokenException e ) {
+            reason.append("A TokenException occurred");
+            return false;
+        } catch( CharConversionException e ) {
+            reason.append("An exception occurred converting the password from"+
+                          " chars to bytes");
             return false;
         }
-
-        if( encodedAuthSafes == null ) {
-            // We weren't decoded from a template, we were constructed,
-            // so just verify the encoding of the AuthSafes provided to
-            // the constructor.
-            encodedAuthSafes = ASN1Util.encode(authSafes);
-        }
-
-        // create a new MacData based on the encoded Auth Safes
-        DigestInfo macDataMac = macData.getMac();
-        MacData testMac = new MacData( password,
-                            macData.getMacSalt().toByteArray(),
-                            macData.getMacIterationCount().intValue(),
-                            encodedAuthSafes );
-
-        if( testMac.getMac().equals(macDataMac) ) {
-            return true;
-        } else {
-            reason.append("Digests do not match");
-            return false;
-        }
-
-      } catch( java.security.DigestException e ) {
-        e.printStackTrace();
-        reason.append("A DigestException occurred");
-        return false;
-      } catch( TokenException e ) {
-        reason.append("A TokenException occurred");
-        return false;
-      } catch( CharConversionException e ) {
-        reason.append("An exception occurred converting the password from"+
-            " chars to bytes");
-        return false;
-      }
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -223,12 +223,12 @@ public class PFX implements ASN1Value {
      *      Use DEFAULT_ITERATIONS unless there's a need to be clever.
      */
     public void computeMacData(Password password,
-            byte[] salt, int iterationCount)
-        throws NotInitializedException, DigestException,
-        TokenException, CharConversionException
+                               byte[] salt, int iterationCount)
+    throws NotInitializedException, DigestException,
+               TokenException, CharConversionException
     {
         macData = new MacData( password, salt, iterationCount,
-                ASN1Util.encode(authSafes) );
+                               ASN1Util.encode(authSafes) );
     }
 
 
@@ -248,7 +248,7 @@ public class PFX implements ASN1Value {
 
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         SEQUENCE seq = new SEQUENCE();
 
@@ -280,14 +280,14 @@ public class PFX implements ASN1Value {
 
 
         public ASN1Value decode(InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             return decode(TAG, istream);
         }
 
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
@@ -298,14 +298,14 @@ public class PFX implements ASN1Value {
                     " content-type DATA");
             }
             OCTET_STRING authSafesOS = (OCTET_STRING)
-                                            authSafesCI.getInterpretedContent();
+                                       authSafesCI.getInterpretedContent();
             AuthenticatedSafes authSafes = (AuthenticatedSafes)
-                    ASN1Util.decode( AuthenticatedSafes.getTemplate(),
-                                    authSafesOS.toByteArray() );
+                                           ASN1Util.decode( AuthenticatedSafes.getTemplate(),
+                                                   authSafesOS.toByteArray() );
 
             PFX pfx = new PFX( (INTEGER) seq.elementAt(0),
-                            authSafes,
-                            (MacData) seq.elementAt(2) );
+                               authSafes,
+                               (MacData) seq.elementAt(2) );
 
             // record the encoding of the auth safes so we can verify the
             // MAC later.  We can't just re-encode the AuthSafes because
@@ -319,7 +319,7 @@ public class PFX implements ASN1Value {
 
     public static void main(String []args) {
 
-      try {
+        try {
 
             if( args.length != 2 ) {
                 System.out.println("Usage: PFX <dbdir> <infile>");
@@ -346,7 +346,7 @@ public class PFX implements ASN1Value {
             AuthenticatedSafes authSafes = pfx.getAuthSafes();
             SEQUENCE asSeq = authSafes.getSequence();
             System.out.println("AuthSafes has "+
-                asSeq.size()+" SafeContents");
+                               asSeq.size()+" SafeContents");
             System.out.println("Enter password: ");
             Password pass = Password.readPasswordFromConsole();
 
@@ -361,7 +361,7 @@ public class PFX implements ASN1Value {
                 System.out.println("AuthSafes verifies correctly");
             } else {
                 System.out.println("AuthSafes failed to verify because: "+
-                    sb);
+                                   sb);
             }
 
             // get new AuthSafes ready
@@ -371,11 +371,11 @@ public class PFX implements ASN1Value {
                 SEQUENCE safeContents = authSafes.getSafeContentsAt(pass,i);
 
                 System.out.println("\n\nSafeContents #"+i+" has "+
-                    safeContents.size()+" bags");
+                                   safeContents.size()+" bags");
                 for(int j=0; j < safeContents.size(); j++) {
                     SafeBag safeBag = (SafeBag) safeContents.elementAt(j);
                     System.out.println("\nBag "+j+" has type "+
-                        safeBag.getBagType() );
+                                       safeBag.getBagType() );
                     SET attribs = safeBag.getBagAttributes();
                     if( attribs == null ) {
                         System.out.println("Bag has no attributes");
@@ -384,17 +384,17 @@ public class PFX implements ASN1Value {
                             Attribute a = (Attribute) attribs.elementAt(b);
                             if( a.getType().equals(SafeBag.FRIENDLY_NAME)) {
                                 BMPString bs = (BMPString) ((ANY)a.getValues().
-                                    elementAt(0)).decodeWith(
-                                        BMPString.getTemplate());
+                                                            elementAt(0)).decodeWith(
+                                                   BMPString.getTemplate());
                                 System.out.println("Friendly Name: "+bs);
-                            } else if(a.getType().equals(SafeBag.LOCAL_KEY_ID)){
+                            } else if(a.getType().equals(SafeBag.LOCAL_KEY_ID)) {
                                 OCTET_STRING os =(OCTET_STRING)
-                                    ((ANY)a.getValues().
-                                    elementAt(0)).decodeWith(
-                                    OCTET_STRING.getTemplate());
+                                                 ((ANY)a.getValues().
+                                                  elementAt(0)).decodeWith(
+                                                     OCTET_STRING.getTemplate());
                                 System.out.println("LocalKeyID:");
                                 AuthenticatedSafes.
-                                    print_byte_array(os.toByteArray());
+                                print_byte_array(os.toByteArray());
                             } else {
                                 System.out.println("Unknown attribute type");
                             }
@@ -410,19 +410,19 @@ public class PFX implements ASN1Value {
                             "content is EncryptedPrivateKeyInfo, algoid:"
                             + epki.getEncryptionAlgorithm().getOID());
                         PrivateKeyInfo pki = epki.decrypt(pass,
-                            new PasswordConverter() );
+                                                          new PasswordConverter() );
                         byte[] salt = new byte[20];
                         JSSSecureRandom rand = CryptoManager.getInstance().
-                            getSecureRNG();
+                                               getSecureRNG();
                         rand.nextBytes(salt);
                         epki = EncryptedPrivateKeyInfo.createPBE(
-                            PBEAlgorithm.PBE_SHA1_DES3_CBC, newPass,
-                            salt, 1, new PasswordConverter(), pki);
+                                   PBEAlgorithm.PBE_SHA1_DES3_CBC, newPass,
+                                   salt, 1, new PasswordConverter(), pki);
 
                         // replace the old safe bag with the new
                         safeContents.insertElementAt(
                             new SafeBag( safeBag.getBagType(),
-                                epki, safeBag.getBagAttributes()), j);
+                                         epki, safeBag.getBagAttributes()), j);
                         safeContents.removeElementAt(j+1);
                     } else if( val instanceof CertBag ) {
                         System.out.println("   content is CertBag");
@@ -435,8 +435,8 @@ public class PFX implements ASN1Value {
                             os.encode(fos);
                             fos.close();
                             Certificate cert = (Certificate)
-                                ASN1Util.decode(Certificate.getTemplate(),
-                                                os.toByteArray());
+                                               ASN1Util.decode(Certificate.getTemplate(),
+                                                               os.toByteArray());
                             cert.getInfo().print(System.out);
                         } else {
                             System.out.println("Unrecognized cert type");

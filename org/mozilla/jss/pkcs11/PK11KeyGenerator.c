@@ -29,8 +29,8 @@
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11KeyGenerator_generateNormal
-    (JNIEnv *env, jclass clazz, jobject token, jobject alg, jint strength,
-    jint opFlags, jboolean temporary, jint sensitive)
+(JNIEnv *env, jclass clazz, jobject token, jobject alg, jint strength,
+ jint opFlags, jboolean temporary, jint sensitive)
 {
     PK11SlotInfo *slot=NULL;
     PK11SymKey *skey=NULL;
@@ -61,8 +61,8 @@ Java_org_mozilla_jss_pkcs11_PK11KeyGenerator_generateNormal
 
     /* generate the key */
     skey = PK11_TokenKeyGenWithFlags(slot, mech, NULL /*param*/,
-                    strength/8 /*in bytes*/, NULL /*keyid*/,
-                    opFlags, attrFlags, NULL /*wincx*/ );
+                                     strength/8 /*in bytes*/, NULL /*keyid*/,
+                                     opFlags, attrFlags, NULL /*wincx*/ );
 
     if(skey==NULL) {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION, "KeyGen failed on token");
@@ -119,7 +119,7 @@ CopyPasswordToSECItem(JNIEnv *env, jobject pass) {
                                             PW_GET_BYTE_COPY_SIG);
     if(byteCopyMethod==NULL) {
         JSS_trace(env, JSS_TRACE_ERROR, "Failed to find Password manipulation"
-                " methods from native implementation");
+                  " methods from native implementation");
         ASSERT_OUTOFMEM(env);
         goto finish;
     }
@@ -197,7 +197,7 @@ print_secitem(SECItem *item) {
  */
 static PK11SymKey*
 constructSHA1PBAKey(JNIEnv *env, PK11SlotInfo *slot, SECItem *pwitem, SECItem *salt,
-        int iterationCount)
+                    int iterationCount)
 {
     PK11SymKey *key=NULL;
 
@@ -207,14 +207,14 @@ constructSHA1PBAKey(JNIEnv *env, PK11SlotInfo *slot, SECItem *pwitem, SECItem *s
 
     if( pwitem == NULL ) {
         JSS_throwMsg(env, TOKEN_EXCEPTION,
-            "constructSHA1PAKey:"
-            " pwitem NULL");
+                     "constructSHA1PAKey:"
+                     " pwitem NULL");
         goto finish;
     }
     if( salt == NULL ) {
         JSS_throwMsg(env, TOKEN_EXCEPTION,
-            "constructSHA1PAKey:"
-            " salt NULL");
+                     "constructSHA1PAKey:"
+                     " salt NULL");
         goto finish;
     }
 
@@ -231,8 +231,8 @@ constructSHA1PBAKey(JNIEnv *env, PK11SlotInfo *slot, SECItem *pwitem, SECItem *s
 
     if( key == NULL ) {
         JSS_throwMsg(env, TOKEN_EXCEPTION,
-            "PK11_RawPBEKeyGen:"
-            " failed to generate key");
+                     "PK11_RawPBEKeyGen:"
+                     " failed to generate key");
         goto finish;
     }
 
@@ -260,7 +260,7 @@ Java_org_mozilla_jss_pkcs11_PK11KeyGenerator_generatePBE(
     CK_MECHANISM_TYPE mech=CKM_INVALID_MECHANISM;
 
     PR_ASSERT(env!=NULL && clazz!=NULL && token!=NULL && alg!=NULL
-        && passBA!=NULL && saltBA!=NULL);
+              && passBA!=NULL && saltBA!=NULL);
 
     /* get the slot */
     if( JSS_PK11_getTokenSlotPtr(env, token, &slot) != PR_SUCCESS) {
@@ -304,22 +304,22 @@ Java_org_mozilla_jss_pkcs11_PK11KeyGenerator_generatePBE(
 
         /* create algid */
         algid = PK11_CreatePBEV2AlgorithmID(
-            oidTag,
-            encAlgOidTag,
-            SEC_OID_HMAC_SHA1,
-            0,
-            iterationCount,
-            salt);
+                    oidTag,
+                    encAlgOidTag,
+                    SEC_OID_HMAC_SHA1,
+                    0,
+                    iterationCount,
+                    salt);
 
         if( algid == NULL ) {
             JSS_throwMsg(env, TOKEN_EXCEPTION,
-                    "Unable to process PBE parameters");
+                         "Unable to process PBE parameters");
             goto finish;
         }
 
         /* generate the key */
         skey = PK11_PBEKeyGen(slot, algid, pwitem, PR_FALSE /*faulty3DES*/,
-                        NULL /*wincx*/);
+                              NULL /*wincx*/);
         if( skey == NULL ) {
             JSS_throwMsg(env, TOKEN_EXCEPTION, "Failed to generate PBE key");
             goto finish;
@@ -354,8 +354,8 @@ finish:
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11KeyGenerator_generatePBE_1IV
-    (JNIEnv *env, jclass clazz, jobject alg, jbyteArray passBA,
-    jbyteArray saltBA, jint iterationCount)
+(JNIEnv *env, jclass clazz, jobject alg, jbyteArray passBA,
+ jbyteArray saltBA, jint iterationCount)
 {
     SECOidTag oidTag;
     SECAlgorithmID *algid=NULL;
@@ -365,7 +365,7 @@ Java_org_mozilla_jss_pkcs11_PK11KeyGenerator_generatePBE_1IV
     jbyteArray ivBA=NULL;
 
     PR_ASSERT(env!=NULL && clazz!=NULL && alg!=NULL
-        && passBA!=NULL && saltBA!=NULL);
+              && passBA!=NULL && saltBA!=NULL);
 
     /* get the algorithm info */
     oidTag = JSS_getOidTagFromAlg(env, alg);
@@ -395,7 +395,7 @@ Java_org_mozilla_jss_pkcs11_PK11KeyGenerator_generatePBE_1IV
     ivItem = SEC_PKCS5GetIV(algid, pwitem, PR_FALSE /*faulty3DES*/);
     if(ivItem==NULL) {
         JSS_throwMsg(env, TOKEN_EXCEPTION, "Unable to generate PBE "
-            "initialization vector");
+                     "initialization vector");
         goto finish;
     }
 
@@ -420,7 +420,7 @@ finish:
 
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11KeyGenerator_nativeClone
-    (JNIEnv *env, jclass clazz, jobject tokenObj, jobject toBeClonedObj)
+(JNIEnv *env, jclass clazz, jobject tokenObj, jobject toBeClonedObj)
 {
     PK11SlotInfo *slot=NULL;
     PK11SymKey *toBeCloned=NULL;
@@ -450,23 +450,23 @@ Java_org_mozilla_jss_pkcs11_PK11KeyGenerator_nativeClone
     }
 
     clone = PK11_ImportSymKey(
-        slot,
-        PK11_GetMechanism(toBeCloned),
-        PK11_OriginGenerated, /* we don't know this, but it doesn't matter */
-        CKA_ENCRYPT, /* !!! Actually we want to enable all operations */
-        PK11_GetKeyData(toBeCloned),
-        NULL /* wincx */
-    );
-        
+                slot,
+                PK11_GetMechanism(toBeCloned),
+                PK11_OriginGenerated, /* we don't know this, but it doesn't matter */
+                CKA_ENCRYPT, /* !!! Actually we want to enable all operations */
+                PK11_GetKeyData(toBeCloned),
+                NULL /* wincx */
+            );
+
 
     if( clone == NULL ) {
         JSS_throwMsg(env, TOKEN_EXCEPTION, "Failed to create new symmetric"
-            " key object");
+                     " key object");
         goto finish;
     }
 
     /* wrap the new key in a Java object */
-    cloneObj = JSS_PK11_wrapSymKey(env, &clone);   
+    cloneObj = JSS_PK11_wrapSymKey(env, &clone);
 
 finish:
     if( clone!=NULL ) {

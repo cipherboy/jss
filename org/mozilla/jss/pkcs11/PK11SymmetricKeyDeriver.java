@@ -59,16 +59,16 @@ public class PK11SymmetricKeyDeriver implements SymmetricKeyDeriver {
         this.token = token;
     }
 
-    /* Use with the encrypt type mechanisms 
+    /* Use with the encrypt type mechanisms
 
     Example: initDerive(
                     symKey, (PKCS11Constants.CKM_DES3_ECB_ENCRYPT_DATA) 4354L, derivationData, null,
                     PKCS11Constants.CKM_DES3_ECB, PKCS11Constants.CKA_DERIVE, 16);
 
 
-   */
-    public void initDerive(SymmetricKey baseKey, long deriveMech, byte[] param, byte[] iv, 
-                              long targetMech, long operation, long keySize) throws InvalidKeyException
+    */
+    public void initDerive(SymmetricKey baseKey, long deriveMech, byte[] param, byte[] iv,
+                           long targetMech, long operation, long keySize) throws InvalidKeyException
     {
         reset();
 
@@ -96,7 +96,7 @@ public class PK11SymmetricKeyDeriver implements SymmetricKeyDeriver {
     }
 
     /* Use with key extraction and key concatanation mechanisms
-       
+
     Example Extraction:
        param: byte array that has the bit position of where to extract
      initDerive(
@@ -109,10 +109,10 @@ public class PK11SymmetricKeyDeriver implements SymmetricKeyDeriver {
                baseSymKey,secondarySymKey, PKCS11Constants.CKM_CONCATENATE_BASE_AND_KEY,null,null,
                PKCS11Constants.CKM_DES3_ECB, PKCS11Constants.CKA_DERIVE,0);
 
-    */ 
+    */
 
-    public void initDerive(SymmetricKey baseKey, SymmetricKey secondaryKey, long deriveMech, 
-        byte[] param, byte[] iv, long targetMech, long operation, long keySize) throws InvalidKeyException
+    public void initDerive(SymmetricKey baseKey, SymmetricKey secondaryKey, long deriveMech,
+                           byte[] param, byte[] iv, long targetMech, long operation, long keySize) throws InvalidKeyException
     {
         reset();
 
@@ -127,7 +127,7 @@ public class PK11SymmetricKeyDeriver implements SymmetricKeyDeriver {
 
 
     public SymmetricKey derive()
-         throws TokenException
+    throws TokenException
     {
         SymmetricKey result = deriveSymKey(this.baseKey,this.secondaryKey,this.deriveMechanism, this.param, this.iv, this.targetMechanism, this.operation,this.keySize);
         return result;
@@ -135,13 +135,13 @@ public class PK11SymmetricKeyDeriver implements SymmetricKeyDeriver {
 
     private SymmetricKey
     deriveSymKey(SymmetricKey baseKey, SymmetricKey secondaryKey, long deriveMechanism, byte[] param, byte[] iv, long targetMechanism, long operation, long keySize)
-        throws TokenException, IllegalStateException
+    throws TokenException, IllegalStateException
     {
         return nativeDeriveSymKey(token, baseKey, secondaryKey,deriveMechanism, param, iv, targetMechanism, operation, keySize);
     }
 
     public native SymmetricKey nativeDeriveSymKey(PK11Token token, SymmetricKey baseKey, SymmetricKey secondaryKey, long deriveMechanism, byte[] param, byte[] iv,
-        long targetMechanism, long operation, long keySize);
+            long targetMechanism, long operation, long keySize);
 
     private void reset() {
         baseKey = null;
@@ -152,5 +152,5 @@ public class PK11SymmetricKeyDeriver implements SymmetricKeyDeriver {
         keySize = 0;
         param = null;
         iv = null;
-   }
+    }
 }

@@ -91,7 +91,7 @@ public class EncryptedKey implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
 
         // no IMPLICIT tags allowed on ANY
         assert( getTag().equals(implicitTag));
@@ -130,21 +130,21 @@ public class EncryptedKey implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
-          try {
+        throws InvalidBERException, IOException {
+            try {
 
-            CHOICE choice = (CHOICE) choicet.decode(istream);
+                CHOICE choice = (CHOICE) choicet.decode(istream);
 
-            if( choice.getTag().equals(SEQUENCE.TAG) ) {
-                return new EncryptedKey( (EncryptedValue) choice.getValue() );
-            } else {
-                assert( choice.getTag().equals(new Tag(0)) );
-                return new EncryptedKey( (ANY) choice.getValue() );
-            }
+                if( choice.getTag().equals(SEQUENCE.TAG) ) {
+                    return new EncryptedKey( (EncryptedValue) choice.getValue() );
+                } else {
+                    assert( choice.getTag().equals(new Tag(0)) );
+                    return new EncryptedKey( (ANY) choice.getValue() );
+                }
 
-          } catch(InvalidBERException e) {
+            } catch(InvalidBERException e) {
                 throw new InvalidBERException(e, "EncryptedKey");
-          }
+            }
         }
 
         /**
@@ -152,9 +152,9 @@ public class EncryptedKey implements ASN1Value {
          *      cannot have an implicitTag.
          */
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             throw new RuntimeException("EncryptedKey, being a CHOICE, cannot be"+
-                " implicitly tagged");
+                                       " implicitly tagged");
             // return decode(istream);
         }
     }

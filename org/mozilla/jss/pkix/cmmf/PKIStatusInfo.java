@@ -80,11 +80,11 @@ public class PKIStatusInfo implements ASN1Value {
      * Adds a string to the statusString SEQUENCE.
      */
     public void addFreeText(String s) {
-      try {
-        statusString.addElement( new UTF8String(s) );
-      } catch( java.io.CharConversionException e ) {
-          throw new RuntimeException("Error encoding to UTF8: " + e.getMessage(), e);
-      }
+        try {
+            statusString.addElement( new UTF8String(s) );
+        } catch( java.io.CharConversionException e ) {
+            throw new RuntimeException("Error encoding to UTF8: " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -104,7 +104,7 @@ public class PKIStatusInfo implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         SEQUENCE seq = new SEQUENCE();
 
@@ -141,7 +141,7 @@ public class PKIStatusInfo implements ASN1Value {
             seqt = new SEQUENCE.Template();
             seqt.addElement( INTEGER.getTemplate() );
             seqt.addOptionalElement(
-            new SEQUENCE.OF_Template(UTF8String.getTemplate()));
+                new SEQUENCE.OF_Template(UTF8String.getTemplate()));
             seqt.addOptionalElement( BIT_STRING.getTemplate() );
         }
 
@@ -150,12 +150,12 @@ public class PKIStatusInfo implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
 
             PKIStatusInfo psi;
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);

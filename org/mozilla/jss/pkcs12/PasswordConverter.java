@@ -14,20 +14,20 @@ import org.mozilla.jss.util.Assert;
 public final class PasswordConverter
     implements KeyGenerator.CharToByteConverter {
 
-        public byte[] convert(char[] chars) {
-            byte[] bytes = new byte[ (chars.length+1) * 2 ];
+    public byte[] convert(char[] chars) {
+        byte[] bytes = new byte[ (chars.length+1) * 2 ];
 
-            int c; // char index
-            int b; // byte index
-            for(c=0, b=0; c < chars.length; c++) {
-                bytes[b++] = (byte) ((chars[c] & 0xff00) >>> 8);
-                bytes[b++] = (byte) (chars[c] & 0xff);
-            }
-            bytes[b++] = 0;
-            bytes[b++] = 0;
-            assert(b == bytes.length);
-
-            return bytes;
+        int c; // char index
+        int b; // byte index
+        for(c=0, b=0; c < chars.length; c++) {
+            bytes[b++] = (byte) ((chars[c] & 0xff00) >>> 8);
+            bytes[b++] = (byte) (chars[c] & 0xff);
         }
+        bytes[b++] = 0;
+        bytes[b++] = 0;
+        assert(b == bytes.length);
+
+        return bytes;
     }
-        
+}
+

@@ -69,7 +69,7 @@ public class BitArray {
         }
         if (a.length * BITS_PER_UNIT < length) {
             throw new IllegalArgumentException("Byte array too short to represent " +
-                           "bit array of given length");
+                                               "bit array of given length");
         }
 
         this.length = length;
@@ -125,7 +125,7 @@ public class BitArray {
      * Sets the indexed bit in this BitArray.
      */
     public void set(int index, boolean value)
-            throws ArrayIndexOutOfBoundsException {
+    throws ArrayIndexOutOfBoundsException {
         if (index < 0 || index >= length) {
             throw new ArrayIndexOutOfBoundsException(Integer.toString(index));
         }
@@ -208,22 +208,22 @@ public class BitArray {
     }
 
     private static final byte[][] NYBBLE = {
-            { (byte) '0', (byte) '0', (byte) '0', (byte) '0' },
-            { (byte) '0', (byte) '0', (byte) '0', (byte) '1' },
-            { (byte) '0', (byte) '0', (byte) '1', (byte) '0' },
-            { (byte) '0', (byte) '0', (byte) '1', (byte) '1' },
-            { (byte) '0', (byte) '1', (byte) '0', (byte) '0' },
-            { (byte) '0', (byte) '1', (byte) '0', (byte) '1' },
-            { (byte) '0', (byte) '1', (byte) '1', (byte) '0' },
-            { (byte) '0', (byte) '1', (byte) '1', (byte) '1' },
-            { (byte) '1', (byte) '0', (byte) '0', (byte) '0' },
-            { (byte) '1', (byte) '0', (byte) '0', (byte) '1' },
-            { (byte) '1', (byte) '0', (byte) '1', (byte) '0' },
-            { (byte) '1', (byte) '0', (byte) '1', (byte) '1' },
-            { (byte) '1', (byte) '1', (byte) '0', (byte) '0' },
-            { (byte) '1', (byte) '1', (byte) '0', (byte) '1' },
-            { (byte) '1', (byte) '1', (byte) '1', (byte) '0' },
-            { (byte) '1', (byte) '1', (byte) '1', (byte) '1' }
+        { (byte) '0', (byte) '0', (byte) '0', (byte) '0' },
+        { (byte) '0', (byte) '0', (byte) '0', (byte) '1' },
+        { (byte) '0', (byte) '0', (byte) '1', (byte) '0' },
+        { (byte) '0', (byte) '0', (byte) '1', (byte) '1' },
+        { (byte) '0', (byte) '1', (byte) '0', (byte) '0' },
+        { (byte) '0', (byte) '1', (byte) '0', (byte) '1' },
+        { (byte) '0', (byte) '1', (byte) '1', (byte) '0' },
+        { (byte) '0', (byte) '1', (byte) '1', (byte) '1' },
+        { (byte) '1', (byte) '0', (byte) '0', (byte) '0' },
+        { (byte) '1', (byte) '0', (byte) '0', (byte) '1' },
+        { (byte) '1', (byte) '0', (byte) '1', (byte) '0' },
+        { (byte) '1', (byte) '0', (byte) '1', (byte) '1' },
+        { (byte) '1', (byte) '1', (byte) '0', (byte) '0' },
+        { (byte) '1', (byte) '1', (byte) '0', (byte) '1' },
+        { (byte) '1', (byte) '1', (byte) '1', (byte) '0' },
+        { (byte) '1', (byte) '1', (byte) '1', (byte) '1' }
     };
 
     private static final int BYTES_PER_LINE = 8;

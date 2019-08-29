@@ -23,17 +23,17 @@
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Cipher_initContext
-    (JNIEnv *env, jclass clazz, jboolean encrypt, jobject keyObj,
-        jobject algObj, jbyteArray ivBA, jboolean padded)
+(JNIEnv *env, jclass clazz, jboolean encrypt, jobject keyObj,
+ jobject algObj, jbyteArray ivBA, jboolean padded)
 {
     return Java_org_mozilla_jss_pkcs11_PK11Cipher_initContextWithKeyBits
-        ( env, clazz, encrypt, keyObj, algObj, ivBA, 0, padded);
+           ( env, clazz, encrypt, keyObj, algObj, ivBA, 0, padded);
 }
 
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Cipher_initContextWithKeyBits
-    (JNIEnv *env, jclass clazz, jboolean encrypt, jobject keyObj,
-        jobject algObj, jbyteArray ivBA, jint keyBits, jboolean padded)
+(JNIEnv *env, jclass clazz, jboolean encrypt, jobject keyObj,
+ jobject algObj, jbyteArray ivBA, jint keyBits, jboolean padded)
 {
     CK_MECHANISM_TYPE mech;
     PK11SymKey *key=NULL;
@@ -49,7 +49,7 @@ Java_org_mozilla_jss_pkcs11_PK11Cipher_initContextWithKeyBits
     mech = JSS_getPK11MechFromAlg(env, algObj);
     if(mech == CKM_INVALID_MECHANISM) {
         JSS_throwMsg(env, TOKEN_EXCEPTION, "Unable to resolve algorithm to"
-            " PKCS #11 mechanism");
+                     " PKCS #11 mechanism");
         goto finish;
     }
 
@@ -84,13 +84,13 @@ Java_org_mozilla_jss_pkcs11_PK11Cipher_initContextWithKeyBits
     if( mech == CKM_RC2_CBC || mech == CKM_RC2_CBC_PAD ) {
         ((CK_RC2_CBC_PARAMS*)param->data)->ulEffectiveBits = keyBits;
     }
-        
+
 
     /* create crypto context */
     context = PK11_CreateContextBySymKey(mech, op, key, param);
     if(context == NULL ) {
         JSS_throwMsg(env, TOKEN_EXCEPTION,
-            "Failed to generate crypto context");
+                     "Failed to generate crypto context");
         goto finish;
     }
 
@@ -118,8 +118,8 @@ finish:
  */
 JNIEXPORT jbyteArray JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Cipher_updateContext
-    (JNIEnv *env, jclass clazz, jobject contextObj, jbyteArray inputBA,
-    jint blockSize)
+(JNIEnv *env, jclass clazz, jobject contextObj, jbyteArray inputBA,
+ jint blockSize)
 {
     PK11Context *context=NULL;
     jbyte *inbuf=NULL;
@@ -153,7 +153,7 @@ Java_org_mozilla_jss_pkcs11_PK11Cipher_updateContext
 
     /* do the operation */
     if( PK11_CipherOp(context, outbuf, (int*)&outlen, outlen,
-            (unsigned char*)inbuf, inlen) != SECSuccess) {
+                      (unsigned char*)inbuf, inlen) != SECSuccess) {
         JSS_throwMsgPrErrArg(
             env, TOKEN_EXCEPTION, "Cipher context update failed",
             PR_GetError());
@@ -181,8 +181,8 @@ finish:
  */
 JNIEXPORT jbyteArray JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Cipher_finalizeContext
-    (JNIEnv *env, jclass clazz, jobject contextObj, jint blockSize,
-        jboolean padded)
+(JNIEnv *env, jclass clazz, jobject contextObj, jint blockSize,
+ jboolean padded)
 {
     PK11Context *context=NULL;
     unsigned char *outBuf = NULL;
@@ -228,7 +228,7 @@ finish:
     PR_ASSERT( outBA || (*env)->ExceptionOccurred(env) );
     return outBA;
 }
-    
+
 
 
 /***********************************************************************
@@ -292,8 +292,8 @@ JSS_PK11_wrapCipherContextProxy(JNIEnv *env, PK11Context **context) {
         goto finish;
     }
     constructor = (*env)->GetMethodID(env, proxyClass,
-                            PLAIN_CONSTRUCTOR,
-                            CIPHER_CONTEXT_PROXY_CONSTRUCTOR_SIG);
+                                      PLAIN_CONSTRUCTOR,
+                                      CIPHER_CONTEXT_PROXY_CONSTRUCTOR_SIG);
     if(constructor == NULL) {
         ASSERT_OUTOFMEM(env);
         goto finish;
@@ -318,7 +318,7 @@ finish:
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_CipherContextProxy_releaseNativeResources
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     PK11Context *context;
 

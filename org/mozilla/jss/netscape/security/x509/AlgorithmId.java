@@ -95,7 +95,7 @@ public class AlgorithmId implements Serializable, DerEncoder {
      * @exception NoSuchAlgorithmException on error.
      */
     public static AlgorithmId get(String algname)
-            throws NoSuchAlgorithmException {
+    throws NoSuchAlgorithmException {
         ObjectIdentifier oid = algOID(algname);
 
         if (oid == null)
@@ -118,7 +118,7 @@ public class AlgorithmId implements Serializable, DerEncoder {
      *         In that case, you may "narrow" the type of the ID.
      */
     public static AlgorithmId parse(DerValue val)
-            throws IOException {
+    throws IOException {
         if (val.tag != DerValue.tag_Sequence)
             throw new IOException("algid parse error, not a sequence");
 
@@ -172,7 +172,7 @@ public class AlgorithmId implements Serializable, DerEncoder {
     }
 
     public static AlgorithmId parse(byte[] val)
-            throws IOException {
+    throws IOException {
         return null;
     }
 
@@ -186,7 +186,7 @@ public class AlgorithmId implements Serializable, DerEncoder {
     }
 
     private AlgorithmId(ObjectIdentifier oid, DerValue params)
-            throws IOException {
+    throws IOException {
         this.algid = oid;
         this.params = params;
         if (this.params != null)
@@ -206,7 +206,7 @@ public class AlgorithmId implements Serializable, DerEncoder {
     protected void decodeParams() throws IOException {
         try {
             this.algParams = AlgorithmParameters.getInstance
-                    (this.algid.toString());
+                             (this.algid.toString());
         } catch (NoSuchAlgorithmException e) {
             /*
              * This algorithm parameter type is not supported, so we cannot
@@ -223,7 +223,7 @@ public class AlgorithmId implements Serializable, DerEncoder {
      * Marshal a DER-encoded "AlgorithmID" sequence on the DER stream.
      */
     public final void encode(DerOutputStream out)
-            throws IOException {
+    throws IOException {
         derEncode(out);
     }
 
@@ -602,11 +602,11 @@ public class AlgorithmId implements Serializable, DerEncoder {
     private static final int DSA_PKIX_data[] = { 1, 2, 840, 10040, 4, 1 };
     private static final int RSA_data[] = { 1, 2, 5, 8, 1, 1 };
     private static final int RSAEncryption_data[] =
-                                         { 1, 2, 840, 113549, 1, 1, 1 };
+    { 1, 2, 840, 113549, 1, 1, 1 };
     private static final int ANSI_X962_public_key_data[] =
-                                         { 1, 2, 840, 10045, 2, 1 };
+    { 1, 2, 840, 10045, 2, 1 };
     private static final int ANSI_X962_sha1_with_ec_data[] =
-                                         { 1, 2, 840, 10045, 4, 1 };
+    { 1, 2, 840, 10045, 4, 1 };
 
     public static final ObjectIdentifier ANSIX962_EC_Public_Key_oid = new ObjectIdentifier(ANSI_X962_public_key_data);
     public static final ObjectIdentifier ANSIX962_SHA1_With_EC_oid = new ObjectIdentifier(ANSI_X962_sha1_with_ec_data);
@@ -673,50 +673,50 @@ public class AlgorithmId implements Serializable, DerEncoder {
      * COMMON SIGNATURE ALGORITHMS
      */
     private static final int sha1WithEC_data[] =
-                                   { 1, 2, 840, 10045, 4, 1 };
+    { 1, 2, 840, 10045, 4, 1 };
     private static final int sha224WithEC_data[] =
-                                   { 1, 2, 840, 10045, 4, 3, 1 };
+    { 1, 2, 840, 10045, 4, 3, 1 };
     private static final int sha256WithEC_data[] =
-                                   { 1, 2, 840, 10045, 4, 3, 2 };
+    { 1, 2, 840, 10045, 4, 3, 2 };
     private static final int sha384WithEC_data[] =
-                                   { 1, 2, 840, 10045, 4, 3, 3 };
+    { 1, 2, 840, 10045, 4, 3, 3 };
     private static final int sha512WithEC_data[] =
-                                   { 1, 2, 840, 10045, 4, 3, 4 };
+    { 1, 2, 840, 10045, 4, 3, 4 };
     private static final int md2WithRSAEncryption_data[] =
-                                   { 1, 2, 840, 113549, 1, 1, 2 };
+    { 1, 2, 840, 113549, 1, 1, 2 };
     private static final int md5WithRSAEncryption_data[] =
-                                   { 1, 2, 840, 113549, 1, 1, 4 };
+    { 1, 2, 840, 113549, 1, 1, 4 };
     private static final int sha1WithRSAEncryption_data[] =
-                                   { 1, 2, 840, 113549, 1, 1, 5 };
+    { 1, 2, 840, 113549, 1, 1, 5 };
     private static final int sha256WithRSAEncryption_data[] =
-                                   { 1, 2, 840, 113549, 1, 1, 11 };
+    { 1, 2, 840, 113549, 1, 1, 11 };
     private static final int sha384WithRSAEncryption_data[] =
-                                   { 1, 2, 840, 113549, 1, 1, 12 };
+    { 1, 2, 840, 113549, 1, 1, 12 };
     private static final int sha512WithRSAEncryption_data[] =
-                                   { 1, 2, 840, 113549, 1, 1, 13 };
+    { 1, 2, 840, 113549, 1, 1, 13 };
     private static final int sha1WithRSAEncryption_OIW_data[] =
-                                   { 1, 3, 14, 3, 2, 29 };
+    { 1, 3, 14, 3, 2, 29 };
     private static final int shaWithDSA_OIW_data[] =
-                                   { 1, 3, 14, 3, 2, 13 };
+    { 1, 3, 14, 3, 2, 13 };
     private static final int sha1WithDSA_OIW_data[] =
-                                   { 1, 3, 14, 3, 2, 27 };
+    { 1, 3, 14, 3, 2, 27 };
     private static final int dsaWithSHA1_PKIX_data[] =
-                                   { 1, 2, 840, 10040, 4, 3 };
+    { 1, 2, 840, 10040, 4, 3 };
 
     public static final ObjectIdentifier sha1WithEC_oid = new
-            ObjectIdentifier(sha1WithEC_data);
+    ObjectIdentifier(sha1WithEC_data);
 
     public static final ObjectIdentifier sha224WithEC_oid = new
-            ObjectIdentifier(sha224WithEC_data);
+    ObjectIdentifier(sha224WithEC_data);
 
     public static final ObjectIdentifier sha256WithEC_oid = new
-            ObjectIdentifier(sha256WithEC_data);
+    ObjectIdentifier(sha256WithEC_data);
 
     public static final ObjectIdentifier sha384WithEC_oid = new
-            ObjectIdentifier(sha384WithEC_data);
+    ObjectIdentifier(sha384WithEC_data);
 
     public static final ObjectIdentifier sha512WithEC_oid = new
-            ObjectIdentifier(sha512WithEC_data);
+    ObjectIdentifier(sha512WithEC_data);
 
     /**
      * Identifies a signing algorithm where an MD2 digest is encrypted
@@ -725,7 +725,7 @@ public class AlgorithmId implements Serializable, DerEncoder {
      * OID = 1.2.840.113549.1.1.2
      */
     public static final ObjectIdentifier md2WithRSAEncryption_oid = new
-            ObjectIdentifier(md2WithRSAEncryption_data);
+    ObjectIdentifier(md2WithRSAEncryption_data);
 
     /**
      * Identifies a signing algorithm where an MD5 digest is
@@ -733,31 +733,31 @@ public class AlgorithmId implements Serializable, DerEncoder {
      * OID = 1.2.840.113549.1.1.4
      */
     public static final ObjectIdentifier md5WithRSAEncryption_oid = new
-            ObjectIdentifier(md5WithRSAEncryption_data);
+    ObjectIdentifier(md5WithRSAEncryption_data);
 
     /**
      * The proper one for sha1/rsa
      */
     public static final ObjectIdentifier sha1WithRSAEncryption_oid = new
-            ObjectIdentifier(sha1WithRSAEncryption_data);
+    ObjectIdentifier(sha1WithRSAEncryption_data);
 
     /**
      * The proper one for sha256/rsa
      */
     public static final ObjectIdentifier sha256WithRSAEncryption_oid = new
-            ObjectIdentifier(sha256WithRSAEncryption_data);
+    ObjectIdentifier(sha256WithRSAEncryption_data);
 
     /**
      * The proper one for sha384/rsa
      */
     public static final ObjectIdentifier sha384WithRSAEncryption_oid = new
-            ObjectIdentifier(sha384WithRSAEncryption_data);
+    ObjectIdentifier(sha384WithRSAEncryption_data);
 
     /**
      * The proper one for sha512/rsa
      */
     public static final ObjectIdentifier sha512WithRSAEncryption_oid = new
-            ObjectIdentifier(sha512WithRSAEncryption_data);
+    ObjectIdentifier(sha512WithRSAEncryption_data);
 
     /**
      * Identifies a signing algorithm where an SHA1 digest is
@@ -765,7 +765,7 @@ public class AlgorithmId implements Serializable, DerEncoder {
      * OID = 1.3.14.3.2.29
      */
     public static final ObjectIdentifier sha1WithRSAEncryption_OIW_oid = new
-            ObjectIdentifier(sha1WithRSAEncryption_OIW_data);
+    ObjectIdentifier(sha1WithRSAEncryption_OIW_data);
 
     /**
      * Identifies the FIPS 186 "Digital Signature Standard" (DSS), where a

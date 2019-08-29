@@ -123,7 +123,7 @@ public class PKIArchiveOptions implements ASN1Value {
      *      have an implicit tag.
      */
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         // no implicit tags on a CHOICE
         assert( implicitTag.equals(tag) );
@@ -158,8 +158,8 @@ public class PKIArchiveOptions implements ASN1Value {
 
             // CHOICEs are always EXPLICIT
             template.addElement( new EXPLICIT.Template(
-                                        new Tag(0),
-                                        new EncryptedKey.Template() ));
+                                     new Tag(0),
+                                     new EncryptedKey.Template() ));
 
             template.addElement( new Tag(1), new OCTET_STRING.Template() );
             template.addElement( new Tag(2), new BOOLEAN.Template()      );
@@ -177,7 +177,7 @@ public class PKIArchiveOptions implements ASN1Value {
          * @return A PKIArchiveOptions object.
          */
         public ASN1Value decode(InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
             CHOICE choice = (CHOICE) template.decode(istream);
 
@@ -203,7 +203,7 @@ public class PKIArchiveOptions implements ASN1Value {
          * @return A PKIArchiveOptions object.
          */
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
             return decode(istream);
         }

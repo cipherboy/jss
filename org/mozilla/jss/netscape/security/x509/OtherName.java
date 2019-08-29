@@ -139,7 +139,7 @@ public class OtherName implements GeneralNameInterface {
         DerOutputStream tmp1 = new DerOutputStream();
         tmp1.write(mData);
         tmp.write(DerValue.createTag(DerValue.TAG_CONTEXT, true,
-                (byte) 0x80), tmp1);
+                                     (byte) 0x80), tmp1);
 
         out.write(DerValue.tag_SequenceOf, tmp);
     }

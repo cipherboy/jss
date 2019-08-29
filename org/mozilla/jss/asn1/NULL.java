@@ -20,7 +20,7 @@ public class NULL implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         ASN1Header head = new ASN1Header(implicitTag, FORM, 0);
         head.encode(ostream);
@@ -36,39 +36,39 @@ public class NULL implements ASN1Value {
         return templateInstance;
     }
 
-public static class Template implements ASN1Template {
+    public static class Template implements ASN1Template {
 
-    public Tag getTag() {
-        return NULL.TAG;
-    }
-    public boolean tagMatch(Tag tag) {
-        return( tag.equals(NULL.TAG) );
-    }
-
-    public ASN1Value decode(InputStream istream)
-        throws IOException, InvalidBERException
-    {
-        return decode(getTag(), istream);
-    }
-
-    public ASN1Value decode(Tag implicitTag, InputStream istream)
-        throws IOException, InvalidBERException
-    {
-      try {
-        ASN1Header head = new ASN1Header(istream);
-
-        head.validate(implicitTag, FORM);
-        if( head.getContentLength() != 0 ) {
-            throw new InvalidBERException("Invalid length ("+
-                head.getContentLength()+") for NULL; only 0 is permitted");
+        public Tag getTag() {
+            return NULL.TAG;
+        }
+        public boolean tagMatch(Tag tag) {
+            return( tag.equals(NULL.TAG) );
         }
 
-        return new NULL();
+        public ASN1Value decode(InputStream istream)
+        throws IOException, InvalidBERException
+        {
+            return decode(getTag(), istream);
+        }
 
-      } catch(InvalidBERException e) {
-        throw new InvalidBERException(e, "NULL");
-      }
-    }
-} // end of Template
+        public ASN1Value decode(Tag implicitTag, InputStream istream)
+        throws IOException, InvalidBERException
+        {
+            try {
+                ASN1Header head = new ASN1Header(istream);
+
+                head.validate(implicitTag, FORM);
+                if( head.getContentLength() != 0 ) {
+                    throw new InvalidBERException("Invalid length ("+
+                                                  head.getContentLength()+") for NULL; only 0 is permitted");
+                }
+
+                return new NULL();
+
+            } catch(InvalidBERException e) {
+                throw new InvalidBERException(e, "NULL");
+            }
+        }
+    } // end of Template
 
 }

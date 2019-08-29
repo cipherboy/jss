@@ -32,7 +32,7 @@ public class AlgorithmIdentifier implements ASN1Value {
 
     /**
      * Creates an <i>AlgorithmIdentifier</i>.
-     * 
+     *
      * @param parameters The algorithm parameters. A value of <code>null</code>
      *      will be encoded with an ASN.1 <code>NULL</code>.
      */
@@ -63,7 +63,7 @@ public class AlgorithmIdentifier implements ASN1Value {
     }
 
     private static final AlgorithmIdentifier.Template templateInstance =
-                                new AlgorithmIdentifier.Template();
+        new AlgorithmIdentifier.Template();
     public static AlgorithmIdentifier.Template getTemplate() {
         return templateInstance;
     }
@@ -73,48 +73,48 @@ public class AlgorithmIdentifier implements ASN1Value {
     }
 
     public void encode(Tag implicit, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         sequence.encode(implicit, ostream);
     }
 
-public static class Template implements ASN1Template {
+    public static class Template implements ASN1Template {
 
-    public boolean tagMatch(Tag tag) {
-        return TAG.equals(tag);
-    }
-
-    public ASN1Value decode(InputStream istream)
-        throws IOException, InvalidBERException
-    {
-        return decode(TAG, istream);
-    }
-
-    public ASN1Value decode(Tag implicit, InputStream istream)
-        throws IOException, InvalidBERException
-    {
-        SEQUENCE.Template seqt = new SEQUENCE.Template();
-        seqt.addElement( new OBJECT_IDENTIFIER.Template() );
-        seqt.addOptionalElement( new ANY.Template() );
-
-        SEQUENCE seq = (SEQUENCE) seqt.decode(implicit, istream);
-
-        // the template should have enforced this
-        assert( seq.size() == 2 );
-
-        OBJECT_IDENTIFIER algOID = (OBJECT_IDENTIFIER)seq.elementAt(0);
-
-        if (seq.elementAt(1) == null) {
-            return new AlgorithmIdentifier(
-                algOID  // OID
-            );
-        } else {
-            return new AlgorithmIdentifier(
-                (OBJECT_IDENTIFIER)seq.elementAt(0),  // OID
-                seq.elementAt(1)                      // parameters
-            );
+        public boolean tagMatch(Tag tag) {
+            return TAG.equals(tag);
         }
-    }
-} // end of Template
+
+        public ASN1Value decode(InputStream istream)
+        throws IOException, InvalidBERException
+        {
+            return decode(TAG, istream);
+        }
+
+        public ASN1Value decode(Tag implicit, InputStream istream)
+        throws IOException, InvalidBERException
+        {
+            SEQUENCE.Template seqt = new SEQUENCE.Template();
+            seqt.addElement( new OBJECT_IDENTIFIER.Template() );
+            seqt.addOptionalElement( new ANY.Template() );
+
+            SEQUENCE seq = (SEQUENCE) seqt.decode(implicit, istream);
+
+            // the template should have enforced this
+            assert( seq.size() == 2 );
+
+            OBJECT_IDENTIFIER algOID = (OBJECT_IDENTIFIER)seq.elementAt(0);
+
+            if (seq.elementAt(1) == null) {
+                return new AlgorithmIdentifier(
+                           algOID  // OID
+                       );
+            } else {
+                return new AlgorithmIdentifier(
+                           (OBJECT_IDENTIFIER)seq.elementAt(0),  // OID
+                           seq.elementAt(1)                      // parameters
+                       );
+            }
+        }
+    } // end of Template
 
 }

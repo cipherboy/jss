@@ -68,7 +68,7 @@ public class AclImpl extends OwnerImpl implements Acl {
      *                not on the owners list of the Acl.
      */
     public void setName(Principal caller, String name)
-            throws NotOwnerException {
+    throws NotOwnerException {
         if (!isOwner(caller))
             throw new NotOwnerException();
 
@@ -100,7 +100,7 @@ public class AclImpl extends OwnerImpl implements Acl {
      *                is not on the owners list of the Acl.
      */
     public synchronized boolean addEntry(Principal caller, AclEntry entry)
-            throws NotOwnerException {
+    throws NotOwnerException {
         if (!isOwner(caller))
             throw new NotOwnerException();
 
@@ -126,7 +126,7 @@ public class AclImpl extends OwnerImpl implements Acl {
      *                the owners list of the Acl.
      */
     public synchronized boolean removeEntry(Principal caller, AclEntry entry)
-            throws NotOwnerException {
+    throws NotOwnerException {
         if (!isOwner(caller))
             throw new NotOwnerException();
 
@@ -236,8 +236,8 @@ public class AclImpl extends OwnerImpl implements Acl {
      */
     public synchronized Enumeration<AclEntry> entries() {
         return new AclEnumerator(this,
-                 allowedUsersTable, allowedGroupsTable,
-                 deniedUsersTable, deniedGroupsTable);
+                                 allowedUsersTable, allowedGroupsTable,
+                                 deniedUsersTable, deniedGroupsTable);
     }
 
     /**
@@ -391,7 +391,7 @@ final class AclEnumerator implements Enumeration<AclEntry> {
      */
     @Deprecated
     AclEnumerator(Acl acl, Hashtable<Principal, AclEntry> u1, Hashtable<Principal, AclEntry> g1,
-            Hashtable<Principal, AclEntry> u2, Hashtable<Principal, AclEntry> g2) {
+                  Hashtable<Principal, AclEntry> u2, Hashtable<Principal, AclEntry> g2) {
         this.acl = acl;
         this.u1 = u1.elements();
         this.u2 = u2.elements();

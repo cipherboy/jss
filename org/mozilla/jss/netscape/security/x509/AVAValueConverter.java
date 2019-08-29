@@ -46,7 +46,7 @@ public interface AVAValueConverter {
      * @exception IOException if an error occurs during the conversion.
      */
     public DerValue getValue(String valueString)
-            throws IOException;
+    throws IOException;
 
     /**
      * Converts a string to a DER encoded attribute value.
@@ -61,7 +61,7 @@ public interface AVAValueConverter {
      * @exception IOException if an error occurs during the conversion.
      */
     public DerValue getValue(String valueString, byte[] tags)
-            throws IOException;
+    throws IOException;
 
     /**
      * Converts a BER encoded value to a DER encoded attribute value.
@@ -70,7 +70,7 @@ public interface AVAValueConverter {
      * @return A DerValue object.
      */
     public DerValue getValue(byte[] berStream)
-            throws IOException;
+    throws IOException;
 
     /**
      * Converts a DER encoded value to a string, not encoded in any form.
@@ -82,5 +82,5 @@ public interface AVAValueConverter {
      * @exception IOException if an error occurs during the conversion.
      */
     public String getAsString(DerValue avaValue)
-            throws IOException;
+    throws IOException;
 }

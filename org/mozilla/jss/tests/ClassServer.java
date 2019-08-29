@@ -54,7 +54,7 @@ public abstract class ClassServer implements Runnable {
             try {
                 InputStream is     = socket.getInputStream();
                 BufferedReader bir = new BufferedReader(
-                        new InputStreamReader(is));
+                    new InputStreamReader(is));
                 String socketData  = bir.readLine();
                 if ( socketData.equals("null") )
                     socketListenStatus = false;
@@ -83,15 +83,15 @@ public abstract class ClassServer implements Runnable {
                            "-------------");
         System.out.println("supportedCiphers.size " + supportedCiphers.size());
         System.out.println("Constants.jssCiphersSuites "+
-                            Constants.jssCipherSuites.length);
+                           Constants.jssCipherSuites.length);
 
         for ( int i=0; i<(supportedCiphers.size()-1); i++ ) {
             System.out.print(i + " SC " +
-            new Integer(supportedCiphers.elementAt(i)).intValue());
+                             new Integer(supportedCiphers.elementAt(i)).intValue());
 
             for ( int j=0; j<(Constants.jssCipherSuites.length); j++ ) {
-               if (new Integer(supportedCiphers.elementAt(i)).intValue()
-                   == Constants.jssCipherSuites[j].value ) {
+                if (new Integer(supportedCiphers.elementAt(i)).intValue()
+                        == Constants.jssCipherSuites[j].value ) {
                     System.out.print(" JSSC ");
                     System.out.println(" ["+ i +"]\t" +
                                        Constants.jssCipherSuites[j].name);

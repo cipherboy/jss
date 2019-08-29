@@ -102,7 +102,7 @@ public class OtherReqMsg implements ASN1Value {
      * Constructs a new <code>OtherReqMsg</code> from its components.
      */
     public OtherReqMsg(INTEGER bodyPartID, OBJECT_IDENTIFIER requestMessageType,
-            ANY requestMessageValue) {
+                       ANY requestMessageValue) {
         if (bodyPartID == null || requestMessageType == null
                 || requestMessageValue == null) {
             throw new IllegalArgumentException(
@@ -133,7 +133,7 @@ public class OtherReqMsg implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
         sequence.encode(implicitTag, ostream);
     }
 
@@ -160,17 +160,17 @@ public class OtherReqMsg implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
             return new OtherReqMsg((INTEGER)seq.elementAt(0),
-                                (OBJECT_IDENTIFIER)seq.elementAt(1),
-                                (ANY)seq.elementAt(2));
+                                   (OBJECT_IDENTIFIER)seq.elementAt(1),
+                                   (ANY)seq.elementAt(2));
         }
     }
 }

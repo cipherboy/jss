@@ -95,8 +95,8 @@ public class GenericValueConverterTest {
         System.out.println(" - expected: " + StringTestUtil.toString(expected));
 
         byte[] actual = ConverterTestUtil.convert(new GenericValueConverter(), string, new byte[] {
-                DerValue.tag_T61String, DerValue.tag_UniversalString
-        });
+                            DerValue.tag_T61String, DerValue.tag_UniversalString
+                        });
         System.out.println(" - actual  : " + StringTestUtil.toString(actual));
 
         Assert.assertArrayEquals(expected, actual);
@@ -112,8 +112,8 @@ public class GenericValueConverterTest {
         System.out.println(" - expected: " + StringTestUtil.toString(expected));
 
         byte[] actual = ConverterTestUtil.convert(new GenericValueConverter(), string, new byte[] {
-                DerValue.tag_T61String, DerValue.tag_UniversalString
-        });
+                            DerValue.tag_T61String, DerValue.tag_UniversalString
+                        });
         System.out.println(" - actual  : " + StringTestUtil.toString(actual));
 
         Assert.assertArrayEquals(expected, actual);

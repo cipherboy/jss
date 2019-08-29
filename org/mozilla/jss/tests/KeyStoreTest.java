@@ -29,98 +29,98 @@ public class KeyStoreTest {
 
     public static void printUsage() {
         System.out.println("Usage: KeyStoreTest <dbdir> " +
-            "<operation> [<args>...]");
+                           "<operation> [<args>...]");
         System.out.println("Operations:\n" +
-            "getAliases\n" +
-            "deleteEntry <alias> . . .\n" +
-            "getCertByName <alias> . . .\n" +
-            "getCertByDER <DER cert filename>\n" +
-            "getKey <alias>\n" +
-            "addKey <alias>\n" +
-            "isTrustedCert <alias>\n");
+                           "getAliases\n" +
+                           "deleteEntry <alias> . . .\n" +
+                           "getCertByName <alias> . . .\n" +
+                           "getCertByDER <DER cert filename>\n" +
+                           "getKey <alias>\n" +
+                           "addKey <alias>\n" +
+                           "isTrustedCert <alias>\n");
     }
 
     public static void main(String argv[]) {
-      try {
-
-        if( argv.length < 2 ) {
-            printUsage();
-            System.exit(1);
-        }
-
-        String op = argv[1];
-        String[] args = new String[ argv.length - 2 ];
-        for(int i=2; i < argv.length; ++i) {
-            args[i-2] = argv[i];
-        }
-
-        CryptoManager.initialize(argv[0]);
-        CryptoManager cm = CryptoManager.getInstance();
-
-
-        // login to the token
-        CryptoToken token = cm.getInternalKeyStorageToken();
-        //CryptoToken token = cm.getTokenByName("Builtin Object Token");
         try {
-            token.login(new ConsolePasswordCallback());
-        } catch(PK11Token.NotInitializedException ex) { }
-        cm.setThreadToken(token);
 
-        KeyStore ks = KeyStore.getInstance("Mozilla-JSS");
-        ks.load(null, null);
+            if( argv.length < 2 ) {
+                printUsage();
+                System.exit(1);
+            }
 
-        if( op.equalsIgnoreCase("getAliases") ) {
-            dumpAliases(ks);
-        } else if( op.equalsIgnoreCase("deleteEntry") ) {
-            for(int j=0; j < args.length; ++j) {
-                ks.deleteEntry(args[j]);
+            String op = argv[1];
+            String[] args = new String[ argv.length - 2 ];
+            for(int i=2; i < argv.length; ++i) {
+                args[i-2] = argv[i];
             }
-        } else if( op.equalsIgnoreCase("getCertByName") ) {
-            for(int j=0; j < args.length; ++j) {
-                dumpCert(ks, args[j]);
-            }
-        } else if( op.equalsIgnoreCase("getCertByDER") ) {
-            if( args.length < 1 ) {
+
+            CryptoManager.initialize(argv[0]);
+            CryptoManager cm = CryptoManager.getInstance();
+
+
+            // login to the token
+            CryptoToken token = cm.getInternalKeyStorageToken();
+            //CryptoToken token = cm.getTokenByName("Builtin Object Token");
+            try {
+                token.login(new ConsolePasswordCallback());
+            } catch(PK11Token.NotInitializedException ex) { }
+            cm.setThreadToken(token);
+
+            KeyStore ks = KeyStore.getInstance("Mozilla-JSS");
+            ks.load(null, null);
+
+            if( op.equalsIgnoreCase("getAliases") ) {
+                dumpAliases(ks);
+            } else if( op.equalsIgnoreCase("deleteEntry") ) {
+                for(int j=0; j < args.length; ++j) {
+                    ks.deleteEntry(args[j]);
+                }
+            } else if( op.equalsIgnoreCase("getCertByName") ) {
+                for(int j=0; j < args.length; ++j) {
+                    dumpCert(ks, args[j]);
+                }
+            } else if( op.equalsIgnoreCase("getCertByDER") ) {
+                if( args.length < 1 ) {
+                    printUsage();
+                    System.exit(1);
+                }
+                getCertByDER(ks, args[0]);
+            } else if( op.equalsIgnoreCase("getKey") ) {
+                if( args.length != 1 ) {
+                    printUsage();
+                    System.exit(1);
+                }
+                getKey(ks, args[0]);
+            } else if( op.equalsIgnoreCase("isTrustedCert") ) {
+                if( args.length != 1 ) {
+                    printUsage();
+                    System.exit(1);
+                }
+                isTrustedCert(ks, args[0]);
+            } else if( op.equalsIgnoreCase("addKey") ) {
+                if( args.length != 1 ) {
+                    printUsage();
+                    System.exit(1);
+                }
+                addKey(ks, args[0]);
+            } else {
                 printUsage();
                 System.exit(1);
             }
-            getCertByDER(ks, args[0]);
-        } else if( op.equalsIgnoreCase("getKey") ) {
-            if( args.length != 1 ) {
-                printUsage();
-                System.exit(1);
-            }
-            getKey(ks, args[0]);
-        } else if( op.equalsIgnoreCase("isTrustedCert") ) {
-            if( args.length != 1 ) {
-                printUsage();
-                System.exit(1);
-            }
-            isTrustedCert(ks, args[0]);
-        } else if( op.equalsIgnoreCase("addKey") ) {
-            if( args.length != 1 ) {
-                printUsage();
-                System.exit(1);
-            }
-            addKey(ks, args[0]);
-        } else {
-            printUsage();
+
+        } catch(Throwable t) {
+            t.printStackTrace();
             System.exit(1);
         }
-
-      } catch(Throwable t) {
-        t.printStackTrace();
-        System.exit(1);
-      }
     }
 
     public static void dumpCert(KeyStore ks, String alias)
-        throws Throwable
+    throws Throwable
     {
         Certificate cert = ks.getCertificate(alias);
         if( cert == null ) {
             System.out.println("Certificate with alias \"" + alias +
-                "\" not found");
+                               "\" not found");
         } else {
             System.out.println(cert.toString());
         }
@@ -138,7 +138,7 @@ public class KeyStoreTest {
     }
 
     public static void getCertByDER(KeyStore ks, String derCertFilename)
-            throws Throwable {
+    throws Throwable {
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         byte[] buf = new byte[1024];
@@ -165,38 +165,38 @@ public class KeyStoreTest {
     }
 
     public static void getKey(KeyStore ks, String alias)
-            throws Throwable {
+    throws Throwable {
 
         Key key = ks.getKey(alias, null);
 
         if( key == null ) {
             System.out.println("Could not find key for alias \"" +
-                alias + "\"");
+                               alias + "\"");
             System.exit(1);
         } else {
             String clazz = key.getClass().getName();
             System.out.println("Found " + clazz + " for alias \"" +
-                alias + "\"");
+                               alias + "\"");
         }
     }
 
     public static void isTrustedCert(KeyStore ks, String alias)
-            throws Throwable {
+    throws Throwable {
 
         if( ks.isCertificateEntry(alias) ) {
             System.out.println("\"" + alias + "\" is a trusted certificate" +
-                " entry");
+                               " entry");
         } else {
             System.out.println("\"" + alias + "\" is NOT a trusted certificate"
-                + " entry");
+                               + " entry");
         }
     }
 
     public static void addKey(KeyStore ks, String alias)
-            throws Throwable
+    throws Throwable
     {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA",
-            "Mozilla-JSS");
+                               "Mozilla-JSS");
 
         kpg.initialize(1024);
         KeyPair pair = kpg.genKeyPair();

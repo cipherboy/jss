@@ -33,8 +33,8 @@
  */
 JNIEXPORT jbyteArray JNICALL
 Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeWrapSymWithSym
-    (JNIEnv *env, jobject this, jobject tokenObj, jobject toBeWrappedObj,
-        jobject wrappingKeyObj, jobject algObj, jbyteArray ivBA)
+(JNIEnv *env, jobject this, jobject tokenObj, jobject toBeWrappedObj,
+ jobject wrappingKeyObj, jobject algObj, jbyteArray ivBA)
 {
     PK11SymKey *wrapping = NULL;
     PK11SymKey *toBeWrapped = NULL;
@@ -51,14 +51,14 @@ Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeWrapSymWithSym
     /* get wrapping key */
     if( JSS_PK11_getSymKeyPtr(env, wrappingKeyObj, &wrapping)!= PR_SUCCESS) {
         JSS_throwMsg(env, TOKEN_EXCEPTION, "Unable to extract symmetric "
-                "wrapping key");
+                     "wrapping key");
         return NULL;
     }
 
     /* get toBeWrapped key */
-    if( JSS_PK11_getSymKeyPtr(env, toBeWrappedObj, &toBeWrapped) != PR_SUCCESS){
+    if( JSS_PK11_getSymKeyPtr(env, toBeWrappedObj, &toBeWrapped) != PR_SUCCESS) {
         JSS_throwMsg(env, TOKEN_EXCEPTION, "Unable to extract symmetric "
-            "to be wrapped key");
+                     "to be wrapped key");
         return NULL;
     }
 
@@ -78,7 +78,7 @@ Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeWrapSymWithSym
         param = PK11_ParamFromIV(mech, iv);
         if( param == NULL ) {
             JSS_throwMsg(env, TOKEN_EXCEPTION, "Unable to create mechanism"
-                " parameter from initialization vector");
+                         " parameter from initialization vector");
             goto finish;
         }
     }
@@ -119,8 +119,8 @@ finish:
  */
 JNIEXPORT jbyteArray JNICALL
 Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeWrapSymWithPub
-    (JNIEnv *env, jobject this, jobject tokenObj, jobject toBeWrappedObj,
-        jobject wrappingKeyObj, jobject algObj, jbyteArray ivBA)
+(JNIEnv *env, jobject this, jobject tokenObj, jobject toBeWrappedObj,
+ jobject wrappingKeyObj, jobject algObj, jbyteArray ivBA)
 {
     SECKEYPublicKey *wrapping = NULL;
     PK11SymKey *toBeWrapped = NULL;
@@ -136,14 +136,14 @@ Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeWrapSymWithPub
     /* get wrapping key */
     if( JSS_PK11_getPubKeyPtr(env, wrappingKeyObj, &wrapping)!= PR_SUCCESS) {
         JSS_throwMsg(env, TOKEN_EXCEPTION, "Unable to extract public "
-                "wrapping key");
+                     "wrapping key");
         return NULL;
     }
 
     /* get toBeWrapped key */
-    if( JSS_PK11_getSymKeyPtr(env, toBeWrappedObj, &toBeWrapped) != PR_SUCCESS){
+    if( JSS_PK11_getSymKeyPtr(env, toBeWrappedObj, &toBeWrapped) != PR_SUCCESS) {
         JSS_throwMsg(env, TOKEN_EXCEPTION, "Unable to extract symmetric "
-            "to be wrapped key");
+                     "to be wrapped key");
         return NULL;
     }
 
@@ -185,8 +185,8 @@ finish:
  */
 JNIEXPORT jbyteArray JNICALL
 Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeWrapPrivWithSym
-    (JNIEnv *env, jobject this, jobject tokenObj, jobject toBeWrappedObj,
-        jobject wrappingKeyObj, jobject algObj, jbyteArray ivBA)
+(JNIEnv *env, jobject this, jobject tokenObj, jobject toBeWrappedObj,
+ jobject wrappingKeyObj, jobject algObj, jbyteArray ivBA)
 {
     PK11SymKey *wrapping = NULL;
     SECKEYPrivateKey *toBeWrapped= NULL;
@@ -209,14 +209,14 @@ Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeWrapPrivWithSym
     /* get wrapping key */
     if( JSS_PK11_getSymKeyPtr(env, wrappingKeyObj, &wrapping) != PR_SUCCESS) {
         JSS_throwMsg(env, TOKEN_EXCEPTION, "Unable to extract symmetric "
-                "wrapping key");
+                     "wrapping key");
         return NULL;
     }
 
     /* get toBeWrapped key */
-    if( JSS_PK11_getPrivKeyPtr(env, toBeWrappedObj, &toBeWrapped) !=PR_SUCCESS){
+    if( JSS_PK11_getPrivKeyPtr(env, toBeWrappedObj, &toBeWrapped) !=PR_SUCCESS) {
         JSS_throwMsg(env, TOKEN_EXCEPTION, "Unable to extract private "
-            "to be wrapped key");
+                     "to be wrapped key");
         return NULL;
     }
 
@@ -242,14 +242,14 @@ Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeWrapPrivWithSym
         param = PK11_ParamFromIV(mech, iv);
         if( param == NULL ) {
             JSS_throwMsg(env, TOKEN_EXCEPTION,
-                "Failed to convert initialization vector to parameter");
+                         "Failed to convert initialization vector to parameter");
             goto finish;
         }
     }
 
     /* perform the wrap operation */
     status = PK11_WrapPrivKey(slot, wrapping, toBeWrapped, mech, param,
-                &wrapped, NULL /* wincx */ );
+                              &wrapped, NULL /* wincx */ );
     if(status != SECSuccess) {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION, "Wrapping operation failed on token");
         goto finish;
@@ -278,9 +278,9 @@ finish:
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeUnwrapPrivWithSym
-    (JNIEnv *env, jclass clazz, jobject tokenObj, jobject unwrapperObj,
-        jbyteArray wrappedBA, jobject wrapAlgObj, jobject typeAlgObj,
-        jbyteArray publicValueBA, jbyteArray ivBA, jboolean temporary)
+(JNIEnv *env, jclass clazz, jobject tokenObj, jobject unwrapperObj,
+ jbyteArray wrappedBA, jobject wrapAlgObj, jobject typeAlgObj,
+ jbyteArray publicValueBA, jbyteArray ivBA, jboolean temporary)
 {
     PK11SlotInfo *slot;
     PK11SymKey *unwrappingKey;
@@ -314,20 +314,20 @@ Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeUnwrapPrivWithSym
     }
 
     if ( (PK11_GetTokenInfo(slot, &tokenInfo) == SECSuccess) &&
-       (tokenInfo.manufacturerID[0] != 0)) {
+            (tokenInfo.manufacturerID[0] != 0)) {
         int ix = 0;
 
         for(ix=0; ix < numManufacturerIDchars; ix++) {
             if (tokenInfo.manufacturerID[ix] != nethsmManufacturerID[ix]) {
-               isNethsm = PR_FALSE;
-               break;
+                isNethsm = PR_FALSE;
+                break;
             }
         }
 
         for(ix=0; ix < numManufacturerIDchars; ix++) {
             if (tokenInfo.manufacturerID[ix] != lunasaManufacturerID[ix]) {
-               isLunasa = PR_FALSE;
-               break;
+                isLunasa = PR_FALSE;
+                break;
             }
         }
     } else {
@@ -359,7 +359,7 @@ Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeUnwrapPrivWithSym
         param = PK11_ParamFromIV(wrapType, iv);
         if( param == NULL ) {
             JSS_throwMsg(env, TOKEN_EXCEPTION,
-                "Failed to convert initialization vector to parameter");
+                         "Failed to convert initialization vector to parameter");
             goto finish;
         }
     }
@@ -417,7 +417,7 @@ Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeUnwrapPrivWithSym
             attribs[3] = CKA_EXTRACTABLE;
             numAttribs = 4;
         }
-	break;
+        break;
     case CKK_EC:
         numAttribs = 1;
         attribs[0] = CKA_SIGN;
@@ -425,36 +425,36 @@ Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeUnwrapPrivWithSym
             attribs[1] = CKA_EXTRACTABLE;
             numAttribs = 2;
         }
-	break;
+        break;
     case CKK_DSA:
         attribs[0] = CKA_SIGN;
         numAttribs = 1;
-	break;
+        break;
     case CKK_KEA:
     case CKK_DH:
     case CKK_X9_42_DH:
         attribs[0] = CKA_DERIVE;
         numAttribs = 1;
-	break;
+        break;
     default:
         /* unknown key type */
         PR_ASSERT(PR_FALSE);
-	attribs[0] = CKA_SIGN;
-	numAttribs = 1;
-	break;
+        attribs[0] = CKA_SIGN;
+        numAttribs = 1;
+        break;
     }
 
     /* perform the unwrap */
     privk = PK11_UnwrapPrivKey(slot, unwrappingKey, wrapType, param, wrapped,
-                &label, pubValue, token, isSensitive /*sensitive*/, keyType,
-                attribs, numAttribs, NULL /*wincx*/);
+                               &label, pubValue, token, isSensitive /*sensitive*/, keyType,
+                               attribs, numAttribs, NULL /*wincx*/);
     if( privk == NULL ) {
         char err[256] = {0};
         PR_snprintf(err, 256, "Key Unwrap failed on token; keyType=%d", keyType);
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION, err);
         goto finish;
     }
-                
+
     /* stuff the privk into a Java private key object. This sets privk to
      * NULL */
     privkObj = JSS_PK11_wrapPrivKey(env, &privk);
@@ -485,9 +485,9 @@ finish:
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeUnwrapSymWithSym
-    (JNIEnv *env, jclass clazz, jobject tokenObj, jobject unwrapperObj,
-        jbyteArray wrappedBA, jobject wrapAlgObj, jobject typeAlgObj,
-        jint keyLen, jbyteArray ivBA, jint usageEnum, jboolean temporary)
+(JNIEnv *env, jclass clazz, jobject tokenObj, jobject unwrapperObj,
+ jbyteArray wrappedBA, jobject wrapAlgObj, jobject typeAlgObj,
+ jint keyLen, jbyteArray ivBA, jint usageEnum, jboolean temporary)
 {
     PK11SymKey *symKey=NULL, *wrappingKey=NULL;
     CK_MECHANISM_TYPE wrappingMech, keyTypeMech;
@@ -528,7 +528,7 @@ Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeUnwrapSymWithSym
         param = PK11_ParamFromIV(wrappingMech, iv);
         if( param == NULL ) {
             JSS_throwMsg(env, TOKEN_EXCEPTION,
-                "Failed to convert initialization vector to parameter");
+                         "Failed to convert initialization vector to parameter");
             goto finish;
         }
     }
@@ -556,11 +556,11 @@ Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeUnwrapSymWithSym
 
     if( isPermanent == PR_FALSE) {
         symKey = PK11_UnwrapSymKeyWithFlags(wrappingKey, wrappingMech, param,
-            wrappedKey, keyTypeMech, operation, keyLen, flags);
+                                            wrappedKey, keyTypeMech, operation, keyLen, flags);
 
     } else {
         symKey = PK11_UnwrapSymKeyWithFlagsPerm(wrappingKey, wrappingMech, param,
-            wrappedKey, keyTypeMech, operation, keyLen, flags,isPermanent);
+                                                wrappedKey, keyTypeMech, operation, keyLen, flags,isPermanent);
     }
 
     if( symKey == NULL ) {
@@ -593,9 +593,9 @@ finish:
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeUnwrapSymWithPriv
-    (JNIEnv *env, jclass clazz, jobject tokenObj, jobject unwrapperObj,
-        jbyteArray wrappedBA, jobject wrapAlgObj, jobject typeAlgObj,
-        jint keyLen, jbyteArray ivBA, jint usageEnum)
+(JNIEnv *env, jclass clazz, jobject tokenObj, jobject unwrapperObj,
+ jbyteArray wrappedBA, jobject wrapAlgObj, jobject typeAlgObj,
+ jint keyLen, jbyteArray ivBA, jint usageEnum)
 {
     PK11SymKey *symKey=NULL;
     CK_MECHANISM_TYPE wrappingMech=0, keyTypeMech=0;
@@ -628,7 +628,7 @@ Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeUnwrapSymWithPriv
         param = PK11_ParamFromIV(wrappingMech, iv);
         if( param == NULL ) {
             JSS_throwMsg(env, TOKEN_EXCEPTION,
-                "Failed to convert initialization vector to parameter");
+                         "Failed to convert initialization vector to parameter");
             goto finish;
         }
     }
@@ -652,12 +652,12 @@ Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeUnwrapSymWithPriv
     }
 
     symKey = PK11_PubUnwrapSymKey(wrappingKey, wrappedKey, keyTypeMech,
-        operation, keyLen);
+                                  operation, keyLen);
     if( symKey == NULL ) {
         JSS_throwMsg(env, TOKEN_EXCEPTION, "Failed to unwrap key");
         goto finish;
     }
-    
+
     /* Put the symmetric key into a Java object.  This will clear symKey */
     keyObj = JSS_PK11_wrapSymKey(env, &symKey);
 
@@ -683,8 +683,8 @@ finish:
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeUnwrapSymPlaintext
-    (JNIEnv *env, jclass clazz, jobject tokenObj, jbyteArray wrappedBA,
-        jobject typeAlgObj, jint usageEnum, jboolean temporary)
+(JNIEnv *env, jclass clazz, jobject tokenObj, jbyteArray wrappedBA,
+ jobject typeAlgObj, jint usageEnum, jboolean temporary)
 {
     PK11SymKey *symKey=NULL;
     CK_MECHANISM_TYPE keyTypeMech;
@@ -731,7 +731,7 @@ Java_org_mozilla_jss_pkcs11_PK11KeyWrapper_nativeUnwrapSymPlaintext
 
     /* pull in the key */
     symKey = PK11_ImportSymKeyWithFlags(slot, keyTypeMech, PK11_OriginUnwrap,
-        operation, wrappedKey, flags, isPerm, NULL);
+                                        operation, wrappedKey, flags, isPerm, NULL);
     if( symKey == NULL ) {
         JSS_throwMsg(env, TOKEN_EXCEPTION, "Failed to unwrap key");
         goto finish;
@@ -761,84 +761,84 @@ char*
 JSS_PK11_getErrorString(CK_RV crv)
 {
     switch(crv) {
-      case CKR_ATTRIBUTE_READ_ONLY:
+    case CKR_ATTRIBUTE_READ_ONLY:
         return "CKR_ATTRIBUTE_READ_ONLY";
-      case CKR_ATTRIBUTE_TYPE_INVALID:
+    case CKR_ATTRIBUTE_TYPE_INVALID:
         return "CKR_ATTRIBUTE_TYPE_INVALID";
-      case CKR_ATTRIBUTE_VALUE_INVALID:
+    case CKR_ATTRIBUTE_VALUE_INVALID:
         return "CKR_ATTRIBUTE_VALUE_INVALID";
-      case CKR_BUFFER_TOO_SMALL:
+    case CKR_BUFFER_TOO_SMALL:
         return "CKR_BUFFER_TOO_SMALL";
-      case CKR_CRYPTOKI_NOT_INITIALIZED:
+    case CKR_CRYPTOKI_NOT_INITIALIZED:
         return "CKR_CRYPTOKI_NOT_INITIALIZED";
-      case CKR_DEVICE_ERROR:
+    case CKR_DEVICE_ERROR:
         return "CKR_DEVICE_ERROR";
-      case CKR_DEVICE_MEMORY:
+    case CKR_DEVICE_MEMORY:
         return "CKR_DEVICE_MEMORY";
-      case CKR_DEVICE_REMOVED:
+    case CKR_DEVICE_REMOVED:
         return "CKR_DEVICE_REMOVED";
-      case CKR_FUNCTION_CANCELED:
+    case CKR_FUNCTION_CANCELED:
         return "CKR_FUNCTION_CANCELED";
-      case CKR_FUNCTION_FAILED:
+    case CKR_FUNCTION_FAILED:
         return "CKR_FUNCTION_FAILED";
-      case CKR_GENERAL_ERROR:
+    case CKR_GENERAL_ERROR:
         return "CKR_GENERAL_ERROR";
-      case CKR_HOST_MEMORY:
+    case CKR_HOST_MEMORY:
         return "CKR_HOST_MEMORY";
-      case CKR_KEY_HANDLE_INVALID:
+    case CKR_KEY_HANDLE_INVALID:
         return "CKR_KEY_HANDLE_INVALID";
-      case CKR_KEY_NOT_WRAPPABLE:
+    case CKR_KEY_NOT_WRAPPABLE:
         return "CKR_KEY_NOT_WRAPPABLE";
-      case CKR_KEY_SIZE_RANGE:
+    case CKR_KEY_SIZE_RANGE:
         return "CKR_KEY_SIZE_RANGE";
-      case CKR_KEY_UNEXTRACTABLE:
+    case CKR_KEY_UNEXTRACTABLE:
         return "CKR_KEY_UNEXTRACTABLE";
-      case CKR_MECHANISM_INVALID:
+    case CKR_MECHANISM_INVALID:
         return "CKR_MECHANISM_INVALID";
-      case CKR_MECHANISM_PARAM_INVALID:
+    case CKR_MECHANISM_PARAM_INVALID:
         return "CKR_MECHANISM_PARAM_INVALID";
-      case CKR_OK:
+    case CKR_OK:
         return "CKR_OK";
-      case CKR_OPERATION_ACTIVE:
+    case CKR_OPERATION_ACTIVE:
         return "CKR_OPERATION_ACTIVE";
-      case CKR_SESSION_CLOSED:
+    case CKR_SESSION_CLOSED:
         return "CKR_SESSION_CLOSED";
-      case CKR_SESSION_HANDLE_INVALID:
+    case CKR_SESSION_HANDLE_INVALID:
         return "CKR_SESSION_HANDLE_INVALID";
-      case CKR_SESSION_READ_ONLY:
+    case CKR_SESSION_READ_ONLY:
         return "CKR_SESSION_READ_ONLY";
-      case CKR_TEMPLATE_INCOMPLETE:
+    case CKR_TEMPLATE_INCOMPLETE:
         return "CKR_TEMPLATE_INCOMPLETE";
-      case CKR_TEMPLATE_INCONSISTENT:
+    case CKR_TEMPLATE_INCONSISTENT:
         return "CKR_TEMPLATE_INCONSISTENT";
-      case CKR_TOKEN_WRITE_PROTECTED:
+    case CKR_TOKEN_WRITE_PROTECTED:
         return "CKR_TOKEN_WRITE_PROTECTED";
-      case CKR_UNWRAPPING_KEY_HANDLE_INVALID:
+    case CKR_UNWRAPPING_KEY_HANDLE_INVALID:
         return "CKR_UNWRAPPING_KEY_HANDLE_INVALID";
-      case CKR_UNWRAPPING_KEY_SIZE_RANGE:
+    case CKR_UNWRAPPING_KEY_SIZE_RANGE:
         return "CKR_UNWRAPPING_KEY_SIZE_RANGE";
-      case CKR_UNWRAPPING_KEY_TYPE_INCONSISTENT:
+    case CKR_UNWRAPPING_KEY_TYPE_INCONSISTENT:
         return "CKR_UNWRAPPING_KEY_TYPE_INCONSISTENT";
-      case CKR_USER_NOT_LOGGED_IN:
+    case CKR_USER_NOT_LOGGED_IN:
         return "CKR_USER_NOT_LOGGED_IN";
-      case CKR_WRAPPED_KEY_INVALID:
+    case CKR_WRAPPED_KEY_INVALID:
         return "CKR_WRAPPED_KEY_INVALID";
-      case CKR_WRAPPED_KEY_LEN_RANGE:
+    case CKR_WRAPPED_KEY_LEN_RANGE:
         return "CKR_WRAPPED_KEY_LEN_RANGE";
-      case CKR_WRAPPING_KEY_HANDLE_INVALID:
+    case CKR_WRAPPING_KEY_HANDLE_INVALID:
         return "CKR_WRAPPING_KEY_HANDLE_INVALID";
-      case CKR_WRAPPING_KEY_SIZE_RANGE:
+    case CKR_WRAPPING_KEY_SIZE_RANGE:
         return "CKR_WRAPPING_KEY_SIZE_RANGE";
-      case CKR_WRAPPING_KEY_TYPE_INCONSISTENT:
+    case CKR_WRAPPING_KEY_TYPE_INCONSISTENT:
         return "CKR_WRAPPING_KEY_TYPE_INCONSISTENT";
-      default:
+    default:
         return "PKCS #11 error";
     }
 }
 
 /*
  * Get the wrapping mechanism
- */ 
+ */
 CK_MECHANISM_TYPE getSupportedWrappingMechanism(JNIEnv *env, jobject algObj, PK11SlotInfo *slot)
 {
     CK_MECHANISM_TYPE mech = JSS_getPK11MechFromAlg(env, algObj);
@@ -850,14 +850,14 @@ CK_MECHANISM_TYPE getSupportedWrappingMechanism(JNIEnv *env, jobject algObj, PK1
      * If supported, we go with that, if not, we try the NSS ones
      */
     if ( mech == CKM_AES_KEY_WRAP ||
-             mech == CKM_NSS_AES_KEY_WRAP) {
+            mech == CKM_NSS_AES_KEY_WRAP) {
         if (!PK11_DoesMechanism(slot, CKM_AES_KEY_WRAP)) {
             mech = CKM_NSS_AES_KEY_WRAP;
         } else {
             mech = CKM_AES_KEY_WRAP;
         }
     } else if ( mech == CKM_AES_KEY_WRAP_PAD
-            || mech == CKM_NSS_AES_KEY_WRAP_PAD) {
+                || mech == CKM_NSS_AES_KEY_WRAP_PAD) {
         if (!PK11_DoesMechanism(slot, CKM_AES_KEY_WRAP_PAD)) {
             mech = CKM_NSS_AES_KEY_WRAP_PAD;
         } else {

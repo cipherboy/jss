@@ -43,7 +43,7 @@ getSigContext(JNIEnv *env, jobject sig, void**pContext, SigContextType* pType);
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Signature_initSigContext
-  (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     SGNContext *ctxt=NULL;
     jobject contextProxy=NULL;
@@ -57,10 +57,10 @@ Java_org_mozilla_jss_pkcs11_PK11Signature_initSigContext
 
     /* Start the signing operation */
     ctxt = SGN_NewContext(getAlgorithm(env, this), privk);
-	if(ctxt == NULL) {
-		JSS_throwMsg(env, TOKEN_EXCEPTION, "Unable to create signing context");
-		goto finish;
-	}
+    if(ctxt == NULL) {
+        JSS_throwMsg(env, TOKEN_EXCEPTION, "Unable to create signing context");
+        goto finish;
+    }
     if( SGN_Begin(ctxt) != SECSuccess ) {
         JSS_throwMsg(env, TOKEN_EXCEPTION, "Unable to begin signing context");
         goto finish;
@@ -68,8 +68,8 @@ Java_org_mozilla_jss_pkcs11_PK11Signature_initSigContext
 
     /* Create a contextProxy and stick it in the PK11Signature object */
     contextProxy = JSS_PK11_wrapSigContextProxy(env,
-												(void**)&ctxt,
-												SGN_CONTEXT);
+                   (void**)&ctxt,
+                   SGN_CONTEXT);
     if(contextProxy == NULL) {
         PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
         goto finish;
@@ -86,46 +86,46 @@ finish:
 
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Signature_initVfyContext
-	(JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
-	VFYContext *ctxt=NULL;
-	jobject contextProxy=NULL;
-	SECKEYPublicKey *pubk;
+    VFYContext *ctxt=NULL;
+    jobject contextProxy=NULL;
+    SECKEYPublicKey *pubk;
 
-	if( getPublicKey(env, this, &pubk) != PR_SUCCESS ) {
-		PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
-		goto finish;
-	}
-	
-	ctxt = VFY_CreateContext(pubk, NULL /*sig*/, getAlgorithm(env, this),
-                NULL /*wincx*/);
-	if( ctxt == NULL) {
-		JSS_throwMsg(env, TOKEN_EXCEPTION,
-			"Unable to create verification context");
-		goto finish;
-	}
-	if( VFY_Begin(ctxt) != SECSuccess) {
-		JSS_throwMsg(env, TOKEN_EXCEPTION,
-			"Unable to begin verification context");
-		goto finish;
-	}
+    if( getPublicKey(env, this, &pubk) != PR_SUCCESS ) {
+        PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
+        goto finish;
+    }
 
-	/* create a ContextProxy and stick it in the PK11Signature object */
-	contextProxy = JSS_PK11_wrapSigContextProxy(env,
-												(void**)&ctxt,
-												VFY_CONTEXT);
-	if(contextProxy == NULL) {
-		PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
-		goto finish;
-	}
-	setSigContext(env, this, contextProxy);
+    ctxt = VFY_CreateContext(pubk, NULL /*sig*/, getAlgorithm(env, this),
+                             NULL /*wincx*/);
+    if( ctxt == NULL) {
+        JSS_throwMsg(env, TOKEN_EXCEPTION,
+                     "Unable to create verification context");
+        goto finish;
+    }
+    if( VFY_Begin(ctxt) != SECSuccess) {
+        JSS_throwMsg(env, TOKEN_EXCEPTION,
+                     "Unable to begin verification context");
+        goto finish;
+    }
+
+    /* create a ContextProxy and stick it in the PK11Signature object */
+    contextProxy = JSS_PK11_wrapSigContextProxy(env,
+                   (void**)&ctxt,
+                   VFY_CONTEXT);
+    if(contextProxy == NULL) {
+        PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
+        goto finish;
+    }
+    setSigContext(env, this, contextProxy);
 
 finish:
-	if(contextProxy==NULL && ctxt!=NULL) {
-		/* we created a context but not the Java wrapper, so we need to
-	 	 * delete the context here */
-		VFY_DestroyContext(ctxt, PR_TRUE /*freeit*/);
-	}
+    if(contextProxy==NULL && ctxt!=NULL) {
+        /* we created a context but not the Java wrapper, so we need to
+         * delete the context here */
+        VFY_DestroyContext(ctxt, PR_TRUE /*freeit*/);
+    }
 }
 
 /**********************************************************************
@@ -135,7 +135,7 @@ finish:
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Signature_engineUpdateNative
-    (JNIEnv *env, jobject this, jbyteArray bArray, jint offset, jint length)
+(JNIEnv *env, jobject this, jbyteArray bArray, jint offset, jint length)
 {
     SigContextType type;
     void *ctxt;
@@ -194,7 +194,7 @@ finish:
  */
 JNIEXPORT jbyteArray JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Signature_engineSignNative
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     SGNContext *ctxt;
     SigContextType type;
@@ -219,7 +219,7 @@ Java_org_mozilla_jss_pkcs11_PK11Signature_engineSignNative
      */
     if( SGN_End(ctxt, &signature) != SECSuccess) {
         JSS_throwMsgPrErr(env, SIGNATURE_EXCEPTION,
-            "Signing operation failed");
+                          "Signing operation failed");
         goto finish;
     }
 
@@ -231,7 +231,7 @@ Java_org_mozilla_jss_pkcs11_PK11Signature_engineSignNative
         ASSERT_OUTOFMEM(env);
         goto finish;
     }
-    
+
 finish:
     if( signature.data != NULL ) {
         PR_Free(signature.data);
@@ -241,54 +241,54 @@ finish:
 
 JNIEXPORT jboolean JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Signature_engineVerifyNative
-	(JNIEnv *env, jobject this, jbyteArray sigArray)
+(JNIEnv *env, jobject this, jbyteArray sigArray)
 {
-	jboolean verified = JNI_FALSE;
-	VFYContext *ctxt;
-	SigContextType type;
-	SECItem sigItem = {siBuffer, NULL, 0};
+    jboolean verified = JNI_FALSE;
+    VFYContext *ctxt;
+    SigContextType type;
+    SECItem sigItem = {siBuffer, NULL, 0};
 
-	PR_ASSERT( env!=NULL && this!=NULL && sigArray!=NULL);
+    PR_ASSERT( env!=NULL && this!=NULL && sigArray!=NULL);
 
-	/*
-	 * Lookup the context
-	 */
-	if( getSigContext(env, this, (void**)&ctxt, &type) != PR_SUCCESS) {
-		PR_ASSERT(PR_FALSE);
-		JSS_throwMsg(env, SIGNATURE_EXCEPTION,
-			"Unable to retrieve verification context");
-		goto finish;
-	}
-	if(type != VFY_CONTEXT) {
-		PR_ASSERT(PR_FALSE);
-		JSS_throwMsg(env, SIGNATURE_EXCEPTION,
-			"Verification engine has signature context");
-		goto finish;
-	}
+    /*
+     * Lookup the context
+     */
+    if( getSigContext(env, this, (void**)&ctxt, &type) != PR_SUCCESS) {
+        PR_ASSERT(PR_FALSE);
+        JSS_throwMsg(env, SIGNATURE_EXCEPTION,
+                     "Unable to retrieve verification context");
+        goto finish;
+    }
+    if(type != VFY_CONTEXT) {
+        PR_ASSERT(PR_FALSE);
+        JSS_throwMsg(env, SIGNATURE_EXCEPTION,
+                     "Verification engine has signature context");
+        goto finish;
+    }
 
-	/*
-	 * Convert signature to SECItem
-	 */
-	if (!JSS_RefByteArray(env, sigArray, (jbyte **) &sigItem.data, (jsize *) &sigItem.len)) {
-		ASSERT_OUTOFMEM(env);
-		goto finish;
-	}
+    /*
+     * Convert signature to SECItem
+     */
+    if (!JSS_RefByteArray(env, sigArray, (jbyte **) &sigItem.data, (jsize *) &sigItem.len)) {
+        ASSERT_OUTOFMEM(env);
+        goto finish;
+    }
 
-	/*
-	 * Finish the verification operation
-	 */
-	if( VFY_EndWithSignature(ctxt, &sigItem) == SECSuccess) {
-		verified = JNI_TRUE;
-	} else if( PR_GetError() != SEC_ERROR_BAD_SIGNATURE) {
-		PR_ASSERT(PR_FALSE);
-		JSS_throwMsg(env, SIGNATURE_EXCEPTION,
-			"Failed to complete verification operation");
-		goto finish;
-	}
+    /*
+     * Finish the verification operation
+     */
+    if( VFY_EndWithSignature(ctxt, &sigItem) == SECSuccess) {
+        verified = JNI_TRUE;
+    } else if( PR_GetError() != SEC_ERROR_BAD_SIGNATURE) {
+        PR_ASSERT(PR_FALSE);
+        JSS_throwMsg(env, SIGNATURE_EXCEPTION,
+                     "Failed to complete verification operation");
+        goto finish;
+    }
 
 finish:
-	JSS_DerefByteArray(env, sigArray, sigItem.data, JNI_ABORT);
-	return verified;
+    JSS_DerefByteArray(env, sigArray, sigItem.data, JNI_ABORT);
+    return verified;
 }
 
 /*
@@ -350,10 +350,10 @@ setSigContext(JNIEnv *env, jobject sig, jobject context)
     PR_ASSERT(sigClass!=NULL);
 
     contextField = (*env)->GetFieldID(
-                                      env,
-                                      sigClass,
-                                      SIG_CONTEXT_PROXY_FIELD,
-                                      SIG_CONTEXT_PROXY_SIG);
+                       env,
+                       sigClass,
+                       SIG_CONTEXT_PROXY_FIELD,
+                       SIG_CONTEXT_PROXY_SIG);
     if(contextField == NULL) {
         ASSERT_OUTOFMEM(env);
         /* This function doesn't advertise that it can throw exceptions,
@@ -386,7 +386,7 @@ getSigContext(JNIEnv *env, jobject sig, void**pContext, SigContextType* pType)
 #endif
 
     contextField = (*env)->GetFieldID(env, sigClass, SIG_CONTEXT_PROXY_FIELD,
-                        SIG_CONTEXT_PROXY_SIG);
+                                      SIG_CONTEXT_PROXY_SIG);
     if(contextField == NULL) {
         ASSERT_OUTOFMEM(env);
         return PR_FAILURE;
@@ -417,7 +417,7 @@ getSigContext(JNIEnv *env, jobject sig, void**pContext, SigContextType* pType)
 static PRStatus
 getPrivateKey(JNIEnv *env, jobject sig, SECKEYPrivateKey**key)
 {
-	return getSomeKey(env, sig, (void**)key, PRIVATEKEYTYPE);
+    return getSomeKey(env, sig, (void**)key, PRIVATEKEYTYPE);
 }
 
 /**********************************************************************
@@ -427,7 +427,7 @@ getPrivateKey(JNIEnv *env, jobject sig, SECKEYPrivateKey**key)
 static PRStatus
 getPublicKey(JNIEnv *env, jobject sig, SECKEYPublicKey**key)
 {
-	return getSomeKey(env, sig, (void**)key, PUBLICKEYTYPE);
+    return getSomeKey(env, sig, (void**)key, PUBLICKEYTYPE);
 }
 
 static PRStatus
@@ -442,8 +442,8 @@ getSomeKey(JNIEnv *env, jobject sig, void **key, short type)
     sigClass = (*env)->GetObjectClass(env, sig);
 #ifdef DEBUG
     {
-    jclass realSigClass = (*env)->FindClass(env, PK11SIGNATURE_CLASS_NAME);
-    PR_ASSERT( (*env)->IsInstanceOf(env, sig, realSigClass) );
+        jclass realSigClass = (*env)->FindClass(env, PK11SIGNATURE_CLASS_NAME);
+        PR_ASSERT( (*env)->IsInstanceOf(env, sig, realSigClass) );
     }
 #endif
 
@@ -460,21 +460,21 @@ getSomeKey(JNIEnv *env, jobject sig, void **key, short type)
         return PR_FAILURE;
     }
 
-	if(type == PRIVATEKEYTYPE) {
-	    if( JSS_PK11_getPrivKeyPtr(env, keyProxy, (SECKEYPrivateKey**)key)
-															 != PR_SUCCESS)
-		{
-    	    PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
-        	return PR_FAILURE;
-    	}
-	} else {
-	    if( JSS_PK11_getPubKeyPtr(env, keyProxy, (SECKEYPublicKey**)key)
-															!= PR_SUCCESS)
-		{
-    	    PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
-        	return PR_FAILURE;
-    	}
-	}
+    if(type == PRIVATEKEYTYPE) {
+        if( JSS_PK11_getPrivKeyPtr(env, keyProxy, (SECKEYPrivateKey**)key)
+                != PR_SUCCESS)
+        {
+            PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
+            return PR_FAILURE;
+        }
+    } else {
+        if( JSS_PK11_getPubKeyPtr(env, keyProxy, (SECKEYPublicKey**)key)
+                != PR_SUCCESS)
+        {
+            PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
+            return PR_FAILURE;
+        }
+    }
     PR_ASSERT(*key != NULL);
 
     return PR_SUCCESS;
@@ -498,7 +498,7 @@ struct SigContextProxyStr {
  */
 PRStatus
 JSS_PK11_getSigContext(JNIEnv *env, jobject proxy, void**pContext,
-        SigContextType *pType)
+                       SigContextType *pType)
 {
     SigContextProxy *ctxtProxy;
 
@@ -531,7 +531,7 @@ JSS_PK11_getSigContext(JNIEnv *env, jobject proxy, void**pContext,
  *
  * ctxt: address of ptr to a SGNContext or VfyContext, which must not be NULL.
  *  It will be eaten by the wrapper and set to NULL.
- *		
+ *
  * type: type of context, either SGN_CONTEXT or VFY_CONTEXT
  * Returns: a new SigContextProxy object wrapping the given SGNContext, or
  *  NULL if an exception was thrown.
@@ -543,7 +543,7 @@ JSS_PK11_wrapSigContextProxy(JNIEnv *env, void **ctxt, SigContextType type)
     jmethodID constructor;
     jbyteArray byteArray;
     SigContextProxy *proxy=NULL;
-	jobject Context=NULL;
+    jobject Context=NULL;
 
     PR_ASSERT(env!=NULL && ctxt!=NULL && *ctxt!=NULL);
 
@@ -567,10 +567,10 @@ JSS_PK11_wrapSigContextProxy(JNIEnv *env, void **ctxt, SigContextType type)
         goto finish;
     }
     constructor = (*env)->GetMethodID(
-                    env,
-                    proxyClass,
-                    SIG_CONTEXT_PROXY_CONSTRUCTOR_NAME,
-                    SIG_CONTEXT_PROXY_CONSTRUCTOR_SIG);
+                      env,
+                      proxyClass,
+                      SIG_CONTEXT_PROXY_CONSTRUCTOR_NAME,
+                      SIG_CONTEXT_PROXY_CONSTRUCTOR_SIG);
     if(constructor == NULL) {
         ASSERT_OUTOFMEM(env);
         goto finish;
@@ -580,19 +580,19 @@ JSS_PK11_wrapSigContextProxy(JNIEnv *env, void **ctxt, SigContextType type)
     Context = (*env)->NewObject(env, proxyClass, constructor, byteArray);
 
 finish:
-	if(Context==NULL) {
-		/* didn't work, so free resources */
-		if(proxy!=NULL) {
-			PR_Free(proxy);
-		}
-		if(type==SGN_CONTEXT) {
-        	SGN_DestroyContext( (SGNContext*)*ctxt, PR_TRUE /*freeit*/);
-    	} else {
-        	PR_ASSERT(type == VFY_CONTEXT);
-        	VFY_DestroyContext( (VFYContext*)*ctxt, PR_TRUE /*freeit*/);
-		}
-	}
-	*ctxt = NULL;
+    if(Context==NULL) {
+        /* didn't work, so free resources */
+        if(proxy!=NULL) {
+            PR_Free(proxy);
+        }
+        if(type==SGN_CONTEXT) {
+            SGN_DestroyContext( (SGNContext*)*ctxt, PR_TRUE /*freeit*/);
+        } else {
+            PR_ASSERT(type == VFY_CONTEXT);
+            VFY_DestroyContext( (VFYContext*)*ctxt, PR_TRUE /*freeit*/);
+        }
+    }
+    *ctxt = NULL;
     return Context;
 }
 
@@ -604,7 +604,7 @@ finish:
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_SigContextProxy_releaseNativeResources
-  (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     SigContextProxy *proxy;
 
@@ -613,7 +613,7 @@ Java_org_mozilla_jss_pkcs11_SigContextProxy_releaseNativeResources
 #ifdef DEBUG
         PR_ASSERT( (*env)->ExceptionOccurred(env) != NULL);
         PR_fprintf(PR_STDERR,
-                    "ERROR: native signature context was not released\n");
+                   "ERROR: native signature context was not released\n");
 #endif
         goto finish;
     }
@@ -637,8 +637,8 @@ finish:
  */
 JNIEXPORT jbyteArray JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Signature_engineRawSignNative
-    (JNIEnv *env, jclass clazz, jobject tokenObj, jobject keyObj,
-    jbyteArray hashBA)
+(JNIEnv *env, jclass clazz, jobject tokenObj, jobject keyObj,
+ jbyteArray hashBA)
 {
     SECKEYPrivateKey *key = NULL;
     SECItem *sig = NULL;
@@ -664,7 +664,7 @@ Java_org_mozilla_jss_pkcs11_PK11Signature_engineRawSignNative
     /* perform the signature operation */
     if( PK11_Sign(key, sig, hash) != SECSuccess ) {
         JSS_throwMsg(env, SIGNATURE_EXCEPTION, "Signature operation failed"
-            " on token");
+                     " on token");
         goto finish;
     }
 
@@ -686,8 +686,8 @@ finish:
  */
 JNIEXPORT jboolean JNICALL
 Java_org_mozilla_jss_pkcs11_PK11Signature_engineRawVerifyNative
-    (JNIEnv *env, jclass clazz, jobject tokenObj, jobject keyObj,
-    jbyteArray hashBA, jbyteArray sigBA)
+(JNIEnv *env, jclass clazz, jobject tokenObj, jobject keyObj,
+ jbyteArray hashBA, jbyteArray sigBA)
 {
     SECItem *sig=NULL;
     SECItem *hash=NULL;
@@ -696,7 +696,7 @@ Java_org_mozilla_jss_pkcs11_PK11Signature_engineRawVerifyNative
     SECStatus status;
 
     PR_ASSERT(env!=NULL && tokenObj!=NULL && keyObj!=NULL && hashBA!=NULL
-        && sigBA!=NULL);
+              && sigBA!=NULL);
 
     sig = JSS_ByteArrayToSECItem(env, sigBA);
     if(sig==NULL) {
@@ -717,7 +717,7 @@ Java_org_mozilla_jss_pkcs11_PK11Signature_engineRawVerifyNative
         verified = JNI_TRUE;
     } else if( PR_GetError() != SEC_ERROR_BAD_SIGNATURE ) {
         JSS_throwMsg(env, SIGNATURE_EXCEPTION, "Verification operation"
-            " failed on token");
+                     " failed on token");
         goto finish;
     }
 

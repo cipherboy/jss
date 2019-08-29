@@ -57,18 +57,18 @@ static void setup_nss_context(char *database)
     PR_Init(PR_USER_THREAD, PR_PRIORITY_NORMAL, 0);
 
     NSSInitContext *const ctx = NSS_InitContext(database, "", "", "", NULL,
-        NSS_INIT_READONLY | NSS_INIT_PK11RELOAD);
+                                NSS_INIT_READONLY | NSS_INIT_PK11RELOAD);
     if (ctx == NULL) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: NSPR error code %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
 
     if (NSS_Init(database) != SECSuccess) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: NSPR error code when doing NSS_Init %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
 }
@@ -83,7 +83,7 @@ static PRFileDesc *setup_nss_client(PRFileDesc *c_nspr, char *host)
     if (newfd == NULL) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: NSPR error code %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
 
@@ -92,7 +92,7 @@ static PRFileDesc *setup_nss_client(PRFileDesc *c_nspr, char *host)
     if (newfd == NULL) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: SSL_ImportFD error %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
     c_nspr = newfd;
@@ -102,13 +102,13 @@ static PRFileDesc *setup_nss_client(PRFileDesc *c_nspr, char *host)
     if (SSL_ResetHandshake(c_nspr, PR_FALSE) != SECSuccess) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: SSL_ResetHandshake error %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
     if (SSL_SetURL(c_nspr, host) != SECSuccess) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: SSL_SetURL error %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
 
@@ -128,7 +128,7 @@ static CERTCertificate *get_cert(char *host)
      * database and see if any has a nickname matching the hostname. */
     clist = PK11_ListCerts(PK11CertListUser, NULL);
     for (cln = CERT_LIST_HEAD(clist); !CERT_LIST_END(cln, clist);
-         cln = CERT_LIST_NEXT(cln)) {
+            cln = CERT_LIST_NEXT(cln)) {
         CERTCertificate *cert = cln->cert;
         const char *nickname = (const char*)cln->appData;
 
@@ -173,7 +173,7 @@ static SECKEYPrivateKey *get_privkey(CERTCertificate *cert, char *password)
         printf("Invalid password for slot!\n");
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(3);
     }
 
@@ -195,7 +195,7 @@ static PRFileDesc *setup_nss_server(PRFileDesc *s_nspr, char *host, char *passwo
         printf("Failed to find private key for certificate for host: %s\n", host);
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
 
@@ -204,7 +204,7 @@ static PRFileDesc *setup_nss_server(PRFileDesc *s_nspr, char *host, char *passwo
     if (newfd == NULL) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: NSPR error code %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
 
@@ -213,7 +213,7 @@ static PRFileDesc *setup_nss_server(PRFileDesc *s_nspr, char *host, char *passwo
     if (newfd == NULL) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: SSL_ImportFD error %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
     s_nspr = newfd;
@@ -224,7 +224,7 @@ static PRFileDesc *setup_nss_server(PRFileDesc *s_nspr, char *host, char *passwo
     if (SSL_ConfigServerCert(s_nspr, cert, priv_key, NULL, 0) != SECSuccess) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: SSL_ConfigServerCert error %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
 
@@ -237,14 +237,14 @@ static PRFileDesc *setup_nss_server(PRFileDesc *s_nspr, char *host, char *passwo
     if (SSL_ResetHandshake(s_nspr, PR_TRUE) != SECSuccess) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: SSL_ResetHandshake error %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
 
     if (SSL_SetURL(s_nspr, host) != SECSuccess) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: SSL_SetURL error %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
 
@@ -261,14 +261,14 @@ bool is_finished(PRFileDesc *c_nspr, PRFileDesc *s_nspr)
     if (SSL_SecurityStatus(c_nspr, &c_sec_status, NULL, NULL, NULL, NULL, NULL) != SECSuccess) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: SSL_SecurityStatus error %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
 
     if (SSL_SecurityStatus(s_nspr, &s_sec_status, NULL, NULL, NULL, NULL, NULL) != SECSuccess) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: SSL_SecurityStatus error %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
 
@@ -296,11 +296,11 @@ int main(int argc, char** argv)
     j_buffer *c_write_buf = jb_alloc(4096);
 
     PRFileDesc *c_nspr = newBufferPRFileDesc(c_read_buf, c_write_buf,
-        (uint8_t*) "localhost", 9);
+                         (uint8_t*) "localhost", 9);
 
     /* Initialize Server Buffers */
     PRFileDesc *s_nspr = newBufferPRFileDesc(c_write_buf, c_read_buf,
-        (uint8_t*) "localhost", 9);
+                         (uint8_t*) "localhost", 9);
 
     /* Set up client and server sockets with NSSL */
     char *host = "localhost";
@@ -321,7 +321,7 @@ int main(int argc, char** argv)
             const PRErrorCode err = PR_GetError();
             if (err != PR_WOULD_BLOCK_ERROR) {
                 fprintf(stderr, "error: SSL_ForceHandshake error %d: %s\n",
-                    err, PR_ErrorToName(err));
+                        err, PR_ErrorToName(err));
                 exit(1);
             }
         }
@@ -331,7 +331,7 @@ int main(int argc, char** argv)
             const PRErrorCode err = PR_GetError();
             if (err != PR_WOULD_BLOCK_ERROR) {
                 fprintf(stderr, "error: SSL_ForceHandshake error %d: %s\n",
-                    err, PR_ErrorToName(err));
+                        err, PR_ErrorToName(err));
                 exit(1);
             }
         }
@@ -359,7 +359,7 @@ int main(int argc, char** argv)
     if (ret < 0) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: PR_Write error %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
 
@@ -367,7 +367,7 @@ int main(int argc, char** argv)
     if (ret < 0) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: PR_Read error %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
 
@@ -381,7 +381,7 @@ int main(int argc, char** argv)
     if (ret < 0) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: PR_Write error %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
 
@@ -390,7 +390,7 @@ int main(int argc, char** argv)
     if (ret < 0) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: PR_Read error %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
 
@@ -401,7 +401,7 @@ int main(int argc, char** argv)
     if (ret < 0) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: PR_Shutdown client error %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
 
@@ -409,7 +409,7 @@ int main(int argc, char** argv)
     if (ret < 0) {
         const PRErrorCode err = PR_GetError();
         fprintf(stderr, "error: PR_Shutdown server error %d: %s\n",
-            err, PR_ErrorToName(err));
+                err, PR_ErrorToName(err));
         exit(1);
     }
 

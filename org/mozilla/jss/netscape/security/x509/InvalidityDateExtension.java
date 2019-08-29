@@ -43,7 +43,7 @@ import org.mozilla.jss.netscape.security.util.DerValue;
  */
 
 public class InvalidityDateExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
 
     /**
      *
@@ -87,7 +87,7 @@ public class InvalidityDateExtension extends Extension
      * @param dateOfInvalidity the value to be set for the extension.
      */
     public InvalidityDateExtension(Date dateOfInvalidity)
-            throws IOException {
+    throws IOException {
         this.invalidityDate = dateOfInvalidity;
         this.extensionId = PKIXExtensions.InvalidityDate_Id;
         this.critical = false;
@@ -102,7 +102,7 @@ public class InvalidityDateExtension extends Extension
      * @param dateOfInvalidity the value to be set for the extension.
      */
     public InvalidityDateExtension(Boolean critical, Date dateOfInvalidity)
-            throws IOException {
+    throws IOException {
         this.invalidityDate = dateOfInvalidity;
         this.extensionId = PKIXExtensions.InvalidityDate_Id;
         this.critical = critical.booleanValue();
@@ -117,7 +117,7 @@ public class InvalidityDateExtension extends Extension
      * @exception IOException on error.
      */
     public InvalidityDateExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = PKIXExtensions.InvalidityDate_Id;
         this.critical = critical.booleanValue();
 

@@ -76,7 +76,7 @@ public final class Attribute implements Serializable, DerEncoder {
      * @param value the value string
      */
     public Attribute(ObjectIdentifier oid, String value)
-            throws IOException {
+    throws IOException {
 
         //pre-condition verification
         if ((oid == null) || (value == null))
@@ -94,7 +94,7 @@ public final class Attribute implements Serializable, DerEncoder {
      * @param values String value vector
      */
     public Attribute(ObjectIdentifier oid, Vector<String> values)
-            throws IOException {
+    throws IOException {
 
         //pre-condition verification
         if ((oid == null) || (values == null))
@@ -117,7 +117,7 @@ public final class Attribute implements Serializable, DerEncoder {
      * @param values String value vector
      */
     public Attribute(String attr, Vector<String> values)
-            throws IOException {
+    throws IOException {
 
         //pre-condition verification
         if ((attr == null) || (values == null))
@@ -152,7 +152,7 @@ public final class Attribute implements Serializable, DerEncoder {
      * @param val the attribute object in der encode form.
      */
     public Attribute(DerValue val)
-            throws IOException {
+    throws IOException {
 
         //pre-condition verification
         if (val == null)
@@ -228,7 +228,7 @@ public final class Attribute implements Serializable, DerEncoder {
 
     //encode the attribute object
     private void encodeThis(OutputStream out)
-            throws IOException {
+    throws IOException {
         try (DerOutputStream tmp2 = new DerOutputStream()) {
             DerOutputStream tmp = new DerOutputStream();
 
@@ -241,7 +241,7 @@ public final class Attribute implements Serializable, DerEncoder {
 
     //encode the attribute object
     private void encodeValueSet(OutputStream out)
-            throws IOException {
+    throws IOException {
         try (DerOutputStream tmp2 = new DerOutputStream()) {
             DerOutputStream tmp = new DerOutputStream();
 
@@ -267,7 +267,7 @@ public final class Attribute implements Serializable, DerEncoder {
 
     //decode the attribute object
     private void decodeThis(DerValue val)
-            throws IOException {
+    throws IOException {
 
         //pre-condition verification
         if (val == null) {
@@ -280,7 +280,7 @@ public final class Attribute implements Serializable, DerEncoder {
 
         if (val.data.available() == 0) {
             throw new IOException("No data available in "
-                                   + "passed DER encoded value.");
+                                  + "passed DER encoded value.");
         }
         this.oid = val.data.getDerValue().getOID();
 
@@ -296,7 +296,7 @@ public final class Attribute implements Serializable, DerEncoder {
 
     //decode the attribute value set
     private void decodeValueSet(DerValue val)
-            throws IOException {
+    throws IOException {
         //pre-condition verification
         if (val == null) {
             throw new IOException("Invalid Input - null passed.");
@@ -314,7 +314,7 @@ public final class Attribute implements Serializable, DerEncoder {
 
         if (val.data.available() == 0) {
             throw new IOException("No data available in "
-                                   + "passed DER encoded attribute value set.");
+                                  + "passed DER encoded attribute value set.");
         }
 
         //get the value set

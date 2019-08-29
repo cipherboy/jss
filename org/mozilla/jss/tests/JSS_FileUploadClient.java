@@ -183,9 +183,9 @@ public class JSS_FileUploadClient {
                 OutputStream   os  = clientSock.getOutputStream();
                 System.out.println("Reading file foo.in");
                 BufferedReader in  = new BufferedReader(
-                        new FileReader(fUploadFile));
+                    new FileReader(fUploadFile));
                 System.out.println("Successfully got a handle to " +
-                                    fUploadFile);
+                                   fUploadFile);
                 PrintWriter   out  = new PrintWriter(new BufferedWriter(
                         new OutputStreamWriter(os)));
 
@@ -223,29 +223,29 @@ public class JSS_FileUploadClient {
         logger.debug("client about to connect...");
 
         String hostAddr =
-                InetAddress.getByName(serverHost).getHostAddress();
+            InetAddress.getByName(serverHost).getHostAddress();
 
         logger.debug("the host " + serverHost + " and the address " + hostAddr);
 
         SSLCertificateApprovalCallback approvalCallback =
-                new TestCertApprovalCallback();
+            new TestCertApprovalCallback();
         SSLClientCertificateSelectionCallback certSelectionCallback =
-                new TestClientCertificateSelectionCallback();
+            new TestClientCertificateSelectionCallback();
 
         SSLSocket sock = null;
 
         if (TestCertCallBack) {
             logger.debug("calling approvalCallBack");
             sock = new SSLSocket(InetAddress.getByName(hostAddr),
-                    port,
-                    null,
-                    0,
-                    new TestCertApprovalCallback(),
-                    null);
+                                 port,
+                                 null,
+                                 0,
+                                 new TestCertApprovalCallback(),
+                                 null);
         } else {
             logger.debug("NOT calling approvalCallBack");
             sock = new SSLSocket(InetAddress.getByName(hostAddr),
-                    port);
+                                 port);
         }
 
         logger.debug("clientCertNick=" + clientCertNick);
@@ -260,7 +260,7 @@ public class JSS_FileUploadClient {
         //sock.setSoTimeout(10 * 1000);
         //sock.setKeepAlive(true);
         sock.addHandshakeCompletedListener(
-                new HandshakeListener("client",this));
+            new HandshakeListener("client",this));
         sock.forceHandshake();
         readWriteThread rwThread = new readWriteThread(sock, 0);
         rwThread.start();
@@ -270,7 +270,7 @@ public class JSS_FileUploadClient {
      * SSL Handshake Listener implementation.
      */
     public class HandshakeListener
-            implements SSLHandshakeCompletedListener {
+        implements SSLHandshakeCompletedListener {
         private String who;
         private JSS_FileUploadClient boss;
         public HandshakeListener(String who, JSS_FileUploadClient boss) {
@@ -324,10 +324,10 @@ public class JSS_FileUploadClient {
         String  uploadFile = "foo.in";
 
         String  usage      = "\nUSAGE:\n" +
-                "java org.mozilla.jss.tests.JSS_FileUploadClient" +
-                " [# sockets] [JSS cipher integer]\n[certdb path]" +
-                " [password file] [upload test file] " +
-                " [server host] [server port]";
+                             "java org.mozilla.jss.tests.JSS_FileUploadClient" +
+                             " [# sockets] [JSS cipher integer]\n[certdb path]" +
+                             " [password file] [upload test file] " +
+                             " [server host] [server port]";
 
         try {
             if (args.length <= 0 || args[0].toLowerCase().equals("-h")) {

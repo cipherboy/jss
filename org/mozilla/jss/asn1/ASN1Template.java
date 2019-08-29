@@ -33,7 +33,7 @@ public interface ASN1Template {
      * @throws IOException If other error occurred.
      */
     public ASN1Value decode(InputStream istream)
-        throws IOException, InvalidBERException;
+    throws IOException, InvalidBERException;
 
     /**
      * Decodes an ASN1Value from the InputStream with the given implicit
@@ -49,5 +49,5 @@ public interface ASN1Template {
      * @throws IOException If other error occurred.
      */
     public ASN1Value decode(Tag implicitTag, InputStream istream)
-        throws IOException, InvalidBERException;
+    throws IOException, InvalidBERException;
 }

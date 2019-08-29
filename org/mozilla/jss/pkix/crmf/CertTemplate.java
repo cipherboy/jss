@@ -286,7 +286,7 @@ public class CertTemplate implements ASN1Value {
     }
 
     public void print(PrintStream ps, int indentSpaces)
-            throws InvalidBERException, IOException {
+    throws InvalidBERException, IOException {
         StringBuffer indentBuf = new StringBuffer();
         for(int i=0; i < indentSpaces; i++) {
             indentBuf.append(" ");
@@ -325,7 +325,7 @@ public class CertTemplate implements ASN1Value {
         }
         if(extensions != null ) {
             ps.println("Extensions is present, with "+extensions.size()+
-                " elements");
+                       " elements");
         }
     }
 
@@ -373,11 +373,11 @@ public class CertTemplate implements ASN1Value {
             // notBefore & notAfter are CHOICES, so must be EXPLICITly tagged
             if( notBefore!=null ) {
                 optionalVal.addElement( new EXPLICIT(
-                    Tag.get(0), dateToASN1(notBefore) ) );
+                                            Tag.get(0), dateToASN1(notBefore) ) );
             }
             if( notAfter!=null ) {
                 optionalVal.addElement( new EXPLICIT(
-                    Tag.get(1), dateToASN1(notAfter) ) );
+                                            Tag.get(1), dateToASN1(notAfter) ) );
             }
             seq.addElement(Tag.get(4), optionalVal);
         }
@@ -412,13 +412,13 @@ public class CertTemplate implements ASN1Value {
          * value of this method
          */
         public ASN1Value decode(InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicit, InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
             CHOICE.Template timeChoice = new CHOICE.Template();
             timeChoice.addElement( new GeneralizedTime.Template() );
@@ -428,9 +428,9 @@ public class CertTemplate implements ASN1Value {
             // EXPLICITly tagged
             SEQUENCE.Template validity = new SEQUENCE.Template();
             validity.addOptionalElement( new EXPLICIT.Template(
-                            Tag.get(0), timeChoice));
+                                             Tag.get(0), timeChoice));
             validity.addOptionalElement( new EXPLICIT.Template(
-                            Tag.get(1), timeChoice));
+                                             Tag.get(1), timeChoice));
 
             SEQUENCE.Template seqt = new SEQUENCE.Template();
 
@@ -439,16 +439,16 @@ public class CertTemplate implements ASN1Value {
             seqt.addOptionalElement( Tag.get(2),
                                      new AlgorithmIdentifier.Template() );
             seqt.addOptionalElement( new EXPLICIT.Template(Tag.get(3),
-                                            new Name.Template() ));
+                                     new Name.Template() ));
             seqt.addOptionalElement( Tag.get(4), validity );
             seqt.addOptionalElement( new EXPLICIT.Template(Tag.get(5),
-                                            new Name.Template() ));
+                                     new Name.Template() ));
             seqt.addOptionalElement( Tag.get(6),
-                                new SubjectPublicKeyInfo.Template() );
+                                     new SubjectPublicKeyInfo.Template() );
             seqt.addOptionalElement( Tag.get(7), new BIT_STRING.Template() );
             seqt.addOptionalElement( Tag.get(8), new BIT_STRING.Template() );
             seqt.addOptionalElement( Tag.get(9),
-                    new SEQUENCE.OF_Template( new Extension.Template() ) );
+                                     new SEQUENCE.OF_Template( new Extension.Template() ) );
 
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicit, istream);
 
@@ -457,7 +457,7 @@ public class CertTemplate implements ASN1Value {
             ct.setVersion( (INTEGER) seq.elementAt(0) );
             ct.setSerialNumber( (INTEGER) seq.elementAt(1) );
             ct.setSigningAlg( (AlgorithmIdentifier)
-                                    seq.elementAt(2) );
+                              seq.elementAt(2) );
             if( seq.elementAt(3) != null ) {
                 ct.setIssuer((Name)((EXPLICIT)seq.elementAt(3)).getContent() );
             }
@@ -499,42 +499,42 @@ public class CertTemplate implements ASN1Value {
 
     public static void main(String args[]) {
 
-      try {
+        try {
 
-        CertTemplate ct = new CertTemplate();
-        Name name;
+            CertTemplate ct = new CertTemplate();
+            Name name;
 
-        ct.setVersion(new INTEGER(5));
-        ct.setSerialNumber(new INTEGER(13112));
-        
-        name = new Name();
-        name.addCommonName("You");
-        name.addStateOrProvinceName("California");
-        ct.setIssuer(name);
-        ct.setNotBefore(new Date());
-        name = new Name();
-        name.addCommonName("Me");
-        name.addCountryName("US");
-        ct.setSubject(name);
-        ct.setIssuerUID( new BIT_STRING( new byte[] {0x00, 0x01}, 0 ) );
+            ct.setVersion(new INTEGER(5));
+            ct.setSerialNumber(new INTEGER(13112));
 
-        System.out.println("Constructed CertTemplate:");
+            name = new Name();
+            name.addCommonName("You");
+            name.addStateOrProvinceName("California");
+            ct.setIssuer(name);
+            ct.setNotBefore(new Date());
+            name = new Name();
+            name.addCommonName("Me");
+            name.addCountryName("US");
+            ct.setSubject(name);
+            ct.setIssuerUID( new BIT_STRING( new byte[] {0x00, 0x01}, 0 ) );
 
-        byte[] encoded = ASN1Util.encode(ct);
-        java.io.FileOutputStream fos = new java.io.FileOutputStream("certTemplate");
-        fos.write(encoded);
-        fos.close();
+            System.out.println("Constructed CertTemplate:");
 
-        ct.print(System.out, 0);
+            byte[] encoded = ASN1Util.encode(ct);
+            java.io.FileOutputStream fos = new java.io.FileOutputStream("certTemplate");
+            fos.write(encoded);
+            fos.close();
 
-        CertTemplate newCt = (CertTemplate) ASN1Util.decode(
-                CertTemplate.getTemplate(), encoded );
+            ct.print(System.out, 0);
 
-        System.out.println("\nDecoded CertTemplate:");
-        newCt.print(System.out, 0);
+            CertTemplate newCt = (CertTemplate) ASN1Util.decode(
+                                     CertTemplate.getTemplate(), encoded );
 
-      } catch( Exception e ) {
+            System.out.println("\nDecoded CertTemplate:");
+            newCt.print(System.out, 0);
+
+        } catch( Exception e ) {
             e.printStackTrace();
-      }
+        }
     }
 }

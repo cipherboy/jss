@@ -31,7 +31,7 @@ public interface CryptoToken {
      */
     public abstract org.mozilla.jss.crypto.Signature
     getSignatureContext(SignatureAlgorithm algorithm)
-        throws java.security.NoSuchAlgorithmException, TokenException;
+    throws java.security.NoSuchAlgorithmException, TokenException;
 
     /**
      * Creates a Digest object.  Digesting cryptographic operations will
@@ -43,7 +43,7 @@ public interface CryptoToken {
      */
     public abstract JSSMessageDigest
     getDigestContext(DigestAlgorithm algorithm)
-        throws java.security.NoSuchAlgorithmException, DigestException;
+    throws java.security.NoSuchAlgorithmException, DigestException;
 
     // !!! MAC ???
 
@@ -58,14 +58,14 @@ public interface CryptoToken {
      */
     public abstract Cipher
     getCipherContext(EncryptionAlgorithm algorithm)
-        throws java.security.NoSuchAlgorithmException, TokenException;
+    throws java.security.NoSuchAlgorithmException, TokenException;
 
     public abstract SymmetricKeyDeriver getSymmetricKeyDeriver()
-        throws TokenException;
+    throws TokenException;
 
     public abstract KeyWrapper
     getKeyWrapper(KeyWrapAlgorithm algorithm)
-        throws java.security.NoSuchAlgorithmException, TokenException;
+    throws java.security.NoSuchAlgorithmException, TokenException;
 
     /**
      * Returns a Random Number Generator implemented on this token.
@@ -91,7 +91,7 @@ public interface CryptoToken {
      */
     public abstract KeyGenerator
     getKeyGenerator(KeyGenAlgorithm algorithm)
-        throws java.security.NoSuchAlgorithmException, TokenException;
+    throws java.security.NoSuchAlgorithmException, TokenException;
 
     /**
      * Clones a SymmetricKey from a different token onto this token.
@@ -102,8 +102,8 @@ public interface CryptoToken {
      *      the key to be cloned.
      */
     public SymmetricKey cloneKey(SymmetricKey key)
-        throws SymmetricKey.NotExtractableException,
-            InvalidKeyException, TokenException;
+    throws SymmetricKey.NotExtractableException,
+               InvalidKeyException, TokenException;
 
     /**
      * Creates a KeyPairGenerator object, which can be used to generate
@@ -117,27 +117,27 @@ public interface CryptoToken {
      */
     public abstract KeyPairGenerator
     getKeyPairGenerator(KeyPairAlgorithm algorithm)
-        throws java.security.NoSuchAlgorithmException, TokenException;
+    throws java.security.NoSuchAlgorithmException, TokenException;
 
-	/**
-	 * Generates a b64 encoded PKCS10 blob used for making cert
-	 *	 request.  Begin/End brackets included.
-	 * @param subject subject dn of the certificate
-	 * @param keysize size of the key
-	 * @param keyType "rsa" or "dsa"
+    /**
+     * Generates a b64 encoded PKCS10 blob used for making cert
+     *	 request.  Begin/End brackets included.
+     * @param subject subject dn of the certificate
+     * @param keysize size of the key
+     * @param keyType "rsa" or "dsa"
      * @param P The DSA prime parameter
      * @param Q The DSA sub-prime parameter
      * @param G The DSA base parameter
-	 * @return base64 encoded pkcs10 certificate request with
-	 *	 Begin/end brackets
-	 */
-	public abstract String generateCertRequest(String subject, int
-											   keysize,
-											   String keyType,
-											   byte[] P, byte[] Q,
-											   byte[] G)
-		throws TokenException, InvalidParameterException,
-												   PQGParamGenException;
+     * @return base64 encoded pkcs10 certificate request with
+     *	 Begin/end brackets
+     */
+    public abstract String generateCertRequest(String subject, int
+            keysize,
+            String keyType,
+            byte[] P, byte[] Q,
+            byte[] G)
+    throws TokenException, InvalidParameterException,
+               PQGParamGenException;
 
     /**
      * Determines whether this token supports the given algorithm.
@@ -163,7 +163,7 @@ public interface CryptoToken {
      * @see org.mozilla.jss.CryptoManager#setPasswordCallback
      */
     public abstract void login(PasswordCallback pwcb)
-        throws IncorrectPasswordException, TokenException;
+    throws IncorrectPasswordException, TokenException;
 
     /**
      * Logout of the token.
@@ -222,7 +222,7 @@ public interface CryptoToken {
      * @see #setLoginMode
      */
     public abstract void setLoginTimeoutMinutes(int timeoutMinutes)
-        throws TokenException;
+    throws TokenException;
 
     /**
      * Find out if the token is currently logged in.
@@ -242,34 +242,34 @@ public interface CryptoToken {
     public boolean needsLogin() throws TokenException;
 
 
-	/**
-	 * Initialize the password of this token.
-	 *
-	 * @param securityOfficerPW A callback to obtain the password of the
-	 * 		SecurityOfficer.  Pass in a NullPasswordCallback if there is
-	 * 		no security officer password. Must not be null.
-	 * @param userPW A callback to obtain the new password for this token.
-	 *		Must not be null.
-	 * @exception IncorrectPasswordException If the supplied security officer
-	 *		password is incorrect.
-	 * @exception AlreadyInitializedException If the token only allows one
-	 *		password initialization, and it has already occurred.
+    /**
+     * Initialize the password of this token.
+     *
+     * @param securityOfficerPW A callback to obtain the password of the
+     * 		SecurityOfficer.  Pass in a NullPasswordCallback if there is
+     * 		no security officer password. Must not be null.
+     * @param userPW A callback to obtain the new password for this token.
+     *		Must not be null.
+     * @exception IncorrectPasswordException If the supplied security officer
+     *		password is incorrect.
+     * @exception AlreadyInitializedException If the token only allows one
+     *		password initialization, and it has already occurred.
      * @exception TokenException If an error occurs on the token.
-	 */
-	public abstract void
-	initPassword(PasswordCallback securityOfficerPW, PasswordCallback userPW)
-		throws IncorrectPasswordException, AlreadyInitializedException,
-		TokenException;
+     */
+    public abstract void
+    initPassword(PasswordCallback securityOfficerPW, PasswordCallback userPW)
+    throws IncorrectPasswordException, AlreadyInitializedException,
+               TokenException;
 
-	/**
-	 * Determine whether the password has been initialized yet.  Some tokens
-	 * (such as the Netscape Internal Key Token) don't allow initializing
-	 * the PIN more than once.
+    /**
+     * Determine whether the password has been initialized yet.  Some tokens
+     * (such as the Netscape Internal Key Token) don't allow initializing
+     * the PIN more than once.
      *
      * @exception TokenException If an error occurs on the token.
-	 */
-	public abstract boolean
-	passwordIsInitialized() throws TokenException;
+     */
+    public abstract boolean
+    passwordIsInitialized() throws TokenException;
 
     /**
      * Change the password of this token.
@@ -283,7 +283,7 @@ public interface CryptoToken {
      */
     public abstract void
     changePassword(PasswordCallback oldpw, PasswordCallback newpw)
-        throws IncorrectPasswordException, TokenException;
+    throws IncorrectPasswordException, TokenException;
 
     /**
      * Obtain the nickname, or label, of this token.
@@ -311,7 +311,7 @@ public interface CryptoToken {
     public boolean isPresent();
 
     public void importPublicKey(
-            PublicKey pubKey,
-            boolean permanent)
-            throws TokenException;
+        PublicKey pubKey,
+        boolean permanent)
+    throws TokenException;
 }

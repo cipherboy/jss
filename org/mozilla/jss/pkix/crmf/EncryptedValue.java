@@ -135,7 +135,7 @@ public class EncryptedValue implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
         sequence.encode(implicitTag, ostream);
     }
 
@@ -155,15 +155,15 @@ public class EncryptedValue implements ASN1Value {
             seqt = new SEQUENCE.Template();
 
             seqt.addOptionalElement( new Tag(0),
-                        AlgorithmIdentifier.getTemplate());
+                                     AlgorithmIdentifier.getTemplate());
             seqt.addOptionalElement( new Tag(1),
-                        AlgorithmIdentifier.getTemplate());
+                                     AlgorithmIdentifier.getTemplate());
             seqt.addOptionalElement( new Tag(2),
-                        BIT_STRING.getTemplate());
+                                     BIT_STRING.getTemplate());
             seqt.addOptionalElement( new Tag(3),
-                        AlgorithmIdentifier.getTemplate());
+                                     AlgorithmIdentifier.getTemplate());
             seqt.addOptionalElement( new Tag(4),
-                        OCTET_STRING.getTemplate());
+                                     OCTET_STRING.getTemplate());
             seqt.addElement( BIT_STRING.getTemplate() );
         }
 
@@ -172,27 +172,27 @@ public class EncryptedValue implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
-          try {
+        throws InvalidBERException, IOException {
+            try {
 
-            SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
+                SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
-            return new EncryptedValue(
-                            (AlgorithmIdentifier) seq.elementAt(0),
-                            (AlgorithmIdentifier) seq.elementAt(1),
-                            (BIT_STRING) seq.elementAt(2),
-                            (AlgorithmIdentifier) seq.elementAt(3),
-                            (OCTET_STRING) seq.elementAt(4),
-                            (BIT_STRING) seq.elementAt(5) );
+                return new EncryptedValue(
+                           (AlgorithmIdentifier) seq.elementAt(0),
+                           (AlgorithmIdentifier) seq.elementAt(1),
+                           (BIT_STRING) seq.elementAt(2),
+                           (AlgorithmIdentifier) seq.elementAt(3),
+                           (OCTET_STRING) seq.elementAt(4),
+                           (BIT_STRING) seq.elementAt(5) );
 
-          } catch(InvalidBERException e ) {
-            throw new InvalidBERException(e, "EncryptedValue");
-          }
+            } catch(InvalidBERException e ) {
+                throw new InvalidBERException(e, "EncryptedValue");
+            }
         }
     }
 }

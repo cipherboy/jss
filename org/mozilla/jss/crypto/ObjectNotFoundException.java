@@ -9,6 +9,10 @@ package org.mozilla.jss.crypto;
  */
 public class ObjectNotFoundException extends Exception {
     private static final long serialVersionUID = 1L;
-    public ObjectNotFoundException() { super(); }
-    public ObjectNotFoundException(String mesg) { super(mesg); }
+    public ObjectNotFoundException() {
+        super();
+    }
+    public ObjectNotFoundException(String mesg) {
+        super(mesg);
+    }
 }

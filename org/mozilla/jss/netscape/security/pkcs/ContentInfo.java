@@ -43,25 +43,25 @@ public class ContentInfo {
     private static int[] crdata = { 1, 2, 840, 113549, 1, 7, 6 };
 
     public static final ObjectIdentifier PKCS7_OID =
-            new ObjectIdentifier(pkcs7);
+        new ObjectIdentifier(pkcs7);
 
     public static final ObjectIdentifier DATA_OID =
-            new ObjectIdentifier(data);
+        new ObjectIdentifier(data);
 
     public static final ObjectIdentifier SIGNED_DATA_OID =
-            new ObjectIdentifier(sdata);
+        new ObjectIdentifier(sdata);
 
     public static final ObjectIdentifier ENVELOPED_DATA_OID =
-            new ObjectIdentifier(edata);
+        new ObjectIdentifier(edata);
 
     public static final ObjectIdentifier SIGNED_AND_ENVELOPED_DATA_OID =
-            new ObjectIdentifier(sedata);
+        new ObjectIdentifier(sedata);
 
     public static final ObjectIdentifier DIGESTED_DATA_OID =
-            new ObjectIdentifier(ddata);
+        new ObjectIdentifier(ddata);
 
     public static final ObjectIdentifier ENCRYPTED_DATA_OID =
-            new ObjectIdentifier(crdata);
+        new ObjectIdentifier(crdata);
 
     ObjectIdentifier contentType;
     DerValue content; // OPTIONAL
@@ -81,7 +81,7 @@ public class ContentInfo {
     }
 
     public ContentInfo(DerInputStream derin)
-            throws IOException, ParsingException {
+    throws IOException, ParsingException {
         DerInputStream disType;
         DerInputStream disTaggedContent;
         DerValue type;
@@ -127,7 +127,7 @@ public class ContentInfo {
         content.encode(contentDerCode);
         // Add the [0] EXPLICIT tag in front of the content encoding
         taggedContent = new DerValue((byte) 0xA0,
-                     contentDerCode.toByteArray());
+                                     contentDerCode.toByteArray());
 
         seq = new DerOutputStream();
         seq.putOID(contentType);

@@ -72,7 +72,7 @@ public class JSS_SelfServServer  {
             (new JSS_SelfServServer()).doIt(args);
         } catch (Exception e) {
             System.out.println("JSS_SelfServServer exiting with Exception " +
-                    e.getMessage());
+                               e.getMessage());
             System.exit(1);
         }
         System.exit(0);
@@ -87,9 +87,9 @@ public class JSS_SelfServServer  {
     private boolean       bVerbose        = false;
     public  int    port            = 29754;
     public  static String usage           = "\nUSAGE:\njava JSS_SelfServServer"+
-        " [certdb path] [password file]\n"+
-        "[server_host_name] [testInetAddress: true|false]" +
-        "<port> <verbose> <cert nickname> ";
+                                            " [certdb path] [password file]\n"+
+                                            "[server_host_name] [testInetAddress: true|false]" +
+                                            "<port> <verbose> <cert nickname> ";
 
     public JSS_SelfServServer() {
         if (logger.isDebugEnabled()) {
@@ -150,7 +150,7 @@ public class JSS_SelfServServer  {
                     /* enable the FIPS ciphersuite */
                     SSLSocket.setCipherPreferenceDefault(ciphers[i], true);
                 } else if (SSLSocket.getCipherPreferenceDefault(
-                    ciphers[i])) {
+                               ciphers[i])) {
                     /* disable the non fips ciphersuite */
                     SSLSocket.setCipherPreferenceDefault(ciphers[i], false);
                 }
@@ -166,8 +166,8 @@ public class JSS_SelfServServer  {
                     SSLSocket.setCipherPreferenceDefault(ciphers[i], true);
                     if (bVerbose) {
                         System.out.println(Constants.cipher.cipherToString(
-                            ciphers[i])  + " " +
-                            Integer.toHexString(ciphers[i]));
+                                               ciphers[i])  + " " +
+                                           Integer.toHexString(ciphers[i]));
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -185,14 +185,14 @@ public class JSS_SelfServServer  {
         if (TestInetAddress) {
             if (bVerbose)
                 System.out.println("JSS_SelfServServ HostName " + fServerHost +
-                    " the Inet Address " +
-                    InetAddress.getByName(fServerHost));
+                                   " the Inet Address " +
+                                   InetAddress.getByName(fServerHost));
             serverSock = new SSLServerSocket(port, 5,
-                InetAddress.getByName(fServerHost), null , true);
+                                             InetAddress.getByName(fServerHost), null, true);
         } else {
             if (bVerbose)
                 System.out.println("Inet set to Null");
-            serverSock = new SSLServerSocket(port, 5, null , null , true);
+            serverSock = new SSLServerSocket(port, 5, null, null, true);
         }
 
         if (bVerbose)
@@ -209,7 +209,7 @@ public class JSS_SelfServServer  {
             System.out.println("JSS_SelfServServ specified cert by nickname");
 
         System.out.println("JSS_SelfServServ " + fServerHost +
-            " ready to accept connections on " + port);
+                           " ready to accept connections on " + port);
         int socketCntr = 0;
         try {
             while ( true ) {
@@ -222,7 +222,7 @@ public class JSS_SelfServServer  {
                 sock.setSoTimeout(300*1000);
                 if (bVerbose) {
                     System.out.println("Timeout value for SSL sockets: " +
-                        sock.getSoTimeout() + " milliseconds");
+                                       sock.getSoTimeout() + " milliseconds");
                 }
                 readWriteThread rwThread = new readWriteThread(sock, socketCntr);
                 rwThread.start();
@@ -231,16 +231,16 @@ public class JSS_SelfServServer  {
 
             if (socketCntr == 0) {
                 System.out.println("JSS_SelfServServ No Client attempted to " +
-                        "connect! If " +
-                        "test ran from all.pl check the client execution " +
-                        "for errors.");
+                                   "connect! If " +
+                                   "test ran from all.pl check the client execution " +
+                                   "for errors.");
             } else {
                 System.out.println("JSS_SelfServServ there has been " +
-                        socketCntr + " client " +
-                        " connections but the server Accept has timed out!");
+                                   socketCntr + " client " +
+                                   " connections but the server Accept has timed out!");
             }
             System.out.println("JSS_SelfServServ Timeout value: " +
-                        serverSock.getSoTimeout() + " milliseconds");
+                               serverSock.getSoTimeout() + " milliseconds");
             ex.printStackTrace();
             System.out.println("JSS_SelfServServ exiting due to timeout.");
             System.exit(1);
@@ -276,7 +276,7 @@ public class JSS_SelfServServer  {
                 BufferedReader bir = new BufferedReader(
                     new InputStreamReader(is));
                 PrintWriter out    = new PrintWriter(new BufferedWriter(
-                    new OutputStreamWriter(os)));
+                        new OutputStreamWriter(os)));
 
                 while (true) {
 
@@ -285,7 +285,7 @@ public class JSS_SelfServServer  {
                             if (inputLine.equalsIgnoreCase("shutdown")) {
                                 if (bVerbose) {
                                     System.out.println("Client told " +
-                                        " JSS_SelfServServer to Shutdown!");
+                                                       " JSS_SelfServServer to Shutdown!");
                                 }
                                 is.close();
                                 os.close();
@@ -296,27 +296,27 @@ public class JSS_SelfServServer  {
 
                             if (bVerbose) {
                                 System.out.println("ServerSSLSocket-" +
-                                    socketCntr + ": Received " + inputLine);
+                                                   socketCntr + ": Received " + inputLine);
                                 System.out.println("Sending" + outputLine);
                             }
                             out.println(outputLine);
                             out.flush();
                         } else {
-                                 /* if you read null then quit. otherwise you
-                                  * will be in endless loop with the socket
-                                  * stuck in CLOSED_WAIT.
-                                  */
+                            /* if you read null then quit. otherwise you
+                             * will be in endless loop with the socket
+                             * stuck in CLOSED_WAIT.
+                             */
                             if (bVerbose) {
                                 System.out.println("ServerSSLSocket-" +
-                                    socketCntr +
-                                    " read null aborting connection.");
+                                                   socketCntr +
+                                                   " read null aborting connection.");
                             }
                             break;
                         }
 
                     } catch (SocketTimeoutException ste) {
                         System.out.println("ServerSSLSocket-" + socketCntr +
-                            " timed out: " +  ste.toString());
+                                           " timed out: " +  ste.toString());
                         break;
                     } catch (IOException ex) {
                         break;
@@ -329,7 +329,7 @@ public class JSS_SelfServServer  {
                 socket.close();
                 if (bVerbose) {
                     System.out.println("ServerSSLSocket " + socketCntr +
-                        " has been Closed.");
+                                       " has been Closed.");
                 }
             } catch (IOException e) {
 

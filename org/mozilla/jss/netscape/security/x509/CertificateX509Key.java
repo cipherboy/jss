@@ -140,7 +140,7 @@ public class CertificateX509Key implements CertAttrSet, Serializable {
             this.key = (X509Key) obj;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet: CertificateX509Key.");
+                                  "CertAttrSet: CertificateX509Key.");
         }
     }
 
@@ -152,7 +152,7 @@ public class CertificateX509Key implements CertAttrSet, Serializable {
             return (key);
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet: CertificateX509Key.");
+                                  "CertAttrSet: CertificateX509Key.");
         }
     }
 
@@ -164,7 +164,7 @@ public class CertificateX509Key implements CertAttrSet, Serializable {
             key = null;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet: CertificateX509Key.");
+                                  "CertAttrSet: CertificateX509Key.");
         }
     }
 

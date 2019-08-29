@@ -94,7 +94,7 @@ Java_org_mozilla_jss_nss_Buffer_WriteCapacity(JNIEnv *env, jclass clazz, jobject
 
 JNIEXPORT jbyteArray JNICALL
 Java_org_mozilla_jss_nss_Buffer_Read(JNIEnv *env, jclass clazz, jobject buf,
-    jlong length)
+                                     jlong length)
 {
     j_buffer *real_buf = NULL;
     size_t read_amount = 0;

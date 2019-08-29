@@ -57,7 +57,7 @@ import org.mozilla.jss.netscape.security.util.DerValue;
  * @see Extension
  */
 public class SubjectDirAttributesExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
 
     /**
      *
@@ -101,12 +101,12 @@ public class SubjectDirAttributesExtension extends Extension
 
         if (derVal.tag != DerValue.tag_Sequence) {
             throw new IOException("Invalid encoding for " +
-                    "Subject Directory Attribute extension.");
+                                  "Subject Directory Attribute extension.");
         }
 
         if (derVal.data.available() == 0) {
             throw new IOException(NAME + " No data available in "
-                                   + "passed DER encoded value.");
+                                  + "passed DER encoded value.");
         }
 
         // Decode all the Attributes
@@ -141,7 +141,7 @@ public class SubjectDirAttributesExtension extends Extension
 
         if ((list == null) || (list.length == 0)) {
             throw new IOException("No data available in "
-                                   + "passed Attribute List.");
+                                  + "passed Attribute List.");
         }
 
         // add the Attributes
@@ -154,7 +154,7 @@ public class SubjectDirAttributesExtension extends Extension
      * Constructor from parsing extension
      */
     public SubjectDirAttributesExtension(Boolean crit, Object value)
-            throws IOException {
+    throws IOException {
 
         this.extensionId = PKIXExtensions.SubjectDirectoryAttributes_Id;
         this.critical = crit.booleanValue();
@@ -176,14 +176,14 @@ public class SubjectDirAttributesExtension extends Extension
      * @param critical The criticality
      */
     public SubjectDirAttributesExtension(Attribute[] list, boolean critical)
-            throws IOException {
+    throws IOException {
 
         this.extensionId = PKIXExtensions.SubjectDirectoryAttributes_Id;
         this.critical = critical;
 
         if ((list == null) || (list.length == 0)) {
             throw new IOException("No data available in "
-                                   + "passed Attribute List.");
+                                  + "passed Attribute List.");
         }
 
         // add the Attributes
@@ -241,7 +241,7 @@ public class SubjectDirAttributesExtension extends Extension
      */
     public void set(String name, Object obj) throws IOException {
         throw new IOException("Attribute name not recognized by " +
-                "CertAttrSet:SubjectDirectoryAttributes.");
+                              "CertAttrSet:SubjectDirectoryAttributes.");
     }
 
     /**
@@ -249,7 +249,7 @@ public class SubjectDirAttributesExtension extends Extension
      */
     public Object get(String name) throws IOException {
         throw new IOException("Attribute name not recognized by " +
-                "CertAttrSet:SubjectDirectoryAttributes.");
+                              "CertAttrSet:SubjectDirectoryAttributes.");
     }
 
     /**
@@ -257,7 +257,7 @@ public class SubjectDirAttributesExtension extends Extension
      */
     public void delete(String name) throws IOException {
         throw new IOException("Attribute name not recognized by " +
-                "CertAttrSet:SubjectDirectoryAttributes.");
+                              "CertAttrSet:SubjectDirectoryAttributes.");
     }
 
     /**

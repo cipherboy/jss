@@ -31,68 +31,68 @@ public class IA5String extends CharacterString implements ASN1Value {
     private static final Template templateInstance = new Template();
 
 // nested class
-public static class Template
-    extends CharacterString.Template implements ASN1Template
-{
-    public Tag getTag() {
-        return IA5String.TAG;
-    }
-    public boolean tagMatch(Tag tag) {
-        return( tag.equals( IA5String.TAG ));
-    }
-
-    protected CharConverter getCharConverter() {
-        return new IA5Converter();
-    }
-
-    protected CharacterString generateInstance(char[] chars)
-        throws CharConversionException
+    public static class Template
+        extends CharacterString.Template implements ASN1Template
     {
-        return new IA5String(chars);
-    }
+        public Tag getTag() {
+            return IA5String.TAG;
+        }
+        public boolean tagMatch(Tag tag) {
+            return( tag.equals( IA5String.TAG ));
+        }
 
-    protected String typeName() {
-        return "IA5String";
+        protected CharConverter getCharConverter() {
+            return new IA5Converter();
+        }
+
+        protected CharacterString generateInstance(char[] chars)
+        throws CharConversionException
+        {
+            return new IA5String(chars);
+        }
+
+        protected String typeName() {
+            return "IA5String";
+        }
     }
-}
 
 // nested class
-private static class IA5Converter implements CharConverter {
+    private static class IA5Converter implements CharConverter {
 
-    public char[] byteToChar(byte[] bytes, int offset, int len)
+        public char[] byteToChar(byte[] bytes, int offset, int len)
         throws CharConversionException
-    {
-        char[] chars = new char[len];
+        {
+            char[] chars = new char[len];
 
-        int c; // char index
-        int b; // byte index
-        for(b = offset, c=0; c < len; b++, c++) {
-            if( (bytes[b] & 0x80) != 0 ) {
-                throw new CharConversionException("Invalid character: "+
-                    bytes[b]);
+            int c; // char index
+            int b; // byte index
+            for(b = offset, c=0; c < len; b++, c++) {
+                if( (bytes[b] & 0x80) != 0 ) {
+                    throw new CharConversionException("Invalid character: "+
+                                                      bytes[b]);
+                }
+                chars[c] = (char) (bytes[b] & 0x7f);
             }
-            chars[c] = (char) (bytes[b] & 0x7f);
-        }
-        return chars;
-    }
-
-    public byte[] charToByte(char[] chars, int offset, int len)
-        throws CharConversionException
-    {
-        byte[] bytes = new byte[len];
-
-        int c; // char index
-        int b; // byte index
-        for(c = offset, b = 0; b < len; c++, b++) {
-            if( (chars[c] & 0x7f) != chars[c] ) {
-                throw new CharConversionException("Invalid character: "+
-                    chars[c]);
-            }
-            bytes[b] = (byte) (chars[c] & 0x7f);
+            return chars;
         }
 
-        return bytes;
+        public byte[] charToByte(char[] chars, int offset, int len)
+        throws CharConversionException
+        {
+            byte[] bytes = new byte[len];
+
+            int c; // char index
+            int b; // byte index
+            for(c = offset, b = 0; b < len; c++, b++) {
+                if( (chars[c] & 0x7f) != chars[c] ) {
+                    throw new CharConversionException("Invalid character: "+
+                                                      chars[c]);
+                }
+                bytes[b] = (byte) (chars[c] & 0x7f);
+            }
+
+            return bytes;
+        }
     }
-}
 
 }

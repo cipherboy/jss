@@ -66,7 +66,7 @@ public abstract class CharacterString implements ASN1Value {
     }
 
     public void encode( Tag implicitTag, OutputStream ostream )
-        throws IOException
+    throws IOException
     {
         byte[] contents = getEncodedContents();
         ASN1Header head = new ASN1Header( implicitTag, FORM, contents.length);
@@ -76,89 +76,89 @@ public abstract class CharacterString implements ASN1Value {
         ostream.write( contents );
     }
 
-public abstract static class Template implements ASN1Template {
+    public abstract static class Template implements ASN1Template {
 
-    /**
-     * Must be overridden to return the tag for the subclass.
-     * @return Tag.
-     */
-    protected abstract Tag getTag();
+        /**
+         * Must be overridden to return the tag for the subclass.
+         * @return Tag.
+         */
+        protected abstract Tag getTag();
 
-    public abstract boolean tagMatch(Tag tag);
+        public abstract boolean tagMatch(Tag tag);
 
-    /**
-     * Must be overridden to return the correct character converter
-     * for the subclass.
-     * @return Character converter.
-     */
-    protected abstract CharConverter getCharConverter();
+        /**
+         * Must be overridden to return the correct character converter
+         * for the subclass.
+         * @return Character converter.
+         */
+        protected abstract CharConverter getCharConverter();
 
-    /**
-     * Must be overridden to create an instance of the subclass given
-     * a char array.
-     * @param chars Input characters.
-     * @return Character string.
-     * @throws CharConversionException If an error occurred.
-     */
-    protected abstract CharacterString generateInstance(char[] chars)
+        /**
+         * Must be overridden to create an instance of the subclass given
+         * a char array.
+         * @param chars Input characters.
+         * @return Character string.
+         * @throws CharConversionException If an error occurred.
+         */
+        protected abstract CharacterString generateInstance(char[] chars)
         throws CharConversionException;
 
-    /**
-     * Must be overridden to provide the name of the subclass, for including
-     * into error messages.
-     * @return Name of the subclass.
-     */
-    protected abstract String typeName();
+        /**
+         * Must be overridden to provide the name of the subclass, for including
+         * into error messages.
+         * @return Name of the subclass.
+         */
+        protected abstract String typeName();
 
-    public ASN1Value decode(InputStream istream)
+        public ASN1Value decode(InputStream istream)
         throws IOException, InvalidBERException
-    {
-        return decode(getTag(), istream);
-    }
-
-    public ASN1Value decode(Tag implicitTag, InputStream istream)
-        throws IOException, InvalidBERException
-    {
-      try {
-        ASN1Header head = new ASN1Header(istream);
-
-        head.validate(implicitTag);
-
-        byte[] raw; // raw bytes, not translated to chars yet
-
-        if( head.getContentLength() == -1 ) {
-            // indefinite length encoding
-            ASN1Header ahead;
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            do {
-                ahead = ASN1Header.lookAhead( istream );
-                if( ! ahead.isEOC() ) {
-                    OCTET_STRING.Template ot = new OCTET_STRING.Template();
-                    OCTET_STRING os = (OCTET_STRING) ot.decode(istream);
-                    bos.write( os.toByteArray() );
-                }
-            } while( ! ahead.isEOC() );
-
-            // consume EOC
-            ahead = new ASN1Header(istream);
-
-            raw = bos.toByteArray();
-        } else {
-            // definite length
-            raw = new byte[ (int) head.getContentLength() ];
-            ASN1Util.readFully(raw, istream);
+        {
+            return decode(getTag(), istream);
         }
 
-        char[] chars = getCharConverter().byteToChar(raw, 0, raw.length);
+        public ASN1Value decode(Tag implicitTag, InputStream istream)
+        throws IOException, InvalidBERException
+        {
+            try {
+                ASN1Header head = new ASN1Header(istream);
 
-        return generateInstance(chars);
+                head.validate(implicitTag);
 
-      } catch( CharConversionException e ) {
-        throw new InvalidBERException(e.getMessage());
-      } catch( InvalidBERException e ) {
-        throw new InvalidBERException(e, typeName());
-      }
+                byte[] raw; // raw bytes, not translated to chars yet
+
+                if( head.getContentLength() == -1 ) {
+                    // indefinite length encoding
+                    ASN1Header ahead;
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    do {
+                        ahead = ASN1Header.lookAhead( istream );
+                        if( ! ahead.isEOC() ) {
+                            OCTET_STRING.Template ot = new OCTET_STRING.Template();
+                            OCTET_STRING os = (OCTET_STRING) ot.decode(istream);
+                            bos.write( os.toByteArray() );
+                        }
+                    } while( ! ahead.isEOC() );
+
+                    // consume EOC
+                    ahead = new ASN1Header(istream);
+
+                    raw = bos.toByteArray();
+                } else {
+                    // definite length
+                    raw = new byte[ (int) head.getContentLength() ];
+                    ASN1Util.readFully(raw, istream);
+                }
+
+                char[] chars = getCharConverter().byteToChar(raw, 0, raw.length);
+
+                return generateInstance(chars);
+
+            } catch( CharConversionException e ) {
+                throw new InvalidBERException(e.getMessage());
+            } catch( InvalidBERException e ) {
+                throw new InvalidBERException(e, typeName());
+            }
+        }
     }
-}
 
 }

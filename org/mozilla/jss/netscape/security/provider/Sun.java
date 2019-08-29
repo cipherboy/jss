@@ -58,7 +58,7 @@ public final class Sun extends Provider {
      */
     private static final long serialVersionUID = 9134942296334703727L;
     private static String info = "SUN Security Provider v1.0, " +
-            "DSA signing and key generation, SHA-1 and MD5 message digests.";
+                                 "DSA signing and key generation, SHA-1 and MD5 message digests.";
 
     public Sun() {
         /* We are the SUN provider */
@@ -77,7 +77,7 @@ public final class Sun extends Provider {
              * Algorithm Parameter engines
              */
             put("AlgorithmParameters.DSA",
-                    "org.mozilla.jss.netscape.security.provider.DSAParameters");
+                "org.mozilla.jss.netscape.security.provider.DSAParameters");
             put("Alg.Alias.AlgorithmParameters.1.3.14.3.2.12", "DSA");
             put("Alg.Alias.AlgorithmParameters.1.2.840.10040.4.1", "DSA");
             /*

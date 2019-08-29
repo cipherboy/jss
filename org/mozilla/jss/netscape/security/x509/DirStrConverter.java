@@ -71,20 +71,20 @@ public class DirStrConverter implements AVAValueConverter {
      *                string (or UCS-4) character set.
      */
     private static byte[] DefEncodingOrder =
-            new byte[] {
-                    DerValue.tag_UTF8String,
-                    DerValue.tag_PrintableString,
-                    DerValue.tag_T61String,
-                    DerValue.tag_UniversalString
+        new byte[] {
+        DerValue.tag_UTF8String,
+        DerValue.tag_PrintableString,
+        DerValue.tag_T61String,
+        DerValue.tag_UniversalString
     };
 
     public static synchronized void
-            setDefEncodingOrder(byte[] defEncodingOrder) {
+    setDefEncodingOrder(byte[] defEncodingOrder) {
         DefEncodingOrder = defEncodingOrder;
     }
 
     public DerValue getValue(String ds)
-            throws IOException {
+    throws IOException {
         return getValue(ds, DefEncodingOrder);
     }
 
@@ -115,7 +115,7 @@ public class DirStrConverter implements AVAValueConverter {
         }
 
         throw new IOException(
-                "Cannot convert the directory string value to a ASN.1 type");
+            "Cannot convert the directory string value to a ASN.1 type");
     }
 
     /**
@@ -133,7 +133,7 @@ public class DirStrConverter implements AVAValueConverter {
      *                valid Directory String DER value.
      */
     public DerValue getValue(byte[] berByteStream)
-            throws IOException {
+    throws IOException {
         DerValue value = new DerValue(berByteStream);
 
         /*
@@ -156,7 +156,7 @@ public class DirStrConverter implements AVAValueConverter {
      *                conversion is not available.
      */
     public String getAsString(DerValue avaValue)
-            throws IOException {
+    throws IOException {
         /*
         if (avaValue.tag != DerValue.tag_PrintableString &&
             avaValue.tag != DerValue.tag_BMPString &&

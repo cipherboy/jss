@@ -72,10 +72,14 @@ public class SSLVersionRange {
     /**
      * @return enumeration value
      */
-    public int getMinEnum() { return minVersion.value(); }
+    public int getMinEnum() {
+        return minVersion.value();
+    }
 
     /**
      * @return enumeration value
      */
-    public int getMaxEnum() { return maxVersion.value(); }
+    public int getMaxEnum() {
+        return maxVersion.value();
+    }
 }

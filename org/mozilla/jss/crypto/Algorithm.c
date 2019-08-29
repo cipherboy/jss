@@ -26,79 +26,81 @@ getAlgInfo(JNIEnv *env, jobject alg, JSS_AlgInfo *info);
 **  SEC_OID.
 **/
 JSS_AlgInfo JSS_AlgTable[NUM_ALGS] = {
-/* 0 */     {SEC_OID_PKCS1_MD2_WITH_RSA_ENCRYPTION, SEC_OID_TAG},
-/* 1 */     {SEC_OID_PKCS1_MD5_WITH_RSA_ENCRYPTION, SEC_OID_TAG},
-/* 2 */     {SEC_OID_PKCS1_SHA1_WITH_RSA_ENCRYPTION, SEC_OID_TAG},
-/* 3 */     {SEC_OID_ANSIX9_DSA_SIGNATURE_WITH_SHA1_DIGEST, SEC_OID_TAG},
-/* 4 */     {SEC_OID_PKCS1_RSA_ENCRYPTION, SEC_OID_TAG},
-/* 5 */     {CKM_RSA_PKCS_KEY_PAIR_GEN, PK11_MECH},
-/* 6 */     {CKM_DSA_KEY_PAIR_GEN, PK11_MECH},
-/* 7 */     {SEC_OID_ANSIX9_DSA_SIGNATURE, SEC_OID_TAG},
-/* 8 */     {SEC_OID_RC4, SEC_OID_TAG},
-/* 9 */     {SEC_OID_DES_ECB, SEC_OID_TAG},
-/* 10 */    {SEC_OID_DES_CBC, SEC_OID_TAG},
-/* 11 */    {CKM_DES_CBC_PAD, PK11_MECH},
-/* 12 */    {CKM_DES3_ECB, PK11_MECH},
-/* 13 */    {SEC_OID_DES_EDE3_CBC, SEC_OID_TAG},
-/* 14 */    {CKM_DES3_CBC_PAD, PK11_MECH},
-/* 15 */    {CKM_DES_KEY_GEN, PK11_MECH},
-/* 16 */    {CKM_DES3_KEY_GEN, PK11_MECH},
-/* 17 */    {CKM_RC4_KEY_GEN, PK11_MECH},
-/* 18 */    {SEC_OID_PKCS5_PBE_WITH_MD2_AND_DES_CBC, SEC_OID_TAG},
-/* 19 */    {SEC_OID_PKCS5_PBE_WITH_MD5_AND_DES_CBC, SEC_OID_TAG},
-/* 20 */    {SEC_OID_PKCS5_PBE_WITH_SHA1_AND_DES_CBC, SEC_OID_TAG},
-/* 21 */    {SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_128_BIT_RC4, SEC_OID_TAG},
-/* 22 */    {SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_40_BIT_RC4, SEC_OID_TAG},
-/* 23 */    {SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_3KEY_TRIPLE_DES_CBC,
-                        SEC_OID_TAG},
-/* 24 */    {SEC_OID_MD2, SEC_OID_TAG},
-/* 25 */    {SEC_OID_MD5, SEC_OID_TAG},
-/* 26 */    {SEC_OID_SHA1, SEC_OID_TAG},
-/* 27 */    {CKM_SHA_1_HMAC, PK11_MECH},
-/* 28 */    {SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_128_BIT_RC2_CBC, SEC_OID_TAG},
-/* 29 */    {SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_40_BIT_RC2_CBC, SEC_OID_TAG},
-/* 30 */    {SEC_OID_RC2_CBC, SEC_OID_TAG},
-/* 31 */    {CKM_PBA_SHA1_WITH_SHA1_HMAC, PK11_MECH},
-/* 32 */    {CKM_AES_KEY_GEN, PK11_MECH},
-/* 33 */    {CKM_AES_ECB, PK11_MECH},
-/* 34 */    {CKM_AES_CBC, PK11_MECH},
-/* 35 */    {CKM_AES_CBC_PAD, PK11_MECH},
-/* 36 */    {CKM_RC2_CBC_PAD, PK11_MECH},
-/* 37 */    {CKM_RC2_KEY_GEN, PK11_MECH},
-/* 38 */    {SEC_OID_SHA256, SEC_OID_TAG},
-/* 39 */    {SEC_OID_SHA384, SEC_OID_TAG},
-/* 40 */    {SEC_OID_SHA512, SEC_OID_TAG},
-/* 41 */    {SEC_OID_PKCS1_SHA256_WITH_RSA_ENCRYPTION, SEC_OID_TAG},
-/* 42 */    {SEC_OID_PKCS1_SHA384_WITH_RSA_ENCRYPTION, SEC_OID_TAG},
-/* 43 */    {SEC_OID_PKCS1_SHA512_WITH_RSA_ENCRYPTION, SEC_OID_TAG},
-/* 44 */    {SEC_OID_ANSIX962_EC_PUBLIC_KEY, SEC_OID_TAG},
-/* 45 */    {SEC_OID_ANSIX962_ECDSA_SHA1_SIGNATURE, SEC_OID_TAG},
-/* 46 */    {CKM_EC_KEY_PAIR_GEN, PK11_MECH},
-/* 47 */    {SEC_OID_ANSIX962_ECDSA_SHA256_SIGNATURE, SEC_OID_TAG},
-/* 48 */    {SEC_OID_ANSIX962_ECDSA_SHA384_SIGNATURE, SEC_OID_TAG},
-/* 49 */    {SEC_OID_ANSIX962_ECDSA_SHA512_SIGNATURE, SEC_OID_TAG},
-/* 50 */    {SEC_OID_HMAC_SHA256, SEC_OID_TAG},
-/* 51 */    {SEC_OID_HMAC_SHA384, SEC_OID_TAG},
-/* 52 */    {SEC_OID_HMAC_SHA512, SEC_OID_TAG},
-/* 53 */    {SEC_OID_PKCS5_PBKDF2, SEC_OID_TAG},
-/* 54 */    {SEC_OID_PKCS5_PBES2, SEC_OID_TAG},
-/* 55 */    {SEC_OID_PKCS5_PBMAC1, SEC_OID_TAG},
-/* 56 */    {SEC_OID_ANSIX962_ECDSA_SIGNATURE_SPECIFIED_DIGEST, SEC_OID_TAG},
-/* 57 */    {CKM_NSS_AES_KEY_WRAP, PK11_MECH},
-/* 58 */    {CKM_NSS_AES_KEY_WRAP_PAD, PK11_MECH},
-/* 59 */    {SEC_OID_AES_128_ECB, SEC_OID_TAG},
-/* 60 */    {SEC_OID_AES_128_CBC, SEC_OID_TAG},
-/* 61 */    {SEC_OID_AES_192_ECB, SEC_OID_TAG},
-/* 62 */    {SEC_OID_AES_192_CBC, SEC_OID_TAG},
-/* 63 */    {SEC_OID_AES_256_ECB, SEC_OID_TAG},
-/* 64 */    {SEC_OID_AES_256_CBC, SEC_OID_TAG},
-/* the CKM_AES_KEY_WRAP_* have different defs than CKM_NSS_AES_KEY_WRAP_*  */
-/* 65 */    {CKM_AES_KEY_WRAP, PK11_MECH},
-/* 66 */    {CKM_AES_KEY_WRAP_PAD, PK11_MECH},
-/* 67 */    {CKM_SHA256_HMAC, PK11_MECH},
-/* 68 */    {CKM_SHA384_HMAC, PK11_MECH},
-/* 69 */    {CKM_SHA512_HMAC, PK11_MECH}
-/* REMEMBER TO UPDATE NUM_ALGS!!! (in Algorithm.h) */
+    /* 0 */     {SEC_OID_PKCS1_MD2_WITH_RSA_ENCRYPTION, SEC_OID_TAG},
+    /* 1 */     {SEC_OID_PKCS1_MD5_WITH_RSA_ENCRYPTION, SEC_OID_TAG},
+    /* 2 */     {SEC_OID_PKCS1_SHA1_WITH_RSA_ENCRYPTION, SEC_OID_TAG},
+    /* 3 */     {SEC_OID_ANSIX9_DSA_SIGNATURE_WITH_SHA1_DIGEST, SEC_OID_TAG},
+    /* 4 */     {SEC_OID_PKCS1_RSA_ENCRYPTION, SEC_OID_TAG},
+    /* 5 */     {CKM_RSA_PKCS_KEY_PAIR_GEN, PK11_MECH},
+    /* 6 */     {CKM_DSA_KEY_PAIR_GEN, PK11_MECH},
+    /* 7 */     {SEC_OID_ANSIX9_DSA_SIGNATURE, SEC_OID_TAG},
+    /* 8 */     {SEC_OID_RC4, SEC_OID_TAG},
+    /* 9 */     {SEC_OID_DES_ECB, SEC_OID_TAG},
+    /* 10 */    {SEC_OID_DES_CBC, SEC_OID_TAG},
+    /* 11 */    {CKM_DES_CBC_PAD, PK11_MECH},
+    /* 12 */    {CKM_DES3_ECB, PK11_MECH},
+    /* 13 */    {SEC_OID_DES_EDE3_CBC, SEC_OID_TAG},
+    /* 14 */    {CKM_DES3_CBC_PAD, PK11_MECH},
+    /* 15 */    {CKM_DES_KEY_GEN, PK11_MECH},
+    /* 16 */    {CKM_DES3_KEY_GEN, PK11_MECH},
+    /* 17 */    {CKM_RC4_KEY_GEN, PK11_MECH},
+    /* 18 */    {SEC_OID_PKCS5_PBE_WITH_MD2_AND_DES_CBC, SEC_OID_TAG},
+    /* 19 */    {SEC_OID_PKCS5_PBE_WITH_MD5_AND_DES_CBC, SEC_OID_TAG},
+    /* 20 */    {SEC_OID_PKCS5_PBE_WITH_SHA1_AND_DES_CBC, SEC_OID_TAG},
+    /* 21 */    {SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_128_BIT_RC4, SEC_OID_TAG},
+    /* 22 */    {SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_40_BIT_RC4, SEC_OID_TAG},
+    /* 23 */    {
+        SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_3KEY_TRIPLE_DES_CBC,
+        SEC_OID_TAG
+    },
+    /* 24 */    {SEC_OID_MD2, SEC_OID_TAG},
+    /* 25 */    {SEC_OID_MD5, SEC_OID_TAG},
+    /* 26 */    {SEC_OID_SHA1, SEC_OID_TAG},
+    /* 27 */    {CKM_SHA_1_HMAC, PK11_MECH},
+    /* 28 */    {SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_128_BIT_RC2_CBC, SEC_OID_TAG},
+    /* 29 */    {SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_40_BIT_RC2_CBC, SEC_OID_TAG},
+    /* 30 */    {SEC_OID_RC2_CBC, SEC_OID_TAG},
+    /* 31 */    {CKM_PBA_SHA1_WITH_SHA1_HMAC, PK11_MECH},
+    /* 32 */    {CKM_AES_KEY_GEN, PK11_MECH},
+    /* 33 */    {CKM_AES_ECB, PK11_MECH},
+    /* 34 */    {CKM_AES_CBC, PK11_MECH},
+    /* 35 */    {CKM_AES_CBC_PAD, PK11_MECH},
+    /* 36 */    {CKM_RC2_CBC_PAD, PK11_MECH},
+    /* 37 */    {CKM_RC2_KEY_GEN, PK11_MECH},
+    /* 38 */    {SEC_OID_SHA256, SEC_OID_TAG},
+    /* 39 */    {SEC_OID_SHA384, SEC_OID_TAG},
+    /* 40 */    {SEC_OID_SHA512, SEC_OID_TAG},
+    /* 41 */    {SEC_OID_PKCS1_SHA256_WITH_RSA_ENCRYPTION, SEC_OID_TAG},
+    /* 42 */    {SEC_OID_PKCS1_SHA384_WITH_RSA_ENCRYPTION, SEC_OID_TAG},
+    /* 43 */    {SEC_OID_PKCS1_SHA512_WITH_RSA_ENCRYPTION, SEC_OID_TAG},
+    /* 44 */    {SEC_OID_ANSIX962_EC_PUBLIC_KEY, SEC_OID_TAG},
+    /* 45 */    {SEC_OID_ANSIX962_ECDSA_SHA1_SIGNATURE, SEC_OID_TAG},
+    /* 46 */    {CKM_EC_KEY_PAIR_GEN, PK11_MECH},
+    /* 47 */    {SEC_OID_ANSIX962_ECDSA_SHA256_SIGNATURE, SEC_OID_TAG},
+    /* 48 */    {SEC_OID_ANSIX962_ECDSA_SHA384_SIGNATURE, SEC_OID_TAG},
+    /* 49 */    {SEC_OID_ANSIX962_ECDSA_SHA512_SIGNATURE, SEC_OID_TAG},
+    /* 50 */    {SEC_OID_HMAC_SHA256, SEC_OID_TAG},
+    /* 51 */    {SEC_OID_HMAC_SHA384, SEC_OID_TAG},
+    /* 52 */    {SEC_OID_HMAC_SHA512, SEC_OID_TAG},
+    /* 53 */    {SEC_OID_PKCS5_PBKDF2, SEC_OID_TAG},
+    /* 54 */    {SEC_OID_PKCS5_PBES2, SEC_OID_TAG},
+    /* 55 */    {SEC_OID_PKCS5_PBMAC1, SEC_OID_TAG},
+    /* 56 */    {SEC_OID_ANSIX962_ECDSA_SIGNATURE_SPECIFIED_DIGEST, SEC_OID_TAG},
+    /* 57 */    {CKM_NSS_AES_KEY_WRAP, PK11_MECH},
+    /* 58 */    {CKM_NSS_AES_KEY_WRAP_PAD, PK11_MECH},
+    /* 59 */    {SEC_OID_AES_128_ECB, SEC_OID_TAG},
+    /* 60 */    {SEC_OID_AES_128_CBC, SEC_OID_TAG},
+    /* 61 */    {SEC_OID_AES_192_ECB, SEC_OID_TAG},
+    /* 62 */    {SEC_OID_AES_192_CBC, SEC_OID_TAG},
+    /* 63 */    {SEC_OID_AES_256_ECB, SEC_OID_TAG},
+    /* 64 */    {SEC_OID_AES_256_CBC, SEC_OID_TAG},
+    /* the CKM_AES_KEY_WRAP_* have different defs than CKM_NSS_AES_KEY_WRAP_*  */
+    /* 65 */    {CKM_AES_KEY_WRAP, PK11_MECH},
+    /* 66 */    {CKM_AES_KEY_WRAP_PAD, PK11_MECH},
+    /* 67 */    {CKM_SHA256_HMAC, PK11_MECH},
+    /* 68 */    {CKM_SHA384_HMAC, PK11_MECH},
+    /* 69 */    {CKM_SHA512_HMAC, PK11_MECH}
+    /* REMEMBER TO UPDATE NUM_ALGS!!! (in Algorithm.h) */
 };
 
 /***********************************************************************
@@ -182,16 +184,16 @@ getAlgIndex(JNIEnv *env, jobject alg)
 #ifdef DEBUG
     /* Make sure this really is an Algorithm. */
     {
-    jclass realClass = ((*env)->FindClass(env, ALGORITHM_CLASS_NAME));
-    PR_ASSERT( (*env)->IsInstanceOf(env, alg, realClass) );
+        jclass realClass = ((*env)->FindClass(env, ALGORITHM_CLASS_NAME));
+        PR_ASSERT( (*env)->IsInstanceOf(env, alg, realClass) );
     }
 #endif
 
     indexField = (*env)->GetFieldID(
-                                    env,
-                                    algClass,
-                                    OID_INDEX_FIELD_NAME,
-                                    OID_INDEX_FIELD_SIG);
+                     env,
+                     algClass,
+                     OID_INDEX_FIELD_NAME,
+                     OID_INDEX_FIELD_SIG);
     if(indexField==NULL) {
         ASSERT_OUTOFMEM(env);
         goto finish;
@@ -244,7 +246,7 @@ finish:
  */
 JNIEXPORT jint JNICALL
 Java_org_mozilla_jss_crypto_EncryptionAlgorithm_getIVLength
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     CK_MECHANISM_TYPE mech;
 

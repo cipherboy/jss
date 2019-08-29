@@ -88,14 +88,14 @@ public class IdentityProofV2 implements ASN1Value {
     ///////////////////////////////////////////////////////////////////////
 
     public IdentityProofV2(
-            AlgorithmIdentifier hashAlgID,
-            AlgorithmIdentifier macAlgId,
-            OCTET_STRING witness)
+        AlgorithmIdentifier hashAlgID,
+        AlgorithmIdentifier macAlgId,
+        OCTET_STRING witness)
     {
         if(  hashAlgID==null || macAlgId==null ||
                 witness==null ) {
             throw new IllegalArgumentException("IdentityProofV2 constructor"
-                +" parameter is null");
+                                               +" parameter is null");
         }
 
         this.hashAlgID = hashAlgID;
@@ -123,7 +123,7 @@ public class IdentityProofV2 implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
         sequence.encode(implicitTag, ostream);
     }
 
@@ -152,19 +152,19 @@ public class IdentityProofV2 implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
 
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
             return new IdentityProofV2(
-                            (AlgorithmIdentifier) seq.elementAt(0),
-                            (AlgorithmIdentifier) seq.elementAt(1),
-                            (OCTET_STRING) seq.elementAt(2) );
+                       (AlgorithmIdentifier) seq.elementAt(0),
+                       (AlgorithmIdentifier) seq.elementAt(1),
+                       (OCTET_STRING) seq.elementAt(2) );
         }
     }
 }

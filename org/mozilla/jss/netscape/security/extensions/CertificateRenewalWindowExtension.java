@@ -42,7 +42,7 @@ import org.mozilla.jss.netscape.security.x509.Extension;
  * @version $Revision$, $Date$
  */
 public class CertificateRenewalWindowExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
     private static final long serialVersionUID = 4470220533545299271L;
     public static final String NAME = "CertificateRenewalWindow";
     public static final int OID[] = { 2, 16, 840, 1, 113730, 1, 15 };
@@ -67,7 +67,7 @@ public class CertificateRenewalWindowExtension extends Extension
     }
 
     public CertificateRenewalWindowExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = ID;
         this.critical = critical.booleanValue();
         this.extensionValue = ((byte[]) value).clone();
@@ -149,7 +149,7 @@ public class CertificateRenewalWindowExtension extends Extension
 
     private void encodeThis() throws IOException {
         try (DerOutputStream seq = new DerOutputStream();
-             DerOutputStream tmp = new DerOutputStream()) {
+                    DerOutputStream tmp = new DerOutputStream()) {
 
             tmp.putGeneralizedTime(mBeginTime);
             if (mEndTime != null) {

@@ -101,12 +101,12 @@ public class CertBag implements ASN1Value {
         if( cert instanceof ANY ) {
             this.cert = (ANY) cert;
         } else {
-          try {
-            byte[] encoded = ASN1Util.encode(cert);
-            this.cert = (ANY) ASN1Util.decode( ANY.getTemplate(), encoded);
-          } catch(InvalidBERException e) {
-            throw new RuntimeException("Unable to convert ASN1Value to ANY: "+ e.getMessage(), e);
-          }
+            try {
+                byte[] encoded = ASN1Util.encode(cert);
+                this.cert = (ANY) ASN1Util.decode( ANY.getTemplate(), encoded);
+            } catch(InvalidBERException e) {
+                throw new RuntimeException("Unable to convert ASN1Value to ANY: "+ e.getMessage(), e);
+            }
         }
         sequence = new SEQUENCE();
         sequence.addElement(this.certType);
@@ -127,7 +127,7 @@ public class CertBag implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         sequence.encode(implicitTag, ostream);
     }
@@ -148,8 +148,8 @@ public class CertBag implements ASN1Value {
             seqt = new SEQUENCE.Template();
             seqt.addElement( OBJECT_IDENTIFIER.getTemplate() );
             seqt.addElement( new EXPLICIT.Template(
-                                    new Tag(0),
-                                    ANY.getTemplate() ) );
+                                 new Tag(0),
+                                 ANY.getTemplate() ) );
         }
 
         public boolean tagMatch(Tag tag) {
@@ -157,13 +157,13 @@ public class CertBag implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 

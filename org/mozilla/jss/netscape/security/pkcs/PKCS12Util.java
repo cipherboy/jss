@@ -77,14 +77,14 @@ public class PKCS12Util {
     public final static String NO_ENCRYPTION = "none";
 
     public final static List<PBEAlgorithm> SUPPORTED_CERT_ENCRYPTIONS = Arrays.asList(new PBEAlgorithm[] {
-            null, // none
-            PBEAlgorithm.PBE_SHA1_RC2_40_CBC
-    });
+                null, // none
+                PBEAlgorithm.PBE_SHA1_RC2_40_CBC
+            });
 
     public final static List<PBEAlgorithm> SUPPORTED_KEY_ENCRYPTIONS = Arrays.asList(new PBEAlgorithm[] {
-            PBEAlgorithm.PBE_PKCS5_PBES2,
-            PBEAlgorithm.PBE_SHA1_DES3_CBC
-    });
+                PBEAlgorithm.PBE_PKCS5_PBES2,
+                PBEAlgorithm.PBE_SHA1_DES3_CBC
+            });
 
     public final static PBEAlgorithm DEFAULT_CERT_ENCRYPTION = SUPPORTED_CERT_ENCRYPTIONS.get(0);
     public final static String DEFAULT_CERT_ENCRYPTION_NAME = NO_ENCRYPTION;
@@ -211,7 +211,7 @@ public class PKCS12Util {
      * Unencrypted key material is never seen.
      */
     public void addKeyBag(PKCS12KeyInfo keyInfo, Password password,
-            SEQUENCE encSafeContents) throws Exception {
+                          SEQUENCE encSafeContents) throws Exception {
 
         byte[] keyID = keyInfo.getID();
         logger.debug(" - Key ID: " + Hex.encodeHexString(keyID));
@@ -250,7 +250,7 @@ public class PKCS12Util {
     }
 
     public ASN1Value create_EPKI_with_PBE_SHA1_DES3_CBC(CryptoToken token, PrivateKey privateKey, Password password)
-            throws Exception {
+    throws Exception {
 
         // Use the same salt size and number of iterations as in pk12util.
 
@@ -258,41 +258,41 @@ public class PKCS12Util {
         random.nextBytes(salt);
 
         return EncryptedPrivateKeyInfo.createPBE(
-                PBEAlgorithm.PBE_SHA1_DES3_CBC,
-                password,
-                salt,
-                100000, // iterations
-                new PasswordConverter(),
-                privateKey,
-                token);
+                   PBEAlgorithm.PBE_SHA1_DES3_CBC,
+                   password,
+                   salt,
+                   100000, // iterations
+                   new PasswordConverter(),
+                   privateKey,
+                   token);
     }
 
     public ASN1Value create_EPKI_with_PBE_PKCS5_PBES2(CryptoToken token, PrivateKey privateKey, Password password)
-            throws Exception {
+    throws Exception {
 
         CryptoStore store = token.getCryptoStore();
 
         byte[] bytes = store.getEncryptedPrivateKeyInfo(
-                // For compatibility with OpenSSL and NSS >= 3.31,
-                // do not BMPString-encode the passphrase when using
-                // non-PKCS #12 PBE scheme such as PKCS #5 PBES2.
-                //
-                // The resulting PKCS #12 is not compatible with
-                // NSS < 3.31.
-                null, // password converter
-                password,
-                // NSS has a bug that causes any AES CBC encryption
-                // to use AES-256, but AlgorithmID contains chosen
-                // alg.  To avoid mismatch, use AES_256_CBC.
-                EncryptionAlgorithm.AES_256_CBC,
-                0, // iterations (default)
-                privateKey);
+                           // For compatibility with OpenSSL and NSS >= 3.31,
+                           // do not BMPString-encode the passphrase when using
+                           // non-PKCS #12 PBE scheme such as PKCS #5 PBES2.
+                           //
+                           // The resulting PKCS #12 is not compatible with
+                           // NSS < 3.31.
+                           null, // password converter
+                           password,
+                           // NSS has a bug that causes any AES CBC encryption
+                           // to use AES-256, but AlgorithmID contains chosen
+                           // alg.  To avoid mismatch, use AES_256_CBC.
+                           EncryptionAlgorithm.AES_256_CBC,
+                           0, // iterations (default)
+                           privateKey);
 
         return new ANY(bytes);
     }
 
     public void addCertBag(PKCS12CertInfo certInfo,
-            SEQUENCE safeContents) throws Exception {
+                           SEQUENCE safeContents) throws Exception {
 
         byte[] id = certInfo.getID();
         logger.debug(" - Certificate ID: " + Hex.encodeHexString(id));
@@ -413,20 +413,20 @@ public class PKCS12Util {
     }
 
     public void loadCertFromNSS(
-            PKCS12 pkcs12,
-            String nickname,
-            boolean includeKey,
-            boolean includeChain) throws Exception {
+        PKCS12 pkcs12,
+        String nickname,
+        boolean includeKey,
+        boolean includeChain) throws Exception {
 
         loadCertFromNSS(pkcs12, nickname, includeKey, includeChain, null);
     }
 
     public void loadCertFromNSS(
-            PKCS12 pkcs12,
-            String nickname,
-            boolean includeKey,
-            boolean includeChain,
-            String friendlyName) throws Exception {
+        PKCS12 pkcs12,
+        String nickname,
+        boolean includeKey,
+        boolean includeChain,
+        String friendlyName) throws Exception {
 
         CryptoManager cm = CryptoManager.getInstance();
 
@@ -442,20 +442,20 @@ public class PKCS12Util {
     }
 
     public void loadCertFromNSS(
-            PKCS12 pkcs12,
-            X509Certificate cert,
-            boolean includeKey,
-            boolean includeChain) throws Exception {
+        PKCS12 pkcs12,
+        X509Certificate cert,
+        boolean includeKey,
+        boolean includeChain) throws Exception {
 
         loadCertFromNSS(pkcs12, cert, includeKey, includeChain, null);
     }
 
     public void loadCertFromNSS(
-            PKCS12 pkcs12,
-            X509Certificate cert,
-            boolean includeKey,
-            boolean includeChain,
-            String friendlyName) throws Exception {
+        PKCS12 pkcs12,
+        X509Certificate cert,
+        boolean includeKey,
+        boolean includeChain,
+        String friendlyName) throws Exception {
 
         CryptoManager cm = CryptoManager.getInstance();
 
@@ -506,14 +506,14 @@ public class PKCS12Util {
     }
 
     public PKCS12CertInfo createCertInfoFromNSS(
-            X509Certificate cert) throws Exception {
+        X509Certificate cert) throws Exception {
 
         return createCertInfoFromNSS(cert, null);
     }
 
     public PKCS12CertInfo createCertInfoFromNSS(
-            X509Certificate cert,
-            String friendlyName) throws Exception {
+        X509Certificate cert,
+        String friendlyName) throws Exception {
 
         // generate cert ID from SHA-1 hash of cert data
         byte[] id = SafeBag.getLocalKeyIDFromCert(cert.getEncoded());
@@ -535,16 +535,16 @@ public class PKCS12Util {
     }
 
     public PKCS12KeyInfo createKeyInfoFromNSS(
-            X509Certificate cert,
-            PrivateKey privateKey) throws Exception {
+        X509Certificate cert,
+        PrivateKey privateKey) throws Exception {
 
         return createKeyInfoFromNSS(cert, privateKey, null);
     }
 
     public PKCS12KeyInfo createKeyInfoFromNSS(
-            X509Certificate cert,
-            PrivateKey privateKey,
-            String friendlyName) throws Exception {
+        X509Certificate cert,
+        PrivateKey privateKey,
+        String friendlyName) throws Exception {
 
         byte[] keyID = privateKey.getUniqueID();
 
@@ -594,11 +594,11 @@ public class PKCS12Util {
                 random.nextBytes(salt);
 
                 authSafes.addEncryptedSafeContents(
-                        certEncryption,
-                        password,
-                        salt,
-                        100000, // iterations
-                        certSafeContents);
+                    certEncryption,
+                    password,
+                    salt,
+                    100000, // iterations
+                    certSafeContents);
 
             } else {
                 throw new Exception("Unsupported certificate encryption: " + certEncryption);
@@ -856,7 +856,7 @@ public class PKCS12Util {
     }
 
     public PKCS12CertInfo getCertBySubjectDN(PKCS12 pkcs12, String subjectDN)
-            throws CertificateException {
+    throws CertificateException {
 
         for (PKCS12CertInfo certInfo : pkcs12.getCertInfos()) {
             Principal certSubjectDN = certInfo.getCert().getSubjectDN();
@@ -875,10 +875,10 @@ public class PKCS12Util {
     }
 
     public void importKey(
-            PKCS12 pkcs12,
-            Password password,
-            String nickname,
-            PKCS12KeyInfo keyInfo) throws Exception {
+        PKCS12 pkcs12,
+        Password password,
+        String nickname,
+        PKCS12KeyInfo keyInfo) throws Exception {
 
         PKCS12CertInfo certInfo = pkcs12.getCertInfoByKeyID(keyInfo.getID());
         if (certInfo == null) {
@@ -928,9 +928,9 @@ public class PKCS12Util {
      * Store a certificate (and key, if present) in NSSDB.
      */
     public void storeCertIntoNSS(
-            PKCS12 pkcs12, Password password,
-            PKCS12CertInfo certInfo, boolean overwrite)
-        throws Exception
+        PKCS12 pkcs12, Password password,
+        PKCS12CertInfo certInfo, boolean overwrite)
+    throws Exception
     {
         CryptoManager cm = CryptoManager.getInstance();
         CryptoToken ct = cm.getInternalKeyStorageToken();
@@ -956,7 +956,7 @@ public class PKCS12Util {
 
             logger.debug("Importing user certificate " + certInfo.getFriendlyName());
             cert = cm.importUserCACertPackage(
-                    certImpl.getEncoded(), certInfo.getFriendlyName());
+                       certImpl.getEncoded(), certInfo.getFriendlyName());
 
         } else { // cert has no key
             logger.debug("Importing CA certificate " + certInfo.getFriendlyName());
@@ -978,8 +978,8 @@ public class PKCS12Util {
     }
 
     public void storeIntoNSS(
-            PKCS12 pkcs12, Password password, boolean overwrite)
-        throws Exception
+        PKCS12 pkcs12, Password password, boolean overwrite)
+    throws Exception
     {
         logger.info("Storing data into NSS database");
 

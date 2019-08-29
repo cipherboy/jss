@@ -42,11 +42,11 @@ public class AVA implements ASN1Value {
             this.value = (ANY) value;
         } else {
             byte[] encoded = ASN1Util.encode(value);
-          try {
-            this.value = (ANY) ASN1Util.decode(ANY.getTemplate(), encoded);
-          } catch( InvalidBERException e ) {
-              throw new RuntimeException("InvalidBERException while decoding as ANY: " + e.getMessage(), e);
-          }
+            try {
+                this.value = (ANY) ASN1Util.decode(ANY.getTemplate(), encoded);
+            } catch( InvalidBERException e ) {
+                throw new RuntimeException("InvalidBERException while decoding as ANY: " + e.getMessage(), e);
+            }
         }
     }
 
@@ -66,7 +66,7 @@ public class AVA implements ASN1Value {
     }
 
     public void encode(Tag implicit, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         SEQUENCE seq = new SEQUENCE();
         seq.addElement(oid);
@@ -75,37 +75,37 @@ public class AVA implements ASN1Value {
         seq.encode(implicit, ostream);
     }
 
-/**
- * A Template for decoding an AVA.
- */
-public static class Template implements ASN1Template {
+    /**
+     * A Template for decoding an AVA.
+     */
+    public static class Template implements ASN1Template {
 
-    public boolean tagMatch(Tag tag) {
-        return TAG.equals(tag);
-    }
+        public boolean tagMatch(Tag tag) {
+            return TAG.equals(tag);
+        }
 
-    public ASN1Value decode(InputStream istream)
+        public ASN1Value decode(InputStream istream)
         throws IOException, InvalidBERException
-    {
-        return decode(TAG, istream);
-    }
+        {
+            return decode(TAG, istream);
+        }
 
-    public ASN1Value decode(Tag implicit, InputStream istream)
+        public ASN1Value decode(Tag implicit, InputStream istream)
         throws IOException, InvalidBERException
-    {
-        SEQUENCE.Template seqt = new SEQUENCE.Template();
+        {
+            SEQUENCE.Template seqt = new SEQUENCE.Template();
 
-        seqt.addElement( new OBJECT_IDENTIFIER.Template()   );
-        seqt.addElement( new ANY.Template()                 );
+            seqt.addElement( new OBJECT_IDENTIFIER.Template()   );
+            seqt.addElement( new ANY.Template()                 );
 
-        SEQUENCE seq = (SEQUENCE) seqt.decode(implicit, istream);
+            SEQUENCE seq = (SEQUENCE) seqt.decode(implicit, istream);
 
-        // The template should have enforced this
-        assert(seq.size() == 2);
+            // The template should have enforced this
+            assert(seq.size() == 2);
 
-        return new AVA( (OBJECT_IDENTIFIER) seq.elementAt(0),
-                                            seq.elementAt(1) );
+            return new AVA( (OBJECT_IDENTIFIER) seq.elementAt(0),
+                            seq.elementAt(1) );
+        }
     }
-}
 
 }

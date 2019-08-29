@@ -197,8 +197,8 @@ public class RevRequest implements ASN1Value {
      */
     @Deprecated
     public RevRequest(ANY issuerName, INTEGER serialNumber,
-                    ENUMERATED reason, OCTET_STRING sharedSecret,
-                    UTF8String comment)
+                      ENUMERATED reason, OCTET_STRING sharedSecret,
+                      UTF8String comment)
     {
         this(issuerName, serialNumber, reason, null, sharedSecret, comment);
     }
@@ -219,8 +219,8 @@ public class RevRequest implements ASN1Value {
      *      so <code>null</code> may be used.
      */
     public RevRequest(ANY issuerName, INTEGER serialNumber,
-                    ENUMERATED reason, GeneralizedTime invalidityDate,
-                    OCTET_STRING sharedSecret, UTF8String comment)
+                      ENUMERATED reason, GeneralizedTime invalidityDate,
+                      OCTET_STRING sharedSecret, UTF8String comment)
     {
         if( issuerName==null || serialNumber==null || reason==null ) {
             throw new IllegalArgumentException(
@@ -262,7 +262,7 @@ public class RevRequest implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
         sequence.encode(implicitTag, ostream);
     }
 
@@ -290,12 +290,12 @@ public class RevRequest implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
 
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 

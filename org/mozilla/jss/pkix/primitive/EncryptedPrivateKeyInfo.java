@@ -76,11 +76,11 @@ public class EncryptedPrivateKeyInfo implements ASN1Value {
      *
      */
     public EncryptedPrivateKeyInfo( AlgorithmIdentifier encryptionAlgorithm,
-                OCTET_STRING encryptedData)
+                                    OCTET_STRING encryptedData)
     {
         if( encryptionAlgorithm==null || encryptedData==null ) {
             throw new IllegalArgumentException(
-                    "EncryptedPrivateKeyInfo parameter is null");
+                "EncryptedPrivateKeyInfo parameter is null");
         }
 
         this.encryptionAlgorithm = encryptionAlgorithm;
@@ -115,71 +115,71 @@ public class EncryptedPrivateKeyInfo implements ASN1Value {
      */
     public static EncryptedPrivateKeyInfo
     createPBE(PBEAlgorithm keyGenAlg, Password password, byte[] salt,
-            int iterationCount,
-            KeyGenerator.CharToByteConverter charToByteConverter,
-            PrivateKeyInfo pki)
-        throws NotInitializedException, NoSuchAlgorithmException,
-        InvalidKeyException, InvalidAlgorithmParameterException, TokenException,
-        CharConversionException
+              int iterationCount,
+              KeyGenerator.CharToByteConverter charToByteConverter,
+              PrivateKeyInfo pki)
+    throws NotInitializedException, NoSuchAlgorithmException,
+               InvalidKeyException, InvalidAlgorithmParameterException, TokenException,
+               CharConversionException
     {
-      try {
+        try {
 
-        // check key gen algorithm
-        if( ! (keyGenAlg instanceof PBEAlgorithm) ) {
-            throw new NoSuchAlgorithmException("Key generation algorithm"+
-                " is not a PBE algorithm");
-        }
-        PBEAlgorithm pbeAlg = keyGenAlg;
-
-        CryptoManager cman = CryptoManager.getInstance();
-
-        // generate key
-        CryptoToken token = cman.getInternalCryptoToken();
-        KeyGenerator kg = token.getKeyGenerator( keyGenAlg );
-        PBEKeyGenParams pbekgParams = new PBEKeyGenParams(
-            password, salt, iterationCount);
-        if( charToByteConverter != null ) {
-            kg.setCharToByteConverter( charToByteConverter );
-        }
-        kg.initialize(pbekgParams);
-        SymmetricKey key = kg.generate();
-
-        // generate IV
-        EncryptionAlgorithm encAlg = pbeAlg.getEncryptionAlg();
-        AlgorithmParameterSpec params=null;
-        Class<?> [] paramClasses = pbeAlg.getParameterClasses();
-        for (int i = 0; i < paramClasses.length; i ++) {
-            if ( paramClasses[i].equals( javax.crypto.spec.IvParameterSpec.class ) ) {
-                params = new IVParameterSpec( kg.generatePBE_IV() );
-                break;
+            // check key gen algorithm
+            if( ! (keyGenAlg instanceof PBEAlgorithm) ) {
+                throw new NoSuchAlgorithmException("Key generation algorithm"+
+                                                   " is not a PBE algorithm");
             }
-        }
+            PBEAlgorithm pbeAlg = keyGenAlg;
 
-        // perform encryption
-        Cipher cipher = token.getCipherContext( encAlg );
-        cipher.initEncrypt( key, params );
-        byte[] encrypted = cipher.doFinal( Cipher.pad(
-                ASN1Util.encode(pki), encAlg.getBlockSize()) );
+            CryptoManager cman = CryptoManager.getInstance();
 
-        // make encryption algorithm identifier
-        PBEParameter pbeParam = new PBEParameter( salt, iterationCount );
-        AlgorithmIdentifier encAlgID = new AlgorithmIdentifier(
+            // generate key
+            CryptoToken token = cman.getInternalCryptoToken();
+            KeyGenerator kg = token.getKeyGenerator( keyGenAlg );
+            PBEKeyGenParams pbekgParams = new PBEKeyGenParams(
+                password, salt, iterationCount);
+            if( charToByteConverter != null ) {
+                kg.setCharToByteConverter( charToByteConverter );
+            }
+            kg.initialize(pbekgParams);
+            SymmetricKey key = kg.generate();
+
+            // generate IV
+            EncryptionAlgorithm encAlg = pbeAlg.getEncryptionAlg();
+            AlgorithmParameterSpec params=null;
+            Class<?> [] paramClasses = pbeAlg.getParameterClasses();
+            for (int i = 0; i < paramClasses.length; i ++) {
+                if ( paramClasses[i].equals( javax.crypto.spec.IvParameterSpec.class ) ) {
+                    params = new IVParameterSpec( kg.generatePBE_IV() );
+                    break;
+                }
+            }
+
+            // perform encryption
+            Cipher cipher = token.getCipherContext( encAlg );
+            cipher.initEncrypt( key, params );
+            byte[] encrypted = cipher.doFinal( Cipher.pad(
+                                                   ASN1Util.encode(pki), encAlg.getBlockSize()) );
+
+            // make encryption algorithm identifier
+            PBEParameter pbeParam = new PBEParameter( salt, iterationCount );
+            AlgorithmIdentifier encAlgID = new AlgorithmIdentifier(
                 keyGenAlg.toOID(), pbeParam);
 
-        // create EncryptedPrivateKeyInfo
-        EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo (
+            // create EncryptedPrivateKeyInfo
+            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo (
                 encAlgID,
                 new OCTET_STRING(encrypted) );
 
-        return epki;
+            return epki;
 
-      } catch( IllegalBlockSizeException e ) {
-        throw new RuntimeException("IllegalBlockSizeException in EncryptedContentInfo"
-            +".createPBE: " + e.getMessage(), e);
-      } catch( BadPaddingException e ) {
-          throw new RuntimeException("BadPaddingException in EncryptedContentInfo"
-            +".createPBE: " + e.getMessage(), e);
-      }
+        } catch( IllegalBlockSizeException e ) {
+            throw new RuntimeException("IllegalBlockSizeException in EncryptedContentInfo"
+                                       +".createPBE: " + e.getMessage(), e);
+        } catch( BadPaddingException e ) {
+            throw new RuntimeException("BadPaddingException in EncryptedContentInfo"
+                                       +".createPBE: " + e.getMessage(), e);
+        }
     }
 
 
@@ -200,13 +200,13 @@ public class EncryptedPrivateKeyInfo implements ASN1Value {
      *                       stored in the EncryptedContentInfo.
      */
     public static EncryptedPrivateKeyInfo createPBES2(
-            int saltLen,
-            int kdfIterations,
-            EncryptionAlgorithm encAlg,
-            Password pwd,
-            KeyGenerator.CharToByteConverter charToByteConverter,
-            PrivateKeyInfo privateKeyInfo)
-        throws NotInitializedException, NoSuchAlgorithmException,
+        int saltLen,
+        int kdfIterations,
+        EncryptionAlgorithm encAlg,
+        Password pwd,
+        KeyGenerator.CharToByteConverter charToByteConverter,
+        PrivateKeyInfo privateKeyInfo)
+    throws NotInitializedException, NoSuchAlgorithmException,
         InvalidKeyException, InvalidAlgorithmParameterException, TokenException,
         CharConversionException
     {
@@ -232,7 +232,7 @@ public class EncryptedPrivateKeyInfo implements ASN1Value {
             CryptoManager cm = CryptoManager.getInstance();
             CryptoToken token = cm.getInternalCryptoToken();
             KeyGenerator kg = token.getKeyGenerator(
-                PBEAlgorithm.PBE_PKCS5_PBKDF2);
+                                  PBEAlgorithm.PBE_PKCS5_PBKDF2);
             PBEKeyGenParams pbekgParams = new PBEKeyGenParams(
                 pwd.getChars(), salt, kdfIterations, encAlg);
             if (charToByteConverter != null)
@@ -295,70 +295,70 @@ public class EncryptedPrivateKeyInfo implements ASN1Value {
      */
     public static EncryptedPrivateKeyInfo
     createPBE(PBEAlgorithm keyGenAlg, Password password, byte[] salt,
-            int iterationCount,
-            KeyGenerator.CharToByteConverter charToByteConverter,
-            PrivateKey pri, CryptoToken token)
-        throws NotInitializedException, NoSuchAlgorithmException,
+              int iterationCount,
+              KeyGenerator.CharToByteConverter charToByteConverter,
+              PrivateKey pri, CryptoToken token)
+    throws NotInitializedException, NoSuchAlgorithmException,
         InvalidKeyException, InvalidAlgorithmParameterException, TokenException,
         CharConversionException
     {
-      try {
+        try {
 
-        // check key gen algorithm
+            // check key gen algorithm
 
-        if( ! (keyGenAlg instanceof PBEAlgorithm) ) {
-            throw new NoSuchAlgorithmException("Key generation algorithm"+
-                " is not a PBE algorithm");
-        }
-
-        PBEAlgorithm pbeAlg = keyGenAlg;
-
-        // generate key
-
-        KeyGenerator kg = token.getKeyGenerator( keyGenAlg );
-        PBEKeyGenParams pbekgParams = new PBEKeyGenParams(
-            password, salt, iterationCount);
-        if( charToByteConverter != null ) {
-            kg.setCharToByteConverter( charToByteConverter );
-        }
-        kg.initialize(pbekgParams);
-        kg.temporaryKeys(true);
-        SymmetricKey key = kg.generate();
-
-        // generate IV
-        EncryptionAlgorithm encAlg = pbeAlg.getEncryptionAlg();
-        AlgorithmParameterSpec params=null;
-        Class<?> [] paramClasses = pbeAlg.getParameterClasses();
-        for (int i = 0; i < paramClasses.length; i ++) {
-            if ( paramClasses[i].equals(
-                      javax.crypto.spec.IvParameterSpec.class ) ) {
-                params = new IVParameterSpec( kg.generatePBE_IV() );
-                break;
+            if( ! (keyGenAlg instanceof PBEAlgorithm) ) {
+                throw new NoSuchAlgorithmException("Key generation algorithm"+
+                                                   " is not a PBE algorithm");
             }
-        }
 
-        KeyWrapper wrapper = token.getKeyWrapper(
-                KeyWrapAlgorithm.DES3_CBC_PAD);
-        wrapper.initWrap(key, params);
-        byte encrypted[] = wrapper.wrap(pri);
+            PBEAlgorithm pbeAlg = keyGenAlg;
 
-        // make encryption algorithm identifier
-        PBEParameter pbeParam = new PBEParameter( salt, iterationCount );
-        AlgorithmIdentifier encAlgID = new AlgorithmIdentifier(
+            // generate key
+
+            KeyGenerator kg = token.getKeyGenerator( keyGenAlg );
+            PBEKeyGenParams pbekgParams = new PBEKeyGenParams(
+                password, salt, iterationCount);
+            if( charToByteConverter != null ) {
+                kg.setCharToByteConverter( charToByteConverter );
+            }
+            kg.initialize(pbekgParams);
+            kg.temporaryKeys(true);
+            SymmetricKey key = kg.generate();
+
+            // generate IV
+            EncryptionAlgorithm encAlg = pbeAlg.getEncryptionAlg();
+            AlgorithmParameterSpec params=null;
+            Class<?> [] paramClasses = pbeAlg.getParameterClasses();
+            for (int i = 0; i < paramClasses.length; i ++) {
+                if ( paramClasses[i].equals(
+                            javax.crypto.spec.IvParameterSpec.class ) ) {
+                    params = new IVParameterSpec( kg.generatePBE_IV() );
+                    break;
+                }
+            }
+
+            KeyWrapper wrapper = token.getKeyWrapper(
+                                     KeyWrapAlgorithm.DES3_CBC_PAD);
+            wrapper.initWrap(key, params);
+            byte encrypted[] = wrapper.wrap(pri);
+
+            // make encryption algorithm identifier
+            PBEParameter pbeParam = new PBEParameter( salt, iterationCount );
+            AlgorithmIdentifier encAlgID = new AlgorithmIdentifier(
                 keyGenAlg.toOID(), pbeParam);
 
-        // create EncryptedPrivateKeyInfo
-        EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo (
+            // create EncryptedPrivateKeyInfo
+            EncryptedPrivateKeyInfo epki = new EncryptedPrivateKeyInfo (
                 encAlgID,
                 new OCTET_STRING(encrypted) );
 
-        return epki;
+            return epki;
 
-      } catch (Exception e) {
-        System.out.println("createPBE: exception:"+e.toString());
-        throw new RuntimeException("Exception in EncryptedPrivateKeyInfo"
-            + ".createPBE: " + e.getMessage(), e);
-      }
+        } catch (Exception e) {
+            System.out.println("createPBE: exception:"+e.toString());
+            throw new RuntimeException("Exception in EncryptedPrivateKeyInfo"
+                                       + ".createPBE: " + e.getMessage(), e);
+        }
     }
 
 
@@ -373,7 +373,7 @@ public class EncryptedPrivateKeyInfo implements ASN1Value {
      */
     public PrivateKeyInfo
     decrypt(Password pass, KeyGenerator.CharToByteConverter charToByteConverter)
-        throws NotInitializedException, NoSuchAlgorithmException,
+    throws NotInitializedException, NoSuchAlgorithmException,
         InvalidBERException, InvalidKeyException,
         InvalidAlgorithmParameterException, TokenException,
         IllegalBlockSizeException, BadPaddingException, CharConversionException
@@ -383,7 +383,7 @@ public class EncryptedPrivateKeyInfo implements ASN1Value {
         KeyGenAlgorithm kgAlg = KeyGenAlgorithm.fromOID(algid.getOID());
         if( !(kgAlg instanceof PBEAlgorithm)) {
             throw new NoSuchAlgorithmException("KeyGenAlgorithm is not a "+
-                "PBE algorithm");
+                                               "PBE algorithm");
         }
         ASN1Value params = algid.getParameters();
         if( params == null ) {
@@ -396,10 +396,10 @@ public class EncryptedPrivateKeyInfo implements ASN1Value {
         } else {
             byte[] encodedParams = ASN1Util.encode(params);
             pbeParams = (PBEParameter)
-                ASN1Util.decode(PBEParameter.getTemplate(), encodedParams);
+                        ASN1Util.decode(PBEParameter.getTemplate(), encodedParams);
         }
         PBEKeyGenParams kgp = new PBEKeyGenParams(pass,
-            pbeParams.getSalt(), pbeParams.getIterations() );
+                pbeParams.getSalt(), pbeParams.getIterations() );
 
         // compute the key and IV
         CryptoToken token =
@@ -417,7 +417,7 @@ public class EncryptedPrivateKeyInfo implements ASN1Value {
         Class<?> [] paramClasses = encAlg.getParameterClasses();
         for (int i = 0; i < paramClasses.length; i ++) {
             if ( paramClasses[i].equals(
-                      javax.crypto.spec.IvParameterSpec.class ) ) {
+                        javax.crypto.spec.IvParameterSpec.class ) ) {
                 algParams = new IVParameterSpec( kg.generatePBE_IV() );
                 break;
             }
@@ -427,10 +427,10 @@ public class EncryptedPrivateKeyInfo implements ASN1Value {
         Cipher cipher = token.getCipherContext( encAlg );
         cipher.initDecrypt(key, algParams);
         byte[] decrypted = Cipher.unPad( cipher.doFinal(
-                                            encryptedData.toByteArray() ) );
+                                             encryptedData.toByteArray() ) );
 
         return (PrivateKeyInfo)
-            ASN1Util.decode(PrivateKeyInfo.getTemplate(), decrypted);
+               ASN1Util.decode(PrivateKeyInfo.getTemplate(), decrypted);
 
     }
 
@@ -449,7 +449,7 @@ public class EncryptedPrivateKeyInfo implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         sequence.encode(implicitTag, ostream);
     }
@@ -478,19 +478,19 @@ public class EncryptedPrivateKeyInfo implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
             return new EncryptedPrivateKeyInfo(
-                    (AlgorithmIdentifier) seq.elementAt(0),
-                    (OCTET_STRING) seq.elementAt(1) );
+                       (AlgorithmIdentifier) seq.elementAt(0),
+                       (OCTET_STRING) seq.elementAt(1) );
         }
     }
 }

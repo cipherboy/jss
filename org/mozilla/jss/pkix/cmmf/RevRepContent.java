@@ -110,7 +110,7 @@ public class RevRepContent implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
         sequence.encode(implicitTag, ostream);
     }
 
@@ -124,11 +124,11 @@ public class RevRepContent implements ASN1Value {
         public Template() {
             seqt = new SEQUENCE.Template();
             seqt.addElement( new SEQUENCE.OF_Template(
-                                    PKIStatusInfo.getTemplate() ) );
+                                 PKIStatusInfo.getTemplate() ) );
             seqt.addOptionalElement( new SEQUENCE.OF_Template(
-                                        CertId.getTemplate() ) );
+                                         CertId.getTemplate() ) );
             seqt.addOptionalElement( new SEQUENCE.OF_Template(
-                                        ANY.getTemplate() ) );
+                                         ANY.getTemplate() ) );
         }
 
         public boolean tagMatch(Tag tag) {
@@ -136,12 +136,12 @@ public class RevRepContent implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
 
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 

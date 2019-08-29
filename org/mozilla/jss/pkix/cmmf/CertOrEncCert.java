@@ -20,7 +20,7 @@ public class CertOrEncCert implements ASN1Value {
      *      BER-encoding.
      */
     public CertOrEncCert(byte[] encodedCert) throws IOException,
-            InvalidBERException
+               InvalidBERException
     {
         certificate = new ANY( new Tag(0), encodedCert );
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -42,7 +42,7 @@ public class CertOrEncCert implements ASN1Value {
      *  cannot have an implicit tag.
      */
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         assert( implicitTag.equals(TAG) );
         ostream.write(encoding);

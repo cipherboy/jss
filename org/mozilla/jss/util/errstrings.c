@@ -18,7 +18,7 @@ typedef struct tuple_str tuple_str;
 
 static const tuple_str errStrings[] = {
 
-/* keep this list in ascending order of error numbers */
+    /* keep this list in ascending order of error numbers */
 #include "SSLerrs.h"
 #include "SECerrs.h"
 #include "NSPRerrs.h"
@@ -46,12 +46,12 @@ JSS_strerror(PRErrorCode errNum) {
         for (i = low; i <= high; ++i) {
             num = errStrings[i].errNum;
             if (num <= lastNum) {
-                    fprintf(stderr, 
-"sequence error in error strings at item %d\n"
-"error %d (%s)\n"
-"should come after \n"
-"error %d (%s)\n",
-                        i, lastNum, errStrings[i-1].errString, 
+                fprintf(stderr,
+                        "sequence error in error strings at item %d\n"
+                        "error %d (%s)\n"
+                        "should come after \n"
+                        "error %d (%s)\n",
+                        i, lastNum, errStrings[i-1].errString,
                         num, errStrings[i].errString);
             }
             lastNum = num;
@@ -63,16 +63,16 @@ JSS_strerror(PRErrorCode errNum) {
     while (low + 1 < high) {
         i = (low + high) / 2;
         num = errStrings[i].errNum;
-        if (errNum == num) 
+        if (errNum == num)
             return errStrings[i].errString;
         if (errNum < num)
             high = i;
-        else 
+        else
             low = i;
     }
     if (errNum == errStrings[low].errNum)
-            return errStrings[low].errString;
+        return errStrings[low].errString;
     if (errNum == errStrings[high].errNum)
-            return errStrings[high].errString;
+        return errStrings[high].errString;
     return NULL;
 }

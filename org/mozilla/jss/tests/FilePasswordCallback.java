@@ -27,8 +27,8 @@ public class FilePasswordCallback implements PasswordCallback {
 
     /**
      */
-	public Password getPasswordFirstAttempt(PasswordCallbackInfo info)
-		throws PasswordCallback.GiveUpException
+    public Password getPasswordFirstAttempt(PasswordCallbackInfo info)
+    throws PasswordCallback.GiveUpException
     {
         String pw = passwords.getProperty(info.getName());
         if( pw == null ) {
@@ -42,7 +42,7 @@ public class FilePasswordCallback implements PasswordCallback {
     /**
      */
     public Password getPasswordAgain(PasswordCallbackInfo info)
-        throws PasswordCallback.GiveUpException
+    throws PasswordCallback.GiveUpException
     {
         throw new PasswordCallback.GiveUpException();
     }

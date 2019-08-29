@@ -58,60 +58,60 @@ public class BMPString extends CharacterString implements ASN1Value {
     private static final Template templateInstance = new Template();
 
 // nested class
-public static class Template
-    extends CharacterString.Template implements ASN1Template
-{
-    protected Tag getTag() {
-        return TAG;
-    }
-
-    public boolean tagMatch(Tag tag) {
-        return TAG.equals(tag);
-    }
-
-    protected CharConverter getCharConverter() {
-        return new BMPConverter();
-    }
-
-    protected CharacterString generateInstance(char[] chars)
-        throws CharConversionException
+    public static class Template
+        extends CharacterString.Template implements ASN1Template
     {
-        return new BMPString(chars);
-    }
+        protected Tag getTag() {
+            return TAG;
+        }
 
-    protected String typeName() {
-        return "BMPString";
-    }
-}
+        public boolean tagMatch(Tag tag) {
+            return TAG.equals(tag);
+        }
 
-private static class BMPConverter implements CharConverter {
+        protected CharConverter getCharConverter() {
+            return new BMPConverter();
+        }
 
-    public char[] byteToChar(byte[] bytes, int offset, int len)
+        protected CharacterString generateInstance(char[] chars)
         throws CharConversionException
-    {
-        try {
-            String s = new String(bytes, offset, len, "UnicodeBig");
-            return s.toCharArray();
+        {
+            return new BMPString(chars);
+        }
 
-        } catch( UnsupportedEncodingException e ) {
-            String err = "Unable to find UnicodeBig encoding mechanism";
-            throw (CharConversionException) new CharConversionException(err).initCause(e);
+        protected String typeName() {
+            return "BMPString";
         }
     }
 
-    public byte[] charToByte(char[] chars, int offset, int len)
-        throws CharConversionException
-    {
-        try {
-            // We don't want the byte-order mark
-            String s = new String(chars, offset, len);
-            return s.getBytes("UnicodeBigUnmarked");
+    private static class BMPConverter implements CharConverter {
 
-        } catch( UnsupportedEncodingException e ) {
-            String err = "Unable to find UnicodeBigUnmarked encoding mechanism";
-            throw (CharConversionException) new CharConversionException(err).initCause(e);
+        public char[] byteToChar(byte[] bytes, int offset, int len)
+        throws CharConversionException
+        {
+            try {
+                String s = new String(bytes, offset, len, "UnicodeBig");
+                return s.toCharArray();
+
+            } catch( UnsupportedEncodingException e ) {
+                String err = "Unable to find UnicodeBig encoding mechanism";
+                throw (CharConversionException) new CharConversionException(err).initCause(e);
+            }
         }
-    }
-} // end of char converter
+
+        public byte[] charToByte(char[] chars, int offset, int len)
+        throws CharConversionException
+        {
+            try {
+                // We don't want the byte-order mark
+                String s = new String(chars, offset, len);
+                return s.getBytes("UnicodeBigUnmarked");
+
+            } catch( UnsupportedEncodingException e ) {
+                String err = "Unable to find UnicodeBigUnmarked encoding mechanism";
+                throw (CharConversionException) new CharConversionException(err).initCause(e);
+            }
+        }
+    } // end of char converter
 
 }

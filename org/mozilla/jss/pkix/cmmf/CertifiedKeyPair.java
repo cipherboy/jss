@@ -26,7 +26,7 @@ public class CertifiedKeyPair implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         SEQUENCE seq = new SEQUENCE();
         seq.addElement( certOrEncCert );

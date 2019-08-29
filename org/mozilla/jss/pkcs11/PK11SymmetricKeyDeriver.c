@@ -28,13 +28,13 @@
 
 /***********************************************************************
  * Expose the NSS functionality at low level, one should know what to do
- * at the Java level. 
+ * at the Java level.
  */
 
 JNIEXPORT jobject JNICALL Java_org_mozilla_jss_pkcs11_PK11SymmetricKeyDeriver_nativeDeriveSymKey
-  (JNIEnv * env, jobject this,jobject tokenObj, 
-  jobject baseKeyObj, jobject secondaryKeyObj, 
-  jlong deriveMechanism, jbyteArray param, jbyteArray iv, jlong targetMechanism, jlong operation, jlong keySize)
+(JNIEnv * env, jobject this,jobject tokenObj,
+ jobject baseKeyObj, jobject secondaryKeyObj,
+ jlong deriveMechanism, jbyteArray param, jbyteArray iv, jlong targetMechanism, jlong operation, jlong keySize)
 {
     jobject keyObj = NULL;
     PK11SlotInfo *slot=NULL;
@@ -86,65 +86,65 @@ JNIEXPORT jobject JNICALL Java_org_mozilla_jss_pkcs11_PK11SymmetricKeyDeriver_na
     /* Set up the params data for the PK11_Derive family */
 
     switch ( deriveMechanism ) {
-        case CKM_DES_ECB_ENCRYPT_DATA:
-        case CKM_DES3_ECB_ENCRYPT_DATA:
-        case CKM_AES_ECB_ENCRYPT_DATA:
-        case CKM_CAMELLIA_ECB_ENCRYPT_DATA:
-        case CKM_SEED_ECB_ENCRYPT_DATA:
-        /* Use CK_KEY_DERIVATION_STRING_DATA */ 
+    case CKM_DES_ECB_ENCRYPT_DATA:
+    case CKM_DES3_ECB_ENCRYPT_DATA:
+    case CKM_AES_ECB_ENCRYPT_DATA:
+    case CKM_CAMELLIA_ECB_ENCRYPT_DATA:
+    case CKM_SEED_ECB_ENCRYPT_DATA:
+        /* Use CK_KEY_DERIVATION_STRING_DATA */
 
-            string.pData = (unsigned char *) paramValue;
-            string.ulLen = paramLength;
-            paramsItem.data = (void *) &string;
-            paramsItem.len = sizeof(string);
+        string.pData = (unsigned char *) paramValue;
+        string.ulLen = paramLength;
+        paramsItem.data = (void *) &string;
+        paramsItem.len = sizeof(string);
 
         break;
-        case CKM_DES_CBC_ENCRYPT_DATA:
-        case CKM_DES3_CBC_ENCRYPT_DATA:
+    case CKM_DES_CBC_ENCRYPT_DATA:
+    case CKM_DES3_CBC_ENCRYPT_DATA:
         /* Use CK_DES_CBC_ENCRYPT_DATA_PARAMS */
-    
-            if( ivValue == NULL) {
-               PR_fprintf(PR_STDOUT, "Need iv param for CKM_DES_CBC_ENCRYPT_DATA or CKM_DES3_CBC_ENCRYPT_DATA. \n");
-               goto finish;
-            }
 
-             if( ivLength != 8) {
-               PR_fprintf(PR_STDOUT, "Need iv param for CKM_DES_CBC_ENCRYPT_DATA  structure to be 8 bytes!. \n");
-               goto finish;
-            }
+        if( ivValue == NULL) {
+            PR_fprintf(PR_STDOUT, "Need iv param for CKM_DES_CBC_ENCRYPT_DATA or CKM_DES3_CBC_ENCRYPT_DATA. \n");
+            goto finish;
+        }
 
-            des.pData = (unsigned char *) paramValue;
-            des.length = paramLength;
-            PORT_Memcpy(des.iv,ivValue,ivLength);
-            paramsItem.data = (void *) &des;
-            paramsItem.len = sizeof(des);
-    
+        if( ivLength != 8) {
+            PR_fprintf(PR_STDOUT, "Need iv param for CKM_DES_CBC_ENCRYPT_DATA  structure to be 8 bytes!. \n");
+            goto finish;
+        }
+
+        des.pData = (unsigned char *) paramValue;
+        des.length = paramLength;
+        PORT_Memcpy(des.iv,ivValue,ivLength);
+        paramsItem.data = (void *) &des;
+        paramsItem.len = sizeof(des);
+
         break;
 
-        case CKM_AES_CBC_ENCRYPT_DATA:
-        case CKM_CAMELLIA_CBC_ENCRYPT_DATA:
-        case CKM_SEED_CBC_ENCRYPT_DATA:
+    case CKM_AES_CBC_ENCRYPT_DATA:
+    case CKM_CAMELLIA_CBC_ENCRYPT_DATA:
+    case CKM_SEED_CBC_ENCRYPT_DATA:
         /* Use CK_AES_CBC_ENCRYPT_DATA_PARAMS */
-            
-            if ( ivValue == NULL ) {
-                PR_fprintf(PR_STDOUT, "Need iv param for CBC encrypt derive for AES, or CAMELLIA or SEED. \n");
-                goto finish;
-            }
 
-            if( ivLength != 16) {
-                PR_fprintf(PR_STDOUT, "Need iv param for CK_AES_CBC_ENCRYPT_DATA_PARAMS structure to be 16 bytes!. \n");
-                goto finish;
-            }
+        if ( ivValue == NULL ) {
+            PR_fprintf(PR_STDOUT, "Need iv param for CBC encrypt derive for AES, or CAMELLIA or SEED. \n");
+            goto finish;
+        }
 
-            aes.pData = (unsigned char *) paramValue;
-            aes.length = paramLength;
-            PORT_Memcpy(aes.iv,ivValue,ivLength);
-            paramsItem.data = (void *) &aes;
-            paramsItem.len = sizeof(aes);
+        if( ivLength != 16) {
+            PR_fprintf(PR_STDOUT, "Need iv param for CK_AES_CBC_ENCRYPT_DATA_PARAMS structure to be 16 bytes!. \n");
+            goto finish;
+        }
+
+        aes.pData = (unsigned char *) paramValue;
+        aes.length = paramLength;
+        PORT_Memcpy(aes.iv,ivValue,ivLength);
+        paramsItem.data = (void *) &aes;
+        paramsItem.len = sizeof(aes);
         break;
-        default:
-            paramsItem.data = (unsigned char *) paramValue;
-            paramsItem.len = paramLength;
+    default:
+        paramsItem.data = (unsigned char *) paramValue;
+        paramsItem.len = paramLength;
         break;
     }
 
@@ -178,7 +178,7 @@ JNIEXPORT jobject JNICALL Java_org_mozilla_jss_pkcs11_PK11SymmetricKeyDeriver_na
     }  else {
         keyOnRequestedSlot = 1;
         finalBaseKeySlot = slot;
-    } 
+    }
 
     if ( PK11_DoesMechanism( slot, deriveMechanism)) {
         if ( keyOnRequestedSlot ) {
@@ -194,13 +194,13 @@ JNIEXPORT jobject JNICALL Java_org_mozilla_jss_pkcs11_PK11SymmetricKeyDeriver_na
         }
 
     } else {
-            bestBaseKey = PK11_MoveSymKey( bestSlot, CKA_ENCRYPT, 0, PR_FALSE, baseKey );
-            if(bestBaseKey == NULL) {
-                PR_fprintf(PR_STDOUT,"PK11SymmetricKeyDeriver.nativeDeriveSymKey:  Can't move Base Key to best slot!\n");
-                goto finish;
-            }
-            finalBaseKey = bestBaseKey;
-            finalBaseKeySlot = bestSlot;
+        bestBaseKey = PK11_MoveSymKey( bestSlot, CKA_ENCRYPT, 0, PR_FALSE, baseKey );
+        if(bestBaseKey == NULL) {
+            PR_fprintf(PR_STDOUT,"PK11SymmetricKeyDeriver.nativeDeriveSymKey:  Can't move Base Key to best slot!\n");
+            goto finish;
+        }
+        finalBaseKey = bestBaseKey;
+        finalBaseKeySlot = bestSlot;
     }
 
     /* Assume we want to do a concatenation family here */
@@ -245,10 +245,10 @@ JNIEXPORT jobject JNICALL Java_org_mozilla_jss_pkcs11_PK11SymmetricKeyDeriver_na
     }
 
     derivedKey = PK11_Derive(finalBaseKey, deriveMechanism, &paramsItem, targetMechanism,
-                                                            operation, keySize);
+                             operation, keySize);
     if(derivedKey == NULL) {
         PR_fprintf(PR_STDOUT,
-                    "ERROR: Can't derive symmetric key, error: %d \n",PR_GetError());
+                   "ERROR: Can't derive symmetric key, error: %d \n",PR_GetError());
         goto finish;
     }
 
@@ -260,7 +260,7 @@ JNIEXPORT jobject JNICALL Java_org_mozilla_jss_pkcs11_PK11SymmetricKeyDeriver_na
             newKey = derivedKey;
             derivedKey = NULL;
         }
-       
+
     }  else {
         newKey = derivedKey;
         derivedKey = NULL;
@@ -271,43 +271,43 @@ JNIEXPORT jobject JNICALL Java_org_mozilla_jss_pkcs11_PK11SymmetricKeyDeriver_na
 finish:
 
     if ( bestBaseKey != NULL ) {
-       PK11_FreeSymKey ( bestBaseKey );
-       bestBaseKey = NULL;
+        PK11_FreeSymKey ( bestBaseKey );
+        bestBaseKey = NULL;
     }
 
     if ( bestSecondaryKey != NULL ) {
-       PK11_FreeSymKey ( bestSecondaryKey );
-       bestSecondaryKey = NULL;
+        PK11_FreeSymKey ( bestSecondaryKey );
+        bestSecondaryKey = NULL;
     }
 
     if ( derivedKey != NULL) {
-      PK11_FreeSymKey ( derivedKey );
-      derivedKey = NULL;
+        PK11_FreeSymKey ( derivedKey );
+        derivedKey = NULL;
     }
 
     if (bestSlot != NULL ) {
-       PK11_FreeSlot(bestSlot);
-       bestSlot = NULL;
+        PK11_FreeSlot(bestSlot);
+        bestSlot = NULL;
     }
 
     if ( slotForKey != NULL ) {
-       PK11_FreeSlot( slotForKey );
-       slotForKey = NULL;
+        PK11_FreeSlot( slotForKey );
+        slotForKey = NULL;
     }
 
     if ( finalSlot != NULL ) {
-       PK11_FreeSlot( finalSlot );
-       finalSlot = NULL;
+        PK11_FreeSlot( finalSlot );
+        finalSlot = NULL;
     }
 
     if ( finalSecondarySlot != NULL ) {
-       PK11_FreeSlot( finalSecondarySlot );
-       finalSecondarySlot = NULL;
+        PK11_FreeSlot( finalSecondarySlot );
+        finalSecondarySlot = NULL;
     }
 
     if ( slotForSecondaryKey != NULL ) {
-       PK11_FreeSlot( slotForSecondaryKey );
-       slotForSecondaryKey = NULL;
+        PK11_FreeSlot( slotForSecondaryKey );
+        slotForSecondaryKey = NULL;
     }
 
     JSS_DerefByteArray(env, param, paramValue, JNI_ABORT);
@@ -315,8 +315,8 @@ finish:
 
     if( keyObj == NULL) {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION, "Unable to derive symmetric key! "
-                 "failure!");
+                          "failure!");
     }
 
-    return keyObj; 
+    return keyObj;
 }

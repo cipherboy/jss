@@ -75,7 +75,7 @@ public class PubKeyPrettyPrint {
 
         //get I18N resources
         ResourceBundle resource = ResourceBundle.getBundle(
-                PrettyPrintResources.class.getName());
+                                      PrettyPrintResources.class.getName());
 
         StringBuffer sb = new StringBuffer();
 
@@ -84,25 +84,25 @@ public class PubKeyPrettyPrint {
 
             //XXX I18N Algorithm Name ?
             sb.append(pp.indent(indentSize) + resource.getString(
-                    PrettyPrintResources.TOKEN_ALGORITHM) +
-                    alg + " - " +
-                    mX509Key.getAlgorithmId().getOID().toString() + "\n");
+                          PrettyPrintResources.TOKEN_ALGORITHM) +
+                      alg + " - " +
+                      mX509Key.getAlgorithmId().getOID().toString() + "\n");
 
             if (alg.equals("RSA")) {
 
                 RSAPublicKey rsakey = new RSAPublicKey(mX509Key.getEncoded());
 
                 sb.append(pp.indent(indentSize) + resource.getString(
-                        PrettyPrintResources.TOKEN_PUBLIC_KEY) + "\n");
+                              PrettyPrintResources.TOKEN_PUBLIC_KEY) + "\n");
                 sb.append(pp.indent(indentSize + 4) + resource.getString(
-                        PrettyPrintResources.TOKEN_PUBLIC_KEY_EXPONENT) +
-                        rsakey.getPublicExponent().toInt() + "\n");
+                              PrettyPrintResources.TOKEN_PUBLIC_KEY_EXPONENT) +
+                          rsakey.getPublicExponent().toInt() + "\n");
                 sb.append(pp.indent(indentSize + 4) + resource.getString(
-                        PrettyPrintResources.TOKEN_PUBLIC_KEY_MODULUS) +
-                        "(" + rsakey.getKeySize() + " bits) :\n");
+                              PrettyPrintResources.TOKEN_PUBLIC_KEY_MODULUS) +
+                          "(" + rsakey.getKeySize() + " bits) :\n");
                 sb.append(pp.toHexString(
-                        rsakey.getModulus().toByteArray(),
-                        indentSize + 8, lineLen));
+                              rsakey.getModulus().toByteArray(),
+                              indentSize + 8, lineLen));
             } else {
 
                 // DSAPublicKey is more complicated to decode, since
@@ -110,11 +110,11 @@ public class PubKeyPrettyPrint {
                 // So, we just print the entire public key blob
 
                 sb.append(pp.indent(indentSize) + resource.getString(
-                        PrettyPrintResources.TOKEN_PUBLIC_KEY) + "\n");
+                              PrettyPrintResources.TOKEN_PUBLIC_KEY) + "\n");
                 sb.append(pp.toHexString(mX509Key.getKey(), indentSize + 4, lineLen));
             }
 
-        } catch(InvalidKeyException e){
+        } catch(InvalidKeyException e) {
             e.printStackTrace();
         }
 

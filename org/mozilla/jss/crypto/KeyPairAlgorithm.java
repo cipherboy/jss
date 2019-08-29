@@ -44,7 +44,7 @@ public class KeyPairAlgorithm extends Algorithm {
      *  recognized as a supported algorithm.
      */
     public static KeyPairAlgorithm fromString(String algName)
-        throws NoSuchAlgorithmException
+    throws NoSuchAlgorithmException
     {
         KeyPairAlgorithm alg = nameMap.get(algName);
         if( alg == null ) {

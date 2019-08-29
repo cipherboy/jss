@@ -46,14 +46,14 @@ public class ExtendedKeyUsageExtension extends Extension implements CertAttrSet 
     public static final String OID_CODESigning = "1.3.6.1.5.5.7.3.3";
 
     public static final int OID_OCSP_SIGNING_STR[] =
-        { 1, 3, 6, 1, 5, 5, 7, 3, 9 };
+    { 1, 3, 6, 1, 5, 5, 7, 3, 9 };
     public static final ObjectIdentifier OID_OCSP_SIGNING = new
-            ObjectIdentifier(OID_OCSP_SIGNING_STR);
+    ObjectIdentifier(OID_OCSP_SIGNING_STR);
 
     public static final int OID_CODE_SIGNING_STR[] =
-        { 1, 3, 6, 1, 5, 5, 7, 3, 3 };
+    { 1, 3, 6, 1, 5, 5, 7, 3, 3 };
     public static final ObjectIdentifier OID_CODE_SIGNING = new
-            ObjectIdentifier(OID_OCSP_SIGNING_STR);
+    ObjectIdentifier(OID_OCSP_SIGNING_STR);
 
     private Vector<ObjectIdentifier> oidSet = null;
     private byte mCached[] = null;
@@ -61,7 +61,7 @@ public class ExtendedKeyUsageExtension extends Extension implements CertAttrSet 
     static {
         try {
             OIDMap.addAttribute(ExtendedKeyUsageExtension.class.getName(),
-                    OID, ExtendedKeyUsageExtension.NAME);
+                                OID, ExtendedKeyUsageExtension.NAME);
         } catch (CertificateException e) {
         }
     }
@@ -86,7 +86,7 @@ public class ExtendedKeyUsageExtension extends Extension implements CertAttrSet 
     }
 
     public ExtendedKeyUsageExtension(Boolean crit, Object byteVal)
-            throws IOException {
+    throws IOException {
         extensionId = ObjectIdentifier.getObjectIdentifier(OID);
         critical = crit.booleanValue();
         extensionValue = ((byte[]) byteVal).clone();
@@ -149,11 +149,11 @@ public class ExtendedKeyUsageExtension extends Extension implements CertAttrSet 
     }
 
     public void decode(InputStream in)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
     }
 
     public void encode(OutputStream out)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         if (mCached == null) {
             DerOutputStream temp = new DerOutputStream();
 
@@ -163,7 +163,7 @@ public class ExtendedKeyUsageExtension extends Extension implements CertAttrSet 
     }
 
     public void set(String name, Object obj)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         // NOT USED
     }
 
@@ -181,7 +181,7 @@ public class ExtendedKeyUsageExtension extends Extension implements CertAttrSet 
     }
 
     public void delete(String name)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         // NOT USED
     }
 

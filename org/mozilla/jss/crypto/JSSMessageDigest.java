@@ -21,7 +21,7 @@ public abstract class JSSMessageDigest {
      * @exception InvalidKeyException If the given key is not valid.
      */
     public abstract void initHMAC(SymmetricKey key)
-        throws DigestException, InvalidKeyException;
+    throws DigestException, InvalidKeyException;
 
     /**
      * Updates the digest with a single byte of input.
@@ -42,7 +42,7 @@ public abstract class JSSMessageDigest {
      * @exception DigestException If an error occurs while digesting.
      */
     public abstract void update(byte[] input, int offset, int len)
-        throws DigestException;
+    throws DigestException;
 
     /**
      * Updates the digest with an array.
@@ -78,7 +78,7 @@ public abstract class JSSMessageDigest {
      *      the digest, or an error occurs with the digest.
      */
     public abstract int digest(byte[] buf, int offset, int len)
-        throws DigestException;
+    throws DigestException;
 
     /**
      * Provides final data to the digest, then completes it and returns the

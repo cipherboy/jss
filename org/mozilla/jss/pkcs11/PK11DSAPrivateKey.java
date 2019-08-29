@@ -12,7 +12,9 @@ class PK11DSAPrivateKey
 
     private static final long serialVersionUID = 1L;
 
-    private PK11DSAPrivateKey() { super(null); }
+    private PK11DSAPrivateKey() {
+        super(null);
+    }
 
     protected PK11DSAPrivateKey(byte[] pointer) {
         super(pointer);
@@ -26,11 +28,11 @@ class PK11DSAPrivateKey
      * If this fails, we just return null, since no exceptions are allowed.
      */
     public DSAParams getParams() {
-      try {
-        return getDSAParams();
-      } catch(TokenException te) {
+        try {
+            return getDSAParams();
+        } catch(TokenException te) {
             return null;
-      }
+        }
     }
 
     /**

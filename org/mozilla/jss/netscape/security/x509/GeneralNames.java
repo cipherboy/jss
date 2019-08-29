@@ -56,13 +56,13 @@ public class GeneralNames extends Vector<GeneralNameInterface> {
      * @exception IOException on error.
      */
     public GeneralNames(DerValue derVal)
-            throws IOException, GeneralNamesException {
+    throws IOException, GeneralNamesException {
         if (derVal.tag != DerValue.tag_Sequence) {
             throw new IOException("Invalid encoding for GeneralNames.");
         }
         if (derVal.data.available() == 0) {
             throw new GeneralNamesException("No data available in "
-                                      + "passed DER encoded value.");
+                                            + "passed DER encoded value.");
         }
         // Decode all the GeneralName's
         while (derVal.data.available() != 0) {
@@ -81,7 +81,7 @@ public class GeneralNames extends Vector<GeneralNameInterface> {
      */
 
     public GeneralNames(GeneralNameInterface[] names)
-            throws GeneralNamesException {
+    throws GeneralNamesException {
         if (names == null || names.length == 0)
             throw new GeneralNamesException("Cannot create empty GeneralNames");
 
@@ -105,7 +105,7 @@ public class GeneralNames extends Vector<GeneralNameInterface> {
      * @exception IOException on error.
      */
     public void encode(DerOutputStream out)
-            throws IOException, GeneralNamesException {
+    throws IOException, GeneralNamesException {
         if (size() == 0) {
             return;
         }
@@ -117,7 +117,7 @@ public class GeneralNames extends Vector<GeneralNameInterface> {
             Object obj = names.nextElement();
             if (!(obj instanceof GeneralNameInterface)) {
                 throw new GeneralNamesException("Element in GeneralNames "
-                                         + "not of type GeneralName.");
+                                                + "not of type GeneralName.");
             }
             GeneralNameInterface intf = (GeneralNameInterface) obj;
             if (obj instanceof GeneralName) {
@@ -132,15 +132,15 @@ public class GeneralNames extends Vector<GeneralNameInterface> {
                         nameType == GeneralNameInterface.NAME_EDI) {
 
                     temp.writeImplicit(DerValue.createTag(DerValue.TAG_CONTEXT,
-                             true, (byte) nameType), gname);
+                                                          true, (byte) nameType), gname);
                 } else if (nameType == GeneralNameInterface.NAME_DIRECTORY) {
                     // EXPLICIT tag because directoryName is a CHOICE
                     temp.write(DerValue.createTag(DerValue.TAG_CONTEXT,
-                             true, (byte) nameType), gname);
+                                                  true, (byte) nameType), gname);
                 } else
                     // primitive form
                     temp.writeImplicit(DerValue.createTag(DerValue.TAG_CONTEXT,
-                             false, (byte) nameType), gname);
+                                                          false, (byte) nameType), gname);
             }
 
         }

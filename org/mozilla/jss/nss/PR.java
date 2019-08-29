@@ -63,8 +63,8 @@ public class PR {
      * See also: newBufferPRFileDesc in org/mozilla/jss/ssl/javax/BufferPRFD.h
      */
     public static native PRFDProxy NewBufferPRFD(BufferProxy read_buf,
-                                                 BufferProxy write_buf,
-                                                 byte[] peer_info);
+            BufferProxy write_buf,
+            byte[] peer_info);
     /**
      * Close an existing PRFDProxy.
      *

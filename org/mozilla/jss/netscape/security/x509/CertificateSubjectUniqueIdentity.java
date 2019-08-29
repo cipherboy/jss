@@ -66,7 +66,7 @@ public class CertificateSubjectUniqueIdentity implements CertAttrSet {
      * @exception IOException on decoding errors.
      */
     public CertificateSubjectUniqueIdentity(DerInputStream in)
-            throws IOException {
+    throws IOException {
         id = new UniqueIdentity(in);
     }
 
@@ -77,7 +77,7 @@ public class CertificateSubjectUniqueIdentity implements CertAttrSet {
      * @exception IOException on decoding errors.
      */
     public CertificateSubjectUniqueIdentity(InputStream in)
-            throws IOException {
+    throws IOException {
         DerValue val = new DerValue(in);
         id = new UniqueIdentity(val);
     }
@@ -89,7 +89,7 @@ public class CertificateSubjectUniqueIdentity implements CertAttrSet {
      * @exception IOException on decoding errors.
      */
     public CertificateSubjectUniqueIdentity(DerValue val)
-            throws IOException {
+    throws IOException {
         id = new UniqueIdentity(val);
     }
 
@@ -137,7 +137,7 @@ public class CertificateSubjectUniqueIdentity implements CertAttrSet {
             id = (UniqueIdentity) obj;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                      "CertAttrSet: CertificateSubjectUniqueIdentity.");
+                                  "CertAttrSet: CertificateSubjectUniqueIdentity.");
         }
     }
 
@@ -149,7 +149,7 @@ public class CertificateSubjectUniqueIdentity implements CertAttrSet {
             return (id);
         } else {
             throw new IOException("Attribute name not recognized by " +
-                      "CertAttrSet: CertificateSubjectUniqueIdentity.");
+                                  "CertAttrSet: CertificateSubjectUniqueIdentity.");
         }
     }
 
@@ -161,7 +161,7 @@ public class CertificateSubjectUniqueIdentity implements CertAttrSet {
             id = null;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                      "CertAttrSet: CertificateSubjectUniqueIdentity.");
+                                  "CertAttrSet: CertificateSubjectUniqueIdentity.");
         }
     }
 

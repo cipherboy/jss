@@ -55,14 +55,14 @@ final class PK11Cipher extends org.mozilla.jss.crypto.Cipher {
     }
 
     public void initEncrypt(SymmetricKey key)
-        throws InvalidKeyException, InvalidAlgorithmParameterException,
-        TokenException
+    throws InvalidKeyException, InvalidAlgorithmParameterException,
+               TokenException
     {
         initEncrypt(key, null);
     }
 
     public void initDecrypt(SymmetricKey key)
-        throws InvalidKeyException, InvalidAlgorithmParameterException,
+    throws InvalidKeyException, InvalidAlgorithmParameterException,
         TokenException
     {
         initDecrypt(key, null);
@@ -86,7 +86,7 @@ final class PK11Cipher extends org.mozilla.jss.crypto.Cipher {
      */
     @Deprecated
     public void initEncrypt(SymmetricKey key, AlgorithmParameterSpec parameters)
-        throws InvalidKeyException, InvalidAlgorithmParameterException,
+    throws InvalidKeyException, InvalidAlgorithmParameterException,
         TokenException
     {
         reset();
@@ -101,12 +101,12 @@ final class PK11Cipher extends org.mozilla.jss.crypto.Cipher {
 
         if( parameters instanceof RC2ParameterSpec ) {
             contextProxy = initContextWithKeyBits(
-                true, key, algorithm, IV,
-                ((RC2ParameterSpec)parameters).getEffectiveKeyBits(),
-                algorithm.isPadded());
+                               true, key, algorithm, IV,
+                               ((RC2ParameterSpec)parameters).getEffectiveKeyBits(),
+                               algorithm.isPadded());
         } else {
             contextProxy = initContext(
-                true, key, algorithm, IV, algorithm.isPadded());
+                               true, key, algorithm, IV, algorithm.isPadded());
         }
     }
 
@@ -115,7 +115,7 @@ final class PK11Cipher extends org.mozilla.jss.crypto.Cipher {
      */
     @Deprecated
     public void initDecrypt(SymmetricKey key, AlgorithmParameterSpec parameters)
-        throws InvalidKeyException, InvalidAlgorithmParameterException,
+    throws InvalidKeyException, InvalidAlgorithmParameterException,
         TokenException
     {
         reset();
@@ -130,17 +130,17 @@ final class PK11Cipher extends org.mozilla.jss.crypto.Cipher {
 
         if( parameters instanceof RC2ParameterSpec ) {
             contextProxy = initContextWithKeyBits(
-                false, key, algorithm, IV,
-                ((RC2ParameterSpec)parameters).getEffectiveKeyBits(),
-                algorithm.isPadded());
+                               false, key, algorithm, IV,
+                               ((RC2ParameterSpec)parameters).getEffectiveKeyBits(),
+                               algorithm.isPadded());
         } else {
             contextProxy = initContext(
-                false, key, algorithm, IV, algorithm.isPadded());
+                               false, key, algorithm, IV, algorithm.isPadded());
         }
     }
 
     public byte[] update(byte[] bytes)
-        throws IllegalStateException, TokenException
+    throws IllegalStateException, TokenException
     {
         if( state == UNINITIALIZED ) {
             throw new IllegalStateException();
@@ -150,7 +150,7 @@ final class PK11Cipher extends org.mozilla.jss.crypto.Cipher {
     }
 
     public byte[] update(byte[] bytes, int offset, int length)
-        throws IllegalStateException, TokenException
+    throws IllegalStateException, TokenException
     {
         byte[] sub = new byte[length];
 
@@ -164,7 +164,7 @@ final class PK11Cipher extends org.mozilla.jss.crypto.Cipher {
      */
     @Deprecated
     public byte[] doFinal(byte[] bytes)
-        throws IllegalStateException, IllegalBlockSizeException,
+    throws IllegalStateException, IllegalBlockSizeException,
         BadPaddingException, TokenException
     {
         if( state == UNINITIALIZED ) {
@@ -174,7 +174,7 @@ final class PK11Cipher extends org.mozilla.jss.crypto.Cipher {
         byte[] first = update(bytes);
 
         byte[] last = finalizeContext(contextProxy, algorithm.getBlockSize(),
-                    algorithm.isPadded() );
+                                      algorithm.isPadded() );
 
         byte[] combined = new byte[ first.length+last.length ];
         System.arraycopy(first, 0, combined, 0, first.length);
@@ -183,7 +183,7 @@ final class PK11Cipher extends org.mozilla.jss.crypto.Cipher {
     }
 
     public byte[] doFinal(byte[] bytes, int offset, int length)
-        throws IllegalStateException, IllegalBlockSizeException,
+    throws IllegalStateException, IllegalBlockSizeException,
         BadPaddingException, TokenException
     {
         byte[] sub = new byte[length];
@@ -198,34 +198,34 @@ final class PK11Cipher extends org.mozilla.jss.crypto.Cipher {
      */
     @Deprecated
     public byte[] doFinal()
-        throws IllegalStateException, IllegalBlockSizeException,
+    throws IllegalStateException, IllegalBlockSizeException,
         BadPaddingException, TokenException
     {
         if( state == UNINITIALIZED ) {
             throw new IllegalStateException();
         }
         return finalizeContext(contextProxy, algorithm.getBlockSize(),
-                    algorithm.isPadded() );
+                               algorithm.isPadded() );
     }
 
     private static native CipherContextProxy
     initContext(boolean encrypt, SymmetricKey key, EncryptionAlgorithm alg,
-                 byte[] IV, boolean padded)
-        throws TokenException;
+                byte[] IV, boolean padded)
+    throws TokenException;
 
     // This version accepts the number of effective key bits for RC2 CBC.
     private static native CipherContextProxy
     initContextWithKeyBits(boolean encrypt, SymmetricKey key,
-                EncryptionAlgorithm alg, byte[] IV, int keyBits, boolean padded)
-        throws TokenException;
+                           EncryptionAlgorithm alg, byte[] IV, int keyBits, boolean padded)
+    throws TokenException;
 
     private static native byte[]
     updateContext( CipherContextProxy context, byte[] input, int blocksize )
-        throws TokenException;
+    throws TokenException;
 
     private static native byte[]
     finalizeContext( CipherContextProxy context, int blocksize, boolean padded)
-        throws TokenException, IllegalBlockSizeException, BadPaddingException;
+    throws TokenException, IllegalBlockSizeException, BadPaddingException;
 
     private void reset() {
         parameters = null;
@@ -239,7 +239,7 @@ final class PK11Cipher extends org.mozilla.jss.crypto.Cipher {
      * Matches the params against those expected by the algorithm.
      */
     private void checkParams(AlgorithmParameterSpec params)
-        throws InvalidAlgorithmParameterException
+    throws InvalidAlgorithmParameterException
     {
         if( ! algorithm.isValidParameterObject(params) ) {
             String name = "null";
@@ -247,7 +247,7 @@ final class PK11Cipher extends org.mozilla.jss.crypto.Cipher {
                 name = params.getClass().getName();
             }
             throw new InvalidAlgorithmParameterException(algorithm +
-                " cannot use a " + name + " parameter");
+                    " cannot use a " + name + " parameter");
         }
     }
 
@@ -264,7 +264,7 @@ final class PK11Cipher extends org.mozilla.jss.crypto.Cipher {
         }
         if( ! key.getOwningToken().equals(token) ) {
             throw new InvalidKeyException("Key does not reside on the "+
-                "current token");
+                                          "current token");
         }
         if( ! (key instanceof PK11SymKey) ) {
             throw new InvalidKeyException("Key is not a PKCS #11 key");
@@ -277,7 +277,7 @@ final class PK11Cipher extends org.mozilla.jss.crypto.Cipher {
                 && keyType != KeyType.getKeyTypeFromAlgorithm(algorithm)
             ) {
                 throw new InvalidKeyException("Key is not the right type for"+
-                    " this algorithm: " + ((PK11SymKey)key).getKeyType() + ":" + KeyType.getKeyTypeFromAlgorithm(algorithm) +";");
+                                              " this algorithm: " + ((PK11SymKey)key).getKeyType() + ":" + KeyType.getKeyTypeFromAlgorithm(algorithm) +";");
             }
         } catch( NoSuchAlgorithmException e ) {
             throw new RuntimeException("Unknown algorithm: " + algorithm, e);

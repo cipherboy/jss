@@ -11,14 +11,14 @@ package org.mozilla.jss.util;
 public class ConsolePasswordCallback implements PasswordCallback {
     public ConsolePasswordCallback() {}
     public Password getPasswordFirstAttempt(PasswordCallbackInfo info)
-        throws PasswordCallback.GiveUpException
+    throws PasswordCallback.GiveUpException
     {
         System.out.println("Enter password for "+info.getName());
         return Password.readPasswordFromConsole();
     }
 
     public Password getPasswordAgain(PasswordCallbackInfo token)
-        throws PasswordCallback.GiveUpException
+    throws PasswordCallback.GiveUpException
     {
         System.out.println("Password incorrect, try again");
         return getPasswordFirstAttempt(token);

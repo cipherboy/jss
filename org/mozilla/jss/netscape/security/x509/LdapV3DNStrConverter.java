@@ -77,7 +77,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * @see X500NameAttrMap
      */
     public LdapV3DNStrConverter(X500NameAttrMap attributeMap,
-                boolean doAcceptUnknownOids) {
+                                boolean doAcceptUnknownOids) {
         attrMap = attributeMap;
         acceptUnknownOids = doAcceptUnknownOids;
 
@@ -96,7 +96,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * @exception IOException if an error occurs during the conversion.
      */
     public X500Name parseDN(String dn)
-            throws IOException {
+    throws IOException {
         return parseDN(dn, null);
     }
 
@@ -105,7 +105,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * Directory Strings.
      */
     public X500Name parseDN(String dn, byte[] encodingOrder)
-            throws IOException {
+    throws IOException {
         StringReader dn_reader = new StringReader(dn);
         PushbackReader in = new PushbackReader(dn_reader, 5);
 
@@ -120,7 +120,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * @exception IOException if an error occurs during the conversion.
      */
     public RDN parseRDN(String rdn)
-            throws IOException {
+    throws IOException {
         return parseRDN(rdn, null);
     }
 
@@ -129,7 +129,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * Directory Strings.
      */
     public RDN parseRDN(String rdn, byte[] encodingOrder)
-            throws IOException {
+    throws IOException {
         StringReader rdn_reader = new StringReader(rdn);
         PushbackReader in = new PushbackReader(rdn_reader, 5);
 
@@ -143,7 +143,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * @return a AVA
      */
     public AVA parseAVA(String ava)
-            throws IOException {
+    throws IOException {
         return parseAVA(ava, null);
     }
 
@@ -152,7 +152,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * Directory Strings.
      */
     public AVA parseAVA(String ava, byte[] encodingOrder)
-            throws IOException {
+    throws IOException {
         StringReader ava_reader = new StringReader(ava);
         PushbackReader in = new PushbackReader(ava_reader, 5);
 
@@ -175,7 +175,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * @exception IOException if any reading or parsing error occurs.
      */
     public X500Name parseDN(PushbackReader in)
-            throws IOException {
+    throws IOException {
         return parseDN(in, null);
     }
 
@@ -184,7 +184,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * argument for Directory Strings.
      */
     public X500Name parseDN(PushbackReader in, byte[] encodingOrder)
-            throws IOException {
+    throws IOException {
         RDN rdn;
         int lastChar;
         Vector<RDN> rdnVector = new Vector<RDN>();
@@ -218,7 +218,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * @exception IOException if any read or parse error occurs.
      */
     public RDN parseRDN(PushbackReader in)
-            throws IOException {
+    throws IOException {
         return parseRDN(in, null);
     }
 
@@ -227,7 +227,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * argument for Directory Strings.
      */
     public RDN parseRDN(PushbackReader in, byte[] encodingOrder)
-            throws IOException {
+    throws IOException {
         Vector<AVA> avaVector = new Vector<AVA>();
         AVA ava;
         int lastChar;
@@ -261,7 +261,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * @return AVA object of the first AVA component in the Ldap DN string.
      */
     public AVA parseAVA(PushbackReader in)
-            throws IOException {
+    throws IOException {
         return parseAVA(in, null);
     }
 
@@ -270,7 +270,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * argument for Directory Strings.
      */
     public AVA parseAVA(PushbackReader in, byte[] encodingOrder)
-            throws IOException {
+    throws IOException {
         int c;
         ObjectIdentifier oid;
         DerValue value;
@@ -322,7 +322,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
                         hexDigits.indexOf(hexChar2) == -1)
                     throw new IOException("Bad AVA value: bad hex value.");
                 b = (Character.digit(hexChar1, 16) << 4) +
-                        Character.digit(hexChar2, 16);
+                    Character.digit(hexChar2, 16);
                 berStream.write(b);
             }
             if (berStream.size() == 0)
@@ -364,7 +364,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
                             hexChar2 = (char) (c = in.read());
                             if (hexDigits.indexOf((char) c) == -1)
                                 throw new IOException("Bad AVA format: " +
-                                        "invalid escaped hex pair");
+                                                      "invalid escaped hex pair");
                             hexCharsBuf.write(hexChar1);
                             hexCharsBuf.write(hexChar2);
                             // read ahead to next '\' hex-char if any.
@@ -376,7 +376,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
                             }
                             if ((c = in.read()) == -1)
                                 throw new IOException("Bad AVA format: " +
-                                        "expecting escaped char.");
+                                                      "expecting escaped char.");
                             if (hexDigits.indexOf((char) c) == -1) {
                                 in.unread(c);
                                 in.unread('\\');
@@ -384,7 +384,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
                             }
                         } while (true);
                         valueBuf.append(
-                                getStringFromHexpairs(hexCharsBuf.toCharArray()));
+                            getStringFromHexpairs(hexCharsBuf.toCharArray()));
                     } else {
                         throw new IOException("Bad AVA format: " +
                                               "invalid escaping");
@@ -395,7 +395,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
             }
 
             value = parseAVAValue(
-                    valueBuf.toString().trim(), oid, encodingOrder);
+                        valueBuf.toString().trim(), oid, encodingOrder);
 
             if (quoted) { // move to next non-white space
                 do {
@@ -403,7 +403,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
                 } while (c == ' ');
                 if (c != -1 && valueEndChars.indexOf(c) == -1)
                     throw new IOException(
-                            "Bad AVA format: separator expected at end of ava.");
+                        "Bad AVA format: separator expected at end of ava.");
             }
         }
 
@@ -427,7 +427,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      *                if an error occurs during conversion.
      */
     public ObjectIdentifier parseAVAKeyword(String avaKeyword)
-            throws IOException {
+    throws IOException {
         String keyword = avaKeyword.toUpperCase().trim();
         String oid_str = null;
         ObjectIdentifier oid, new_oid;
@@ -475,7 +475,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * @see AVAValueConverter
      */
     public DerValue parseAVAValue(String avaValueString, ObjectIdentifier oid)
-            throws IOException {
+    throws IOException {
         return parseAVAValue(avaValueString, oid, null);
     }
 
@@ -484,13 +484,13 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * for Directory Strings.
      */
     public DerValue parseAVAValue(
-            String avaValueString, ObjectIdentifier oid, byte[] encodingOrder)
-            throws IOException {
+        String avaValueString, ObjectIdentifier oid, byte[] encodingOrder)
+    throws IOException {
         AVAValueConverter valueConverter = attrMap.getValueConverter(oid);
         if (valueConverter == null) {
             if (!acceptUnknownOids) {
                 throw new IllegalArgumentException(
-                        "Unrecognized OID for AVA value conversion");
+                    "Unrecognized OID for AVA value conversion");
             } else {
                 valueConverter = new GenericValueConverter();
             }
@@ -512,11 +512,11 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * @exception IOException if an error occurs during conversion.
      */
     public DerValue parseAVAValue(byte[] berValue, ObjectIdentifier oid)
-            throws IOException {
+    throws IOException {
         AVAValueConverter valueConverter = attrMap.getValueConverter(oid);
         if (valueConverter == null && !acceptUnknownOids) {
             throw new IllegalArgumentException(
-                    "Unrecognized OID for AVA value conversion");
+                "Unrecognized OID for AVA value conversion");
         } else {
             valueConverter = new GenericValueConverter();
         }
@@ -537,7 +537,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * @exception IOException if an error is encountered during conversion.
      */
     public String encodeDN(X500Name x500name)
-            throws IOException {
+    throws IOException {
         RDN[] rdns = x500name.getNames();
         // String fullname = null;
         StringBuffer fullname = new StringBuffer();
@@ -566,7 +566,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * @exception IOException if an error is encountered during conversion.
      */
     public String encodeRDN(RDN rdn)
-            throws IOException {
+    throws IOException {
         AVA[] avas = rdn.getAssertion();
         // String relname = null;
         StringBuffer relname = new StringBuffer();
@@ -593,7 +593,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * @exception IOException If an error is encountered during exception.
      */
     public String encodeAVA(AVA ava)
-            throws IOException {
+    throws IOException {
         if (ava == null) {
             return "";
         }
@@ -620,7 +620,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * @exception IOException if an error is encountered during conversion.
      */
     public String encodeOID(ObjectIdentifier oid)
-            throws IOException {
+    throws IOException {
         String keyword = attrMap.getName(oid);
         if (keyword == null) {
             if (acceptUnknownOids)
@@ -642,7 +642,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
      * @exception IOException if an error occurs during conversion.
      */
     public String encodeValue(DerValue attrValue, ObjectIdentifier oid)
-            throws IOException {
+    throws IOException {
         /*
          * Construct the value with as little copying and garbage
          * production as practical.
@@ -665,7 +665,7 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
                 valueConverter = new GenericValueConverter();
             else
                 throw new IOException(
-                        "Unknown AVA type for encoding AVA value");
+                    "Unknown AVA type for encoding AVA value");
         }
 
         try {
@@ -802,8 +802,8 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
 
             for (int i = 0; i < buffer.length; i++) {
                 buffer[i] = (byte)
-                        ((Character.digit(hexPairs[i * 2], 16) << 4) +
-                        Character.digit(hexPairs[i * 2 + 1], 16));
+                            ((Character.digit(hexPairs[i * 2], 16) << 4) +
+                             Character.digit(hexPairs[i * 2 + 1], 16));
             }
 
             Charset charset = Charset.forName("UTF-8");
@@ -812,16 +812,16 @@ public class LdapV3DNStrConverter extends LdapDNStrConverter {
             CharBuffer charBuffer = decoder.decode(ByteBuffer.wrap(buffer));
 
             return Arrays.copyOfRange(charBuffer.array(),
-                    charBuffer.arrayOffset(), charBuffer.arrayOffset() + charBuffer.limit());
+                                      charBuffer.arrayOffset(), charBuffer.arrayOffset() + charBuffer.limit());
 
         } catch (UnsupportedCharsetException e) {
             throw new UnsupportedEncodingException(
-                    "No UTF8 byte to char converter to use for " +
-                            "parsing LDAP DN String");
+                "No UTF8 byte to char converter to use for " +
+                "parsing LDAP DN String");
 
         } catch (CharacterCodingException e) {
             throw new IllegalArgumentException(
-                    "Invalid hex pair in LDAP DN String.");
+                "Invalid hex pair in LDAP DN String.");
         }
     }
 }

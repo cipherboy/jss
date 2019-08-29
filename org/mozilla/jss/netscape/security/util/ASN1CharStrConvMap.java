@@ -90,7 +90,7 @@ public class ASN1CharStrConvMap {
         if (currentCharset != null) {
             if (currentCharset != charset) {
                 throw new IllegalArgumentException(
-                        "a DER tag to converter entry already exists.");
+                    "a DER tag to converter entry already exists.");
             } else {
                 return;
             }
@@ -127,7 +127,7 @@ public class ASN1CharStrConvMap {
     static public void setDefault(ASN1CharStrConvMap newDefault) {
         if (newDefault == null)
             throw new IllegalArgumentException(
-                    "Cannot set a null default Der Tag Converter map");
+                "Cannot set a null default Der Tag Converter map");
         defaultMap = newDefault;
     }
 
@@ -145,24 +145,24 @@ public class ASN1CharStrConvMap {
 
         defaultMap = new ASN1CharStrConvMap();
         defaultMap.addEntry(DerValue.tag_PrintableString,
-                provider.charsetForName("ASN.1-Printable"));
+                            provider.charsetForName("ASN.1-Printable"));
         defaultMap.addEntry(DerValue.tag_VisibleString,
-                provider.charsetForName("ASN.1-Printable"));
+                            provider.charsetForName("ASN.1-Printable"));
         defaultMap.addEntry(DerValue.tag_IA5String,
-                provider.charsetForName("ASN.1-IA5"));
+                            provider.charsetForName("ASN.1-IA5"));
         defaultMap.addEntry(DerValue.tag_BMPString,
-                Charset.forName("UnicodeBig"));
+                            Charset.forName("UnicodeBig"));
         defaultMap.addEntry(DerValue.tag_UniversalString,
-                provider.charsetForName("ASN.1-Universal"));
+                            provider.charsetForName("ASN.1-Universal"));
         // XXX this is an oversimplified implementation of T.61 strings, it
         // doesn't handle all cases
         defaultMap.addEntry(DerValue.tag_T61String,
-                Charset.forName("ISO-8859-1"));
+                            Charset.forName("ISO-8859-1"));
         // UTF8String added to ASN.1 in 1998
         defaultMap.addEntry(DerValue.tag_UTF8String,
-                Charset.forName("UTF-8"));
+                            Charset.forName("UTF-8"));
         defaultMap.addEntry(DerValue.tag_GeneralString,
-                Charset.forName("UTF-8"));
+                            Charset.forName("UTF-8"));
     };
 
 };

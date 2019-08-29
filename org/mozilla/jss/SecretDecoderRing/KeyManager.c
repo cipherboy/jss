@@ -13,8 +13,8 @@
 
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_SecretDecoderRing_KeyManager_generateKeyNative
-    (JNIEnv *env, jobject this, jobject tokenObj, jobject algObj,
-    jbyteArray keyIDba, jint keySize)
+(JNIEnv *env, jobject this, jobject tokenObj, jobject algObj,
+ jbyteArray keyIDba, jint keySize)
 {
     PK11SlotInfo *slot = NULL;
     CK_MECHANISM_TYPE mech;
@@ -27,10 +27,10 @@ Java_org_mozilla_jss_SecretDecoderRing_KeyManager_generateKeyNative
     }
 
     if( PK11_Authenticate(slot, PR_TRUE /*load certs*/, NULL /*wincx*/)
-        != SECSuccess)
+            != SECSuccess)
     {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION,
-            "Failed to login to token");
+                          "Failed to login to token");
         goto finish;
     }
 
@@ -45,16 +45,16 @@ Java_org_mozilla_jss_SecretDecoderRing_KeyManager_generateKeyNative
     mech = JSS_getPK11MechFromAlg(env, algObj);
     if( mech == CKM_INVALID_MECHANISM) {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION, "Failed to find PKCS #11 "
-            "mechanism for key generation algorithm");
+                          "mechanism for key generation algorithm");
         goto finish;
     }
 
     /* generate the key */
     symk = PK11_TokenKeyGen(slot, mech, NULL /*param*/, keySize, keyID,
-        PR_TRUE /* isToken */, NULL /*wincx*/);
+                            PR_TRUE /* isToken */, NULL /*wincx*/);
     if( symk == NULL ) {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION,
-            "Failed to generate token symmetric key");
+                          "Failed to generate token symmetric key");
         goto finish;
     }
 
@@ -71,8 +71,8 @@ finish:
 
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_SecretDecoderRing_KeyManager_generateUniqueNamedKeyNative
-    (JNIEnv *env, jobject this, jobject tokenObj, jobject algObj,
-    jbyteArray keyIDba, jint keySize, jstring nickname)
+(JNIEnv *env, jobject this, jobject tokenObj, jobject algObj,
+ jbyteArray keyIDba, jint keySize, jstring nickname)
 {
     PK11SlotInfo *slot = NULL;
     CK_MECHANISM_TYPE mech;
@@ -87,10 +87,10 @@ Java_org_mozilla_jss_SecretDecoderRing_KeyManager_generateUniqueNamedKeyNative
     }
 
     if( PK11_Authenticate(slot, PR_TRUE /*load certs*/, NULL /*wincx*/)
-        != SECSuccess)
+            != SECSuccess)
     {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION,
-            "Failed to login to token");
+                          "Failed to login to token");
         goto finish;
     }
 
@@ -105,16 +105,16 @@ Java_org_mozilla_jss_SecretDecoderRing_KeyManager_generateUniqueNamedKeyNative
     mech = JSS_getPK11MechFromAlg(env, algObj);
     if( mech == CKM_INVALID_MECHANISM) {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION, "Failed to find PKCS #11 "
-            "mechanism for key generation algorithm");
+                          "mechanism for key generation algorithm");
         goto finish;
     }
 
     /* generate the key */
     symk = PK11_TokenKeyGen(slot, mech, NULL /*param*/, keySize, keyID,
-        PR_TRUE /* isToken */, NULL /*wincx*/);
+                            PR_TRUE /* isToken */, NULL /*wincx*/);
     if( symk == NULL ) {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION,
-            "Failed to generate token symmetric key");
+                          "Failed to generate token symmetric key");
         goto finish;
     }
 
@@ -125,7 +125,7 @@ Java_org_mozilla_jss_SecretDecoderRing_KeyManager_generateUniqueNamedKeyNative
     status = PK11_SetSymKeyNickname( symk, keyname );
     if( status != SECSuccess ) {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION,
-            "Failed to name token symmetric key");
+                          "Failed to name token symmetric key");
     }
 
 
@@ -144,8 +144,8 @@ finish:
 
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_SecretDecoderRing_KeyManager_lookupKeyNative
-    (JNIEnv *env, jobject this, jobject tokenObj, jobject algObj,
-    jbyteArray keyIDba)
+(JNIEnv *env, jobject this, jobject tokenObj, jobject algObj,
+ jbyteArray keyIDba)
 {
     PK11SlotInfo *slot = NULL;
     PK11SymKey *symk = NULL;
@@ -159,10 +159,10 @@ Java_org_mozilla_jss_SecretDecoderRing_KeyManager_lookupKeyNative
     }
 
     if( PK11_Authenticate(slot, PR_TRUE /*load certs*/, NULL /*wincx*/)
-        != SECSuccess)
+            != SECSuccess)
     {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION,
-            "Failed to login to token");
+                          "Failed to login to token");
         goto finish;
     }
 
@@ -177,7 +177,7 @@ Java_org_mozilla_jss_SecretDecoderRing_KeyManager_lookupKeyNative
     mech = JSS_getPK11MechFromAlg(env, algObj);
     if( mech == CKM_INVALID_MECHANISM) {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION, "Failed to find PKCS #11 "
-            "mechanism for key generation algorithm");
+                          "mechanism for key generation algorithm");
         goto finish;
     }
 
@@ -198,8 +198,8 @@ finish:
 
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_SecretDecoderRing_KeyManager_lookupUniqueNamedKeyNative
-    (JNIEnv *env, jobject this, jobject tokenObj, jobject algObj,
-    jstring nickname)
+(JNIEnv *env, jobject this, jobject tokenObj, jobject algObj,
+ jstring nickname)
 {
     PK11SlotInfo *slot = NULL;
     CK_MECHANISM_TYPE mech;
@@ -217,10 +217,10 @@ Java_org_mozilla_jss_SecretDecoderRing_KeyManager_lookupUniqueNamedKeyNative
     }
 
     if( PK11_Authenticate(slot, PR_TRUE /*load certs*/, NULL /*wincx*/)
-        != SECSuccess)
+            != SECSuccess)
     {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION,
-            "Failed to login to token");
+                          "Failed to login to token");
         goto finish;
     }
 
@@ -228,7 +228,7 @@ Java_org_mozilla_jss_SecretDecoderRing_KeyManager_lookupUniqueNamedKeyNative
     mech = JSS_getPK11MechFromAlg(env, algObj);
     if( mech == CKM_INVALID_MECHANISM) {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION, "Failed to find PKCS #11 "
-            "mechanism for key generation algorithm");
+                          "mechanism for key generation algorithm");
         goto finish;
     }
 
@@ -237,9 +237,9 @@ Java_org_mozilla_jss_SecretDecoderRing_KeyManager_lookupUniqueNamedKeyNative
 
     /* initialize the symmetric key list. */
     symKey = PK11_ListFixedKeysInSlot(
-             /* slot     */            slot,
-             /* nickname */            NULL,
-             /* wincx    */            NULL );
+                 /* slot     */            slot,
+                 /* nickname */            NULL,
+                 /* wincx    */            NULL );
 
     /* iterate through the symmetric key list. */
     while( symKey != NULL ) {
@@ -268,7 +268,7 @@ Java_org_mozilla_jss_SecretDecoderRing_KeyManager_lookupUniqueNamedKeyNative
 
     /* case 2:  the specified key is not on this token */
     if( ( keyname != NULL ) &&
-        ( keys_found == 0 ) ) {
+            ( keys_found == 0 ) ) {
         /* the key called "keyname" could not be found */
         goto finish;
     }
@@ -277,15 +277,15 @@ Java_org_mozilla_jss_SecretDecoderRing_KeyManager_lookupUniqueNamedKeyNative
     if( keys_found != 1 ) {
         /* more than one key called "keyname" was found on this token */
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION,
-            "Duplicate named keys exist on this token");
+                          "Duplicate named keys exist on this token");
         goto finish;
     }
 
     /* Re-initialize the symmetric key list. */
     symKey = PK11_ListFixedKeysInSlot(
-             /* slot     */            slot,
-             /* nickname */            NULL,
-             /* wincx    */            NULL );
+                 /* slot     */            slot,
+                 /* nickname */            NULL,
+                 /* wincx    */            NULL );
 
     /* Reiterate through the symmetric key list once more, */
     /* this time returning an actual reference to the key. */
@@ -321,7 +321,7 @@ finish:
 
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_SecretDecoderRing_KeyManager_deleteKeyNative
-    (JNIEnv *env, jobject this, jobject tokenObj, jobject key)
+(JNIEnv *env, jobject this, jobject tokenObj, jobject key)
 {
     PK11SlotInfo *slot = NULL;
     PK11SymKey *symk = NULL;
@@ -332,10 +332,10 @@ Java_org_mozilla_jss_SecretDecoderRing_KeyManager_deleteKeyNative
     }
 
     if( PK11_Authenticate(slot, PR_TRUE /*load certs*/, NULL /*wincx*/)
-        != SECSuccess)
+            != SECSuccess)
     {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION,
-            "Failed to login to token");
+                          "Failed to login to token");
         goto finish;
     }
 
@@ -346,7 +346,7 @@ Java_org_mozilla_jss_SecretDecoderRing_KeyManager_deleteKeyNative
 
     if( PK11_DeleteTokenSymKey(symk) != SECSuccess ) {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION,
-            "Failed to delete token symmetric key");
+                          "Failed to delete token symmetric key");
         goto finish;
     }
 

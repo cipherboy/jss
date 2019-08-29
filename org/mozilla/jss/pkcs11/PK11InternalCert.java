@@ -10,7 +10,7 @@ import org.mozilla.jss.crypto.*;
  * A certificate that lives in the internal cert database.
  */
 public class PK11InternalCert extends PK11Cert
-        implements InternalCertificate
+    implements InternalCertificate
 {
     ///////////////////////////////////////////////////////////////////////
     // Trust Management.  This is all package stuff because it can only
@@ -86,9 +86,9 @@ public class PK11InternalCert extends PK11Cert
         return super.getTrust(OBJECT_SIGNING);
     }
 
-	/////////////////////////////////////////////////////////////
-	// Construction
-	/////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////
+    // Construction
+    /////////////////////////////////////////////////////////////
     PK11InternalCert(byte[] certPtr, byte[] slotPtr, String nickname) {
         super(certPtr, slotPtr, nickname);
     }

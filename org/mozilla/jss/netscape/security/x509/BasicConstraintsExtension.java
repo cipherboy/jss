@@ -50,7 +50,7 @@ import org.mozilla.jss.netscape.security.util.DerValue;
  * @see Extension
  */
 public class BasicConstraintsExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
     /**
      *
      */
@@ -126,7 +126,7 @@ public class BasicConstraintsExtension extends Extension
      * @exception IOException on error.
      */
     public BasicConstraintsExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = PKIXExtensions.BasicConstraints_Id;
         this.critical = critical.booleanValue();
 
@@ -243,7 +243,7 @@ public class BasicConstraintsExtension extends Extension
             pathLen = ((Integer) obj).intValue();
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:BasicConstraints.");
+                                  "CertAttrSet:BasicConstraints.");
         }
     }
 
@@ -257,7 +257,7 @@ public class BasicConstraintsExtension extends Extension
             return (Integer.valueOf(pathLen));
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:BasicConstraints.");
+                                  "CertAttrSet:BasicConstraints.");
         }
     }
 
@@ -271,7 +271,7 @@ public class BasicConstraintsExtension extends Extension
             pathLen = -1;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:BasicConstraints.");
+                                  "CertAttrSet:BasicConstraints.");
         }
     }
 

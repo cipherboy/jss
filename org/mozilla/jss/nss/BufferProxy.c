@@ -27,8 +27,8 @@ JSS_PR_wrapJBuffer(JNIEnv *env, j_buffer **buffer)
         goto finish;
     }
     constructor = (*env)->GetMethodID(env, proxyClass,
-                            PLAIN_CONSTRUCTOR,
-                            BUFFER_PROXY_CONSTRUCTOR_SIG);
+                                      PLAIN_CONSTRUCTOR,
+                                      BUFFER_PROXY_CONSTRUCTOR_SIG);
     if(constructor == NULL) {
         ASSERT_OUTOFMEM(env);
         goto finish;

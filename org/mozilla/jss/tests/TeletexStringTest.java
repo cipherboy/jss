@@ -216,9 +216,9 @@ public class TeletexStringTest {
         System.out.println("Encoding time:");
 
         String string = StringTestUtil.NULL_CHARS +
-                StringTestUtil.PRINTABLE_CHARS +
-                StringTestUtil.NON_PRINTABLE_CHARS +
-                StringTestUtil.CONTROL_CHARS;
+                        StringTestUtil.PRINTABLE_CHARS +
+                        StringTestUtil.NON_PRINTABLE_CHARS +
+                        StringTestUtil.CONTROL_CHARS;
 
         long t0 = System.currentTimeMillis();
 
@@ -245,9 +245,9 @@ public class TeletexStringTest {
         System.out.println("Decoding time:");
 
         String string = StringTestUtil.NULL_CHARS +
-                StringTestUtil.PRINTABLE_CHARS +
-                StringTestUtil.NON_PRINTABLE_CHARS +
-                StringTestUtil.CONTROL_CHARS;
+                        StringTestUtil.PRINTABLE_CHARS +
+                        StringTestUtil.NON_PRINTABLE_CHARS +
+                        StringTestUtil.CONTROL_CHARS;
 
         byte[] data = JSSUtil.encode(tag, string);
 

@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
 
 
 public class PK11Cert
-       extends java.security.cert.X509Certificate
-       implements org.mozilla.jss.crypto.X509Certificate
+    extends java.security.cert.X509Certificate
+    implements org.mozilla.jss.crypto.X509Certificate
 {
     public static Logger logger = LoggerFactory.getLogger(PK11Cert.class);
 
@@ -85,9 +85,9 @@ public class PK11Cert
 
     protected native String getIssuerDNString();
 
-	public native java.security.PublicKey getPublicKey();
+    public native java.security.PublicKey getPublicKey();
 
-	public native int getVersion();
+    public native int getVersion();
 
     /* Begin methods necessary for java.security.cert.X509Certificate */
     public int getBasicConstraints() {
@@ -225,7 +225,7 @@ public class PK11Cert
     }
 
     public void checkValidity()
-            throws CertificateExpiredException, CertificateNotYetValidException
+    throws CertificateExpiredException, CertificateNotYetValidException
     {
         try {
             if (x509 == null) {
@@ -243,7 +243,7 @@ public class PK11Cert
     }
 
     public void checkValidity(Date date)
-            throws CertificateExpiredException, CertificateNotYetValidException
+    throws CertificateExpiredException, CertificateNotYetValidException
     {
         try {
             if (x509 == null) {
@@ -273,8 +273,8 @@ public class PK11Cert
     }
 
     public void verify(PublicKey key)
-            throws CertificateException, NoSuchAlgorithmException,
-            InvalidKeyException, NoSuchProviderException, SignatureException
+    throws CertificateException, NoSuchAlgorithmException,
+               InvalidKeyException, NoSuchProviderException, SignatureException
     {
         try {
             if (x509 == null) {
@@ -298,8 +298,8 @@ public class PK11Cert
     }
 
     public void verify(PublicKey key, String sigProvider)
-            throws CertificateException, NoSuchAlgorithmException,
-            InvalidKeyException, NoSuchProviderException, SignatureException
+    throws CertificateException, NoSuchAlgorithmException,
+        InvalidKeyException, NoSuchProviderException, SignatureException
     {
         try {
             if (x509 == null) {
@@ -398,30 +398,30 @@ public class PK11Cert
      */
     protected native int getTrust(int type);
 
-	/////////////////////////////////////////////////////////////
-	// Construction
-	/////////////////////////////////////////////////////////////
-	//PK11Cert(CertProxy proxy) {
+    /////////////////////////////////////////////////////////////
+    // Construction
+    /////////////////////////////////////////////////////////////
+    //PK11Cert(CertProxy proxy) {
     //    assert(proxy!=null);
-	//	this.certProxy = proxy;
-	//}
+    //	this.certProxy = proxy;
+    //}
 
-	PK11Cert(byte[] certPtr, byte[] slotPtr, String nickname) {
+    PK11Cert(byte[] certPtr, byte[] slotPtr, String nickname) {
         assert(certPtr!=null);
         assert(slotPtr!=null);
-		certProxy = new CertProxy(certPtr);
-		tokenProxy = new TokenProxy(slotPtr);
-		this.nickname = nickname;
-	}
+        certProxy = new CertProxy(certPtr);
+        tokenProxy = new TokenProxy(slotPtr);
+        this.nickname = nickname;
+    }
 
-	/////////////////////////////////////////////////////////////
-	// private data
-	/////////////////////////////////////////////////////////////
-	protected CertProxy certProxy;
+    /////////////////////////////////////////////////////////////
+    // private data
+    /////////////////////////////////////////////////////////////
+    protected CertProxy certProxy;
 
-	protected TokenProxy tokenProxy;
+    protected TokenProxy tokenProxy;
 
-	protected String nickname;
+    protected String nickname;
 }
 
 class CertProxy extends org.mozilla.jss.util.NativeProxy {

@@ -20,7 +20,7 @@ public final class PK11MessageDigest extends JSSMessageDigest {
     private DigestAlgorithm alg;
 
     PK11MessageDigest(PK11Token token, DigestAlgorithm alg)
-        throws NoSuchAlgorithmException, DigestException
+    throws NoSuchAlgorithmException, DigestException
     {
         this.token = token;
         this.alg = alg;
@@ -33,7 +33,7 @@ public final class PK11MessageDigest extends JSSMessageDigest {
     }
 
     public void initHMAC(SymmetricKey key)
-        throws DigestException, InvalidKeyException
+    throws DigestException, InvalidKeyException
     {
 
         if( ! (alg instanceof HMACAlgorithm) ) {
@@ -58,7 +58,7 @@ public final class PK11MessageDigest extends JSSMessageDigest {
     }
 
     public void update(byte[] input, int offset, int len)
-        throws DigestException
+    throws DigestException
     {
         if( digestProxy == null ) {
             throw new DigestException("Digest not correctly initialized");
@@ -72,7 +72,7 @@ public final class PK11MessageDigest extends JSSMessageDigest {
     }
 
     public int digest(byte[] outbuf, int offset, int len)
-        throws DigestException
+    throws DigestException
     {
         if( digestProxy == null ) {
             throw new DigestException("Digest not correctly initialized");
@@ -110,11 +110,11 @@ public final class PK11MessageDigest extends JSSMessageDigest {
 
     private static native CipherContextProxy
     initDigest(DigestAlgorithm alg)
-        throws DigestException;
+    throws DigestException;
 
     private static native CipherContextProxy
     initHMAC(PK11Token token, DigestAlgorithm alg, PK11SymKey key)
-        throws DigestException;
+    throws DigestException;
 
     private static native void
     update(CipherContextProxy proxy, byte[] inbuf, int offset, int len);

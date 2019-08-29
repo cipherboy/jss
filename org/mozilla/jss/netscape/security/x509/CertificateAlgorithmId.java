@@ -140,7 +140,7 @@ public class CertificateAlgorithmId implements CertAttrSet, Serializable {
             algId = (AlgorithmId) obj;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                              "CertAttrSet:CertificateAlgorithmId.");
+                                  "CertAttrSet:CertificateAlgorithmId.");
         }
     }
 
@@ -152,7 +152,7 @@ public class CertificateAlgorithmId implements CertAttrSet, Serializable {
             return (algId);
         } else {
             throw new IOException("Attribute name not recognized by " +
-                               "CertAttrSet:CertificateAlgorithmId.");
+                                  "CertAttrSet:CertificateAlgorithmId.");
         }
     }
 
@@ -164,7 +164,7 @@ public class CertificateAlgorithmId implements CertAttrSet, Serializable {
             algId = null;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                               "CertAttrSet:CertificateAlgorithmId.");
+                                  "CertAttrSet:CertificateAlgorithmId.");
         }
     }
 

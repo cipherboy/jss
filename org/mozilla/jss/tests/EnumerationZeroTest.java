@@ -110,7 +110,7 @@ public class EnumerationZeroTest {
      * @throws IOException if we can't construct a MessageDigest object.
      */
     public static AuthorityKeyIdentifierExtension buildAuthorityKeyIdentifier(RSAPublicKey key)
-        throws IOException {
+    throws IOException {
         try {
             MessageDigest d = MessageDigest.getInstance("SHA-1");
 

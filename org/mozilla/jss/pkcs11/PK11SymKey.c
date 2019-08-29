@@ -50,8 +50,8 @@ JSS_PK11_wrapSymKey(JNIEnv *env, PK11SymKey **symKey)
 
     /* find the constructor */
     constructor = (*env)->GetMethodID(env, keyClass,
-                                        PLAIN_CONSTRUCTOR,
-                                        PK11SYMKEY_CONSTRUCTOR_1_SIG);
+                                      PLAIN_CONSTRUCTOR,
+                                      PK11SYMKEY_CONSTRUCTOR_1_SIG);
     if(constructor == NULL) {
         ASSERT_OUTOFMEM(env);
         goto finish;
@@ -83,7 +83,7 @@ finish:
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11SymKey_getOwningToken
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     PK11SymKey *key = NULL;
     PK11SlotInfo *slot = NULL;
@@ -121,7 +121,7 @@ finish:
  */
 JNIEXPORT jint JNICALL
 Java_org_mozilla_jss_pkcs11_PK11SymKey_getStrength
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     PK11SymKey *key=NULL;
     int strength = 0;
@@ -143,7 +143,7 @@ finish:
  */
 JNIEXPORT jint JNICALL
 Java_org_mozilla_jss_pkcs11_PK11SymKey_getLength
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     PK11SymKey *key=NULL;
     unsigned int strength = 0;
@@ -165,7 +165,7 @@ finish:
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_PK11SymKey_setNickNameNative
-    (JNIEnv *env, jobject this,jstring nickname)
+(JNIEnv *env, jobject this,jstring nickname)
 {
     PK11SymKey *key=NULL;
     const char *keyname = NULL;
@@ -174,7 +174,7 @@ Java_org_mozilla_jss_pkcs11_PK11SymKey_setNickNameNative
     /* If no nickname provided, we are done */
     if( nickname == NULL ) {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION,
-            "Nickname is NULL, will not be set");
+                          "Nickname is NULL, will not be set");
         goto finish;
     }
 
@@ -190,7 +190,7 @@ Java_org_mozilla_jss_pkcs11_PK11SymKey_setNickNameNative
     status = PK11_SetSymKeyNickname( key, keyname );
     if( status != SECSuccess ) {
         JSS_throwMsgPrErr(env, TOKEN_EXCEPTION,
-            "Failed to name symmetric key");
+                          "Failed to name symmetric key");
     }
 finish:
     /* free the native "C" string */
@@ -203,7 +203,7 @@ finish:
  */
 JNIEXPORT jbyteArray JNICALL
 Java_org_mozilla_jss_pkcs11_PK11SymKey_getKeyData
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     PK11SymKey *key=NULL;
     SECItem *keyData; /* a reference to the key data */
@@ -218,7 +218,7 @@ Java_org_mozilla_jss_pkcs11_PK11SymKey_getKeyData
     if( PK11_ExtractKeyValue(key) != SECSuccess ) {
         /* key is not extractable */
         JSS_throwMsg(env, NOT_EXTRACTABLE_EXCEPTION, "Unable to extract "
-            "symmetric key data");
+                     "symmetric key data");
         goto finish;
     }
     keyData = PK11_GetKeyData(key);
@@ -242,7 +242,7 @@ finish:
  */
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_pkcs11_PK11SymKey_getKeyType
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     PK11SymKey *key=NULL;
     CK_MECHANISM_TYPE keyMech;
@@ -259,51 +259,51 @@ Java_org_mozilla_jss_pkcs11_PK11SymKey_getKeyType
     /* Look up the key type from the key */
     keyMech = PK11_GetMechanism(key);
     switch(keyMech) {
-      /* PBE mechanisms have to be handled by hand */
-      case CKM_PBE_MD2_DES_CBC:
-      case CKM_PBE_MD5_DES_CBC:
-      case CKM_NETSCAPE_PBE_SHA1_DES_CBC:
+    /* PBE mechanisms have to be handled by hand */
+    case CKM_PBE_MD2_DES_CBC:
+    case CKM_PBE_MD5_DES_CBC:
+    case CKM_NETSCAPE_PBE_SHA1_DES_CBC:
         typeFieldName = DES_KEYTYPE_FIELD;
         break;
-      case CKM_PBE_SHA1_RC4_128:
-      case CKM_PBE_SHA1_RC4_40:
+    case CKM_PBE_SHA1_RC4_128:
+    case CKM_PBE_SHA1_RC4_40:
         typeFieldName = RC4_KEYTYPE_FIELD;
         break;
-      case CKM_PBE_SHA1_RC2_128_CBC:
-      case CKM_PBE_SHA1_RC2_40_CBC:
+    case CKM_PBE_SHA1_RC2_128_CBC:
+    case CKM_PBE_SHA1_RC2_40_CBC:
         typeFieldName = RC2_KEYTYPE_FIELD;
         break;
-      case CKM_PBE_SHA1_DES3_EDE_CBC:
+    case CKM_PBE_SHA1_DES3_EDE_CBC:
         typeFieldName = DES3_KEYTYPE_FIELD;
         break;
-      case CKM_PBA_SHA1_WITH_SHA1_HMAC:
+    case CKM_PBA_SHA1_WITH_SHA1_HMAC:
         typeFieldName = SHA1_HMAC_KEYTYPE_FIELD;
         break;
-      default:
+    default:
         keyMech = PK11_GetKeyType( keyMech, 0 );
         switch(keyMech) {
-          case CKK_DES:
+        case CKK_DES:
             typeFieldName = DES_KEYTYPE_FIELD;
             break;
-          case CKK_DES3:
+        case CKK_DES3:
             typeFieldName = DES3_KEYTYPE_FIELD;
             break;
-          case CKK_RC4:
+        case CKK_RC4:
             typeFieldName = RC4_KEYTYPE_FIELD;
             break;
-          case CKK_RC2:
+        case CKK_RC2:
             typeFieldName = RC2_KEYTYPE_FIELD;
             break;
-          case CKK_AES:
+        case CKK_AES:
             typeFieldName = AES_KEYTYPE_FIELD;
             break;
-          case CKK_DES2:
-             typeFieldName = DES3_KEYTYPE_FIELD;
-             break;
-          case CKK_GENERIC_SECRET:
-             typeFieldName = GENERIC_SECRET_KEYTYPE_FIELD;
-             break;
-          default:
+        case CKK_DES2:
+            typeFieldName = DES3_KEYTYPE_FIELD;
+            break;
+        case CKK_GENERIC_SECRET:
+            typeFieldName = GENERIC_SECRET_KEYTYPE_FIELD;
+            break;
+        default:
             PR_ASSERT(PR_FALSE);
             typeFieldName = DES_KEYTYPE_FIELD;
             break;
@@ -319,7 +319,7 @@ Java_org_mozilla_jss_pkcs11_PK11SymKey_getKeyType
     }
 
     typeField = (*env)->GetStaticFieldID(env, typeClass, typeFieldName,
-        KEYTYPE_FIELD_SIG);
+                                         KEYTYPE_FIELD_SIG);
     if(typeField == NULL) {
         ASSERT_OUTOFMEM(env);
         goto finish;
@@ -348,7 +348,7 @@ JSS_PK11_getSymKeyPtr(JNIEnv *env, jobject symKeyObject, PK11SymKey **ptr)
 
     /* Get the pointer from the key proxy */
     return JSS_getPtrFromProxyOwner(env, symKeyObject, SYM_KEY_PROXY_FIELD,
-        SYM_KEY_PROXY_SIG, (void**)ptr);
+                                    SYM_KEY_PROXY_SIG, (void**)ptr);
 }
 
 
@@ -358,7 +358,7 @@ JSS_PK11_getSymKeyPtr(JNIEnv *env, jobject symKeyObject, PK11SymKey **ptr)
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_SymKeyProxy_releaseNativeResources
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     PK11SymKey *key=NULL;
 

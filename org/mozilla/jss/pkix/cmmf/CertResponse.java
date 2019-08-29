@@ -25,7 +25,7 @@ public class CertResponse implements ASN1Value {
     }
 
     public CertResponse(INTEGER certReqId, PKIStatusInfo status,
-            CertifiedKeyPair certifiedKeyPair)
+                        CertifiedKeyPair certifiedKeyPair)
     {
         this(certReqId, status);
         this.certifiedKeyPair = certifiedKeyPair;
@@ -65,7 +65,7 @@ public class CertResponse implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         SEQUENCE seq = new SEQUENCE();
         seq.addElement( certReqId );

@@ -92,16 +92,16 @@ public class PolicyConstraint {
      */
     public String toString() {
         String s = ((set != null) ?
-                "PolicyConstraint: [\n"
-                        + "  PolicySet:[" + set.toString() + "]\n"
-                        + "  Require:" + require + "\n"
-                        + "  Inhibit:" + inhibit + "\n"
-                        + "]\n" :
-                "PolicyConstraint: [\n"
-                        + "  PolicySet:[null]\n"
-                        + "  Require:" + require + "\n"
-                        + "  Inhibit:" + inhibit + "\n"
-                        + "]\n");
+                    "PolicyConstraint: [\n"
+                    + "  PolicySet:[" + set.toString() + "]\n"
+                    + "  Require:" + require + "\n"
+                    + "  Inhibit:" + inhibit + "\n"
+                    + "]\n" :
+                    "PolicyConstraint: [\n"
+                    + "  PolicySet:[null]\n"
+                    + "  Require:" + require + "\n"
+                    + "  Inhibit:" + inhibit + "\n"
+                    + "]\n");
         return (s);
     }
 

@@ -131,11 +131,12 @@ public class DerValue {
     public final static byte tag_UTF8String = 0x0C;
 
     public final static byte[] tags_DirectoryString =
-        { tag_T61String
+    {   tag_T61String
         , tag_PrintableString
         , tag_UniversalString
         , tag_UTF8String
-        , tag_BMPString };
+        , tag_BMPString
+    };
 
     // CONSTRUCTED seq/set
 
@@ -208,7 +209,7 @@ public class DerValue {
      * the converter for generic string values to convert to the Der Value.
      */
     public DerValue(String value)
-            throws IOException {
+    throws IOException {
         AVAValueConverter genericValue = new GenericValueConverter();
         DerValue val;
 
@@ -306,7 +307,7 @@ public class DerValue {
      * helper routine
      */
     private void init(boolean fullyBuffered, InputStream in)
-            throws IOException {
+    throws IOException {
         byte[] bytes;
 
         tag = (byte) in.read();
@@ -329,7 +330,7 @@ public class DerValue {
      * Encode an ASN1/DER encoded datum onto a DER output stream.
      */
     public void encode(DerOutputStream out)
-            throws IOException {
+    throws IOException {
         out.write(tag);
         out.putLength(length);
         buffer.dump(out, length);
@@ -373,7 +374,7 @@ public class DerValue {
     public byte[] getOctetString() throws IOException {
         if (tag != tag_OctetString)
             throw new IOException(
-                    "DerValue.getOctetString, not an Octet String: " + tag);
+                "DerValue.getOctetString, not an Octet String: " + tag);
 
         byte[] bytes = new byte[length];
 
@@ -403,7 +404,7 @@ public class DerValue {
      * @return the (unsigned) integer held in this DER value
      */
     public int getEnumerated()
-            throws IOException {
+    throws IOException {
         if (tag != tag_Enumerated)
             throw new IOException("DerValue.getEnumerated, not an ENUMERATED " + tag);
         if (length == 0)
@@ -450,7 +451,7 @@ public class DerValue {
         if (!tagImplicit) {
             if (tag != tag_Integer) {
                 throw new IOException("DerValue.getInteger, not an int "
-                                       + tag);
+                                      + tag);
             }
         }
         return buffer.getUnsigned(data.available());
@@ -464,7 +465,7 @@ public class DerValue {
     public byte[] getBitString() throws IOException {
         if (tag != tag_BitString)
             throw new IOException(
-                    "DerValue.getBitString, not a bit string " + tag);
+                "DerValue.getBitString, not a bit string " + tag);
 
         return buffer.getBitString();
     }
@@ -477,7 +478,7 @@ public class DerValue {
     public BitArray getUnalignedBitString() throws IOException {
         if (tag != tag_BitString)
             throw new IOException(
-                    "DerValue.getBitString, not a bit string " + tag);
+                "DerValue.getBitString, not a bit string " + tag);
 
         return buffer.getUnalignedBitString();
     }
@@ -502,7 +503,7 @@ public class DerValue {
         if (!tagImplicit) {
             if (tag != tag_BitString)
                 throw new IOException("DerValue.getBitString, not a bit string "
-                                       + tag);
+                                      + tag);
         }
         return buffer.getBitString();
     }
@@ -515,11 +516,11 @@ public class DerValue {
      * @return the bit string held in this value
      */
     public BitArray getUnalignedBitString(boolean tagImplicit)
-            throws IOException {
+    throws IOException {
         if (!tagImplicit) {
             if (tag != tag_BitString)
                 throw new IOException("DerValue.getBitString, not a bit string "
-                                       + tag);
+                                      + tag);
         }
         return buffer.getUnalignedBitString();
     }
@@ -530,10 +531,10 @@ public class DerValue {
      * @return the printable string held in this value
      */
     public String getPrintableString()
-            throws IOException {
+    throws IOException {
         if (tag != tag_PrintableString)
             throw new IOException(
-                    "DerValue.getPrintableString, not a string " + tag);
+                "DerValue.getPrintableString, not a string " + tag);
 
         return getASN1CharString();
     }
@@ -584,7 +585,7 @@ public class DerValue {
     public String getT61String() throws IOException {
         if (tag != tag_T61String)
             throw new IOException(
-                    "DerValue.getT61String, not T61 " + tag);
+                "DerValue.getT61String, not T61 " + tag);
 
         return getASN1CharString();
     }
@@ -597,34 +598,34 @@ public class DerValue {
     public String getIA5String() throws IOException {
         if (tag != tag_IA5String)
             throw new IOException(
-                    "DerValue.getIA5String, not IA5 " + tag);
+                "DerValue.getIA5String, not IA5 " + tag);
 
         return getASN1CharString();
     }
 
     public String getBMPString()
-            throws IOException {
+    throws IOException {
         if (tag != tag_BMPString)
             throw new IOException(
-                    "DerValue.getBMPString, not BMP " + tag);
+                "DerValue.getBMPString, not BMP " + tag);
 
         return getASN1CharString();
     }
 
     public String getUniversalString()
-            throws IOException {
+    throws IOException {
         if (tag != tag_UniversalString)
             throw new IOException(
-                    "DerValue.getUniversalString, not UniversalString " + tag);
+                "DerValue.getUniversalString, not UniversalString " + tag);
 
         return getASN1CharString();
     }
 
     public String getUTF8String()
-            throws IOException {
+    throws IOException {
         if (tag != tag_UTF8String)
             throw new IOException(
-                    "DerValue.getUTF8String, not UTF8String " + tag);
+                "DerValue.getUTF8String, not UTF8String " + tag);
 
         return getASN1CharString();
     }
@@ -690,7 +691,7 @@ public class DerValue {
             // integers
             else
                 return "[DerValue, tag = " + tag
-                        + ", length = " + length + "]";
+                       + ", length = " + length + "]";
         } catch (IOException e) {
             throw new IllegalArgumentException("misformatted DER value");
         }

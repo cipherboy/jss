@@ -97,7 +97,7 @@ public class Name implements ASN1Value {
     }
 
     public void encode(Tag implicit, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         rdns.encode(implicit, ostream);
     }
@@ -106,32 +106,32 @@ public class Name implements ASN1Value {
      * The OID for the common name (CN) attribute.
      */
     public static final OBJECT_IDENTIFIER commonName =
-        new OBJECT_IDENTIFIER( new long[]{ 2, 5, 4, 3 } );
+        new OBJECT_IDENTIFIER( new long[] { 2, 5, 4, 3 } );
     /**
      * The OID for the country name (C) attribute.
      */
     public static final OBJECT_IDENTIFIER countryName =
-        new OBJECT_IDENTIFIER( new long[]{ 2, 5, 4, 6 } );
+        new OBJECT_IDENTIFIER( new long[] { 2, 5, 4, 6 } );
     /**
      * The OID for the locality name (L) attribute.
      */
     public static final OBJECT_IDENTIFIER localityName =
-        new OBJECT_IDENTIFIER( new long[]{ 2, 5, 4, 7 } );
+        new OBJECT_IDENTIFIER( new long[] { 2, 5, 4, 7 } );
     /**
      * The OID for the state or province name (S) attribute.
      */
     public static final OBJECT_IDENTIFIER stateOrProvinceName =
-        new OBJECT_IDENTIFIER( new long[]{ 2, 5, 4, 8 } );
+        new OBJECT_IDENTIFIER( new long[] { 2, 5, 4, 8 } );
     /**
      * The OID for the organization name (O) attribute.
      */
     public static final OBJECT_IDENTIFIER organizationName =
-        new OBJECT_IDENTIFIER( new long[]{ 2, 5, 4, 10 } );
+        new OBJECT_IDENTIFIER( new long[] { 2, 5, 4, 10 } );
     /**
      * The OID for the organizational unit name (OU) attribute.
      */
     public static final OBJECT_IDENTIFIER organizationalUnitName =
-        new OBJECT_IDENTIFIER( new long[]{ 2, 5, 4, 11 } );
+        new OBJECT_IDENTIFIER( new long[] { 2, 5, 4, 11 } );
 
 
     /**
@@ -154,7 +154,7 @@ public class Name implements ASN1Value {
     public void addCountryName(String C) throws CharConversionException {
         if( C.length() != 2 ) {
             throw new IllegalArgumentException("Country name must be exactly"+
-                " 2 characters");
+                                               " 2 characters");
         }
         addElement( new AVA( countryName, new DirectoryString(C) ) );
     }
@@ -176,7 +176,7 @@ public class Name implements ASN1Value {
      *      directory strings.
      */
     public void addStateOrProvinceName(String S)
-        throws CharConversionException
+    throws CharConversionException
     {
         addElement( new AVA( stateOrProvinceName, new DirectoryString(S) ) );
     }
@@ -198,7 +198,7 @@ public class Name implements ASN1Value {
      *      directory strings.
      */
     public void addOrganizationalUnitName(String OU)
-        throws CharConversionException
+    throws CharConversionException
     {
         addElement( new AVA( organizationalUnitName,
                              new DirectoryString(OU) ) );
@@ -251,68 +251,68 @@ public class Name implements ASN1Value {
 
     public static void main(String args[]) {
 
-      try {
+        try {
 
-        if(args.length == 0) {
-            Name name = new Name();
-            OBJECT_IDENTIFIER oid;
+            if(args.length == 0) {
+                Name name = new Name();
+                OBJECT_IDENTIFIER oid;
 
-            oid = new OBJECT_IDENTIFIER( new long[]{ 2, 5, 4, 10 } );
-            AVA ava = new AVA( oid, new PrintableString("Netscape") );
-            name.addElement( ava );
+                oid = new OBJECT_IDENTIFIER( new long[] { 2, 5, 4, 10 } );
+                AVA ava = new AVA( oid, new PrintableString("Netscape") );
+                name.addElement( ava );
 
-            oid = new OBJECT_IDENTIFIER( new long[]{ 2, 5, 4, 3} );
-            ava = new AVA( oid, new PrintableString("moi"));
-            name.addElement( ava );
+                oid = new OBJECT_IDENTIFIER( new long[] { 2, 5, 4, 3} );
+                ava = new AVA( oid, new PrintableString("moi"));
+                name.addElement( ava );
 
-            name.encode(System.out);
-        } else {
+                name.encode(System.out);
+            } else {
 
-            Name.Template temp = new Name.Template();
-            Name name;
+                Name.Template temp = new Name.Template();
+                Name name;
 
-            FileInputStream fis = new FileInputStream(args[0]);
-            try (BufferedInputStream bis = new BufferedInputStream(fis)) {
-                name = (Name) temp.decode(bis);
+                FileInputStream fis = new FileInputStream(args[0]);
+                try (BufferedInputStream bis = new BufferedInputStream(fis)) {
+                    name = (Name) temp.decode(bis);
+                }
+
+                System.out.println("Got name.");
+
+                for( int i = 0; i < name.size(); i++ ) {
+                    AVA a = name.elementAt(i).at(0);
+                    PrintableString.Template pst = new PrintableString.Template();
+                    PrintableString ps = (PrintableString)
+                                         pst.decode( new ByteArrayInputStream(
+                                                         a.getValue().getEncoded() ) );
+                    System.out.println("OID: "+a.getOID()+", String: "+ps);
+                }
+                System.out.println("End of name");
             }
-
-            System.out.println("Got name.");
-
-            for( int i = 0; i < name.size(); i++ ) {
-                AVA a = name.elementAt(i).at(0);
-                PrintableString.Template pst = new PrintableString.Template();
-                PrintableString ps = (PrintableString)
-                    pst.decode( new ByteArrayInputStream(
-                        a.getValue().getEncoded() ) );
-                System.out.println("OID: "+a.getOID()+", String: "+ps);
-            }
-            System.out.println("End of name");
-        }
-      } catch( Exception e) {
+        } catch( Exception e) {
             e.printStackTrace();
-      }
+        }
     }
 
 
-public static class Template implements ASN1Template {
-    public boolean tagMatch(Tag tag) {
-        return TAG.equals(tag);
-    }
+    public static class Template implements ASN1Template {
+        public boolean tagMatch(Tag tag) {
+            return TAG.equals(tag);
+        }
 
-    public ASN1Value decode(InputStream istream)
+        public ASN1Value decode(InputStream istream)
         throws IOException, InvalidBERException
-    {
-        return decode(TAG, istream);
-    }
+        {
+            return decode(TAG, istream);
+        }
 
-    public ASN1Value decode(Tag implicit, InputStream istream)
+        public ASN1Value decode(Tag implicit, InputStream istream)
         throws IOException, InvalidBERException
-    {
-        SEQUENCE.OF_Template seqt = new SEQUENCE.OF_Template(
-            new RDN.Template() );
-        SEQUENCE seq = (SEQUENCE) seqt.decode(implicit, istream);
-        return new Name( seq );
+        {
+            SEQUENCE.OF_Template seqt = new SEQUENCE.OF_Template(
+                new RDN.Template() );
+            SEQUENCE seq = (SEQUENCE) seqt.decode(implicit, istream);
+            return new Name( seq );
+        }
     }
-}
 
 }

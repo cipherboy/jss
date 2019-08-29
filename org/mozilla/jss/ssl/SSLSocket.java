@@ -375,21 +375,21 @@ public class SSLSocket extends java.net.Socket {
     private boolean handshakeAsClient = true;
     private SocketBase base = new SocketBase();
     static final public int SSL_REQUIRE_NEVER =
-           org.mozilla.jss.ssl.SocketBase.SSL_REQUIRE_NEVER;
+        org.mozilla.jss.ssl.SocketBase.SSL_REQUIRE_NEVER;
     static final public int SSL_REQUIRE_ALWAYS =
-           org.mozilla.jss.ssl.SocketBase.SSL_REQUIRE_ALWAYS;
+        org.mozilla.jss.ssl.SocketBase.SSL_REQUIRE_ALWAYS;
     static final public int SSL_REQUIRE_FIRST_HANDSHAKE =
-           org.mozilla.jss.ssl.SocketBase.SSL_REQUIRE_FIRST_HANDSHAKE;
+        org.mozilla.jss.ssl.SocketBase.SSL_REQUIRE_FIRST_HANDSHAKE;
     static final public int SSL_REQUIRE_NO_ERROR =
-           org.mozilla.jss.ssl.SocketBase.SSL_REQUIRE_NO_ERROR;
+        org.mozilla.jss.ssl.SocketBase.SSL_REQUIRE_NO_ERROR;
     static final public int SSL_RENEGOTIATE_NEVER =
-           org.mozilla.jss.ssl.SocketBase.SSL_RENEGOTIATE_NEVER;
+        org.mozilla.jss.ssl.SocketBase.SSL_RENEGOTIATE_NEVER;
     static final public int SSL_RENEGOTIATE_REQUIRES_XTN =
-           org.mozilla.jss.ssl.SocketBase.SSL_RENEGOTIATE_REQUIRES_XTN;
+        org.mozilla.jss.ssl.SocketBase.SSL_RENEGOTIATE_REQUIRES_XTN;
     static final public int SSL_RENEGOTIATE_UNRESTRICTED =
-           org.mozilla.jss.ssl.SocketBase.SSL_RENEGOTIATE_UNRESTRICTED;
+        org.mozilla.jss.ssl.SocketBase.SSL_RENEGOTIATE_UNRESTRICTED;
     static final public int SSL_RENEGOTIATE_TRANSITIONAL  =
-           org.mozilla.jss.ssl.SocketBase.SSL_RENEGOTIATE_TRANSITIONAL;
+        org.mozilla.jss.ssl.SocketBase.SSL_RENEGOTIATE_TRANSITIONAL;
 
     private Collection<SSLSocketListener> socketListeners = new ArrayList<>();
     private Collection<SSLHandshakeCompletedListener> handshakeCompletedListeners = new ArrayList<>();
@@ -417,7 +417,7 @@ public class SSLSocket extends java.net.Socket {
      * @param port The port to connect to.
      */
     public SSLSocket(String host, int port)
-        throws UnknownHostException, IOException
+    throws UnknownHostException, IOException
     {
         this(InetAddress.getByName(host), port, null, 0);
     }
@@ -430,7 +430,7 @@ public class SSLSocket extends java.net.Socket {
      * @param port The port to connect to.
      */
     public SSLSocket(InetAddress address, int port)
-        throws IOException
+    throws IOException
     {
         this(address, port, null, 0);
     }
@@ -447,7 +447,7 @@ public class SSLSocket extends java.net.Socket {
      *      assigned to the socket.
      */
     public SSLSocket(String host, int port, InetAddress localAddr,
-        int localPort) throws IOException
+                     int localPort) throws IOException
     {
         this(InetAddress.getByName(host), port, localAddr, localPort);
     }
@@ -464,7 +464,7 @@ public class SSLSocket extends java.net.Socket {
      *      assigned to the socket.
      */
     public SSLSocket(InetAddress address, int port, InetAddress localAddr,
-        int localPort) throws IOException
+                     int localPort) throws IOException
     {
         this(address, port, localAddr, localPort, null, null);
     }
@@ -486,12 +486,12 @@ public class SSLSocket extends java.net.Socket {
      *      certificate to present to the peer.
      */
     public SSLSocket(String host, int port, InetAddress localAddr,
-        int localPort, SSLCertificateApprovalCallback certApprovalCallback,
-        SSLClientCertificateSelectionCallback clientCertSelectionCallback)
-            throws IOException
+                     int localPort, SSLCertificateApprovalCallback certApprovalCallback,
+                     SSLClientCertificateSelectionCallback clientCertSelectionCallback)
+    throws IOException
     {
         this(InetAddress.getByName(host), port, localAddr, localPort,
-                certApprovalCallback, clientCertSelectionCallback);
+             certApprovalCallback, clientCertSelectionCallback);
     }
 
     /**
@@ -516,13 +516,13 @@ public class SSLSocket extends java.net.Socket {
      */
     @Deprecated
     public SSLSocket(InetAddress address, int port, InetAddress localAddr,
-        int localPort, boolean stream,
-        SSLCertificateApprovalCallback certApprovalCallback,
-        SSLClientCertificateSelectionCallback clientCertSelectionCallback)
-            throws IOException
+                     int localPort, boolean stream,
+                     SSLCertificateApprovalCallback certApprovalCallback,
+                     SSLClientCertificateSelectionCallback clientCertSelectionCallback)
+    throws IOException
     {
         this(address, port, localAddr, localPort,
-            certApprovalCallback, clientCertSelectionCallback);
+             certApprovalCallback, clientCertSelectionCallback);
     }
 
     /**
@@ -542,20 +542,20 @@ public class SSLSocket extends java.net.Socket {
      *      certificate to present to the peer.
      */
     public SSLSocket(InetAddress address, int port,
-        InetAddress localAddr,
-        int localPort, SSLCertificateApprovalCallback certApprovalCallback,
-        SSLClientCertificateSelectionCallback clientCertSelectionCallback)
-            throws IOException
+                     InetAddress localAddr,
+                     int localPort, SSLCertificateApprovalCallback certApprovalCallback,
+                     SSLClientCertificateSelectionCallback clientCertSelectionCallback)
+    throws IOException
     {
         this(address, address.getHostName(), port, localAddr, localPort,
-            certApprovalCallback, clientCertSelectionCallback);
+             certApprovalCallback, clientCertSelectionCallback);
     }
 
     private SSLSocket(InetAddress address, String hostname, int port,
-        InetAddress localAddr,
-        int localPort, SSLCertificateApprovalCallback certApprovalCallback,
-        SSLClientCertificateSelectionCallback clientCertSelectionCallback)
-            throws IOException
+                      InetAddress localAddr,
+                      int localPort, SSLCertificateApprovalCallback certApprovalCallback,
+                      SSLClientCertificateSelectionCallback clientCertSelectionCallback)
+    throws IOException
     {
 
         int socketFamily = SocketBase.SSL_AF_INET;
@@ -565,8 +565,8 @@ public class SSLSocket extends java.net.Socket {
         // create the socket
         sockProxy =
             new SocketProxy(
-                base.socketCreate(
-                    this, certApprovalCallback, clientCertSelectionCallback,socketFamily) );
+            base.socketCreate(
+                this, certApprovalCallback, clientCertSelectionCallback,socketFamily) );
 
         base.setProxy(sockProxy);
 
@@ -598,16 +598,16 @@ public class SSLSocket extends java.net.Socket {
      *      certificate to present to the peer.
      */
     public SSLSocket(java.net.Socket s, String host,
-        SSLCertificateApprovalCallback certApprovalCallback,
-        SSLClientCertificateSelectionCallback clientCertSelectionCallback)
-            throws IOException
+                     SSLCertificateApprovalCallback certApprovalCallback,
+                     SSLClientCertificateSelectionCallback clientCertSelectionCallback)
+    throws IOException
     {
         // create the socket
         sockProxy =
             new SocketProxy(
-                base.socketCreate(
-                    this, certApprovalCallback, clientCertSelectionCallback,
-                    s, host,SocketBase.SSL_AF_INET ) );
+            base.socketCreate(
+                this, certApprovalCallback, clientCertSelectionCallback,
+                s, host,SocketBase.SSL_AF_INET ) );
 
         base.setProxy(sockProxy);
         resetHandshake();
@@ -710,7 +710,7 @@ public class SSLSocket extends java.net.Socket {
      * param linger The time (in seconds) to linger for.
      */
     public native void setSoLinger(boolean on, int linger)
-        throws SocketException;
+    throws SocketException;
 
     /**
      * Returns the current value of the SO_LINGER socket option.
@@ -790,7 +790,7 @@ public class SSLSocket extends java.net.Socket {
     }
 
     private native void socketConnect(byte[] addr, String hostname, int port)
-        throws SocketException;
+    throws SocketException;
 
     ////////////////////////////////////////////////////////////////////
     // SSL-specific stuff
@@ -851,7 +851,7 @@ public class SSLSocket extends java.net.Socket {
     /**
      * Sets the default for SSL v2 for all new sockets.
      */
-    static public void enableSSL2Default(boolean enable) throws SocketException{
+    static public void enableSSL2Default(boolean enable) throws SocketException {
         setSSLDefaultOption(SocketBase.SSL_ENABLE_SSL2, enable);
     }
 
@@ -866,7 +866,7 @@ public class SSLSocket extends java.net.Socket {
     /**
      * Sets the default for SSL v3 for all new sockets.
      */
-    static public void enableSSL3Default(boolean enable) throws SocketException{
+    static public void enableSSL3Default(boolean enable) throws SocketException {
         setSSLDefaultOption(SocketBase.SSL_ENABLE_SSL3, enable);
     }
 
@@ -881,7 +881,7 @@ public class SSLSocket extends java.net.Socket {
     /**
      * Sets the default for TLS for all new sockets.
      */
-    static public void enableTLSDefault(boolean enable) throws SocketException{
+    static public void enableTLSDefault(boolean enable) throws SocketException {
         setSSLDefaultOption(SocketBase.SSL_ENABLE_TLS, enable);
     }
 
@@ -898,7 +898,7 @@ public class SSLSocket extends java.net.Socket {
      * Sets the default for Session Tickets for all new sockets.
      */
     static public void enableSessionTicketsDefault(boolean enable)
-        throws SocketException{
+    throws SocketException {
         setSSLDefaultOption(SocketBase.SSL_ENABLE_SESSION_TICKETS, enable);
     }
 
@@ -925,15 +925,15 @@ public class SSLSocket extends java.net.Socket {
      *      when few servers have been upgraded.
      */
     public void enableRenegotiation(int mode)
-            throws SocketException
+    throws SocketException
     {
         if (mode >= SocketBase.SSL_RENEGOTIATE_NEVER &&
-            mode <= SocketBase.SSL_RENEGOTIATE_TRANSITIONAL) {
+                mode <= SocketBase.SSL_RENEGOTIATE_TRANSITIONAL) {
             base.enableRenegotiation(mode);
         } else {
             throw new SocketException("Incorrect input value.");
         }
-     }
+    }
 
     /**
      * Set the mode of renegotiation that the peer must use for all new
@@ -957,17 +957,17 @@ public class SSLSocket extends java.net.Socket {
      *      when few servers have been upgraded.
      */
     static public void enableRenegotiationDefault(int mode)
-            throws SocketException
+    throws SocketException
     {
         if (mode >= SocketBase.SSL_RENEGOTIATE_NEVER &&
-            mode <= SocketBase.SSL_RENEGOTIATE_TRANSITIONAL) {
+                mode <= SocketBase.SSL_RENEGOTIATE_TRANSITIONAL) {
 
             setSSLDefaultOptionMode(SocketBase.SSL_ENABLE_RENEGOTIATION,
-                    mode);
+                                    mode);
         } else {
             throw new SocketException("Incorrect input value.");
         }
-     }
+    }
 
     /**
      * For this socket require that the peer must send
@@ -977,7 +977,7 @@ public class SSLSocket extends java.net.Socket {
      * <code>SSLSocket.enableRequireSafeNegotiationDefault</code>.
      */
     public void enableRequireSafeNegotiation(boolean enable)
-            throws SocketException {
+    throws SocketException {
         base.enableRequireSafeNegotiation(enable);
     }
 
@@ -987,7 +987,7 @@ public class SSLSocket extends java.net.Socket {
      * extension in ALL handshakes. It is disabled by default.
      */
     static public void enableRequireSafeNegotiationDefault(boolean enable)
-            throws SocketException {
+    throws SocketException {
         setSSLDefaultOption(SocketBase.SSL_REQUIRE_SAFE_NEGOTIATION, enable);
     }
 
@@ -997,7 +997,7 @@ public class SSLSocket extends java.net.Socket {
      * with <code>enableRollbackDetectionDefault</code>.
      */
     public void enableRollbackDetection(boolean enable)
-        throws SocketException
+    throws SocketException
     {
         base.enableRollbackDetection(enable);
     }
@@ -1006,7 +1006,7 @@ public class SSLSocket extends java.net.Socket {
      * Sets the default rollback detection for all new sockets.
      */
     static void enableRollbackDetectionDefault(boolean enable)
-        throws SocketException
+    throws SocketException
     {
         setSSLDefaultOption(SocketBase.SSL_ROLLBACK_DETECTION, enable);
     }
@@ -1107,7 +1107,7 @@ public class SSLSocket extends java.net.Socket {
      * @return 0 for option disabled 1 for option enabled.
      */
     static private native int getSSLDefaultOption(int option)
-        throws SocketException;
+    throws SocketException;
 
     /**
      *
@@ -1118,77 +1118,77 @@ public class SSLSocket extends java.net.Socket {
         try {
             buf.append("Default Options configured for all SSLSockets: ");
             buf.append("\nSSL_ENABLE_SSL2" +
-                ((getSSLDefaultOption(SocketBase.SSL_ENABLE_SSL2) != 0)
-                ? "=on" :  "=off"));
+                       ((getSSLDefaultOption(SocketBase.SSL_ENABLE_SSL2) != 0)
+                        ? "=on" :  "=off"));
             buf.append("\nSSL_ENABLE_SSL3"  +
-                ((getSSLDefaultOption(SocketBase.SSL_ENABLE_SSL3) != 0)
-                ? "=on" :  "=off"));
+                       ((getSSLDefaultOption(SocketBase.SSL_ENABLE_SSL3) != 0)
+                        ? "=on" :  "=off"));
             buf.append("\nSSL_ENABLE_TLS"  +
-                ((getSSLDefaultOption(SocketBase.SSL_ENABLE_TLS) != 0)
-                ? "=on" :  "=off"));
+                       ((getSSLDefaultOption(SocketBase.SSL_ENABLE_TLS) != 0)
+                        ? "=on" :  "=off"));
             buf.append("\nSSL_ENABLE_SESSION_TICKETS"  +
-                ((getSSLDefaultOption(SocketBase.SSL_ENABLE_SESSION_TICKETS)
-                != 0) ? "=on" :  "=off"));
+                       ((getSSLDefaultOption(SocketBase.SSL_ENABLE_SESSION_TICKETS)
+                         != 0) ? "=on" :  "=off"));
             buf.append("\nSSL_REQUIRE_CERTIFICATE");
             switch (getSSLDefaultOption(SocketBase.SSL_REQUIRE_CERTIFICATE)) {
-                case 0:
-                    buf.append("=Never");
-                    break;
-                case 1:
-                    buf.append("=Always");
-                    break;
-               case 2:
-                    buf.append("=First Handshake");
-                    break;
-               case 3:
-                   buf.append("=No Error");
-                   break;
-              default:
-                   buf.append("=Report JSS Bug this option has a status.");
-                   break;
+            case 0:
+                buf.append("=Never");
+                break;
+            case 1:
+                buf.append("=Always");
+                break;
+            case 2:
+                buf.append("=First Handshake");
+                break;
+            case 3:
+                buf.append("=No Error");
+                break;
+            default:
+                buf.append("=Report JSS Bug this option has a status.");
+                break;
             } //end switch
             buf.append("\nSSL_REQUEST_CERTIFICATE"  +
-                ((getSSLDefaultOption(SocketBase.SSL_REQUEST_CERTIFICATE) != 0)
-                ? "=on" :  "=off"));
+                       ((getSSLDefaultOption(SocketBase.SSL_REQUEST_CERTIFICATE) != 0)
+                        ? "=on" :  "=off"));
             buf.append("\nSSL_NO_CACHE"  +
-                ((getSSLDefaultOption(SocketBase.SSL_NO_CACHE) != 0)
-                ? "=on" :  "=off"));
+                       ((getSSLDefaultOption(SocketBase.SSL_NO_CACHE) != 0)
+                        ? "=on" :  "=off"));
             buf.append("\nSSL_ROLLBACK_DETECTION"  +
-                ((getSSLDefaultOption(SocketBase.SSL_ROLLBACK_DETECTION) != 0)
-                ? "=on" :  "=off"));
+                       ((getSSLDefaultOption(SocketBase.SSL_ROLLBACK_DETECTION) != 0)
+                        ? "=on" :  "=off"));
             buf.append("\nSSL_NO_STEP_DOWN"  +
-                ((getSSLDefaultOption(SocketBase.SSL_NO_STEP_DOWN) != 0)
-                ? "=on" :  "=off"));
+                       ((getSSLDefaultOption(SocketBase.SSL_NO_STEP_DOWN) != 0)
+                        ? "=on" :  "=off"));
             buf.append("\nSSL_ENABLE_FDX"  +
-                ((getSSLDefaultOption(SocketBase.SSL_ENABLE_FDX) != 0)
-                ? "=on" :  "=off"));
+                       ((getSSLDefaultOption(SocketBase.SSL_ENABLE_FDX) != 0)
+                        ? "=on" :  "=off"));
             buf.append("\nSSL_V2_COMPATIBLE_HELLO"  +
-                ((getSSLDefaultOption(SocketBase.SSL_V2_COMPATIBLE_HELLO) != 0)
-                ? "=on" :  "=off"));
+                       ((getSSLDefaultOption(SocketBase.SSL_V2_COMPATIBLE_HELLO) != 0)
+                        ? "=on" :  "=off"));
             buf.append("\nSSL_ENABLE_SESSION_TICKETS"  +
-                ((getSSLDefaultOption(SocketBase.SSL_ENABLE_SESSION_TICKETS)
-                != 0) ? "=on" :  "=off"));
+                       ((getSSLDefaultOption(SocketBase.SSL_ENABLE_SESSION_TICKETS)
+                         != 0) ? "=on" :  "=off"));
             buf.append("\nSSL_ENABLE_RENEGOTIATION");
             switch (getSSLDefaultOption(SocketBase.SSL_ENABLE_RENEGOTIATION)) {
-                case 0:
-                    buf.append("=SSL_RENEGOTIATE_NEVER");
-                    break;
-                case 1:
-                    buf.append("=SSL_RENEGOTIATE_UNRESTRICTED");
-                    break;
-               case 2:
-                    buf.append("=SSL_RENEGOTIATE_REQUIRES_XTN");
-                    break;
-               case 3:
-                    buf.append("=SSL_RENEGOTIATE_TRANSITIONAL");
-                    break;
-              default:
-                   buf.append("=Report JSS Bug this option has a status.");
-                   break;
+            case 0:
+                buf.append("=SSL_RENEGOTIATE_NEVER");
+                break;
+            case 1:
+                buf.append("=SSL_RENEGOTIATE_UNRESTRICTED");
+                break;
+            case 2:
+                buf.append("=SSL_RENEGOTIATE_REQUIRES_XTN");
+                break;
+            case 3:
+                buf.append("=SSL_RENEGOTIATE_TRANSITIONAL");
+                break;
+            default:
+                buf.append("=Report JSS Bug this option has a status.");
+                break;
             } //end switch
             buf.append("\nSSL_REQUIRE_SAFE_NEGOTIATION" +
-                ((getSSLDefaultOption(SocketBase.SSL_REQUIRE_SAFE_NEGOTIATION)
-                != 0) ? "=on" :  "=off"));
+                       ((getSSLDefaultOption(SocketBase.SSL_REQUIRE_SAFE_NEGOTIATION)
+                         != 0) ? "=on" :  "=off"));
 
         } catch (SocketException e) {
             buf.append("\ngetSSLDefaultOptions exception " + e.getMessage());
@@ -1205,7 +1205,7 @@ public class SSLSocket extends java.net.Socket {
      */
     @Deprecated
     public void requireClientAuth(boolean require, boolean onRedo)
-            throws SocketException
+    throws SocketException
     {
         base.requireClientAuth(require, onRedo);
     }
@@ -1224,10 +1224,10 @@ public class SSLSocket extends java.net.Socket {
      *                       SSLSocket.SSL_REQUIRE_NO_ERROR
      */
     public void requireClientAuth(int mode)
-            throws SocketException
+    throws SocketException
     {
         if (mode >= SocketBase.SSL_REQUIRE_NEVER &&
-            mode <= SocketBase.SSL_REQUIRE_NO_ERROR) {
+                mode <= SocketBase.SSL_REQUIRE_NO_ERROR) {
             base.requireClientAuth(mode);
         } else {
             throw new SocketException("Incorrect input value.");
@@ -1241,7 +1241,7 @@ public class SSLSocket extends java.net.Socket {
      */
     @Deprecated
     public void requireClientAuthDefault(boolean require, boolean onRedo)
-            throws SocketException
+    throws SocketException
     {
         setSSLDefaultOption(SocketBase.SSL_REQUIRE_CERTIFICATE,
                             require ? (onRedo ? 1 : 2) : 0);
@@ -1258,10 +1258,10 @@ public class SSLSocket extends java.net.Socket {
      *                       SSLSocket.SSL_REQUIRE_NO_ERROR
      */
     static public void requireClientAuthDefault(int mode)
-            throws SocketException
+    throws SocketException
     {
         if (mode >= SocketBase.SSL_REQUIRE_NEVER &&
-            mode <= SocketBase.SSL_REQUIRE_NO_ERROR) {
+                mode <= SocketBase.SSL_REQUIRE_NO_ERROR) {
             setSSLDefaultOption(SocketBase.SSL_REQUEST_CERTIFICATE, true);
             setSSLDefaultOptionMode(SocketBase.SSL_REQUIRE_CERTIFICATE,mode);
         } else {
@@ -1302,7 +1302,7 @@ public class SSLSocket extends java.net.Socket {
     }
 
     private native void resetHandshakeNative(boolean asClient)
-        throws SocketException;
+    throws SocketException;
 
     /**
      * Returns the security status of this socket.
@@ -1328,7 +1328,7 @@ public class SSLSocket extends java.net.Socket {
      * @see org.mozilla.jss.ssl.SSLClientCertificateSelectionCallback
      */
     public void setClientCert( org.mozilla.jss.crypto.X509Certificate cert)
-        throws SocketException
+    throws SocketException
     {
         base.setClientCert(cert);
     }
@@ -1372,7 +1372,7 @@ public class SSLSocket extends java.net.Socket {
      */
     @Deprecated
     public void setNeedClientAuthNoExpiryCheck(boolean b)
-        throws SocketException
+    throws SocketException
     {
         base.requestClientAuthNoExpiryCheck(b);
     }
@@ -1393,43 +1393,43 @@ public class SSLSocket extends java.net.Socket {
     }
 
     public static void setSSLVersionRangeDefault(SSLProtocolVariant ssl_variant, SSLVersionRange range)
-        throws SocketException
+    throws SocketException
     {
         if (range == null)
             throw new SocketException("setSSLVersionRangeDefault: range null");
 
         setSSLVersionRangeDefault(
-                ssl_variant.getEnum(),
-                range.getMinVersion().value(),
-                range.getMaxVersion().value());
+            ssl_variant.getEnum(),
+            range.getMinVersion().value(),
+            range.getMaxVersion().value());
     }
 
     public static SSLVersionRange boundSSLVersionRange(SSLProtocolVariant ssl_variant, SSLVersionRange range)
-        throws SocketException
+    throws SocketException
     {
         if (range == null)
             throw new SocketException("setSSLVersionRangeDefault: range null");
 
         return boundSSLVersionRange(
-                ssl_variant.getEnum(),
-                range.getMinVersion().value(),
-                range.getMaxVersion().value());
+                   ssl_variant.getEnum(),
+                   range.getMinVersion().value(),
+                   range.getMaxVersion().value());
     }
 
     /**
      * Sets SSL Version Range Default
      */
     private static native void setSSLVersionRangeDefault(int ssl_variant, int min, int max)
-        throws SocketException;
+    throws SocketException;
 
     /**
      * Checks SSL Version Range against Default
      */
     private static native SSLVersionRange boundSSLVersionRange(int ssl_variant, int min, int max)
-        throws SocketException;
+    throws SocketException;
 
     private static void setSSLDefaultOption(int option, boolean on)
-        throws SocketException
+    throws SocketException
     {
         setSSLDefaultOption(option, on ? 1 : 0);
     }
@@ -1438,43 +1438,43 @@ public class SSLSocket extends java.net.Socket {
      * Sets SSL Default options that have simple enable/disable values.
      */
     private static native void setSSLDefaultOption(int option, int on)
-        throws SocketException;
+    throws SocketException;
 
     /**
      * Set SSL default options that have more modes than enable/disable.
      */
     private static native void setSSLDefaultOptionMode(int option, int mode)
-        throws SocketException;
+    throws SocketException;
 
     /**
      * Enables/disables the cipher on this socket.
      */
     public native void setCipherPreference(int cipher, boolean enable)
-        throws SocketException;
+    throws SocketException;
 
     /**
      * Returns whether this cipher is enabled or disabled on this socket.
      */
     public native boolean getCipherPreference( int cipher)
-        throws SocketException;
+    throws SocketException;
 
     /**
      * Sets the default for whether this cipher is enabled or disabled.
      */
     public static native void setCipherPreferenceDefault(int cipher,
-        boolean enable) throws SocketException;
+            boolean enable) throws SocketException;
 
     /**
      * Returns the default for whether this cipher is enabled or disabled.
      */
     public static native boolean getCipherPreferenceDefault(int cipher)
-        throws SocketException;
+    throws SocketException;
 
     native int socketAvailable()
-        throws IOException;
+    throws IOException;
 
     int read(byte[] b, int off, int len)
-        throws IOException, SocketTimeoutException {
+    throws IOException, SocketTimeoutException {
         synchronized (readLock) {
             synchronized (this) {
                 if ( isClosed ) { /* abort read if socket is closed */
@@ -1502,7 +1502,7 @@ public class SSLSocket extends java.net.Socket {
     }
 
     void write(byte[] b, int off, int len)
-        throws IOException, SocketTimeoutException {
+    throws IOException, SocketTimeoutException {
         synchronized (writeLock) {
             synchronized (this) {
                 if ( isClosed ) { /* abort write if socket is closed */
@@ -1528,10 +1528,10 @@ public class SSLSocket extends java.net.Socket {
     }
 
     private native int socketRead(byte[] b, int off, int len, int timeout)
-        throws IOException;
+    throws IOException;
 
     private native void socketWrite(byte[] b, int off, int len, int timeout)
-        throws IOException;
+    throws IOException;
 
     /**
      * Removes the current session from the session cache.
@@ -1575,7 +1575,7 @@ public class SSLSocket extends java.net.Socket {
     }
 
     private static native void setCipherPolicyNative(int policyEnum)
-        throws SocketException;
+    throws SocketException;
 
     /**
      * Returns the addresses and ports of this socket
@@ -1604,17 +1604,17 @@ public class SSLSocket extends java.net.Socket {
         }
     }
 
-     /**
-     * isFipsCipherSuite
-     *
-     *@return true if the ciphersuite isFIPS, false otherwise
-     */
+    /**
+    * isFipsCipherSuite
+    *
+    *@return true if the ciphersuite isFIPS, false otherwise
+    */
     public static boolean isFipsCipherSuite(int ciphersuite) throws SocketException {
         return isFipsCipherSuiteNative(ciphersuite);
     }
 
     private static native boolean isFipsCipherSuiteNative(int ciphersuite)
-        throws SocketException;
+    throws SocketException;
 
     /**
      * Returns a list of cipher suites that are implemented by NSS.

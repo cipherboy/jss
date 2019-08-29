@@ -80,12 +80,12 @@ public class DirectoryString implements ASN1Value {
      */
     public DirectoryString(CharacterString s) {
         if( !(s instanceof PrintableString ) && !(s instanceof BMPString) &&
-            !(s instanceof UTF8String) && !(s instanceof TeletexString) &&
-            !(s instanceof UniversalString) )
+                !(s instanceof UTF8String) && !(s instanceof TeletexString) &&
+                !(s instanceof UniversalString) )
         {
             throw new IllegalArgumentException("DirectoryString must be "+
-                "TeletexString, PrintableString, UniversalString, UTF8STring,"+
-                " or BMPString");
+                                               "TeletexString, PrintableString, UniversalString, UTF8STring,"+
+                                               " or BMPString");
         }
         asn1String = s;
     }
@@ -106,7 +106,7 @@ public class DirectoryString implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         asn1String.encode(implicitTag, ostream);
     }
@@ -139,7 +139,7 @@ public class DirectoryString implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
             CHOICE choice = (CHOICE) choicet.decode(istream);
 
@@ -153,7 +153,7 @@ public class DirectoryString implements ASN1Value {
          *      valid DirectoryString.
          */
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws IOException, InvalidBERException
+        throws IOException, InvalidBERException
         {
             assert( tagMatch(implicitTag) );
             return decode(istream);

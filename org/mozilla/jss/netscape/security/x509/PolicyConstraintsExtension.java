@@ -54,7 +54,7 @@ import org.mozilla.jss.netscape.security.util.DerValue;
  * @see CertAttrSet
  */
 public class PolicyConstraintsExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
     /**
      *
      */
@@ -86,13 +86,13 @@ public class PolicyConstraintsExtension extends Extension
                 DerOutputStream tmp = new DerOutputStream();
                 tmp.putInteger(new BigInt(require));
                 tagged.writeImplicit(DerValue.createTag(DerValue.TAG_CONTEXT,
-                        false, TAG_REQUIRE), tmp);
+                                                        false, TAG_REQUIRE), tmp);
             }
             if (inhibit != -1) {
                 DerOutputStream tmp = new DerOutputStream();
                 tmp.putInteger(new BigInt(inhibit));
                 tagged.writeImplicit(DerValue.createTag(DerValue.TAG_CONTEXT,
-                        false, TAG_INHIBIT), tmp);
+                                                        false, TAG_INHIBIT), tmp);
             }
             seq.write(DerValue.tag_Sequence, tagged);
             extensionValue = seq.toByteArray();
@@ -108,7 +108,7 @@ public class PolicyConstraintsExtension extends Extension
      * @param inhibit inhibit policy mapping (-1 for optional).
      */
     public PolicyConstraintsExtension(boolean crit, int require, int inhibit)
-            throws IOException {
+    throws IOException {
         init(crit, require, inhibit);
     }
 
@@ -120,12 +120,12 @@ public class PolicyConstraintsExtension extends Extension
      * @param inhibit inhibit policy mapping (-1 for optional).
      */
     public PolicyConstraintsExtension(int require, int inhibit)
-            throws IOException {
+    throws IOException {
         init(false, require, inhibit);
     }
 
     private void init(boolean crit, int require, int inhibit)
-            throws IOException {
+    throws IOException {
         this.require = require;
         this.inhibit = inhibit;
         this.extensionId = PKIXExtensions.PolicyConstraints_Id;
@@ -141,7 +141,7 @@ public class PolicyConstraintsExtension extends Extension
      * @exception IOException on error.
      */
     public PolicyConstraintsExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = PKIXExtensions.PolicyConstraints_Id;
         this.critical = critical.booleanValue();
 
@@ -164,7 +164,7 @@ public class PolicyConstraintsExtension extends Extension
             if (next.isContextSpecific(TAG_REQUIRE) && !next.isConstructed()) {
                 if (this.require != -1)
                     throw new IOException("Duplicate requireExplicitPolicy" +
-                            "found in the PolicyConstraintsExtension");
+                                          "found in the PolicyConstraintsExtension");
                 next.resetTag(DerValue.tag_Integer);
                 this.require = (next.getInteger()).toInt();
 
@@ -172,7 +172,7 @@ public class PolicyConstraintsExtension extends Extension
                        !next.isConstructed()) {
                 if (this.inhibit != -1)
                     throw new IOException("Duplicate inhibitPolicyMapping" +
-                            "found in the PolicyConstraintsExtension");
+                                          "found in the PolicyConstraintsExtension");
                 next.resetTag(DerValue.tag_Integer);
                 this.inhibit = (next.getInteger()).toInt();
             } else
@@ -239,8 +239,8 @@ public class PolicyConstraintsExtension extends Extension
             inhibit = ((Integer) obj).intValue();
         } else {
             throw new IOException("Attribute name " + "[" + name + "]" +
-                                " not recognized by " +
-                    "CertAttrSet:PolicyConstraints.");
+                                  " not recognized by " +
+                                  "CertAttrSet:PolicyConstraints.");
         }
     }
 
@@ -254,7 +254,7 @@ public class PolicyConstraintsExtension extends Extension
             return Integer.valueOf(inhibit);
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:PolicyConstraints.");
+                                  "CertAttrSet:PolicyConstraints.");
         }
     }
 
@@ -268,7 +268,7 @@ public class PolicyConstraintsExtension extends Extension
             inhibit = -1;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:PolicyConstraints.");
+                                  "CertAttrSet:PolicyConstraints.");
         }
     }
 

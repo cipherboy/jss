@@ -46,7 +46,7 @@ public class Encryptor {
      *  keyID.
      */
     public Encryptor(CryptoToken token, byte[] keyID, EncryptionAlgorithm alg)
-            throws TokenException, InvalidKeyException
+    throws TokenException, InvalidKeyException
     {
         this.token = token;
         this.keyID = keyID;
@@ -72,9 +72,9 @@ public class Encryptor {
      *  SecretDecoderRing.
      */
     public byte[] encrypt(byte[] plaintext) throws
-            NotInitializedException,
-            GeneralSecurityException,
-            InvalidBERException
+        NotInitializedException,
+        GeneralSecurityException,
+        InvalidBERException
     {
         CryptoManager cm = CryptoManager.getInstance();
 
@@ -88,7 +88,7 @@ public class Encryptor {
             //
             byte[] iv = new byte[alg.getIVLength()];
             SecureRandom rng = SecureRandom.getInstance(RNG_ALG,
-                PROVIDER);
+                               PROVIDER);
             rng.nextBytes(iv);
             IvParameterSpec ivSpec = new IvParameterSpec(iv);
 
@@ -97,7 +97,7 @@ public class Encryptor {
             //
             Cipher cipher = Cipher.getInstance(alg.toString(),PROVIDER);
             cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec);
-            byte[] paddedPtext = 
+            byte[] paddedPtext =
                 org.mozilla.jss.crypto.Cipher.pad(
                     plaintext, alg.getBlockSize() );
             byte[] rawCtext = cipher.doFinal(paddedPtext);

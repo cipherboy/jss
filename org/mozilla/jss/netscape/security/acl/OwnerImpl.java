@@ -57,7 +57,7 @@ public class OwnerImpl implements Owner {
      */
     @Deprecated
     public synchronized boolean addOwner(Principal caller, Principal owner)
-            throws NotOwnerException {
+    throws NotOwnerException {
         if (!isOwner(caller))
             throw new NotOwnerException();
 
@@ -83,7 +83,7 @@ public class OwnerImpl implements Owner {
      */
     @Deprecated
     public synchronized boolean deleteOwner(Principal caller, Principal owner)
-            throws NotOwnerException, LastOwnerException {
+    throws NotOwnerException, LastOwnerException {
         if (!isOwner(caller))
             throw new NotOwnerException();
 
@@ -95,7 +95,7 @@ public class OwnerImpl implements Owner {
         if (e.hasMoreElements())
             return ownerGroup.removeMember(owner);
         else
-           throw new LastOwnerException();
+            throw new LastOwnerException();
     }
 
     /**

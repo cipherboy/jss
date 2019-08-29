@@ -55,7 +55,7 @@ import org.mozilla.jss.netscape.security.util.DerValue;
  * @see CertAttrSet
  */
 public class PrivateKeyUsageExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
     /**
      *
      */
@@ -88,13 +88,13 @@ public class PrivateKeyUsageExtension extends Extension
                 DerOutputStream tmp = new DerOutputStream();
                 tmp.putGeneralizedTime(notBefore);
                 tagged.writeImplicit(DerValue.createTag(DerValue.TAG_CONTEXT,
-                        false, TAG_BEFORE), tmp);
+                                                        false, TAG_BEFORE), tmp);
             }
             if (notAfter != null) {
                 DerOutputStream tmp = new DerOutputStream();
                 tmp.putGeneralizedTime(notAfter);
                 tagged.writeImplicit(DerValue.createTag(DerValue.TAG_CONTEXT,
-                        false, TAG_AFTER), tmp);
+                                                        false, TAG_AFTER), tmp);
             }
             seq.write(DerValue.tag_Sequence, tagged);
             extensionValue = seq.toByteArray();
@@ -110,7 +110,7 @@ public class PrivateKeyUsageExtension extends Extension
      *            should not be used.
      */
     public PrivateKeyUsageExtension(Date notBefore, Date notAfter)
-            throws IOException {
+    throws IOException {
         this.notBefore = notBefore;
         this.notAfter = notAfter;
 
@@ -129,7 +129,7 @@ public class PrivateKeyUsageExtension extends Extension
      * @exception IOException on error.
      */
     public PrivateKeyUsageExtension(Boolean critical, Object value)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         this.extensionId = PKIXExtensions.PrivateKeyUsage_Id;
         this.critical = critical.booleanValue();
 
@@ -154,7 +154,7 @@ public class PrivateKeyUsageExtension extends Extension
                     !opt.isConstructed()) {
                 if (notBefore != null) {
                     throw new CertificateParsingException(
-                            "Duplicate notBefore in PrivateKeyUsage.");
+                        "Duplicate notBefore in PrivateKeyUsage.");
                 }
                 opt.resetTag(DerValue.tag_GeneralizedTime);
                 str = new DerInputStream(opt.toByteArray());
@@ -164,7 +164,7 @@ public class PrivateKeyUsageExtension extends Extension
                        !opt.isConstructed()) {
                 if (notAfter != null) {
                     throw new CertificateParsingException(
-                            "Duplicate notAfter in PrivateKeyUsage.");
+                        "Duplicate notAfter in PrivateKeyUsage.");
                 }
                 opt.resetTag(DerValue.tag_GeneralizedTime);
                 str = new DerInputStream(opt.toByteArray());
@@ -208,7 +208,7 @@ public class PrivateKeyUsageExtension extends Extension
      *                yet valid.
      */
     public void valid()
-            throws CertificateNotYetValidException, CertificateExpiredException {
+    throws CertificateNotYetValidException, CertificateExpiredException {
         Date now = new Date();
         valid(now);
     }
@@ -223,7 +223,7 @@ public class PrivateKeyUsageExtension extends Extension
      *
      */
     public void valid(Date now)
-            throws CertificateNotYetValidException, CertificateExpiredException {
+    throws CertificateNotYetValidException, CertificateExpiredException {
         /*
          * we use the internal Dates rather than the passed in Date
          * because someone could override the Date methods after()
@@ -231,7 +231,7 @@ public class PrivateKeyUsageExtension extends Extension
          */
         if (notBefore.after(now)) {
             throw new CertificateNotYetValidException("NotBefore: " +
-                                                      notBefore.toString());
+                    notBefore.toString());
         }
         if (notAfter.before(now)) {
             throw new CertificateExpiredException("NotAfter: " +
@@ -272,7 +272,7 @@ public class PrivateKeyUsageExtension extends Extension
      * @exception CertificateException on attribute handling errors.
      */
     public void set(String name, Object obj)
-            throws CertificateException {
+    throws CertificateException {
         clearValue();
         if (!(obj instanceof Date)) {
             throw new CertificateException("Attribute must be of type Date.");
@@ -283,7 +283,7 @@ public class PrivateKeyUsageExtension extends Extension
             notAfter = (Date) obj;
         } else {
             throw new CertificateException("Attribute name not recognized by"
-                           + " CertAttrSet:PrivateKeyUsage.");
+                                           + " CertAttrSet:PrivateKeyUsage.");
         }
     }
 
@@ -299,7 +299,7 @@ public class PrivateKeyUsageExtension extends Extension
             return (new Date(notAfter.getTime()));
         } else {
             throw new CertificateException("Attribute name not recognized by"
-                           + " CertAttrSet:PrivateKeyUsage.");
+                                           + " CertAttrSet:PrivateKeyUsage.");
         }
     }
 
@@ -315,7 +315,7 @@ public class PrivateKeyUsageExtension extends Extension
             notAfter = null;
         } else {
             throw new CertificateException("Attribute name not recognized by"
-                           + " CertAttrSet:PrivateKeyUsage.");
+                                           + " CertAttrSet:PrivateKeyUsage.");
         }
     }
 

@@ -12,7 +12,7 @@
 
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_nss_PR_Open(JNIEnv *env, jclass clazz, jstring name,
-    jint flags, jint mode)
+                                 jint flags, jint mode)
 {
     PRFileDesc *fd;
     char *path;
@@ -21,7 +21,7 @@ Java_org_mozilla_jss_nss_PR_Open(JNIEnv *env, jclass clazz, jstring name,
 
     path = (char *)(*env)->GetStringUTFChars(env, name, NULL);
     if (path == NULL) {
-         return NULL;
+        return NULL;
     }
 
     fd = PR_Open(path, flags, mode);
@@ -49,7 +49,7 @@ Java_org_mozilla_jss_nss_PR_NewTCPSocket(JNIEnv *env, jclass clazz)
 
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_nss_PR_NewBufferPRFD(JNIEnv *env, jclass clazz,
-    jobject read_buf, jobject write_buf, jbyteArray peer_info)
+        jobject read_buf, jobject write_buf, jbyteArray peer_info)
 {
     j_buffer *real_read_buf = NULL;
     j_buffer *real_write_buf = NULL;
@@ -74,7 +74,7 @@ Java_org_mozilla_jss_nss_PR_NewBufferPRFD(JNIEnv *env, jclass clazz,
     }
 
     buf_prfd = newBufferPRFileDesc(real_read_buf, real_write_buf,
-        real_peer_info, peer_info_len);
+                                   real_peer_info, peer_info_len);
     if (buf_prfd == NULL) {
         return result;
     }
@@ -104,7 +104,7 @@ Java_org_mozilla_jss_nss_PR_Close(JNIEnv *env, jclass clazz, jobject fd)
 
 JNIEXPORT int JNICALL
 Java_org_mozilla_jss_nss_PR_Shutdown(JNIEnv *env, jclass clazz, jobject fd,
-    jint how)
+                                     jint how)
 {
     PRFileDesc *real_fd = NULL;
 
@@ -123,7 +123,7 @@ Java_org_mozilla_jss_nss_PR_Shutdown(JNIEnv *env, jclass clazz, jobject fd,
 
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_nss_PR_Read(JNIEnv *env, jclass clazz, jobject fd,
-    jint amount)
+                                 jint amount)
 {
     PRFileDesc *real_fd = NULL;
     jobject result = NULL;
@@ -155,7 +155,7 @@ done:
 
 JNIEXPORT int JNICALL
 Java_org_mozilla_jss_nss_PR_Write(JNIEnv *env, jclass clazz, jobject fd,
-    jbyteArray buf)
+                                  jbyteArray buf)
 {
     PRFileDesc *real_fd = NULL;
     unsigned int real_length = 0;
@@ -191,7 +191,7 @@ Java_org_mozilla_jss_nss_PR_Write(JNIEnv *env, jclass clazz, jobject fd,
 
 JNIEXPORT jobject JNICALL
 Java_org_mozilla_jss_nss_PR_Recv(JNIEnv *env, jclass clazz, jobject fd,
-    jint amount, jint flags, jlong timeout)
+                                 jint amount, jint flags, jlong timeout)
 {
     PRFileDesc *real_fd = NULL;
     PRIntervalTime timeout_interval = (PRIntervalTime)(timeout % UINT32_MAX);
@@ -225,7 +225,7 @@ done:
 
 JNIEXPORT int JNICALL
 Java_org_mozilla_jss_nss_PR_Send(JNIEnv *env, jclass clazz, jobject fd,
-    jbyteArray buf, jint flags, jlong timeout)
+                                 jbyteArray buf, jint flags, jlong timeout)
 {
     PRFileDesc *real_fd = NULL;
     unsigned int real_length = 0;

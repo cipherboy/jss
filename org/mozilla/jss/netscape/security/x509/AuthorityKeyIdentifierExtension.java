@@ -53,7 +53,7 @@ import org.mozilla.jss.netscape.security.util.DerValue;
  * @see CertAttrSet
  */
 public class AuthorityKeyIdentifierExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
     /**
      *
      */
@@ -63,7 +63,7 @@ public class AuthorityKeyIdentifierExtension extends Extension
      * get, set, delete methods of Certificate, x509 type.
      */
     public static final String IDENT =
-                         "x509.info.extensions.AuthorityKeyIdentifier";
+        "x509.info.extensions.AuthorityKeyIdentifier";
     /**
      * Attribute names.
      */
@@ -84,20 +84,20 @@ public class AuthorityKeyIdentifierExtension extends Extension
     // Encode only the extension value
     private void encodeThis() throws IOException {
         try (DerOutputStream tmp = new DerOutputStream();
-             DerOutputStream seq = new DerOutputStream()) {
+                    DerOutputStream seq = new DerOutputStream()) {
 
             if (id != null) {
                 DerOutputStream tmp1 = new DerOutputStream();
                 id.encode(tmp1);
                 tmp.writeImplicit(DerValue.createTag(DerValue.TAG_CONTEXT,
-                        false, TAG_ID), tmp1);
+                                                     false, TAG_ID), tmp1);
             }
             try {
                 if (names != null) {
                     DerOutputStream tmp1 = new DerOutputStream();
                     names.encode(tmp1);
                     tmp.writeImplicit(DerValue.createTag(DerValue.TAG_CONTEXT,
-                            true, TAG_NAMES), tmp1);
+                                                         true, TAG_NAMES), tmp1);
                 }
             } catch (Exception e) {
                 throw new IOException(e);
@@ -106,7 +106,7 @@ public class AuthorityKeyIdentifierExtension extends Extension
                 DerOutputStream tmp1 = new DerOutputStream();
                 serialNum.encode(tmp1);
                 tmp.writeImplicit(DerValue.createTag(DerValue.TAG_CONTEXT,
-                        false, TAG_SERIAL_NUM), tmp1);
+                                                     false, TAG_SERIAL_NUM), tmp1);
             }
             seq.write(DerValue.tag_Sequence, tmp);
             this.extensionValue = seq.toByteArray();
@@ -117,9 +117,9 @@ public class AuthorityKeyIdentifierExtension extends Extension
      * Exposed critical parameter. 99/11/03
      */
     public AuthorityKeyIdentifierExtension(boolean critical,
-            KeyIdentifier kid, GeneralNames name,
-                                          SerialNumber sn)
-            throws IOException {
+                                           KeyIdentifier kid, GeneralNames name,
+                                           SerialNumber sn)
+    throws IOException {
         this.id = kid;
         this.names = name;
         this.serialNum = sn;
@@ -141,7 +141,7 @@ public class AuthorityKeyIdentifierExtension extends Extension
      */
     public AuthorityKeyIdentifierExtension(KeyIdentifier kid, GeneralNames name,
                                            SerialNumber sn)
-            throws IOException {
+    throws IOException {
         this.id = kid;
         this.names = name;
         this.serialNum = sn;
@@ -159,7 +159,7 @@ public class AuthorityKeyIdentifierExtension extends Extension
      * @exception IOException on error.
      */
     public AuthorityKeyIdentifierExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = PKIXExtensions.AuthorityKey_Id;
         this.critical = critical.booleanValue();
 
@@ -267,24 +267,24 @@ public class AuthorityKeyIdentifierExtension extends Extension
         if (name.equalsIgnoreCase(KEY_ID)) {
             if (!(obj instanceof KeyIdentifier)) {
                 throw new IOException("Attribute value should be of " +
-                                    "type KeyIdentifier.");
+                                      "type KeyIdentifier.");
             }
             id = (KeyIdentifier) obj;
         } else if (name.equalsIgnoreCase(AUTH_NAME)) {
             if (!(obj instanceof GeneralNames)) {
                 throw new IOException("Attribute value should be of " +
-                                    "type GeneralNames.");
+                                      "type GeneralNames.");
             }
             names = (GeneralNames) obj;
         } else if (name.equalsIgnoreCase(SERIAL_NUMBER)) {
             if (!(obj instanceof SerialNumber)) {
                 throw new IOException("Attribute value should be of " +
-                                    "type SerialNumber.");
+                                      "type SerialNumber.");
             }
             serialNum = (SerialNumber) obj;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:AuthorityKeyIdentifier.");
+                                  "CertAttrSet:AuthorityKeyIdentifier.");
         }
     }
 
@@ -300,7 +300,7 @@ public class AuthorityKeyIdentifierExtension extends Extension
             return (serialNum);
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:AuthorityKeyIdentifier.");
+                                  "CertAttrSet:AuthorityKeyIdentifier.");
         }
     }
 
@@ -316,7 +316,7 @@ public class AuthorityKeyIdentifierExtension extends Extension
             serialNum = null;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:AuthorityKeyIdentifier.");
+                                  "CertAttrSet:AuthorityKeyIdentifier.");
         }
     }
 

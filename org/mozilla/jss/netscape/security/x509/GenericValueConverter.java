@@ -66,7 +66,7 @@ public class GenericValueConverter implements AVAValueConverter {
      *                unavailable.
      */
     public DerValue getValue(String s)
-            throws IOException {
+    throws IOException {
         return getValue(s, null);
     }
 
@@ -94,7 +94,7 @@ public class GenericValueConverter implements AVAValueConverter {
         }
 
         throw new IOException(
-                "Cannot convert the string value to a ASN.1 type");
+            "Cannot convert the string value to a ASN.1 type");
     }
 
     /**
@@ -110,7 +110,7 @@ public class GenericValueConverter implements AVAValueConverter {
      *                valid Directory String DER value.
      */
     public DerValue getValue(byte[] berByteStream)
-            throws IOException {
+    throws IOException {
         // accepts any tag.
         DerValue value = new DerValue(berByteStream);
         return value;
@@ -128,16 +128,16 @@ public class GenericValueConverter implements AVAValueConverter {
      *                here.
      */
     public String getAsString(DerValue avaValue)
-            throws IOException {
+    throws IOException {
         return avaValue.getASN1CharString();
     }
 
     private static byte DefEncodingTags[] = {
-            DerValue.tag_PrintableString,
-                    DerValue.tag_IA5String,
-                    DerValue.tag_BMPString,
-                    DerValue.tag_UTF8String,
-                    DerValue.tag_T61String,
-                    DerValue.tag_UniversalString
-             };
+        DerValue.tag_PrintableString,
+        DerValue.tag_IA5String,
+        DerValue.tag_BMPString,
+        DerValue.tag_UTF8String,
+        DerValue.tag_T61String,
+        DerValue.tag_UniversalString
+    };
 }

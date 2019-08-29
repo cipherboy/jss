@@ -215,10 +215,10 @@ public class BMPStringTest {
         System.out.println("Encoding time:");
 
         String string = StringTestUtil.NULL_CHARS +
-                StringTestUtil.PRINTABLE_CHARS +
-                StringTestUtil.NON_PRINTABLE_CHARS +
-                StringTestUtil.CONTROL_CHARS +
-                StringTestUtil.MULTIBYTE_CHARS;
+                        StringTestUtil.PRINTABLE_CHARS +
+                        StringTestUtil.NON_PRINTABLE_CHARS +
+                        StringTestUtil.CONTROL_CHARS +
+                        StringTestUtil.MULTIBYTE_CHARS;
 
         long t0 = System.currentTimeMillis();
 
@@ -245,10 +245,10 @@ public class BMPStringTest {
         System.out.println("Decoding time:");
 
         String string = StringTestUtil.NULL_CHARS +
-                StringTestUtil.PRINTABLE_CHARS +
-                StringTestUtil.NON_PRINTABLE_CHARS +
-                StringTestUtil.CONTROL_CHARS +
-                StringTestUtil.MULTIBYTE_CHARS;
+                        StringTestUtil.PRINTABLE_CHARS +
+                        StringTestUtil.NON_PRINTABLE_CHARS +
+                        StringTestUtil.CONTROL_CHARS +
+                        StringTestUtil.MULTIBYTE_CHARS;
 
         byte[] data = JSSUtil.encode(tag, string);
 

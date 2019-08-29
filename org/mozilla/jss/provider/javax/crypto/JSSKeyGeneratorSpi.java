@@ -25,53 +25,53 @@ class JSSKeyGeneratorSpi extends javax.crypto.KeyGeneratorSpi {
     private KeyGenerator keyGenerator= null;
 
     protected JSSKeyGeneratorSpi(KeyGenAlgorithm alg) {
-      try {
-        CryptoToken token =
-            TokenSupplierManager.getTokenSupplier().getThreadToken();
-        keyGenerator = token.getKeyGenerator(alg);
-      } catch( TokenException te) {
+        try {
+            CryptoToken token =
+                TokenSupplierManager.getTokenSupplier().getThreadToken();
+            keyGenerator = token.getKeyGenerator(alg);
+        } catch( TokenException te) {
             throw new TokenRuntimeException(te.getMessage());
-      } catch(NoSuchAlgorithmException nsae) {
+        } catch(NoSuchAlgorithmException nsae) {
             throw new TokenRuntimeException(nsae.getMessage());
-      }
+        }
     }
 
     protected void engineInit(int keysize,  SecureRandom random)
-            throws InvalidParameterException
+    throws InvalidParameterException
     {
-      try {
-        keyGenerator.initialize(keysize);
-      } catch(InvalidAlgorithmParameterException e) {
+        try {
+            keyGenerator.initialize(keysize);
+        } catch(InvalidAlgorithmParameterException e) {
             throw new InvalidParameterException(e.getMessage());
-      }
+        }
     }
 
     protected void engineInit( SecureRandom random)
-            throws InvalidParameterException
+    throws InvalidParameterException
     {
         // no-op. KeyGenerator.initialize isn't called if there
         // are no arguments.
     }
 
     protected void engineInit(AlgorithmParameterSpec params,
-                    SecureRandom random)
-        throws InvalidAlgorithmParameterException
+                              SecureRandom random)
+    throws InvalidAlgorithmParameterException
     {
         keyGenerator.initialize(params);
     }
 
     protected SecretKey engineGenerateKey() {
-      try {
-        return new SecretKeyFacade( keyGenerator.generate() );
-      } catch(IllegalStateException ise) {
-        throw new TokenRuntimeException(
-            "IllegalStateException: " + ise.getMessage());
-      } catch(TokenException te) {
-        throw new TokenRuntimeException( te.getMessage());
-      } catch(CharConversionException cce) {
-        throw new TokenRuntimeException(
-            "CharConversionException: " + cce.getMessage());
-      }
+        try {
+            return new SecretKeyFacade( keyGenerator.generate() );
+        } catch(IllegalStateException ise) {
+            throw new TokenRuntimeException(
+                "IllegalStateException: " + ise.getMessage());
+        } catch(TokenException te) {
+            throw new TokenRuntimeException( te.getMessage());
+        } catch(CharConversionException cce) {
+            throw new TokenRuntimeException(
+                "CharConversionException: " + cce.getMessage());
+        }
     }
 
     public static class DES extends JSSKeyGeneratorSpi {

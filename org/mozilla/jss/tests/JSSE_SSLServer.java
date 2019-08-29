@@ -56,10 +56,10 @@ public class JSSE_SSLServer {
     public JSSE_SSLServer() throws IOException {
     }
 
-       /**
-     * Set the provider to use.
-     * @param p
-     */
+    /**
+    * Set the provider to use.
+    * @param p
+    */
     public void setProvider(String p) {
         provider = p;
     }
@@ -150,17 +150,17 @@ public class JSSE_SSLServer {
 
                 System.out.println("Initializing " + args[5]);
                 InitializationValues vals = new
-                    InitializationValues(configDir);
+                InitializationValues(configDir);
                 vals.removeSunProvider = false;
                 CryptoManager.initialize(vals);
                 manager = CryptoManager.getInstance();
                 manager.setPasswordCallback(
                     new FilePasswordCallback(pwFile) );
 
-             } else if (args[5].equalsIgnoreCase("Sunpkcs11")) {
+            } else if (args[5].equalsIgnoreCase("Sunpkcs11")) {
 
                 System.out.println("Sunpkcs11 requires JDK 1.5" +
-                        "at this time JSS need to build with JDK 1.4.2");
+                                   "at this time JSS need to build with JDK 1.4.2");
 //SunPKCS11     nssConfig = args[6];
 //SunPKCS11     System.out.println("Initializing " +  args[5] + "-NSS");
 //SunPKCS11     Provider nss = null;
@@ -175,10 +175,10 @@ public class JSSE_SSLServer {
 
         }
 
-            Provider[] providers = Security.getProviders();
-            for ( int i=0; i < providers.length; i++ ) {
-                System.out.println("Provider "+i+": "+providers[i].getName());
-            }
+        Provider[] providers = Security.getProviders();
+        for ( int i=0; i < providers.length; i++ ) {
+            System.out.println("Provider "+i+": "+providers[i].getName());
+        }
 
 
 
@@ -215,12 +215,12 @@ public class JSSE_SSLServer {
                         socket.setSoTimeout(300 * 1000);
                         socketCntr ++;
                         readWriteThread rwThread = new readWriteThread(socket,
-                            socketCntr);
+                                socketCntr);
                         rwThread.start();
                     } catch (IOException ex) {
                         System.out.println("Exception caught in " +
-                            "SSLServerSocket.accept():" +
-                            ex.getMessage());
+                                           "SSLServerSocket.accept():" +
+                                           ex.getMessage());
                         try {
                             ss.close();
                         } catch (Exception e) {}
@@ -230,21 +230,21 @@ public class JSSE_SSLServer {
             } else {
 
 
-                if(System.getProperty("java.vendor").equals("IBM Corporation")){
+                if(System.getProperty("java.vendor").equals("IBM Corporation")) {
                     System.out.println("Using IBM JDK: Cannot load keystore " +
-                        "due to strong security encryption settings\nwith " +
-                        "limited Jurisdiction policy files :\n http://" +
-                        "www-1.ibm.com/support/docview.wss?uid=swg21169931");
+                                       "due to strong security encryption settings\nwith " +
+                                       "limited Jurisdiction policy files :\n http://" +
+                                       "www-1.ibm.com/support/docview.wss?uid=swg21169931");
                     System.exit(0);
                 }
                 System.out.println("unable to initialize JSSE_SocketFactory " +
-                    "exiting!");
+                                   "exiting!");
                 System.exit(1);
 
             }
         } catch (Exception e) {
             System.out.println("Unable to start JSSE_SSLServer: " +
-                e.getMessage());
+                               e.getMessage());
             e.printStackTrace();
             System.exit(1);
         }
@@ -277,7 +277,7 @@ public class JSSE_SSLServer {
                 BufferedReader bir = new BufferedReader(
                     new InputStreamReader(is));
                 PrintWriter out    = new PrintWriter(new BufferedWriter(
-                    new OutputStreamWriter(os)));
+                        new OutputStreamWriter(os)));
 
                 while (true) {
 
@@ -286,7 +286,7 @@ public class JSSE_SSLServer {
                             if (inputLine.equalsIgnoreCase("shutdown")) {
                                 if (bVerbose) {
                                     System.out.println("Client told  " +
-                                        "JSSE_SSLServer to Shutdown!");
+                                                       "JSSE_SSLServer to Shutdown!");
                                 }
                                 is.close();
                                 os.close();
@@ -297,27 +297,27 @@ public class JSSE_SSLServer {
 
                             if (bVerbose) {
                                 System.out.println("ServerSSLSocket-" +
-                                    socketCntr + ": Received " + inputLine);
+                                                   socketCntr + ": Received " + inputLine);
                                 System.out.println("Sending" + outputLine);
                             }
                             out.println(outputLine);
                             out.flush();
                         } else {
-                                 /* if you read null then quit. otherwise you
-                                  * will be in endless loop with the socket
-                                  * stuck in CLOSED_WAIT.
-                                  */
+                            /* if you read null then quit. otherwise you
+                             * will be in endless loop with the socket
+                             * stuck in CLOSED_WAIT.
+                             */
                             if (bVerbose) {
                                 System.out.println("ServerSSLSocket-" +
-                                    socketCntr +
-                                    " read null aborting connection.");
+                                                   socketCntr +
+                                                   " read null aborting connection.");
                             }
                             break;
                         }
 
                     } catch (SocketTimeoutException ste) {
                         System.out.println("ServerSSLSocket-" + socketCntr +
-                            " timed out: " +  ste.toString());
+                                           " timed out: " +  ste.toString());
                         break;
                     } catch (IOException ex) {
                         if (bVerbose) ex.printStackTrace();
@@ -331,7 +331,7 @@ public class JSSE_SSLServer {
                 socket.close();
                 if (bVerbose) {
                     System.out.println("ServerSSLSocket " + socketCntr +
-                        " has been Closed.");
+                                       " has been Closed.");
                 }
             } catch (IOException e) {
 
@@ -353,7 +353,7 @@ public class JSSE_SSLServer {
         SSLServerSocketFactory ssf = null;
 
         System.setProperty("javax.net.ssl.trustStore",
-            System.getProperty("java.home") + "/jre/lib/security/cacerts");
+                           System.getProperty("java.home") + "/jre/lib/security/cacerts");
         String certificate = "SunX509";
         String javaVendor  = System.getProperty("java.vendor");
         if (javaVendor.equals("IBM Corporation"))

@@ -51,8 +51,8 @@ final class PK11KeyWrapper implements KeyWrapper {
     }
 
     public void initWrap(SymmetricKey wrappingKey,
-                    AlgorithmParameterSpec parameters)
-        throws InvalidKeyException, InvalidAlgorithmParameterException
+                         AlgorithmParameterSpec parameters)
+    throws InvalidKeyException, InvalidAlgorithmParameterException
     {
         initWrap(parameters);
         checkWrapper(wrappingKey);
@@ -60,8 +60,8 @@ final class PK11KeyWrapper implements KeyWrapper {
     }
 
     public void initWrap(PublicKey wrappingKey,
-                            AlgorithmParameterSpec parameters)
-            throws InvalidKeyException, InvalidAlgorithmParameterException
+                         AlgorithmParameterSpec parameters)
+    throws InvalidKeyException, InvalidAlgorithmParameterException
     {
         initWrap(parameters);
         checkWrapper(wrappingKey);
@@ -69,7 +69,7 @@ final class PK11KeyWrapper implements KeyWrapper {
     }
 
     public void initWrap()
-            throws InvalidKeyException, InvalidAlgorithmParameterException
+    throws InvalidKeyException, InvalidAlgorithmParameterException
     {
         if( algorithm != KeyWrapAlgorithm.PLAINTEXT ) {
             throw new InvalidKeyException(algorithm + " requires a key");
@@ -82,7 +82,7 @@ final class PK11KeyWrapper implements KeyWrapper {
      * Does everything that is key-independent for initializing a wrap.
      */
     private void initWrap(AlgorithmParameterSpec parameters)
-        throws InvalidAlgorithmParameterException
+    throws InvalidAlgorithmParameterException
     {
         reset();
 
@@ -93,8 +93,8 @@ final class PK11KeyWrapper implements KeyWrapper {
     }
 
     public void initUnwrap(PrivateKey unwrappingKey,
-                    AlgorithmParameterSpec parameters)
-        throws InvalidKeyException, InvalidAlgorithmParameterException
+                           AlgorithmParameterSpec parameters)
+    throws InvalidKeyException, InvalidAlgorithmParameterException
     {
         initUnwrap(parameters);
         checkWrapper(unwrappingKey);
@@ -102,8 +102,8 @@ final class PK11KeyWrapper implements KeyWrapper {
     }
 
     public void initUnwrap(SymmetricKey unwrappingKey,
-                    AlgorithmParameterSpec parameters)
-        throws InvalidKeyException, InvalidAlgorithmParameterException
+                           AlgorithmParameterSpec parameters)
+    throws InvalidKeyException, InvalidAlgorithmParameterException
     {
         initUnwrap(parameters);
         checkWrapper(unwrappingKey);
@@ -111,7 +111,7 @@ final class PK11KeyWrapper implements KeyWrapper {
     }
 
     public void initUnwrap()
-        throws InvalidKeyException, InvalidAlgorithmParameterException
+    throws InvalidKeyException, InvalidAlgorithmParameterException
     {
         if( algorithm != KeyWrapAlgorithm.PLAINTEXT ) {
             throw new InvalidKeyException(algorithm + " requires a key");
@@ -124,7 +124,7 @@ final class PK11KeyWrapper implements KeyWrapper {
      * Does the key-independent parts of initializing an unwrap.
      */
     private void initUnwrap(AlgorithmParameterSpec parameters)
-        throws InvalidAlgorithmParameterException
+    throws InvalidAlgorithmParameterException
     {
         reset();
 
@@ -147,11 +147,11 @@ final class PK11KeyWrapper implements KeyWrapper {
         try {
             KeyType type = KeyType.getKeyTypeFromAlgorithm(algorithm);
             if( (type == KeyType.RSA && !(key instanceof RSAPublicKey)) ||
-		// requires JAVA 1.5
-                // (type == KeyType.EC && !(key instanceof ECPublicKey)) ||
-                (type == KeyType.DSA && !(key instanceof DSAPublicKey)) ) {
+                    // requires JAVA 1.5
+                    // (type == KeyType.EC && !(key instanceof ECPublicKey)) ||
+                    (type == KeyType.DSA && !(key instanceof DSAPublicKey)) ) {
                 throw new InvalidKeyException("Key is not the right type for "+
-                    "this algorithm");
+                                              "this algorithm");
             }
         } catch( NoSuchAlgorithmException e ) {
             throw new RuntimeException("Unable to find algorithm from key type: " + e.getMessage(), e);
@@ -162,7 +162,7 @@ final class PK11KeyWrapper implements KeyWrapper {
      * Makes sure the key lives on the token and is right for the algorithm.
      */
     private void checkWrapper(SymmetricKey key)
-        throws InvalidKeyException
+    throws InvalidKeyException
     {
         if( key==null ) {
             throw new InvalidKeyException("Key is null");
@@ -170,15 +170,15 @@ final class PK11KeyWrapper implements KeyWrapper {
         try {
             if( ! key.getOwningToken().equals(token) ) {
                 throw new InvalidKeyException("Key does not reside on the current token: key owning token="+
-                    key.getOwningToken().getName());
+                                              key.getOwningToken().getName());
             }
             if( ! (key instanceof PK11SymKey) ) {
                 throw new InvalidKeyException("Key is not a PKCS #11 key");
             }
             if( ((PK11SymKey)key).getKeyType() !=
-                KeyType.getKeyTypeFromAlgorithm(algorithm) ) {
-                    throw new InvalidKeyException("Key is not the right type for"+
-                    " this algorithm");
+                    KeyType.getKeyTypeFromAlgorithm(algorithm) ) {
+                throw new InvalidKeyException("Key is not the right type for"+
+                                              " this algorithm");
             }
         } catch( NoSuchAlgorithmException e ) {
             throw new RuntimeException("Unknown algorithm: " + e.getMessage(), e);
@@ -191,14 +191,14 @@ final class PK11KeyWrapper implements KeyWrapper {
      * Makes sure the key is on the token and is right for the algorithm.
      */
     private void checkWrapper(PrivateKey key)
-        throws InvalidKeyException
+    throws InvalidKeyException
     {
         if( key==null ) {
             throw new InvalidKeyException("Key is null");
         }
         if( ! key.getOwningToken().equals(token) ) {
             throw new InvalidKeyException("Key does not reside on the "+
-                "current token");
+                                          "current token");
         }
         if( ! (key instanceof PK11PrivKey) ) {
             throw new InvalidKeyException("Key is not a PKCS #11 key");
@@ -207,7 +207,7 @@ final class PK11KeyWrapper implements KeyWrapper {
             if( ((PK11PrivKey)key).getKeyType() !=
                     KeyType.getKeyTypeFromAlgorithm(algorithm) ) {
                 throw new InvalidKeyException("Key is not the right type for"+
-                    " this algorithm");
+                                              " this algorithm");
             }
         } catch( NoSuchAlgorithmException e ) {
             throw new RuntimeException("Unknown algorithm: " + e.getMessage(), e);
@@ -215,7 +215,7 @@ final class PK11KeyWrapper implements KeyWrapper {
     }
 
     private void checkParams(AlgorithmParameterSpec params)
-        throws InvalidAlgorithmParameterException
+    throws InvalidAlgorithmParameterException
     {
         if( ! algorithm.isValidParameterObject(params) ) {
             String name = "null";
@@ -236,7 +236,7 @@ final class PK11KeyWrapper implements KeyWrapper {
 
     public byte[]
     wrap(PrivateKey toBeWrapped)
-        throws InvalidKeyException, IllegalStateException, TokenException
+    throws InvalidKeyException, IllegalStateException, TokenException
     {
         if( state != WRAP ) {
             throw new IllegalStateException();
@@ -251,7 +251,7 @@ final class PK11KeyWrapper implements KeyWrapper {
         if( symKey != null ) {
             assert( privKey==null && pubKey==null );
             return nativeWrapPrivWithSym(token, toBeWrapped, symKey, algorithm,
-                IV);
+                                         IV);
         } else {
             throw new InvalidKeyException(
                 "Wrapping a private key with a public key is not supported");
@@ -265,7 +265,7 @@ final class PK11KeyWrapper implements KeyWrapper {
 
     public byte[]
     wrap(SymmetricKey toBeWrapped)
-        throws InvalidKeyException, IllegalStateException, TokenException
+    throws InvalidKeyException, IllegalStateException, TokenException
     {
         if( state != WRAP ) {
             throw new IllegalStateException();
@@ -279,11 +279,11 @@ final class PK11KeyWrapper implements KeyWrapper {
         if( symKey != null ) {
             assert( privKey==null && pubKey==null );
             return nativeWrapSymWithSym(token, toBeWrapped, symKey, algorithm,
-                        IV);
+                                        IV);
         } else {
             assert( pubKey!=null && privKey==null && symKey==null );
             return nativeWrapSymWithPub(token, toBeWrapped, pubKey, algorithm,
-                        IV);
+                                        IV);
         }
     }
 
@@ -297,15 +297,15 @@ final class PK11KeyWrapper implements KeyWrapper {
         }
         if( ! (symKey instanceof PK11SymKey) ) {
             throw new InvalidKeyException("key to be wrapped is not a "+
-                "PKCS #11 key");
+                                          "PKCS #11 key");
         }
-/* NSS is capable of moving keys appropriately,
-   so this call is prematurely bailing
-        if( ! symKey.getOwningToken().equals(token) ) {
-            throw new InvalidKeyException("key to be wrapped does not live"+
-                " on the same token as the wrapping key");
-        }
-*/
+        /* NSS is capable of moving keys appropriately,
+           so this call is prematurely bailing
+                if( ! symKey.getOwningToken().equals(token) ) {
+                    throw new InvalidKeyException("key to be wrapped does not live"+
+                        " on the same token as the wrapping key");
+                }
+        */
     }
 
     /**
@@ -318,15 +318,15 @@ final class PK11KeyWrapper implements KeyWrapper {
         }
         if( ! (privKey instanceof PK11PrivKey) ) {
             throw new InvalidKeyException("key to be wrapped is not a "+
-                "PKCS #11 key");
+                                          "PKCS #11 key");
         }
-/* NSS is capable of moving keys appropriately,
-   so this call is prematurely bailing
-        if( ! privKey.getOwningToken().equals(token) ) {
-            throw new InvalidKeyException("key to be wrapped does not live"+
-                " on the same token as the wrapping key");
-        }
-*/
+        /* NSS is capable of moving keys appropriately,
+           so this call is prematurely bailing
+                if( ! privKey.getOwningToken().equals(token) ) {
+                    throw new InvalidKeyException("key to be wrapped does not live"+
+                        " on the same token as the wrapping key");
+                }
+        */
     }
 
     /**
@@ -334,24 +334,24 @@ final class PK11KeyWrapper implements KeyWrapper {
      */
     private static native byte[]
     nativeWrapSymWithSym(PK11Token token, SymmetricKey toBeWrapped,
-        SymmetricKey wrappingKey, KeyWrapAlgorithm alg, byte[] IV)
-            throws TokenException;
+                         SymmetricKey wrappingKey, KeyWrapAlgorithm alg, byte[] IV)
+    throws TokenException;
 
     /**
      * Wrap a symmetric with a public
      */
     private static native byte[]
     nativeWrapSymWithPub(PK11Token token, SymmetricKey toBeWrapped,
-        PublicKey wrappingKey, KeyWrapAlgorithm alg, byte[] IV)
-            throws TokenException;
+                         PublicKey wrappingKey, KeyWrapAlgorithm alg, byte[] IV)
+    throws TokenException;
 
     /**
      * Wrap a private with a symmetric
      */
     private static native byte[]
     nativeWrapPrivWithSym(PK11Token token, PrivateKey toBeWrapped,
-        SymmetricKey wrappingKey, KeyWrapAlgorithm alg, byte[] IV)
-            throws TokenException;
+                          SymmetricKey wrappingKey, KeyWrapAlgorithm alg, byte[] IV)
+    throws TokenException;
 
     /**
      * Wrap a private with a public.
@@ -370,7 +370,7 @@ final class PK11KeyWrapper implements KeyWrapper {
      */
     public PrivateKey
     unwrapPrivate(byte[] wrapped, PrivateKey.Type type, PublicKey publicKey)
-        throws TokenException, InvalidKeyException, IllegalStateException
+    throws TokenException, InvalidKeyException, IllegalStateException
     {
         return baseUnwrapPrivate(wrapped, type, publicKey, false);
     }
@@ -383,23 +383,23 @@ final class PK11KeyWrapper implements KeyWrapper {
      */
     public PrivateKey
     unwrapTemporaryPrivate(byte[] wrapped, PrivateKey.Type type,
-        PublicKey publicKey)
-        throws TokenException, InvalidKeyException, IllegalStateException
+                           PublicKey publicKey)
+    throws TokenException, InvalidKeyException, IllegalStateException
     {
         return baseUnwrapPrivate(wrapped, type, publicKey, true);
     }
 
     private PrivateKey
     baseUnwrapPrivate(byte[] wrapped, PrivateKey.Type type,
-            PublicKey publicKey, boolean temporary)
-        throws TokenException, InvalidKeyException, IllegalStateException
+                      PublicKey publicKey, boolean temporary)
+    throws TokenException, InvalidKeyException, IllegalStateException
     {
         if( state != UNWRAP ) {
             throw new IllegalStateException();
         }
         if( algorithm == KeyWrapAlgorithm.PLAINTEXT ) {
             throw new TokenException("plaintext unwrapping of private keys " +
-                "is not supported");
+                                     "is not supported");
         }
 
         byte[] publicValue = extractPublicValue(publicKey, type);
@@ -412,8 +412,8 @@ final class PK11KeyWrapper implements KeyWrapper {
         if( symKey != null ) {
             assert(pubKey==null && privKey==null);
             PrivateKey importedKey = nativeUnwrapPrivWithSym(
-                token, symKey, wrapped, algorithm, algFromType(type),
-                publicValue, IV, temporary);
+                                         token, symKey, wrapped, algorithm, algFromType(type),
+                                         publicValue, IV, temporary);
 
             if (!temporary
                     && publicKey instanceof org.mozilla.jss.pkcs11.PK11PubKey) {
@@ -431,7 +431,7 @@ final class PK11KeyWrapper implements KeyWrapper {
             return importedKey;
         } else {
             throw new InvalidKeyException("Unwrapping a private key with"
-                + " a private key is not supported");
+                                          + " a private key is not supported");
             /*
             assert(privKey!=null && pubKey==null && symKey==null);
             return nativeUnwrapPrivWithPriv(token, privKey, wrapped, algorithm,
@@ -447,7 +447,7 @@ final class PK11KeyWrapper implements KeyWrapper {
      */
     private static byte[]
     extractPublicValue(PublicKey publicKey, PrivateKey.Type type)
-        throws InvalidKeyException
+    throws InvalidKeyException
     {
         /* this code should call a generic function which returns the
          * proper public value. */
@@ -457,19 +457,19 @@ final class PK11KeyWrapper implements KeyWrapper {
         if( type == PrivateKey.RSA ) {
             if( !(publicKey instanceof RSAPublicKey)) {
                 throw new InvalidKeyException("Type of public key does not "+
-                    "match type of private key which is RSA");
+                                              "match type of private key which is RSA");
             }
             return ((RSAPublicKey)publicKey).getModulus().toByteArray();
         } else if(type == PrivateKey.EC) {
             if( !(publicKey instanceof PK11ECPublicKey) ) {
                 throw new InvalidKeyException("Type of public key does not "+
-                    "match type of private key which is EC");
+                                              "match type of private key which is EC");
             }
             return ((PK11ECPublicKey)publicKey).getWByteArray();
         } else if(type == PrivateKey.DSA) {
             if( !(publicKey instanceof DSAPublicKey) ) {
                 throw new InvalidKeyException("Type of public key does not "+
-                    "match type of private key which is DSA");
+                                              "match type of private key which is DSA");
             }
             return ((DSAPublicKey)publicKey).getY().toByteArray();
         } else {
@@ -480,43 +480,43 @@ final class PK11KeyWrapper implements KeyWrapper {
 
     public SymmetricKey
     unwrapSymmetric(byte[] wrapped, SymmetricKey.Type type,
-        SymmetricKey.Usage usage, int keyLen)
-        throws TokenException, IllegalStateException,
-            InvalidAlgorithmParameterException
+                    SymmetricKey.Usage usage, int keyLen)
+    throws TokenException, IllegalStateException,
+               InvalidAlgorithmParameterException
     {
         return unwrapSymmetric(wrapped, type, usage.getVal(), keyLen);
     }
 
     public SymmetricKey
     unwrapSymmetric(byte[] wrapped, SymmetricKey.Type type, int keyLen)
-        throws TokenException, IllegalStateException,
-            InvalidAlgorithmParameterException
+    throws TokenException, IllegalStateException,
+        InvalidAlgorithmParameterException
     {
         return unwrapSymmetric(wrapped, type, -1, keyLen);
     }
 
     public SymmetricKey
     unwrapSymmetricPerm(byte[] wrapped, SymmetricKey.Type type,
-        SymmetricKey.Usage usage, int keyLen)
-        throws TokenException, IllegalStateException,
-            InvalidAlgorithmParameterException
+                        SymmetricKey.Usage usage, int keyLen)
+    throws TokenException, IllegalStateException,
+        InvalidAlgorithmParameterException
     {
         return unwrapSymmetricPerm(wrapped, type, usage.getVal(), keyLen);
     }
 
     public SymmetricKey
     unwrapSymmetricPerm(byte[] wrapped, SymmetricKey.Type type, int keyLen)
-        throws TokenException, IllegalStateException,
-            InvalidAlgorithmParameterException
+    throws TokenException, IllegalStateException,
+        InvalidAlgorithmParameterException
     {
         return unwrapSymmetricPerm(wrapped, type, -1, keyLen);
     }
 
     private SymmetricKey
     unwrapSymmetricPerm(byte[] wrapped, SymmetricKey.Type type,
-        int usageEnum, int keyLen)
-        throws TokenException, IllegalStateException,
-            InvalidAlgorithmParameterException
+                        int usageEnum, int keyLen)
+    throws TokenException, IllegalStateException,
+        InvalidAlgorithmParameterException
     {
         if( state != UNWRAP ) {
             throw new IllegalStateException();
@@ -539,12 +539,12 @@ final class PK11KeyWrapper implements KeyWrapper {
 
         if( algorithm == KeyWrapAlgorithm.PLAINTEXT ) {
             return nativeUnwrapSymPlaintext(token, wrapped, algFromType(type),
-                usageEnum,temporary );
+                                            usageEnum,temporary );
         } else {
             if( symKey != null ) {
                 assert(pubKey==null && privKey==null);
                 return nativeUnwrapSymWithSym(token, symKey, wrapped, algorithm,
-                        algFromType(type), keyLen, IV, usageEnum,temporary);
+                                              algFromType(type), keyLen, IV, usageEnum,temporary);
             } else {
                 assert(privKey!=null && pubKey==null && symKey==null);
                 throw new TokenException("We do not support permnament unwrapping with private key.");
@@ -555,9 +555,9 @@ final class PK11KeyWrapper implements KeyWrapper {
 
     private SymmetricKey
     unwrapSymmetric(byte[] wrapped, SymmetricKey.Type type,
-        int usageEnum, int keyLen)
-        throws TokenException, IllegalStateException,
-            InvalidAlgorithmParameterException
+                    int usageEnum, int keyLen)
+    throws TokenException, IllegalStateException,
+        InvalidAlgorithmParameterException
     {
         if( state != UNWRAP ) {
             throw new IllegalStateException();
@@ -579,16 +579,16 @@ final class PK11KeyWrapper implements KeyWrapper {
 
         if( algorithm == KeyWrapAlgorithm.PLAINTEXT ) {
             return nativeUnwrapSymPlaintext(token, wrapped, algFromType(type),
-                usageEnum, temporary );
+                                            usageEnum, temporary );
         } else {
             if( symKey != null ) {
                 assert(pubKey==null && privKey==null);
                 return nativeUnwrapSymWithSym(token, symKey, wrapped, algorithm,
-                        algFromType(type), keyLen, IV, usageEnum,temporary);
+                                              algFromType(type), keyLen, IV, usageEnum,temporary);
             } else {
                 assert(privKey!=null && pubKey==null && symKey==null);
                 return nativeUnwrapSymWithPriv(token, privKey, wrapped,
-                    algorithm, algFromType(type), keyLen, IV, usageEnum );
+                                               algorithm, algFromType(type), keyLen, IV, usageEnum );
             }
         }
     }
@@ -602,7 +602,7 @@ final class PK11KeyWrapper implements KeyWrapper {
         } else {
             assert( type == PrivateKey.EC);
             return KeyPairAlgorithm.ECFamily;
-	}
+        }
     }
 
     private static Algorithm
@@ -613,7 +613,7 @@ final class PK11KeyWrapper implements KeyWrapper {
             return EncryptionAlgorithm.DES3_ECB;
         } else if( type == SymmetricKey.AES ) {
             return EncryptionAlgorithm.AES_128_ECB;
-        }else if( type == SymmetricKey.RC4 ) {
+        } else if( type == SymmetricKey.RC4 ) {
             return EncryptionAlgorithm.RC4;
         } else if( type == SymmetricKey.AES ) {
             return EncryptionAlgorithm.AES_128_ECB;
@@ -630,9 +630,9 @@ final class PK11KeyWrapper implements KeyWrapper {
      */
     private static native PrivateKey
     nativeUnwrapPrivWithSym(PK11Token token, SymmetricKey unwrappingKey,
-        byte[] wrappedKey, KeyWrapAlgorithm alg, Algorithm type,
-        byte[] publicValue, byte[] IV, boolean temporary)
-            throws TokenException;
+                            byte[] wrappedKey, KeyWrapAlgorithm alg, Algorithm type,
+                            byte[] publicValue, byte[] IV, boolean temporary)
+    throws TokenException;
 
     /**
      * Unwrap a private with a private.
@@ -649,22 +649,22 @@ final class PK11KeyWrapper implements KeyWrapper {
      */
     private static native SymmetricKey
     nativeUnwrapSymWithSym(PK11Token token, SymmetricKey unwrappingKey,
-        byte[] wrappedKey, KeyWrapAlgorithm alg, Algorithm type, int keyLen,
-        byte[] IV, int usageEnum, boolean temporary)
-            throws TokenException;
+                           byte[] wrappedKey, KeyWrapAlgorithm alg, Algorithm type, int keyLen,
+                           byte[] IV, int usageEnum, boolean temporary)
+    throws TokenException;
 
     /**
      * Unwrap a symmetric with a private.
      */
     private static native SymmetricKey
     nativeUnwrapSymWithPriv(PK11Token token, PrivateKey unwrappingKey,
-        byte[] wrappedKey, KeyWrapAlgorithm alg, Algorithm type, int keyLen,
-        byte[] IV, int usageEnum)
-            throws TokenException;
+                            byte[] wrappedKey, KeyWrapAlgorithm alg, Algorithm type, int keyLen,
+                            byte[] IV, int usageEnum)
+    throws TokenException;
 
     private static native SymmetricKey
     nativeUnwrapSymPlaintext(PK11Token token, byte[] wrappedKey,
-        Algorithm type, int usageEnum, boolean temporary);
+                             Algorithm type, int usageEnum, boolean temporary);
 
     private void reset() {
         state = UNINITIALIZED;

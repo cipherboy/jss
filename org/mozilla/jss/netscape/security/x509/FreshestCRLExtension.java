@@ -62,7 +62,7 @@ import org.mozilla.jss.netscape.security.util.DerOutputStream;
  * </pre>
  */
 public class FreshestCRLExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
 
     /**
      *
@@ -110,10 +110,10 @@ public class FreshestCRLExtension extends Extension
             // decode the value
             try {
                 SEQUENCE.OF_Template seqOfCRLDP =
-                        new SEQUENCE.OF_Template(CRLDistributionPoint.getTemplate());
+                    new SEQUENCE.OF_Template(CRLDistributionPoint.getTemplate());
 
                 distributionPoints =
-                        (SEQUENCE) ASN1Util.decode(seqOfCRLDP, extensionValue);
+                    (SEQUENCE) ASN1Util.decode(seqOfCRLDP, extensionValue);
             } catch (InvalidBERException e) {
                 throw new IOException("Invalid BER-encoding: " + e, e);
             }
@@ -200,7 +200,7 @@ public class FreshestCRLExtension extends Extension
      * DER-encodes this extension to the given OutputStream.
      */
     public void encode(OutputStream ostream)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         if (cachedEncoding == null) {
             // only re-encode if necessary
             DerOutputStream tmp = new DerOutputStream();
@@ -211,26 +211,26 @@ public class FreshestCRLExtension extends Extension
     }
 
     public void decode(InputStream in)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         throw new IOException("Not supported");
     }
 
     public void set(String name, Object obj)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         throw new IOException("Attribute name not recognized by " +
-                "CertAttrSet:FreshestCRLExtension");
+                              "CertAttrSet:FreshestCRLExtension");
     }
 
     public Object get(String name)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         throw new IOException("Attribute name not recognized by " +
-                "CertAttrSet:FreshestCRLExtension");
+                              "CertAttrSet:FreshestCRLExtension");
     }
 
     public void delete(String name)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         throw new IOException("Attribute name not recognized by " +
-                "CertAttrSet:FreshestCRLExtension");
+                              "CertAttrSet:FreshestCRLExtension");
     }
 
     /*
@@ -253,12 +253,12 @@ public class FreshestCRLExtension extends Extension
 
             if (args.length != 1) {
                 System.out.println("Usage: FreshestCRLExtentions " +
-                        "<outfile>");
+                                   "<outfile>");
                 System.exit(-1);
             }
 
             bos = new BufferedOutputStream(
-                    new FileOutputStream(args[0]));
+                new FileOutputStream(args[0]));
 
             // URI only
             CRLDistributionPoint cdp = new CRLDistributionPoint();
@@ -267,12 +267,12 @@ public class FreshestCRLExtension extends Extension
             generalNames.addElement(uri);
             cdp.setFullName(generalNames);
             FreshestCRLExtension crldpExt =
-                    new FreshestCRLExtension(cdp);
+                new FreshestCRLExtension(cdp);
 
             // DN only
             cdp = new CRLDistributionPoint();
             X500Name dn = new X500Name("CN=Otis Smith,E=otis@fedoraproject.org" +
-                    ",OU=Certificate Server,O=Fedora,C=US");
+                                       ",OU=Certificate Server,O=Fedora,C=US");
             generalNames = new GeneralNames();
             generalNames.addElement(dn);
             cdp.setFullName(generalNames);
@@ -385,19 +385,19 @@ public class FreshestCRLExtension extends Extension
         }
 
         public static final Reason UNUSED =
-                new Reason("unused", (byte) 0x80);
+            new Reason("unused", (byte) 0x80);
         public static final Reason KEY_COMPROMISE =
-                new Reason("keyCompromise", (byte) 0x40);
+            new Reason("keyCompromise", (byte) 0x40);
         public static final Reason CA_COMPROMISE =
-                new Reason("cACompromise", (byte) 0x20);
+            new Reason("cACompromise", (byte) 0x20);
         public static final Reason AFFILIATION_CHANGED =
-                new Reason("affiliationChanged", (byte) 0x10);
+            new Reason("affiliationChanged", (byte) 0x10);
         public static final Reason SUPERSEDED =
-                new Reason("superseded", (byte) 0x08);
+            new Reason("superseded", (byte) 0x08);
         public static final Reason CESSATION_OF_OPERATION =
-                new Reason("cessationOfOperation", (byte) 0x04);
+            new Reason("cessationOfOperation", (byte) 0x04);
         public static final Reason CERTIFICATE_HOLD =
-                new Reason("certificateHold", (byte) 0x02);
+            new Reason("certificateHold", (byte) 0x02);
     }
 
 }

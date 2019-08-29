@@ -53,7 +53,7 @@ public class PrintableConverter implements AVAValueConverter {
      *                available for the conversion.
      */
     public DerValue getValue(String valueString)
-            throws IOException {
+    throws IOException {
         return getValue(valueString, null);
     }
 
@@ -67,7 +67,7 @@ public class PrintableConverter implements AVAValueConverter {
             ByteBuffer byteBuffer = encoder.encode(charBuffer);
 
             return new DerValue(DerValue.tag_PrintableString,
-                    byteBuffer.array(), byteBuffer.arrayOffset(), byteBuffer.limit());
+                                byteBuffer.array(), byteBuffer.arrayOffset(), byteBuffer.limit());
 
         } catch (CharacterCodingException e) {
             throw new IllegalArgumentException("Invalid Printable String AVA Value", e);
@@ -87,7 +87,7 @@ public class PrintableConverter implements AVAValueConverter {
      *                PrintableString DER value.
      */
     public DerValue getValue(byte[] berStream)
-            throws IOException {
+    throws IOException {
         DerValue value = new DerValue(berStream);
         if (value.tag != DerValue.tag_PrintableString)
             throw new IOException("Invalid Printable String AVA Value");
@@ -107,7 +107,7 @@ public class PrintableConverter implements AVAValueConverter {
      *                with PrintableString characters.
      */
     public String getAsString(DerValue avaValue)
-            throws IOException {
+    throws IOException {
         return avaValue.getPrintableString();
     }
 

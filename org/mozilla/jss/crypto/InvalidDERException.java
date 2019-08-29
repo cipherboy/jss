@@ -9,6 +9,10 @@ package org.mozilla.jss.crypto;
  */
 public class InvalidDERException extends Exception {
     private static final long serialVersionUID = 1L;
-    public InvalidDERException() { super(); }
-    public InvalidDERException(String mesg) { super(mesg); }
+    public InvalidDERException() {
+        super();
+    }
+    public InvalidDERException(String mesg) {
+        super(mesg);
+    }
 }

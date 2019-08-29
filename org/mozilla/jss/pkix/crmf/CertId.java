@@ -83,7 +83,7 @@ public class CertId implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
         sequence.encode(implicitTag, ostream);
     }
 
@@ -102,19 +102,19 @@ public class CertId implements ASN1Value {
             seqt = new SEQUENCE.Template();
             seqt.addElement( ANY.getTemplate() );
             seqt.addElement( INTEGER.getTemplate() );
-         }
+        }
 
         public boolean tagMatch(Tag tag) {
             return TAG.equals(tag);
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
             return new CertId(  (ANY)       seq.elementAt(0),

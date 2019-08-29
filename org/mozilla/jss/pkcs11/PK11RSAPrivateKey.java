@@ -13,7 +13,9 @@ class PK11RSAPrivateKey
 
     private static final long serialVersionUID = 1L;
 
-    private PK11RSAPrivateKey() { super(null); }
+    private PK11RSAPrivateKey() {
+        super(null);
+    }
 
     protected PK11RSAPrivateKey(byte[] pointer) {
         super(pointer);

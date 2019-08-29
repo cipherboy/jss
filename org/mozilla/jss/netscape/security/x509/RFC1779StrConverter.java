@@ -53,7 +53,7 @@ public class RFC1779StrConverter extends LdapV3DNStrConverter {
      *            not in the map).
      */
     public RFC1779StrConverter(X500NameAttrMap attributeMap,
-                  boolean doAcceptUnknownOids) {
+                               boolean doAcceptUnknownOids) {
         super(attributeMap, doAcceptUnknownOids);
     }
 
@@ -72,7 +72,7 @@ public class RFC1779StrConverter extends LdapV3DNStrConverter {
      * @exception IOException if an error occurs during the conversion.
      */
     public String encodeOID(ObjectIdentifier oid)
-            throws IOException {
+    throws IOException {
         String keyword = attrMap.getName(oid);
         if (keyword == null)
             if (!acceptUnknownOids)
@@ -92,7 +92,7 @@ public class RFC1779StrConverter extends LdapV3DNStrConverter {
      * @exception IOException if an error occurs during the conversion.
      */
     public String encodeValue(DerValue attrValue, ObjectIdentifier oid)
-            throws IOException {
+    throws IOException {
         String s = super.encodeValue(attrValue, oid);
         if (s.indexOf('\n') != -1)
             return "\"" + s + "\"";

@@ -100,16 +100,16 @@ public class EncryptedPOP implements ASN1Value {
     ///////////////////////////////////////////////////////////////////////
 
     public EncryptedPOP(
-            TaggedRequest request,
-            ContentInfo cms,
-            AlgorithmIdentifier thePOPAlgID,
-            AlgorithmIdentifier witnessAlgID,
-            OCTET_STRING witness)
+        TaggedRequest request,
+        ContentInfo cms,
+        AlgorithmIdentifier thePOPAlgID,
+        AlgorithmIdentifier witnessAlgID,
+        OCTET_STRING witness)
     {
         if( request==null || cms==null || thePOPAlgID==null || witnessAlgID==null ||
                 witness==null ) {
             throw new IllegalArgumentException("EncryptedPOP constructor"
-                +" parameter is null");
+                                               +" parameter is null");
         }
 
         this.request = request;
@@ -141,7 +141,7 @@ public class EncryptedPOP implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
         sequence.encode(implicitTag, ostream);
     }
 
@@ -172,21 +172,21 @@ public class EncryptedPOP implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
 
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
             return new EncryptedPOP(
-                            (TaggedRequest) seq.elementAt(0),
-                            (ContentInfo) seq.elementAt(1),
-                            (AlgorithmIdentifier) seq.elementAt(2),
-                            (AlgorithmIdentifier) seq.elementAt(3),
-                            (OCTET_STRING) seq.elementAt(4) );
+                       (TaggedRequest) seq.elementAt(0),
+                       (ContentInfo) seq.elementAt(1),
+                       (AlgorithmIdentifier) seq.elementAt(2),
+                       (AlgorithmIdentifier) seq.elementAt(3),
+                       (OCTET_STRING) seq.elementAt(4) );
         }
     }
 }

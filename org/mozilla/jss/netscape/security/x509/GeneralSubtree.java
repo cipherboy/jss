@@ -101,8 +101,8 @@ public class GeneralSubtree implements Serializable {
      */
     public String toString() {
         String s = "\n   GeneralSubtree: [\n" +
-                "    GeneralName: " + ((name == null) ? "" : name.toString()) +
-                "\n    Minimum: " + minimum;
+                   "    GeneralName: " + ((name == null) ? "" : name.toString()) +
+                   "\n    Minimum: " + minimum;
         if (maximum == -1) {
             s += "\t    Maximum: undefined";
         } else
@@ -113,8 +113,8 @@ public class GeneralSubtree implements Serializable {
 
     public String toPrint(int indent) {
         String s = "\n" + pp.indent(indent) + "GeneralSubtree: [\n" + pp.indent(indent + 2) +
-                "GeneralName: " + ((name == null) ? "" : name.toString()) +
-                "\n" + pp.indent(indent + 2) + "Minimum: " + minimum;
+                   "GeneralName: " + ((name == null) ? "" : name.toString()) +
+                   "\n" + pp.indent(indent + 2) + "Minimum: " + minimum;
         if (maximum == -1) {
             s += "\n" + pp.indent(indent + 2) + "Maximum: undefined";
         } else
@@ -137,13 +137,13 @@ public class GeneralSubtree implements Serializable {
             DerOutputStream tmp = new DerOutputStream();
             tmp.putInteger(new BigInt(minimum));
             seq.writeImplicit(DerValue.createTag(DerValue.TAG_CONTEXT,
-                              false, TAG_MIN), tmp);
+                                                 false, TAG_MIN), tmp);
         }
         if (maximum != -1) {
             DerOutputStream tmp = new DerOutputStream();
             tmp.putInteger(new BigInt(maximum));
             seq.writeImplicit(DerValue.createTag(DerValue.TAG_CONTEXT,
-                              false, TAG_MAX), tmp);
+                                                 false, TAG_MAX), tmp);
         }
         out.write(DerValue.tag_Sequence, seq);
     }

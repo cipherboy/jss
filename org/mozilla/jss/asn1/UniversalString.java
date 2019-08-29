@@ -39,31 +39,31 @@ public class UniversalString extends CharacterString implements ASN1Value {
     private static final Template templateInstance = new Template();
 
 // nested class
-public static class Template
-    extends CharacterString.Template implements ASN1Template
-{
-    protected Tag getTag() {
-        return TAG;
-    }
-
-    public boolean tagMatch(Tag tag) {
-        return TAG.equals(tag);
-    }
-
-    protected CharConverter getCharConverter() {
-        return new UniversalConverter();
-    }
-
-    protected CharacterString generateInstance(char[] chars)
-        throws CharConversionException
+    public static class Template
+        extends CharacterString.Template implements ASN1Template
     {
-        return new UniversalString( chars );
-    }
+        protected Tag getTag() {
+            return TAG;
+        }
 
-    protected String typeName() {
-        return "UniversalString";
-    }
-} // end of Template
+        public boolean tagMatch(Tag tag) {
+            return TAG.equals(tag);
+        }
+
+        protected CharConverter getCharConverter() {
+            return new UniversalConverter();
+        }
+
+        protected CharacterString generateInstance(char[] chars)
+        throws CharConversionException
+        {
+            return new UniversalString( chars );
+        }
+
+        protected String typeName() {
+            return "UniversalString";
+        }
+    } // end of Template
 
     /**
      * A class for converting between Unicode and UCS4.
@@ -105,7 +105,7 @@ public static class Template
          * Turns big-endian UCS4 characters into Unicode Java characters
          */
         public char[] byteToChar(byte[] bytes, int offset, int len)
-            throws CharConversionException
+        throws CharConversionException
         {
             // Each UCS4 character is 4 bytes. Most UCS4 characters will
             // map to one Unicode character. The exception is UTF-16
@@ -155,7 +155,7 @@ public static class Template
 
         // Convert Unicode chars to UCS4 chars
         public byte[] charToByte(char[] chars, int offset, int len)
-            throws CharConversionException
+        throws CharConversionException
         {
             ByteArrayOutputStream out = new ByteArrayOutputStream(len * 4);
 
@@ -176,7 +176,7 @@ public static class Template
                     // make sure the next char is the low half of a UTF16 char
                     if( low < UTF16_LOW_START || low > UTF16_LOW_END ) {
                         throw new CharConversionException("UTF16 high "+
-                            "character not followed by a UTF16 low character");
+                                                          "character not followed by a UTF16 low character");
                     }
 
                     ucs4 = UTF16_BASE;

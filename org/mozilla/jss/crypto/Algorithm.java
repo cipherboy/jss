@@ -115,7 +115,7 @@ public class Algorithm {
         if( o == null ) {
             return (parameterClasses.length == 0);
         }
-        if( parameterClasses.length == 0 ){
+        if( parameterClasses.length == 0 ) {
             return false;
         }
         Class<?> c = o.getClass();
@@ -173,19 +173,19 @@ public class Algorithm {
     protected static final int SEC_OID_PKCS5_PBE_WITH_MD5_AND_DES_CBC=19;
     protected static final int SEC_OID_PKCS5_PBE_WITH_SHA1_AND_DES_CBC=20;
     protected static final int
-        SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_128_BIT_RC4=21;
+    SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_128_BIT_RC4=21;
     protected static final int
-        SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_40_BIT_RC4=22;
+    SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_40_BIT_RC4=22;
     protected static final int
-        SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_3KEY_TRIPLE_DES_CBC=23;
+    SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_3KEY_TRIPLE_DES_CBC=23;
     protected static final int SEC_OID_MD2=24;
     protected static final int SEC_OID_MD5=25;
     protected static final int SEC_OID_SHA1=26;
     protected static final int CKM_SHA_1_HMAC=27;
     protected static final int
-        SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_128_BIT_RC2_CBC=28;
+    SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_128_BIT_RC2_CBC=28;
     protected static final int
-        SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_40_BIT_RC2_CBC=29;
+    SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_40_BIT_RC2_CBC=29;
     protected static final int SEC_OID_RC2_CBC=30;
     protected static final int CKM_PBA_SHA1_WITH_SHA1_HMAC=31;
 

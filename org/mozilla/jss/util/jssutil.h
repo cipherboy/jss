@@ -85,7 +85,7 @@ JSS_throw(JNIEnv *env, char *throwableClassName);
  *
  * In most JNI calls that throw Exceptions, OutOfMemoryError is the only
  * one that doesn't indicate a bug in the code.  If a JNI function throws
- * an exception (or returns an unexpected NULL), you can call this to 
+ * an exception (or returns an unexpected NULL), you can call this to
  * PR_ASSERT that it is due to an OutOfMemory condition. It takes a JNIEnv*,
  * which better not be NULL.
  */
@@ -141,7 +141,7 @@ JSS_getPtrFromProxy(JNIEnv *env, jobject nativeProxy, void **ptr);
 **      protected MyProxy myProxy;
 **      [...]
 ** }
-** 
+**
 ** <C>
 **  DataStructure *recovered;
 **  jobject owner;
@@ -154,7 +154,7 @@ JSS_getPtrFromProxy(JNIEnv *env, jobject nativeProxy, void **ptr);
 */
 PRStatus
 JSS_getPtrFromProxyOwner(JNIEnv *env, jobject proxyOwner, char* proxyFieldName,
-	char *proxyFieldSig, void **ptr);
+                         char *proxyFieldSig, void **ptr);
 
 /*
  * Turn a C pointer into a Java byte array. The byte array can be passed
@@ -257,7 +257,7 @@ JSS_strerror(PRErrorCode errNum);
 */
 void
 JSS_throwMsgPrErrArg(JNIEnv *env, const char *throwableClassName,
-    const char *message, PRErrorCode errCode);
+                     const char *message, PRErrorCode errCode);
 
 #define JSS_throwMsgPrErr(e, cn, m) \
     JSS_throwMsgPrErrArg((e), (cn), (m), PR_GetError())
@@ -310,7 +310,7 @@ jbyteArray JSS_ToByteArray(JNIEnv *env, const void *data, int length);
 **  bool - whether or not the operation succeeded.
 */
 bool JSS_RefByteArray(JNIEnv *env, jbyteArray array, jbyte **data,
-    jsize *length);
+                      jsize *length);
 
 /************************************************************************
 ** JSS_DerefByteArray.
@@ -333,7 +333,7 @@ void JSS_DerefByteArray(JNIEnv *env, jbyteArray array, void *data, jint mode);
 **  bool - whether or not the operation succeeded.
 */
 bool JSS_FromByteArray(JNIEnv *env, jbyteArray array, uint8_t **data,
-    size_t *length);
+                       size_t *length);
 
 /************************************************************************
 ** JSS_RefJString

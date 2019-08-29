@@ -49,8 +49,8 @@ public class CertificationRequest implements ASN1Value {
     SEQUENCE sequence;
 
     CertificationRequest(CertificationRequestInfo info,
-						 //byte[] infoEncoding,
-            AlgorithmIdentifier algId, byte[] signature) throws IOException
+                         //byte[] infoEncoding,
+                         AlgorithmIdentifier algId, byte[] signature) throws IOException
     {
         this.info = info;
         //this.infoEncoding = infoEncoding;
@@ -88,15 +88,15 @@ public class CertificationRequest implements ASN1Value {
      *      CertificationRequest.
      */
     public CertificationRequest(CertificationRequestInfo info, java.security.PrivateKey privKey,
-                SignatureAlgorithm signingAlg)
-        throws IOException, NotInitializedException,
-            TokenException, NoSuchAlgorithmException, CertificateException,
-            InvalidKeyException, SignatureException
+                                SignatureAlgorithm signingAlg)
+    throws IOException, NotInitializedException,
+               TokenException, NoSuchAlgorithmException, CertificateException,
+               InvalidKeyException, SignatureException
     {
         // make sure key is a Ninja private key
         if( !(privKey instanceof PrivateKey) ) {
             throw new InvalidKeyException("Private Key is does not belong to"+
-                " this provider");
+                                          " this provider");
         }
         PrivateKey priv = (PrivateKey)privKey;
 
@@ -131,7 +131,7 @@ public class CertificationRequest implements ASN1Value {
      * that the CertificationRequest is valid at any specific time.
      */
     public void verify()
-        throws InvalidKeyException, NotInitializedException,
+    throws InvalidKeyException, NotInitializedException,
         NoSuchAlgorithmException, CertificateException, TokenException,
         SignatureException, InvalidKeyFormatException
     {
@@ -143,7 +143,7 @@ public class CertificationRequest implements ASN1Value {
      * Does not indicate the CertificationRequest is valid at any specific time.
      */
     public void verify(PublicKey key)
-        throws InvalidKeyException, NotInitializedException,
+    throws InvalidKeyException, NotInitializedException,
         NoSuchAlgorithmException, CertificateException, TokenException,
         SignatureException
     {
@@ -157,11 +157,11 @@ public class CertificationRequest implements ASN1Value {
      * any specific time.
      */
     public void verify(PublicKey key, CryptoToken token)
-        throws NoSuchAlgorithmException, CertificateException, TokenException,
-            SignatureException, InvalidKeyException
+    throws NoSuchAlgorithmException, CertificateException, TokenException,
+        SignatureException, InvalidKeyException
     {
         Signature sig = token.getSignatureContext(
-            SignatureAlgorithm.fromOID( algId.getOID() ) );
+                            SignatureAlgorithm.fromOID( algId.getOID() ) );
 
         sig.initVerify(key);
         sig.update(infoEncoding);
@@ -188,7 +188,7 @@ public class CertificationRequest implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         sequence.encode(implicitTag, ostream);
     }
@@ -215,13 +215,13 @@ public class CertificationRequest implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
@@ -229,95 +229,95 @@ public class CertificationRequest implements ASN1Value {
             //byte[] infoEncoding = infoAny.getEncoded();
             /*CertificationRequestInfo info = (CertificationRequestInfo) infoAny.decodeWith(
                                         CertificationRequestInfo.getTemplate() );
-										*/
+            							*/
             CertificationRequestInfo info = (CertificationRequestInfo) seq.elementAt(0);
             // although signature is a bit string, all algorithms we use
             // will produce an octet string.
             BIT_STRING bs = (BIT_STRING) seq.elementAt(2);
             if( bs.getPadCount() != 0 ) {
                 throw new InvalidBERException("signature does not fall into"+
-                    " an integral number of bytes");
+                                              " an integral number of bytes");
             }
             byte[] signature = bs.getBits();
 
             return new CertificationRequest( info,
-											//infoEncoding,
-                                    (AlgorithmIdentifier) seq.elementAt(1),
-                                    signature
-                        );
+                                             //infoEncoding,
+                                             (AlgorithmIdentifier) seq.elementAt(1),
+                                             signature
+                                           );
         }
     }
 
     public static void main(String argv[]) {
 
-      try {
+        try {
 
-        if(argv.length > 2 || argv.length < 1) {
-            System.out.println("Usage: CertificationRequest <dbdir> [<certfile>]");
-            System.exit(0);
+            if(argv.length > 2 || argv.length < 1) {
+                System.out.println("Usage: CertificationRequest <dbdir> [<certfile>]");
+                System.exit(0);
+            }
+
+            CryptoManager.initialize( argv[0] );
+            CryptoManager cm = CryptoManager.getInstance();
+
+            CertificationRequest cert;
+
+            // read in a cert
+            FileInputStream fis = new FileInputStream(argv[1]);
+            try (BufferedInputStream bis = new BufferedInputStream(fis)) {
+                cert = (CertificationRequest) CertificationRequest.getTemplate().decode(bis);
+            }
+
+            CertificationRequestInfo info = cert.getInfo();
+
+            info.print(System.out);
+
+            //X509CertificationRequest hardcore = cm.findCertByNickname("Hardcore");
+            //PublicKey key = hardcore.getPublicKey();
+
+            cert.verify();
+            System.out.println("verified");
+
+            FileOutputStream fos = new FileOutputStream("certinfo.der");
+            info.encode(fos);
+            fos.close();
+
+            // make a new public key
+            CryptoToken token = cm.getInternalKeyStorageToken();
+            KeyPairGenerator kpg = token.getKeyPairGenerator(KeyPairAlgorithm.RSA);
+            kpg.initialize(512);
+            System.out.println("Generating a new key pair...");
+            KeyPair kp = kpg.genKeyPair();
+            System.out.println("Generated key pair");
+
+            // set the CertificationRequest's public key
+            info.setSubjectPublicKeyInfo(kp.getPublic());
+
+            // make new Name
+            Name name = new Name();
+            name.addCommonName("asldkj");
+            name.addCountryName("US");
+            name.addOrganizationName("Some Corp");
+            name.addOrganizationalUnitName("Some Org Unit");
+            name.addLocalityName("Silicon Valley");
+            name.addStateOrProvinceName("California");
+            info.setSubject(name);
+
+            System.out.println("About to create a new cert request...");
+            // create a new cert requestfrom this certReqinfo
+            CertificationRequest genCert = new CertificationRequest(info, kp.getPrivate(),
+                    SignatureAlgorithm.RSASignatureWithMD5Digest);
+            System.out.println("Created new cert request");
+
+            genCert.verify();
+            System.out.println("Cert verifies!");
+
+            fos = new FileOutputStream("gencert.der");
+            genCert.encode(fos);
+            fos.close();
+
+        } catch( Exception e ) {
+            e.printStackTrace();
         }
-
-        CryptoManager.initialize( argv[0] );
-        CryptoManager cm = CryptoManager.getInstance();
-
-        CertificationRequest cert;
-
-        // read in a cert
-        FileInputStream fis = new FileInputStream(argv[1]);
-        try (BufferedInputStream bis = new BufferedInputStream(fis)) {
-            cert = (CertificationRequest) CertificationRequest.getTemplate().decode(bis);
-        }
-
-        CertificationRequestInfo info = cert.getInfo();
-
-        info.print(System.out);
-
-        //X509CertificationRequest hardcore = cm.findCertByNickname("Hardcore");
-        //PublicKey key = hardcore.getPublicKey();
-
-        cert.verify();
-        System.out.println("verified");
-
-        FileOutputStream fos = new FileOutputStream("certinfo.der");
-        info.encode(fos);
-        fos.close();
-
-        // make a new public key
-        CryptoToken token = cm.getInternalKeyStorageToken();
-        KeyPairGenerator kpg = token.getKeyPairGenerator(KeyPairAlgorithm.RSA);
-        kpg.initialize(512);
-        System.out.println("Generating a new key pair...");
-        KeyPair kp = kpg.genKeyPair();
-        System.out.println("Generated key pair");
-
-        // set the CertificationRequest's public key
-        info.setSubjectPublicKeyInfo(kp.getPublic());
-
-        // make new Name
-        Name name = new Name();
-        name.addCommonName("asldkj");
-        name.addCountryName("US");
-        name.addOrganizationName("Some Corp");
-        name.addOrganizationalUnitName("Some Org Unit");
-        name.addLocalityName("Silicon Valley");
-        name.addStateOrProvinceName("California");
-        info.setSubject(name);
-
-        System.out.println("About to create a new cert request...");
-        // create a new cert requestfrom this certReqinfo
-        CertificationRequest genCert = new CertificationRequest(info, kp.getPrivate(),
-                SignatureAlgorithm.RSASignatureWithMD5Digest);
-        System.out.println("Created new cert request");
-
-        genCert.verify();
-        System.out.println("Cert verifies!");
-
-        fos = new FileOutputStream("gencert.der");
-        genCert.encode(fos);
-        fos.close();
-
-      } catch( Exception e ) {
-        e.printStackTrace();
-      }
     }
 }

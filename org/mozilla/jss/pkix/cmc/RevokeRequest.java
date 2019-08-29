@@ -220,8 +220,8 @@ public class RevokeRequest implements ASN1Value {
      */
     @Deprecated
     public RevokeRequest(ANY issuerName, INTEGER serialNumber,
-                    ENUMERATED reason, OCTET_STRING passphrase,
-                    UTF8String comment)
+                         ENUMERATED reason, OCTET_STRING passphrase,
+                         UTF8String comment)
     {
         this(issuerName, serialNumber, reason, null, passphrase, comment);
     }
@@ -242,8 +242,8 @@ public class RevokeRequest implements ASN1Value {
      *      so <code>null</code> may be used.
      */
     public RevokeRequest(ANY issuerName, INTEGER serialNumber,
-                    ENUMERATED reason, GeneralizedTime invalidityDate,
-                    OCTET_STRING passphrase, UTF8String comment)
+                         ENUMERATED reason, GeneralizedTime invalidityDate,
+                         OCTET_STRING passphrase, UTF8String comment)
     {
         if( issuerName==null || serialNumber==null || reason==null ) {
             throw new IllegalArgumentException(
@@ -285,7 +285,7 @@ public class RevokeRequest implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
         sequence.encode(implicitTag, ostream);
     }
 
@@ -313,21 +313,21 @@ public class RevokeRequest implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
 
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
             return new RevokeRequest(  (ANY) seq.elementAt(0),
-                                    (INTEGER) seq.elementAt(1),
-                                    (ENUMERATED) seq.elementAt(2),
-                                    (GeneralizedTime) seq.elementAt(3),
-                                    (OCTET_STRING) seq.elementAt(4),
-                                    (UTF8String) seq.elementAt(5) );
+                                       (INTEGER) seq.elementAt(1),
+                                       (ENUMERATED) seq.elementAt(2),
+                                       (GeneralizedTime) seq.elementAt(3),
+                                       (OCTET_STRING) seq.elementAt(4),
+                                       (UTF8String) seq.elementAt(5) );
 
         }
     }

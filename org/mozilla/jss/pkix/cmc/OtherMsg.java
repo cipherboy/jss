@@ -66,7 +66,7 @@ public class OtherMsg implements ASN1Value {
      * Constructs a new <code>OtherMsg</code> from its components.
      */
     public OtherMsg(INTEGER bodyPartID, OBJECT_IDENTIFIER otherMsgType,
-            ANY otherMsgValue) {
+                    ANY otherMsgValue) {
         if (bodyPartID == null || otherMsgType == null
                 || otherMsgValue == null) {
             throw new IllegalArgumentException(
@@ -97,7 +97,7 @@ public class OtherMsg implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-            throws IOException {
+    throws IOException {
         sequence.encode(implicitTag, ostream);
     }
 
@@ -124,12 +124,12 @@ public class OtherMsg implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
             return new OtherMsg((INTEGER)seq.elementAt(0),

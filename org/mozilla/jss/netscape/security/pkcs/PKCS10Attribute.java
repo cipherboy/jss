@@ -167,7 +167,7 @@ public class PKCS10Attribute implements DerEncoder, Serializable {
      * @exception IOException on encoding errors.
      */
     public void encode(OutputStream out)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         try (DerOutputStream tmp = new DerOutputStream()) {
             // Encode the attribute value
             DerOutputStream outAttrValue = new DerOutputStream();
@@ -175,7 +175,7 @@ public class PKCS10Attribute implements DerEncoder, Serializable {
 
             // Wrap the encoded attribute value into a SET
             DerValue outAttrValueSet = new DerValue(DerValue.tag_Set,
-                    outAttrValue.toByteArray());
+                                                    outAttrValue.toByteArray());
 
             // Create the attribute
             DerOutputStream outAttr = new DerOutputStream();

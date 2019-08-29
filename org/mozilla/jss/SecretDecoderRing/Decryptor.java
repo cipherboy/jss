@@ -48,8 +48,8 @@ public class Decryptor {
      *  keyID.
      */
     public byte[] decrypt(byte[] ciphertext)
-        throws NotInitializedException,
-        GeneralSecurityException, TokenException
+    throws NotInitializedException,
+               GeneralSecurityException, TokenException
     {
         CryptoManager cm = CryptoManager.getInstance();
         CryptoToken savedToken = cm.getThreadToken();
@@ -61,13 +61,13 @@ public class Decryptor {
             // decode ASN1
             //
             Encoding encoding = (Encoding)
-                ASN1Util.decode(Encoding.getTemplate(), ciphertext);
+                                ASN1Util.decode(Encoding.getTemplate(), ciphertext);
 
             //
             // lookup the algorithm
             //
             EncryptionAlgorithm alg = EncryptionAlgorithm.fromOID(
-                encoding.getEncryptionOID() );
+                                          encoding.getEncryptionOID() );
 
             //
             // Lookup the key
@@ -83,12 +83,12 @@ public class Decryptor {
             IvParameterSpec ivSpec = new IvParameterSpec(encoding.getIv());
 
             Cipher cipher = Cipher.getInstance(alg.toString(),
-                Encryptor.PROVIDER);
+                                               Encryptor.PROVIDER);
             cipher.init(Cipher.DECRYPT_MODE, key, ivSpec);
 
             byte[] paddedPtext = cipher.doFinal(encoding.getCiphertext());
             return org.mozilla.jss.crypto.Cipher.unPad(paddedPtext,
-                alg.getBlockSize() );
+                    alg.getBlockSize() );
         } catch(InvalidBERException ibe) {
             throw new GeneralSecurityException(ibe.toString());
         } catch(IllegalStateException ise) {

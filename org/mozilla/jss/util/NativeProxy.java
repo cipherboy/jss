@@ -34,7 +34,7 @@ public abstract class NativeProxy
      * NativeProxy instance acts as a proxy for that native data structure.
      */
     public NativeProxy(byte[] pointer) {
-		assert(pointer!=null);
+        assert(pointer!=null);
         registryIndex = register();
         mPointer = pointer;
     }
@@ -176,10 +176,10 @@ public abstract class NativeProxy
      * is thrown.
      */
     public synchronized static void assertRegistryEmpty() {
-			if(! registry.isEmpty()) {
-			    logger.warn(registry.size() + " NativeProxys are still registered.");
-			} else {
-			    logger.debug("NativeProxy registry is empty");
-			}
+        if(! registry.isEmpty()) {
+            logger.warn(registry.size() + " NativeProxys are still registered.");
+        } else {
+            logger.debug("NativeProxy registry is empty");
+        }
     }
 }

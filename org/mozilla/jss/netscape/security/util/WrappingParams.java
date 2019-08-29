@@ -32,8 +32,8 @@ public class WrappingParams {
     IVParameterSpec payloadWrappingIV;
 
     public WrappingParams(Type skType, KeyGenAlgorithm skKeyGenAlgorithm, int skLength,
-            KeyWrapAlgorithm skWrapAlgorithm, EncryptionAlgorithm payloadEncryptionAlgorithm,
-            KeyWrapAlgorithm payloadWrapAlgorithm, IVParameterSpec payloadEncryptIV, IVParameterSpec payloadWrapIV) {
+                          KeyWrapAlgorithm skWrapAlgorithm, EncryptionAlgorithm payloadEncryptionAlgorithm,
+                          KeyWrapAlgorithm payloadWrapAlgorithm, IVParameterSpec payloadEncryptIV, IVParameterSpec payloadWrapIV) {
         super();
         this.skType = skType;
         this.skKeyGenAlgorithm = skKeyGenAlgorithm;
@@ -57,7 +57,7 @@ public class WrappingParams {
     public WrappingParams() {}
 
     public WrappingParams(String encryptOID, String wrapName, String priKeyAlgo, IVParameterSpec encryptIV, IVParameterSpec wrapIV)
-            throws NumberFormatException, NoSuchAlgorithmException {
+    throws NumberFormatException, NoSuchAlgorithmException {
         EncryptionAlgorithm encrypt = null;
         OBJECT_IDENTIFIER eccOID = new OBJECT_IDENTIFIER("1.2.840.10045.2.1");
 
@@ -129,7 +129,7 @@ public class WrappingParams {
     }
 
     private WrappingParams(String wrapOID, String priKeyAlgo, IVParameterSpec wrapIV)
-            throws NumberFormatException, NoSuchAlgorithmException {
+    throws NumberFormatException, NoSuchAlgorithmException {
         KeyWrapAlgorithm kwAlg = KeyWrapAlgorithm.fromOID(wrapOID);
 
         if (kwAlg == KeyWrapAlgorithm.AES_KEY_WRAP_PAD) {
@@ -180,7 +180,7 @@ public class WrappingParams {
     }
 
     public static WrappingParams getWrappingParamsFromArchiveOptions(String wrapOID, String priKeyAlgo, IVParameterSpec wrapIV)
-            throws NumberFormatException, NoSuchAlgorithmException {
+    throws NumberFormatException, NoSuchAlgorithmException {
         return new WrappingParams(wrapOID, priKeyAlgo, wrapIV);
     }
 
@@ -247,7 +247,7 @@ public class WrappingParams {
     }
 
     public void setPayloadEncryptionAlgorithm(String algName, String modeName, String paddingName, int keyStrength)
-            throws NoSuchAlgorithmException {
+    throws NoSuchAlgorithmException {
         this.payloadEncryptionAlgorithm = EncryptionAlgorithm.lookup(algName, modeName, paddingName, keyStrength);
     }
 

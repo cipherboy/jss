@@ -93,8 +93,8 @@ public class BodyPartReference implements ASN1Value {
      * @param bodyPartPath The sequence of bodyPartIDs.
      */
     public BodyPartReference(Type type,
-            INTEGER bodyPartID,
-            SEQUENCE bodyPartPath) {
+                             INTEGER bodyPartID,
+                             SEQUENCE bodyPartPath) {
         this.bodyPartID = bodyPartID;
         this.bodyPartPath = bodyPartPath;
     }
@@ -153,7 +153,7 @@ public class BodyPartReference implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         encode(ostream);
     }
@@ -182,11 +182,11 @@ public class BodyPartReference implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             CHOICE c = (CHOICE) choicet.decode(istream);
 
             if( c.getTag().equals(INTEGER.TAG) ) {
-                return new BodyPartReference(BodyPartID, (INTEGER) c.getValue() , null);
+                return new BodyPartReference(BodyPartID, (INTEGER) c.getValue(), null);
             } else {
                 assert( c.getTag().equals(SEQUENCE.TAG) );
                 return new BodyPartReference(BodyPartPath, null, (SEQUENCE) c.getValue());
@@ -194,7 +194,7 @@ public class BodyPartReference implements ASN1Value {
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-                throws InvalidBERException, IOException {
+        throws InvalidBERException, IOException {
             //A CHOICE cannot be implicitly tagged
             return decode(istream);
         }

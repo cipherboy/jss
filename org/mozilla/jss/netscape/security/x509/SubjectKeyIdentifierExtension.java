@@ -50,7 +50,7 @@ import org.mozilla.jss.netscape.security.util.DerValue;
  * @see CertAttrSet
  */
 public class SubjectKeyIdentifierExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
     /**
      *
      */
@@ -60,7 +60,7 @@ public class SubjectKeyIdentifierExtension extends Extension
      * get, set, delete methods of Certificate, x509 type.
      */
     public static final String IDENT =
-                         "x509.info.extensions.SubjectKeyIdentifier";
+        "x509.info.extensions.SubjectKeyIdentifier";
     /**
      * Attribute names.
      */
@@ -84,7 +84,7 @@ public class SubjectKeyIdentifierExtension extends Extension
      * @param octetString the octet string identifying the key identifier.
      */
     public SubjectKeyIdentifierExtension(boolean critical, byte[] octetString)
-            throws IOException {
+    throws IOException {
         id = new KeyIdentifier(octetString);
 
         this.extensionId = PKIXExtensions.SubjectKey_Id;
@@ -93,7 +93,7 @@ public class SubjectKeyIdentifierExtension extends Extension
     }
 
     public SubjectKeyIdentifierExtension(byte[] octetString)
-            throws IOException {
+    throws IOException {
         id = new KeyIdentifier(octetString);
 
         this.extensionId = PKIXExtensions.SubjectKey_Id;
@@ -109,7 +109,7 @@ public class SubjectKeyIdentifierExtension extends Extension
      * @exception IOException on error.
      */
     public SubjectKeyIdentifierExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = PKIXExtensions.SubjectKey_Id;
         this.critical = critical.booleanValue();
 
@@ -130,7 +130,7 @@ public class SubjectKeyIdentifierExtension extends Extension
         if (id == null)
             return "";
         String s = super.toString() + "SubjectKeyIdentifier [\n"
-                 + id.toString() + "]\n";
+                   + id.toString() + "]\n";
         return (s);
     }
 
@@ -169,12 +169,12 @@ public class SubjectKeyIdentifierExtension extends Extension
         if (name.equalsIgnoreCase(KEY_ID)) {
             if (!(obj instanceof KeyIdentifier)) {
                 throw new IOException("Attribute value should be of" +
-                                    " type KeyIdentifier.");
+                                      " type KeyIdentifier.");
             }
             id = (KeyIdentifier) obj;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:SubjectKeyIdentifierExtension.");
+                                  "CertAttrSet:SubjectKeyIdentifierExtension.");
         }
     }
 
@@ -186,7 +186,7 @@ public class SubjectKeyIdentifierExtension extends Extension
             return (id);
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:SubjectKeyIdentifierExtension.");
+                                  "CertAttrSet:SubjectKeyIdentifierExtension.");
         }
     }
 
@@ -198,7 +198,7 @@ public class SubjectKeyIdentifierExtension extends Extension
             id = null;
         } else {
             throw new IOException("Attribute name not recognized by " +
-                    "CertAttrSet:SubjectKeyIdentifierExtension.");
+                                  "CertAttrSet:SubjectKeyIdentifierExtension.");
         }
     }
 

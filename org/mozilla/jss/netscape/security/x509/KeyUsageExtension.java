@@ -43,7 +43,7 @@ import org.mozilla.jss.netscape.security.util.DerValue;
  * @see CertAttrSet
  */
 public class KeyUsageExtension extends Extension
-        implements CertAttrSet {
+    implements CertAttrSet {
 
     /**
      *
@@ -137,7 +137,7 @@ public class KeyUsageExtension extends Extension
      */
     public KeyUsageExtension(boolean critical, byte[] bitString) throws IOException {
         this.bitString =
-                new BitArray(bitString.length * 8, bitString).toBooleanArray();
+            new BitArray(bitString.length * 8, bitString).toBooleanArray();
         this.extensionId = PKIXExtensions.KeyUsage_Id;
         this.critical = critical;
         encodeThis();
@@ -145,7 +145,7 @@ public class KeyUsageExtension extends Extension
 
     public KeyUsageExtension(byte[] bitString) throws IOException {
         this.bitString =
-                new BitArray(bitString.length * 8, bitString).toBooleanArray();
+            new BitArray(bitString.length * 8, bitString).toBooleanArray();
         this.extensionId = PKIXExtensions.KeyUsage_Id;
         this.critical = true;
         encodeThis();
@@ -192,7 +192,7 @@ public class KeyUsageExtension extends Extension
      * @exception IOException on error.
      */
     public KeyUsageExtension(Boolean critical, Object value)
-            throws IOException {
+    throws IOException {
         this.extensionId = PKIXExtensions.KeyUsage_Id;
         this.critical = critical.booleanValue();
         /*
@@ -257,7 +257,7 @@ public class KeyUsageExtension extends Extension
             set(8, val);
         } else {
             throw new IOException("Attribute name not recognized by"
-                                + " CertAttrSet:KeyUsage.");
+                                  + " CertAttrSet:KeyUsage.");
         }
         encodeThis();
     }
@@ -286,7 +286,7 @@ public class KeyUsageExtension extends Extension
             return Boolean.valueOf(isSet(8));
         } else {
             throw new IOException("Attribute name not recognized by"
-                                + " CertAttrSet:KeyUsage.");
+                                  + " CertAttrSet:KeyUsage.");
         }
     }
 
@@ -314,7 +314,7 @@ public class KeyUsageExtension extends Extension
             set(8, false);
         } else {
             throw new IOException("Attribute name not recognized by"
-                                + " CertAttrSet:KeyUsage.");
+                                  + " CertAttrSet:KeyUsage.");
         }
     }
 

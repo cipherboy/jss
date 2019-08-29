@@ -88,16 +88,16 @@ public class SignedAndEnvelopedData implements ASN1Value {
     ///////////////////////////////////////////////////////////////////////
 
     public SignedAndEnvelopedData(
-                        INTEGER version,
-                        SET recipientInfos,
-                        SET digestAlgorithms,
-                        EncryptedContentInfo encryptedContentInfo,
-                        SET certificates,
-                        SET crls,
-                        SET signerInfos)
+        INTEGER version,
+        SET recipientInfos,
+        SET digestAlgorithms,
+        EncryptedContentInfo encryptedContentInfo,
+        SET certificates,
+        SET crls,
+        SET signerInfos)
     {
         if( version==null || recipientInfos==null || digestAlgorithms==null
-            || encryptedContentInfo==null || signerInfos==null ) {
+                || encryptedContentInfo==null || signerInfos==null ) {
             throw new IllegalArgumentException(
                 "SignedAndEnvelopedData constructor parameter is null");
         }
@@ -139,7 +139,7 @@ public class SignedAndEnvelopedData implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         sequence.encode(implicitTag, ostream);
     }
@@ -158,12 +158,12 @@ public class SignedAndEnvelopedData implements ASN1Value {
             seqt.addElement(INTEGER.getTemplate());
             seqt.addElement(new SET.OF_Template(RecipientInfo.getTemplate()));
             seqt.addElement(new SET.OF_Template(
-                                    AlgorithmIdentifier.getTemplate()) );
+                                AlgorithmIdentifier.getTemplate()) );
             seqt.addElement(EncryptedContentInfo.getTemplate());
             seqt.addOptionalElement(new Tag(0),
-                    new SET.OF_Template(ANY.getTemplate()));
+                                    new SET.OF_Template(ANY.getTemplate()));
             seqt.addOptionalElement(new Tag(1),
-                    new SET.OF_Template(ANY.getTemplate()));
+                                    new SET.OF_Template(ANY.getTemplate()));
             seqt.addElement(new SET.OF_Template(SignerInfo.getTemplate()));
         }
 
@@ -172,24 +172,24 @@ public class SignedAndEnvelopedData implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             return decode(TAG, istream);
         }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws InvalidBERException, IOException
+        throws InvalidBERException, IOException
         {
             SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag, istream);
 
             return new SignedAndEnvelopedData(
-                        (INTEGER) seq.elementAt(0),
-                        (SET) seq.elementAt(1),
-                        (SET) seq.elementAt(2),
-                        (EncryptedContentInfo) seq.elementAt(3),
-                        (SET) seq.elementAt(4),
-                        (SET) seq.elementAt(5),
-                        (SET) seq.elementAt(6) );
+                       (INTEGER) seq.elementAt(0),
+                       (SET) seq.elementAt(1),
+                       (SET) seq.elementAt(2),
+                       (EncryptedContentInfo) seq.elementAt(3),
+                       (SET) seq.elementAt(4),
+                       (SET) seq.elementAt(5),
+                       (SET) seq.elementAt(6) );
         }
     }
 }

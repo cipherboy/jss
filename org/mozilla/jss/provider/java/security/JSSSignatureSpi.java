@@ -35,14 +35,14 @@ class JSSSignatureSpi extends java.security.SignatureSpi {
     }
 
     public void engineInitSign(java.security.PrivateKey privateKey,
-        SecureRandom random) throws InvalidKeyException
+                               SecureRandom random) throws InvalidKeyException
     {
         // discard the random
         engineInitSign(privateKey);
     }
 
     public void engineInitSign(java.security.PrivateKey privateKey)
-        throws InvalidKeyException
+    throws InvalidKeyException
     {
         try {
             sig = getSigContext(privateKey);
@@ -56,7 +56,7 @@ class JSSSignatureSpi extends java.security.SignatureSpi {
 
     private org.mozilla.jss.crypto.Signature
     getSigContext(java.security.PrivateKey privateKey)
-        throws NoSuchAlgorithmException, InvalidKeyException, TokenException
+    throws NoSuchAlgorithmException, InvalidKeyException, TokenException
     {
         CryptoToken token;
         PrivateKey privk;
@@ -72,11 +72,11 @@ class JSSSignatureSpi extends java.security.SignatureSpi {
     }
 
     public void engineInitVerify(PublicKey publicKey)
-        throws InvalidKeyException
+    throws InvalidKeyException
     {
         try {
             CryptoToken token =
-              TokenSupplierManager.getTokenSupplier().getThreadToken();
+                TokenSupplierManager.getTokenSupplier().getThreadToken();
             sig = token.getSignatureContext(alg);
 
             // convert the public key into a JSS public key if necessary
@@ -89,17 +89,17 @@ class JSSSignatureSpi extends java.security.SignatureSpi {
                 X509EncodedKeySpec encodedKey =
                     new X509EncodedKeySpec(publicKey.getEncoded());
                 KeyFactory fact = KeyFactory.getInstance(
-                    publicKey.getAlgorithm(), "Mozilla-JSS");
+                                      publicKey.getAlgorithm(), "Mozilla-JSS");
                 publicKey = fact.generatePublic(encodedKey);
             }
 
             sig.initVerify(publicKey);
         } catch(NoSuchProviderException e) {
             throw new InvalidKeyException("Unable to convert non-JSS key " +
-                "to JSS key");
+                                          "to JSS key");
         } catch(java.security.spec.InvalidKeySpecException e) {
             throw new InvalidKeyException("Unable to convert non-JSS key " +
-                "to JSS key");
+                                          "to JSS key");
         } catch(java.security.NoSuchAlgorithmException e) {
             throw new InvalidKeyException("Algorithm not supported");
         } catch(TokenException e) {
@@ -108,7 +108,7 @@ class JSSSignatureSpi extends java.security.SignatureSpi {
     }
 
     public void engineUpdate(byte b)
-        throws SignatureException
+    throws SignatureException
     {
         try {
             sig.update(b);
@@ -118,7 +118,7 @@ class JSSSignatureSpi extends java.security.SignatureSpi {
     }
 
     public void engineUpdate(byte[] b, int off, int len)
-        throws SignatureException
+    throws SignatureException
     {
         try {
             sig.update(b, off, len);
@@ -136,7 +136,7 @@ class JSSSignatureSpi extends java.security.SignatureSpi {
     }
 
     public int engineSign(byte[] outbuf, int offset, int len)
-        throws SignatureException
+    throws SignatureException
     {
         try {
             return sig.sign(outbuf, offset, len);
@@ -154,7 +154,7 @@ class JSSSignatureSpi extends java.security.SignatureSpi {
     }
 
     public void engineSetParameter(AlgorithmParameterSpec params)
-        throws InvalidAlgorithmParameterException
+    throws InvalidAlgorithmParameterException
     {
         try {
             sig.setParameter(params);
@@ -165,14 +165,14 @@ class JSSSignatureSpi extends java.security.SignatureSpi {
     }
 
     public Object engineGetParameter(String param)
-            throws InvalidParameterException
+    throws InvalidParameterException
     {
         throw new InvalidParameterException(
             "name/value parameters not supported");
     }
 
     public void engineSetParameter(String param, Object value)
-            throws InvalidParameterException
+    throws InvalidParameterException
     {
         throw new InvalidParameterException(
             "name/value parameters not supported");

@@ -57,7 +57,7 @@ public final class KeyType {
      * is thrown.
      */
     static public KeyType getKeyTypeFromAlgorithm(Algorithm alg)
-        throws NoSuchAlgorithmException
+    throws NoSuchAlgorithmException
     {
         assert(alg!=null);
         Object obj = algHash.get(alg);
@@ -110,41 +110,41 @@ public final class KeyType {
     //////////////////////////////////////////////////////////////
     static public final KeyType
     RSA     = new KeyType (new Algorithm[]
-                    {
-                    SignatureAlgorithm.RSASignature,
-                    SignatureAlgorithm.RSASignatureWithMD2Digest,
-                    SignatureAlgorithm.RSASignatureWithMD5Digest,
-                    SignatureAlgorithm.RSASignatureWithSHA1Digest,
-                    SignatureAlgorithm.RSASignatureWithSHA256Digest,
-                    SignatureAlgorithm.RSASignatureWithSHA384Digest,
-                    SignatureAlgorithm.RSASignatureWithSHA512Digest,
-                    KeyWrapAlgorithm.RSA
-                    },
-                    "RSA"
-                );
+                           {
+                               SignatureAlgorithm.RSASignature,
+                               SignatureAlgorithm.RSASignatureWithMD2Digest,
+                               SignatureAlgorithm.RSASignatureWithMD5Digest,
+                               SignatureAlgorithm.RSASignatureWithSHA1Digest,
+                               SignatureAlgorithm.RSASignatureWithSHA256Digest,
+                               SignatureAlgorithm.RSASignatureWithSHA384Digest,
+                               SignatureAlgorithm.RSASignatureWithSHA512Digest,
+                               KeyWrapAlgorithm.RSA
+                           },
+                           "RSA"
+                          );
 
     //////////////////////////////////////////////////////////////
     static public final KeyType
     DSA     = new KeyType(new Algorithm[]
-                    {
-                    SignatureAlgorithm.DSASignature,
-                    SignatureAlgorithm.DSASignatureWithSHA1Digest
-                    },
-                    "DSA"
-                );
+                          {
+                              SignatureAlgorithm.DSASignature,
+                              SignatureAlgorithm.DSASignatureWithSHA1Digest
+                          },
+                          "DSA"
+                         );
 
     //////////////////////////////////////////////////////////////
     static public final KeyType
     EC     = new KeyType(new Algorithm[]
-                    {
-                    SignatureAlgorithm.ECSignature,
-                    SignatureAlgorithm.ECSignatureWithSHA1Digest,
-                    SignatureAlgorithm.ECSignatureWithSHA256Digest,
-                    SignatureAlgorithm.ECSignatureWithSHA384Digest,
-                    SignatureAlgorithm.ECSignatureWithSHA512Digest
-                    },
-                    "EC"
-                );
+                         {
+                             SignatureAlgorithm.ECSignature,
+                             SignatureAlgorithm.ECSignatureWithSHA1Digest,
+                             SignatureAlgorithm.ECSignatureWithSHA256Digest,
+                             SignatureAlgorithm.ECSignatureWithSHA384Digest,
+                             SignatureAlgorithm.ECSignatureWithSHA512Digest
+                         },
+                         "EC"
+                        );
 
     //////////////////////////////////////////////////////////////
     /**
@@ -166,81 +166,81 @@ public final class KeyType {
     //////////////////////////////////////////////////////////////
     static public final KeyType
     DES     = new KeyType(new Algorithm[]
-                            {
-                            KeyWrapAlgorithm.DES_ECB,
-                            KeyWrapAlgorithm.DES_CBC,
-                            KeyWrapAlgorithm.DES_CBC_PAD,
-                            EncryptionAlgorithm.DES_ECB,
-                            EncryptionAlgorithm.DES_CBC,
-                            EncryptionAlgorithm.DES_CBC_PAD
-                            },
-                            "DES"
-                        );
+                          {
+                              KeyWrapAlgorithm.DES_ECB,
+                              KeyWrapAlgorithm.DES_CBC,
+                              KeyWrapAlgorithm.DES_CBC_PAD,
+                              EncryptionAlgorithm.DES_ECB,
+                              EncryptionAlgorithm.DES_CBC,
+                              EncryptionAlgorithm.DES_CBC_PAD
+                          },
+                          "DES"
+                         );
 
     //////////////////////////////////////////////////////////////
     static public final KeyType
     DES3     = new KeyType(new Algorithm[]
-                            {
-                            KeyWrapAlgorithm.DES3_ECB,
-                            KeyWrapAlgorithm.DES3_CBC,
-                            KeyWrapAlgorithm.DES3_CBC_PAD,
-                            EncryptionAlgorithm.DES3_ECB,
-                            EncryptionAlgorithm.DES3_CBC,
-                            EncryptionAlgorithm.DES3_CBC_PAD
-                            },
-                            "DESede"
-                        );
+                           {
+                               KeyWrapAlgorithm.DES3_ECB,
+                               KeyWrapAlgorithm.DES3_CBC,
+                               KeyWrapAlgorithm.DES3_CBC_PAD,
+                               EncryptionAlgorithm.DES3_ECB,
+                               EncryptionAlgorithm.DES3_CBC,
+                               EncryptionAlgorithm.DES3_CBC_PAD
+                           },
+                           "DESede"
+                          );
 
     //////////////////////////////////////////////////////////////
     static public final KeyType
     AES       = new KeyType(new Algorithm[]
                             {
-                            KeyWrapAlgorithm.AES_ECB,
-                            KeyWrapAlgorithm.AES_CBC,
-                            KeyWrapAlgorithm.AES_CBC_PAD,
-                            KeyWrapAlgorithm.AES_KEY_WRAP,
-                            KeyWrapAlgorithm.AES_KEY_WRAP_PAD,
-                            EncryptionAlgorithm.AES_128_ECB,
-                            EncryptionAlgorithm.AES_128_CBC,
-                            EncryptionAlgorithm.AES_192_ECB,
-                            EncryptionAlgorithm.AES_192_CBC,
-                            EncryptionAlgorithm.AES_256_ECB,
-                            EncryptionAlgorithm.AES_256_CBC,
-                            EncryptionAlgorithm.AES_CBC_PAD,
-                            EncryptionAlgorithm.AES_128_CBC_PAD,
-                            EncryptionAlgorithm.AES_192_CBC_PAD,
-                            EncryptionAlgorithm.AES_256_CBC_PAD
+                                KeyWrapAlgorithm.AES_ECB,
+                                KeyWrapAlgorithm.AES_CBC,
+                                KeyWrapAlgorithm.AES_CBC_PAD,
+                                KeyWrapAlgorithm.AES_KEY_WRAP,
+                                KeyWrapAlgorithm.AES_KEY_WRAP_PAD,
+                                EncryptionAlgorithm.AES_128_ECB,
+                                EncryptionAlgorithm.AES_128_CBC,
+                                EncryptionAlgorithm.AES_192_ECB,
+                                EncryptionAlgorithm.AES_192_CBC,
+                                EncryptionAlgorithm.AES_256_ECB,
+                                EncryptionAlgorithm.AES_256_CBC,
+                                EncryptionAlgorithm.AES_CBC_PAD,
+                                EncryptionAlgorithm.AES_128_CBC_PAD,
+                                EncryptionAlgorithm.AES_192_CBC_PAD,
+                                EncryptionAlgorithm.AES_256_CBC_PAD
                             },
                             "AES"
-                        );
+                           );
 
     //////////////////////////////////////////////////////////////
     static public final KeyType
     RC4     = new KeyType(new Algorithm[]
-                            {
-                            EncryptionAlgorithm.RC4
-                            },
-                            "RC4"
-                        );
+                          {
+                              EncryptionAlgorithm.RC4
+                          },
+                          "RC4"
+                         );
 
     //////////////////////////////////////////////////////////////
     static public final KeyType
     RC2     = new KeyType(new Algorithm[]
-                            {
-                            EncryptionAlgorithm.RC2_CBC,
-                            EncryptionAlgorithm.RC2_CBC_PAD
-                            },
-                            "RC2"
-                        );
+                          {
+                              EncryptionAlgorithm.RC2_CBC,
+                              EncryptionAlgorithm.RC2_CBC_PAD
+                          },
+                          "RC2"
+                         );
 
     //////////////////////////////////////////////////////////////
     static public final KeyType
     SHA1_HMAC = new KeyType(new Algorithm[]
                             {
-                            HMACAlgorithm.SHA1
+                                HMACAlgorithm.SHA1
                             },
                             "SHA1_HMAC"
-                        );
+                           );
 
     static public final KeyType GENERIC_SECRET =
         new KeyType(new Algorithm[] { }, "GENERIC_SECRET");

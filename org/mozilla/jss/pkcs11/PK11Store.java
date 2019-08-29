@@ -46,14 +46,14 @@ public final class PK11Store implements CryptoStore {
      */
     public PrivateKey
     importPrivateKey(byte[] key, PrivateKey.Type type)
-            throws TokenException,KeyAlreadyImportedException {
+    throws TokenException,KeyAlreadyImportedException {
         return importPrivateKey(key, type, false);
     }
 
     public native PrivateKey
     importPrivateKey(
         byte[] key, PrivateKey.Type type, boolean temporary)
-        throws TokenException,KeyAlreadyImportedException;
+    throws TokenException,KeyAlreadyImportedException;
 
     public synchronized PrivateKey[] getPrivateKeys() throws TokenException {
 
@@ -133,25 +133,25 @@ public final class PK11Store implements CryptoStore {
 
 
     public native void deletePrivateKey(PrivateKey privateKey)
-        throws NoSuchItemOnTokenException, TokenException;
+    throws NoSuchItemOnTokenException, TokenException;
 
     public native void deletePublicKey(PublicKey publicKey)
-            throws NoSuchItemOnTokenException, TokenException;
+    throws NoSuchItemOnTokenException, TokenException;
 
     public byte[] getEncryptedPrivateKeyInfo(
-            X509Certificate cert,
-            PBEAlgorithm pbeAlg,
-            Password pw,
-            int iteration)
-            throws NotInitializedException,
-                ObjectNotFoundException, TokenException {
+        X509Certificate cert,
+        PBEAlgorithm pbeAlg,
+        Password pw,
+        int iteration)
+    throws NotInitializedException,
+        ObjectNotFoundException, TokenException {
         return getEncryptedPrivateKeyInfo(
-            null,
-            pw,
-            pbeAlg,
-            iteration,
-            CryptoManager.getInstance().findPrivKeyByCert(cert)
-        );
+                   null,
+                   pw,
+                   pbeAlg,
+                   iteration,
+                   CryptoManager.getInstance().findPrivKeyByCert(cert)
+               );
     }
 
     public native byte[] getEncryptedPrivateKeyInfo(
@@ -191,10 +191,10 @@ public final class PK11Store implements CryptoStore {
      * @exception NoSuchItemOnTokenException If the certificate not found
      * @exception TokenException General token error
      */
-	// Currently have to use PK11_DeleteTokenObject + PK11_FindObjectForCert
-	// or maybe SEC_DeletePermCertificate.
+    // Currently have to use PK11_DeleteTokenObject + PK11_FindObjectForCert
+    // or maybe SEC_DeletePermCertificate.
     public native void deleteCert(X509Certificate cert)
-        throws NoSuchItemOnTokenException, TokenException;
+    throws NoSuchItemOnTokenException, TokenException;
 
     /**
      * Deletes the specified certificate from the store.
@@ -204,21 +204,21 @@ public final class PK11Store implements CryptoStore {
      * @exception TokenException General token error
      */
     public native void deleteCertOnly(X509Certificate cert)
-        throws NoSuchItemOnTokenException, TokenException;
+    throws NoSuchItemOnTokenException, TokenException;
 
-	////////////////////////////////////////////////////////////
-	// Construction
-	////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////
+    // Construction
+    ////////////////////////////////////////////////////////////
     protected boolean updated;
-	public PK11Store(TokenProxy proxy) {
+    public PK11Store(TokenProxy proxy) {
         assert(proxy!=null);
-		this.storeProxy = proxy;
-	}
+        this.storeProxy = proxy;
+    }
 
-	protected PK11Store() { }
+    protected PK11Store() { }
 
-	////////////////////////////////////////////////////////////
-	// Private data
-	////////////////////////////////////////////////////////////
-	protected TokenProxy storeProxy;
+    ////////////////////////////////////////////////////////////
+    // Private data
+    ////////////////////////////////////////////////////////////
+    protected TokenProxy storeProxy;
 }

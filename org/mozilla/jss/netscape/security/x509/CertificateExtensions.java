@@ -44,7 +44,7 @@ import org.mozilla.jss.netscape.security.util.DerValue;
  * @see CertAttrSet
  */
 public class CertificateExtensions extends Vector<Extension>
-        implements CertAttrSet, Serializable {
+    implements CertAttrSet, Serializable {
     /**
      *
      */
@@ -82,7 +82,8 @@ public class CertificateExtensions extends Vector<Extension>
                 Array.setByte(value, i, extData[i]);
             }
             Object[] passed = new Object[] { Boolean.valueOf(ext.isCritical()),
-                    value };
+                                             value
+                                           };
             CertAttrSet certExt = cons.newInstance(passed);
             if (certExt != null && certExt.getName() != null) {
                 map.put(certExt.getName(), (Extension) certExt);
@@ -118,7 +119,7 @@ public class CertificateExtensions extends Vector<Extension>
      * @exception IOException on decoding errors.
      */
     public CertificateExtensions(DerInputStream in)
-            throws IOException {
+    throws IOException {
 
         map = new Hashtable<String, Extension>();
         DerValue[] exts = in.getSequence(5);
@@ -188,7 +189,7 @@ public class CertificateExtensions extends Vector<Extension>
      * @exception IOException on errors.
      */
     public void encode(OutputStream out)
-            throws CertificateException, IOException {
+    throws CertificateException, IOException {
         try (DerOutputStream tmp = new DerOutputStream()) {
             DerOutputStream extOut = new DerOutputStream();
             for (int i = 0; i < size(); i++) {
@@ -205,7 +206,7 @@ public class CertificateExtensions extends Vector<Extension>
             seq.write(DerValue.tag_Sequence, extOut);
 
             tmp.write(DerValue.createTag(DerValue.TAG_CONTEXT, true, (byte) 3),
-                    seq);
+                      seq);
 
             out.write(tmp.toByteArray());
         }

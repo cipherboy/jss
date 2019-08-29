@@ -14,14 +14,14 @@ package org.mozilla.jss.util;
  */
 public class NullPasswordCallback implements PasswordCallback {
 
-    public Password getPasswordFirstAttempt(PasswordCallbackInfo info) 
-        throws PasswordCallback.GiveUpException
+    public Password getPasswordFirstAttempt(PasswordCallbackInfo info)
+    throws PasswordCallback.GiveUpException
     {
         throw new PasswordCallback.GiveUpException();
     }
 
     public Password getPasswordAgain(PasswordCallbackInfo info)
-        throws PasswordCallback.GiveUpException
+    throws PasswordCallback.GiveUpException
     {
         throw new PasswordCallback.GiveUpException();
     }

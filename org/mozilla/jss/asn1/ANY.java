@@ -49,16 +49,16 @@ public class ANY implements ASN1Value {
      * @throws InvalidBERException If there is an invalid BER encoding.
      */
     public ANY(byte[] encoded) throws InvalidBERException {
-      try {
-        this.encoded = encoded;
+        try {
+            this.encoded = encoded;
 
-        ByteArrayInputStream bis = new ByteArrayInputStream(encoded);
-        ASN1Header head = new ASN1Header(bis);
-        this.tag = head.getTag();
-      } catch(IOException e) {
+            ByteArrayInputStream bis = new ByteArrayInputStream(encoded);
+            ASN1Header head = new ASN1Header(bis);
+            this.tag = head.getTag();
+        } catch(IOException e) {
             throw new org.mozilla.jss.util.AssertionException(
                 "IOException while creating ANY: "+e);
-      }
+        }
     }
 
     /**
@@ -100,24 +100,24 @@ public class ANY implements ASN1Value {
      */
     private byte[] contents=null;
     public byte[] getContents() throws InvalidBERException {
-      try {
-        if( contents==null ) {
-            ByteArrayInputStream bis = new ByteArrayInputStream(encoded);
-            header = new ASN1Header(bis);
-            contents = new byte[ bis.available() ];
-            if( (contents.length != header.getContentLength()) &&
-                ( header.getContentLength() != -1 ) ) {
-                throw new InvalidBERException("Length of contents was not the "+
-                    "same as the header predicted");
+        try {
+            if( contents==null ) {
+                ByteArrayInputStream bis = new ByteArrayInputStream(encoded);
+                header = new ASN1Header(bis);
+                contents = new byte[ bis.available() ];
+                if( (contents.length != header.getContentLength()) &&
+                        ( header.getContentLength() != -1 ) ) {
+                    throw new InvalidBERException("Length of contents was not the "+
+                                                  "same as the header predicted");
+                }
+                ASN1Util.readFully(contents, bis);
             }
-            ASN1Util.readFully(contents, bis);
+
+            return contents;
+
+        } catch( IOException e ) {
+            throw new RuntimeException("Unable to read byte array: " + e.getMessage(), e);
         }
-
-        return contents;
-
-      } catch( IOException e ) {
-          throw new RuntimeException("Unable to read byte array: " + e.getMessage(), e);
-      }
     }
 
     public void encode(OutputStream ostream) throws IOException {
@@ -135,14 +135,14 @@ public class ANY implements ASN1Value {
      * @throws InvalidBERException If there is an invalid BER encoding.
      */
     public ASN1Value decodeWith(ASN1Template template)
-        throws InvalidBERException
+    throws InvalidBERException
     {
-      try {
-        ByteArrayInputStream bis = new ByteArrayInputStream(encoded);
-        return template.decode(bis);
-      } catch( IOException e ) {
-          throw new RuntimeException("Unable to read byte array: " + e.getMessage(), e);
-      }
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(encoded);
+            return template.decode(bis);
+        } catch( IOException e ) {
+            throw new RuntimeException("Unable to read byte array: " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -158,7 +158,7 @@ public class ANY implements ASN1Value {
      * @throws IOException If other error occurred.
      */
     public ASN1Value decodeWith(Tag implicitTag, ASN1Template template)
-        throws IOException, InvalidBERException
+    throws IOException, InvalidBERException
     {
         ByteArrayInputStream bis = new ByteArrayInputStream(encoded);
         return template.decode(implicitTag, bis);
@@ -170,7 +170,7 @@ public class ANY implements ASN1Value {
      * @throws IOException If an error occurred.
      */
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         if( ! implicitTag.equals(tag) ) {
             throw new RuntimeException("No implicit tags allowed for ANY");
@@ -188,14 +188,14 @@ public class ANY implements ASN1Value {
      * @throws IOException If other error occurred.
      */
     public void encodeWithAlternateTag(Tag alternateTag, OutputStream ostream)
-        throws IOException, InvalidBERException
+    throws IOException, InvalidBERException
     {
         byte[] contents = getContents();
         ASN1Header oldHead = getHeader();
         assert( contents.length == oldHead.getContentLength() );
 
         ASN1Header newHead = new ASN1Header( alternateTag, oldHead.getForm(),
-                                contents.length);
+                                             contents.length);
         newHead.encode(ostream);
         ostream.write(contents);
     }
@@ -210,63 +210,63 @@ public class ANY implements ASN1Value {
     }
     private static Template templateInstance = new Template();
 
-/**
- * A class for decoding <code>ANY</code> values from BER.
- */
-public static class Template implements ASN1Template {
+    /**
+     * A class for decoding <code>ANY</code> values from BER.
+     */
+    public static class Template implements ASN1Template {
 
-    public boolean tagMatch(Tag tag) {
-        return true; // wheeeeee...it's ANY!
+        public boolean tagMatch(Tag tag) {
+            return true; // wheeeeee...it's ANY!
 
-    }
-
-    public ASN1Value decode(InputStream istream)
-        throws IOException, InvalidBERException
-    {
-      try {
-
-        ASN1Header head = ASN1Header.lookAhead(istream);
-
-        if( head.getContentLength() == -1 ) {
-            // indefinite length encoding
-            ByteArrayOutputStream recording = new ByteArrayOutputStream();
-
-            // eat the header off the input stream
-            head = new ASN1Header(istream);
-
-            // write the header to the recording stream
-            recording.write( head.encode() );
-
-            // write all objects from the input stream to the recording
-            // stream, until we hit an END-OF-CONTENTS tag
-            ANY any;
-            ANY.Template anyt = new ANY.Template();
-            int count=0;
-            do {
-                any = (ANY) anyt.decode(istream);
-                recording.write( any.getEncoded() );
-            } while( ! any.getTag().equals(Tag.EOC) );
-
-            return new ANY( head.getTag(), recording.toByteArray() );
-
-        } else {
-            // definite length encoding
-            byte[] data = new byte[ (int) head.getTotalLength() ];
-
-            ASN1Util.readFully(data, istream);
-            return new ANY(head.getTag(), data);
         }
 
-      } catch( InvalidBERException e ) {
-            throw new InvalidBERException(e, "ANY");
-      }
-    }
-
-    public ASN1Value decode(Tag implicitTag, InputStream istream)
+        public ASN1Value decode(InputStream istream)
         throws IOException, InvalidBERException
-    {
-        throw new InvalidBERException("Implicit tag on ANY");
-    }
-} // End of Template
+        {
+            try {
+
+                ASN1Header head = ASN1Header.lookAhead(istream);
+
+                if( head.getContentLength() == -1 ) {
+                    // indefinite length encoding
+                    ByteArrayOutputStream recording = new ByteArrayOutputStream();
+
+                    // eat the header off the input stream
+                    head = new ASN1Header(istream);
+
+                    // write the header to the recording stream
+                    recording.write( head.encode() );
+
+                    // write all objects from the input stream to the recording
+                    // stream, until we hit an END-OF-CONTENTS tag
+                    ANY any;
+                    ANY.Template anyt = new ANY.Template();
+                    int count=0;
+                    do {
+                        any = (ANY) anyt.decode(istream);
+                        recording.write( any.getEncoded() );
+                    } while( ! any.getTag().equals(Tag.EOC) );
+
+                    return new ANY( head.getTag(), recording.toByteArray() );
+
+                } else {
+                    // definite length encoding
+                    byte[] data = new byte[ (int) head.getTotalLength() ];
+
+                    ASN1Util.readFully(data, istream);
+                    return new ANY(head.getTag(), data);
+                }
+
+            } catch( InvalidBERException e ) {
+                throw new InvalidBERException(e, "ANY");
+            }
+        }
+
+        public ASN1Value decode(Tag implicitTag, InputStream istream)
+        throws IOException, InvalidBERException
+        {
+            throw new InvalidBERException("Implicit tag on ANY");
+        }
+    } // End of Template
 
 }

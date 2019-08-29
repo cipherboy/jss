@@ -99,7 +99,7 @@ public class CertRepContent implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream ostream)
-        throws IOException
+    throws IOException
     {
         SEQUENCE encoding = new SEQUENCE();
 
@@ -122,36 +122,36 @@ public class CertRepContent implements ASN1Value {
         if(argv.length != 2) {
             System.out.println("Usage: CertRepContent <certfile> <outputfile>");
             System.out.println("certfile should contain a DER-encoded X.509 "+
-                    "certificate");
+                               "certificate");
             System.exit(-1);
         }
 
         try (FileInputStream certfile = new FileInputStream(argv[0]);
-                FileOutputStream fos = new FileOutputStream(argv[1])) {
+                    FileOutputStream fos = new FileOutputStream(argv[1])) {
 
-        byte[][] certs = new byte[2][];
-        certs[0] = new byte[ certfile.available() ];
-        certfile.read(certs[0]);
-        certs[1] = certs[0];
+            byte[][] certs = new byte[2][];
+            certs[0] = new byte[ certfile.available() ];
+            certfile.read(certs[0]);
+            certs[1] = certs[0];
 
-        PKIStatusInfo status = new PKIStatusInfo(PKIStatusInfo.rejection,
+            PKIStatusInfo status = new PKIStatusInfo(PKIStatusInfo.rejection,
                     PKIStatusInfo.badRequest | PKIStatusInfo.badTime );
 
-        status.addFreeText("And your mother dresses you funny");
-        status.addFreeText("so there");
+            status.addFreeText("And your mother dresses you funny");
+            status.addFreeText("so there");
 
-        CertifiedKeyPair ckp = new CertifiedKeyPair(
-                                new CertOrEncCert( certs[0] ) );
-        CertResponse resp = new CertResponse( new INTEGER(54), status, ckp);
+            CertifiedKeyPair ckp = new CertifiedKeyPair(
+                new CertOrEncCert( certs[0] ) );
+            CertResponse resp = new CertResponse( new INTEGER(54), status, ckp);
 
-        CertRepContent content = new CertRepContent(certs);
-        content.addCertResponse(resp);
+            CertRepContent content = new CertRepContent(certs);
+            content.addCertResponse(resp);
 
-        content.encode(fos);
-        System.out.println("Success!");
+            content.encode(fos);
+            System.out.println("Success!");
 
-      } catch( Exception e ) {
-        e.printStackTrace();
-      }
+        } catch( Exception e ) {
+            e.printStackTrace();
+        }
     }
 }

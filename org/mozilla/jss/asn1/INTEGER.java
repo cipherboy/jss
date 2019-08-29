@@ -72,7 +72,7 @@ public class INTEGER extends BigInteger implements ASN1Value {
     }
 
     public void encode(Tag implicitTag, OutputStream outStream)
-        throws IOException
+    throws IOException
     {
         // write header
         getHeader(implicitTag).encode( outStream );
@@ -92,7 +92,7 @@ public class INTEGER extends BigInteger implements ASN1Value {
     }
 
     private static final INTEGER.Template templateInstance =
-                                            new INTEGER.Template();
+        new INTEGER.Template();
     public static ASN1Template getTemplate() {
         return templateInstance;
     }
@@ -108,37 +108,37 @@ public class INTEGER extends BigInteger implements ASN1Value {
             int i = 0;
 
             Is[i] = 0;
-            Bs[i++] = new int[]{ 0x02, 0x01, 0x00 };
+            Bs[i++] = new int[] { 0x02, 0x01, 0x00 };
 
             Is[i] = 1;
-            Bs[i++] = new int[]{ 0x02, 0x01, 0x01 };
+            Bs[i++] = new int[] { 0x02, 0x01, 0x01 };
 
             Is[i] = -1;
-            Bs[i++] = new int[]{ 0x02, 0x01, 0xff };
+            Bs[i++] = new int[] { 0x02, 0x01, 0xff };
 
             Is[i] = 127;
-            Bs[i++] = new int[]{ 0x02, 0x01, 0x7f };
+            Bs[i++] = new int[] { 0x02, 0x01, 0x7f };
 
             Is[i] = 128;
-            Bs[i++] = new int[]{ 0x02, 0x02, 0x00, 0x80 };
+            Bs[i++] = new int[] { 0x02, 0x02, 0x00, 0x80 };
 
             Is[i] = 255;
-            Bs[i++] = new int[]{ 0x02, 0x02, 0x00, 0xff };
+            Bs[i++] = new int[] { 0x02, 0x02, 0x00, 0xff };
 
             Is[i] = 256;
-            Bs[i++] = new int[]{ 0x02, 0x02, 0x01, 0x00 };
+            Bs[i++] = new int[] { 0x02, 0x02, 0x01, 0x00 };
 
             Is[i] = -128;
-            Bs[i++] = new int[]{ 0x02, 0x01, 0x80 };
+            Bs[i++] = new int[] { 0x02, 0x01, 0x80 };
 
             Is[i] = -129;
-            Bs[i++] = new int[]{ 0x02, 0x02, 0xff, 0x7f };
+            Bs[i++] = new int[] { 0x02, 0x02, 0xff, 0x7f };
 
             Is[i] = 43568;
-            Bs[i++] = new int[]{ 0x02, 0x03, 0x00, 0xaa, 0x30 };
+            Bs[i++] = new int[] { 0x02, 0x03, 0x00, 0xaa, 0x30 };
 
             Is[i] = -43568;
-            Bs[i++] = new int[]{ 0x02, 0x03, 0xff, 0x55, 0xd0 };
+            Bs[i++] = new int[] { 0x02, 0x03, 0xff, 0x55, 0xd0 };
 
             for( i = 0; i < Is.length; i++) {
                 INTEGER I = new INTEGER( Is[i] );
@@ -184,44 +184,44 @@ public class INTEGER extends BigInteger implements ASN1Value {
 // INTEGER.Template
 // This is a nested class.
 //
-public static class Template implements ASN1Template {
+    public static class Template implements ASN1Template {
 
-    Tag getTag() {
-        return INTEGER.TAG;
-    }
-    public boolean tagMatch(Tag tag) {
-        return( tag.equals(INTEGER.TAG));
-    }
-
-    public ASN1Value
-    decode(InputStream derStream)
-        throws InvalidBERException, IOException
-    {
-        return decode( getTag(), derStream );
-    }
-
-    public ASN1Value
-    decode(Tag tag, InputStream derStream)
-        throws InvalidBERException, IOException
-    {
-      try {
-        ASN1Header wrapper = new ASN1Header(derStream);
-
-        wrapper.validate(tag, FORM);
-
-        // Is length < 1 ?
-        if( wrapper.getContentLength() < 1 ) {
-            throw new InvalidBERException("Invalid 0 length for INTEGER");
+        Tag getTag() {
+            return INTEGER.TAG;
+        }
+        public boolean tagMatch(Tag tag) {
+            return( tag.equals(INTEGER.TAG));
         }
 
-        byte[] valBytes = new byte[ (int) wrapper.getContentLength() ];
-        ASN1Util.readFully(valBytes, derStream);
-        return new INTEGER( valBytes );
+        public ASN1Value
+        decode(InputStream derStream)
+        throws InvalidBERException, IOException
+        {
+            return decode( getTag(), derStream );
+        }
 
-      } catch(InvalidBERException e) {
-        throw new InvalidBERException(e, "INTEGER");
-      }
-    }
-} // end of class Template
+        public ASN1Value
+        decode(Tag tag, InputStream derStream)
+        throws InvalidBERException, IOException
+        {
+            try {
+                ASN1Header wrapper = new ASN1Header(derStream);
+
+                wrapper.validate(tag, FORM);
+
+                // Is length < 1 ?
+                if( wrapper.getContentLength() < 1 ) {
+                    throw new InvalidBERException("Invalid 0 length for INTEGER");
+                }
+
+                byte[] valBytes = new byte[ (int) wrapper.getContentLength() ];
+                ASN1Util.readFully(valBytes, derStream);
+                return new INTEGER( valBytes );
+
+            } catch(InvalidBERException e) {
+                throw new InvalidBERException(e, "INTEGER");
+            }
+        }
+    } // end of class Template
 
 }

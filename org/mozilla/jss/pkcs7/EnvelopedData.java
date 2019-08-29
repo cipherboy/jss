@@ -44,7 +44,7 @@ public class EnvelopedData implements ASN1Value {
      */
 
     public EnvelopedData(  INTEGER version, SET recipientInfos,
-                        EncryptedContentInfo encryptedContentInfo) {
+                           EncryptedContentInfo encryptedContentInfo) {
 
         this.version = version;
         this.recipientInfos = recipientInfos;
@@ -79,28 +79,28 @@ public class EnvelopedData implements ASN1Value {
         }
 
         public ASN1Value decode(InputStream istream)
-            throws IOException, InvalidBERException
-            {
-                return decode(getTag(),istream);
-            }
+        throws IOException, InvalidBERException
+        {
+            return decode(getTag(),istream);
+        }
 
         public ASN1Value decode(Tag implicitTag, InputStream istream)
-            throws IOException, InvalidBERException
-            {
-                SEQUENCE.Template seqt = new SEQUENCE.Template();
-                seqt.addElement(new INTEGER.Template());
-                seqt.addElement(new SET.OF_Template(new RecipientInfo.Template()));
-                seqt.addElement(new EncryptedContentInfo.Template());
+        throws IOException, InvalidBERException
+        {
+            SEQUENCE.Template seqt = new SEQUENCE.Template();
+            seqt.addElement(new INTEGER.Template());
+            seqt.addElement(new SET.OF_Template(new RecipientInfo.Template()));
+            seqt.addElement(new EncryptedContentInfo.Template());
 
-                SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag,istream);
-                assert(seq.size() ==3);
+            SEQUENCE seq = (SEQUENCE) seqt.decode(implicitTag,istream);
+            assert(seq.size() ==3);
 
-                return new EnvelopedData(
-                    (INTEGER)               seq.elementAt(0),
-                    (SET)                   seq.elementAt(1),
-                    (EncryptedContentInfo)  seq.elementAt(2)
-                    );
-            }
+            return new EnvelopedData(
+                       (INTEGER)               seq.elementAt(0),
+                       (SET)                   seq.elementAt(1),
+                       (EncryptedContentInfo)  seq.elementAt(2)
+                   );
+        }
     } // end of template
 
 }

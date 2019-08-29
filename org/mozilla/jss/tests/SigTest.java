@@ -28,15 +28,15 @@ public class SigTest {
 
     public static void usage() {
         System.out.println(
-                "Usage: java org.mozilla.jss.crypto.SigTest <dbdir> <pwfile>" +
-                " [tokenname]");
+            "Usage: java org.mozilla.jss.crypto.SigTest <dbdir> <pwfile>" +
+            " [tokenname]");
     }
 
     public static void main(String args[]) {
         try {
             CryptoToken token;
             CryptoManager manager;
-            byte[] data = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
+            byte[] data = new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9};
             byte[] signature;
             Signature signer;
             PublicKey pubk;
@@ -51,7 +51,7 @@ public class SigTest {
 
 
             InitializationValues vals =
-                    new InitializationValues(args[0]);
+                new InitializationValues(args[0]);
             CryptoManager.initialize(vals);
             manager = CryptoManager.getInstance();
             manager.setPasswordCallback(new FilePasswordCallback(args[1]));
@@ -76,20 +76,22 @@ public class SigTest {
             kpgen.initialize(1024);
             KeyPairGeneratorSpi.Usage usages[] = {
                 KeyPairGeneratorSpi.Usage.SIGN,
-                KeyPairGeneratorSpi.Usage.VERIFY};
+                KeyPairGeneratorSpi.Usage.VERIFY
+            };
             KeyPairGeneratorSpi.Usage usages_mask[] = {
                 KeyPairGeneratorSpi.Usage.SIGN,
-                KeyPairGeneratorSpi.Usage.VERIFY};
+                KeyPairGeneratorSpi.Usage.VERIFY
+            };
 
             kpgen.setKeyPairUsages(usages, usages_mask);
             keyPair = kpgen.genKeyPair();
 
             // RSA MD5
             signer = token.getSignatureContext(
-                    SignatureAlgorithm.RSASignatureWithMD5Digest);
+                         SignatureAlgorithm.RSASignatureWithMD5Digest);
             System.out.println("Created a signing context");
             signer.initSign(
-                    (org.mozilla.jss.crypto.PrivateKey) keyPair.getPrivate());
+                (org.mozilla.jss.crypto.PrivateKey) keyPair.getPrivate());
             System.out.println("initialized the signing operation");
 
             signer.update(data);

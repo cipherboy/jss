@@ -21,7 +21,7 @@
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_org_mozilla_jss_pkcs11_PK11Module_getName
-  (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     SECMODModule *module;
     jstring nameString=NULL;
@@ -46,7 +46,7 @@ finish:
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_org_mozilla_jss_pkcs11_PK11Module_getLibraryName
-  (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     SECMODModule *module;
     jstring libName = NULL;
@@ -71,7 +71,7 @@ finish:
  * Signature: (Ljava/util/Vector;)V
  */
 JNIEXPORT void JNICALL Java_org_mozilla_jss_pkcs11_PK11Module_putTokensInVector
-  (JNIEnv *env, jobject this, jobject vector)
+(JNIEnv *env, jobject this, jobject vector)
 {
     SECMODModule *module;
     jclass vectorClass;
@@ -88,7 +88,7 @@ JNIEXPORT void JNICALL Java_org_mozilla_jss_pkcs11_PK11Module_putTokensInVector
     vectorClass = (*env)->GetObjectClass(env, vector);
     if(vectorClass==NULL) goto finish;
 
-    addElement = (*env)->GetMethodID(env,   
+    addElement = (*env)->GetMethodID(env,
                                      vectorClass,
                                      VECTOR_ADD_ELEMENT_NAME,
                                      VECTOR_ADD_ELEMENT_SIG);
@@ -134,7 +134,7 @@ finish:
  *
  * INPUTS
  *      ptr
- *          Address of a SECMODModule *. This pointer will be copied 
+ *          Address of a SECMODModule *. This pointer will be copied
  *          into the new Java object, then set to NULL.
  * RETURNS
  *      A new Java PK11Module object, or NULL if an exception was thrown.
@@ -162,10 +162,10 @@ JSS_PK11_wrapPK11Module(JNIEnv *env, SECMODModule **module)
     }
 
     constructor = (*env)->GetMethodID(
-                                env,
-                                moduleClass,
-                                PLAIN_CONSTRUCTOR,
-                                PK11MODULE_CONSTRUCTOR_SIG);
+                      env,
+                      moduleClass,
+                      PLAIN_CONSTRUCTOR,
+                      PK11MODULE_CONSTRUCTOR_SIG);
     if(constructor == NULL) {
         ASSERT_OUTOFMEM(env);
         goto finish;
@@ -218,7 +218,7 @@ JSS_PK11_getModulePtr(JNIEnv *env, jobject module, SECMODModule **ptr)
  */
 JNIEXPORT void JNICALL
 Java_org_mozilla_jss_pkcs11_ModuleProxy_releaseNativeResources
-    (JNIEnv *env, jobject this)
+(JNIEnv *env, jobject this)
 {
     SECMODModule *module;
 

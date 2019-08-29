@@ -37,37 +37,37 @@ public class TeletexString extends CharacterString implements ASN1Value {
     private static final Template templateInstance = new Template();
 
 // nested class
-public static class Template
-    extends CharacterString.Template implements ASN1Template
-{
-
-    protected Tag getTag() {
-        return TAG;
-    }
-
-    public boolean tagMatch(Tag tag) {
-        return TAG.equals(tag);
-    }
-
-    protected CharConverter getCharConverter() {
-        return new TeletexConverter();
-    }
-
-    protected CharacterString generateInstance(char[] bytes)
-        throws CharConversionException
+    public static class Template
+        extends CharacterString.Template implements ASN1Template
     {
-        return new TeletexString( bytes );
-    }
 
-    protected String typeName() {
-        return "TeletexString";
-    }
-} // end of Template
+        protected Tag getTag() {
+            return TAG;
+        }
+
+        public boolean tagMatch(Tag tag) {
+            return TAG.equals(tag);
+        }
+
+        protected CharConverter getCharConverter() {
+            return new TeletexConverter();
+        }
+
+        protected CharacterString generateInstance(char[] bytes)
+        throws CharConversionException
+        {
+            return new TeletexString( bytes );
+        }
+
+        protected String typeName() {
+            return "TeletexString";
+        }
+    } // end of Template
 
     private static class TeletexConverter implements CharConverter {
 
         public char[] byteToChar(byte[] bytes, int offset, int len)
-            throws CharConversionException
+        throws CharConversionException
         {
             char[] chars = new char[len];
 
@@ -80,7 +80,7 @@ public static class Template
         }
 
         public byte[] charToByte(char[] chars, int offset, int len)
-            throws CharConversionException
+        throws CharConversionException
         {
             byte[] bytes = new byte[len];
 
@@ -89,7 +89,7 @@ public static class Template
             for(b=0, c=offset; b < len; b++, c++) {
                 if( (chars[c]&0xff00) != 0 ) {
                     throw new CharConversionException("Invalid character for"+
-                        " TeletexString");
+                                                      " TeletexString");
                 }
                 bytes[b] = (byte) (chars[c] & 0xff);
             }

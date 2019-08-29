@@ -77,9 +77,9 @@ public class CertificatePolicyMap {
      */
     public String toString() {
         String s = "CertificatePolicyMap: [\n"
-                 + "IssuerDomain:" + issuerDomain.toString()
-                 + "SubjectDomain:" + subjectDomain.toString()
-                 + "]\n";
+                   + "IssuerDomain:" + issuerDomain.toString()
+                   + "SubjectDomain:" + subjectDomain.toString()
+                   + "]\n";
 
         return (s);
     }

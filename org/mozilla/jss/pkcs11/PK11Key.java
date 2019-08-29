@@ -35,7 +35,7 @@ abstract class PK11Key implements java.security.Key {
     // Construction
     /////////////////////////////////////////////////////////////
     protected PK11Key() {}
-        
+
 
     /////////////////////////////////////////////////////////////
     // Implementation
@@ -48,7 +48,7 @@ abstract class PK11Key implements java.security.Key {
     }
 
     private void readObject(ObjectInputStream in)
-        throws IOException, ClassNotFoundException {
+    throws IOException, ClassNotFoundException {
         throw new AssertionException("PKCS#11 Key is not really serializable");
     }
 

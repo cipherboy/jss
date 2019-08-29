@@ -222,24 +222,24 @@ public class ExtPrettyPrint {
 
         if (extName == null)
             sb.append(pp.indent(mIndentSize) + mResource.getString(
-                    PrettyPrintResources.TOKEN_IDENTIFIER) +
-                    mExt.getExtensionId().toString() + "\n");
+                          PrettyPrintResources.TOKEN_IDENTIFIER) +
+                      mExt.getExtensionId().toString() + "\n");
         else
             sb.append(pp.indent(mIndentSize) + mResource.getString(
-                    PrettyPrintResources.TOKEN_IDENTIFIER) + " " + extName + " - " +
-                    mExt.getExtensionId().toString() + "\n");
+                          PrettyPrintResources.TOKEN_IDENTIFIER) + " " + extName + " - " +
+                      mExt.getExtensionId().toString() + "\n");
 
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_CRITICAL));
+                      PrettyPrintResources.TOKEN_CRITICAL));
         if (mExt.isCritical()) {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_YES) + "\n");
+                          PrettyPrintResources.TOKEN_YES) + "\n");
         } else {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_NO) + "\n");
+                          PrettyPrintResources.TOKEN_NO) + "\n");
         }
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_VALUE) + "\n");
+                      PrettyPrintResources.TOKEN_VALUE) + "\n");
         sb.append(pp.toHexString(mExt.getExtensionValue(), mIndentSize + 8, 16));
 
         return sb.toString();
@@ -254,17 +254,17 @@ public class ExtPrettyPrint {
         StringBuffer sb = new StringBuffer();
 
         sb.append(pp.indent(mIndentSize) + mResource.getString(
-                PrettyPrintResources.TOKEN_IDENTIFIER));
+                      PrettyPrintResources.TOKEN_IDENTIFIER));
         sb.append(mResource.getString(PrettyPrintResources.TOKEN_NSC_COMMENT) +
-                "- " + mExt.getExtensionId().toString() + "\n");
+                  "- " + mExt.getExtensionId().toString() + "\n");
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_CRITICAL));
+                      PrettyPrintResources.TOKEN_CRITICAL));
         if (mExt.isCritical()) {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_YES) + "\n");
+                          PrettyPrintResources.TOKEN_YES) + "\n");
         } else {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_NO) + "\n");
+                          PrettyPrintResources.TOKEN_NO) + "\n");
         }
         sb.append(pp.indent(mIndentSize + 4) + ((NSCCommentExtension) mExt).toPrint(mIndentSize) + "\n");
         return sb.toString();
@@ -274,17 +274,17 @@ public class ExtPrettyPrint {
         StringBuffer sb = new StringBuffer();
 
         sb.append(pp.indent(mIndentSize) + mResource.getString(
-                PrettyPrintResources.TOKEN_IDENTIFIER));
+                      PrettyPrintResources.TOKEN_IDENTIFIER));
         sb.append(mResource.getString(PrettyPrintResources.TOKEN_NAME_CONSTRAINTS) +
-                "- " + mExt.getExtensionId().toString() + "\n");
+                  "- " + mExt.getExtensionId().toString() + "\n");
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_CRITICAL));
+                      PrettyPrintResources.TOKEN_CRITICAL));
         if (mExt.isCritical()) {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_YES) + "\n");
+                          PrettyPrintResources.TOKEN_YES) + "\n");
         } else {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_NO) + "\n");
+                          PrettyPrintResources.TOKEN_NO) + "\n");
         }
 
         sb.append(pp.indent(mIndentSize + 4) + ((NameConstraintsExtension) mExt).toPrint(mIndentSize + 4));
@@ -296,17 +296,17 @@ public class ExtPrettyPrint {
         StringBuffer sb = new StringBuffer();
 
         sb.append(pp.indent(mIndentSize) + mResource.getString(
-                PrettyPrintResources.TOKEN_IDENTIFIER));
+                      PrettyPrintResources.TOKEN_IDENTIFIER));
         sb.append(mResource.getString(PrettyPrintResources.TOKEN_OCSP_NOCHECK) +
-                "- " + mExt.getExtensionId().toString() + "\n");
+                  "- " + mExt.getExtensionId().toString() + "\n");
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_CRITICAL));
+                      PrettyPrintResources.TOKEN_CRITICAL));
         if (mExt.isCritical()) {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_YES) + "\n");
+                          PrettyPrintResources.TOKEN_YES) + "\n");
         } else {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_NO) + "\n");
+                          PrettyPrintResources.TOKEN_NO) + "\n");
         }
         return sb.toString();
     }
@@ -315,20 +315,20 @@ public class ExtPrettyPrint {
         StringBuffer sb = new StringBuffer();
 
         sb.append(pp.indent(mIndentSize) + mResource.getString(
-                PrettyPrintResources.TOKEN_IDENTIFIER));
+                      PrettyPrintResources.TOKEN_IDENTIFIER));
         sb.append(mResource.getString(PrettyPrintResources.TOKEN_SIA) +
-                "- " + mExt.getExtensionId().toString() + "\n");
+                  "- " + mExt.getExtensionId().toString() + "\n");
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_CRITICAL));
+                      PrettyPrintResources.TOKEN_CRITICAL));
         if (mExt.isCritical()) {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_YES) + "\n");
+                          PrettyPrintResources.TOKEN_YES) + "\n");
         } else {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_NO) + "\n");
+                          PrettyPrintResources.TOKEN_NO) + "\n");
         }
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_ACCESS_DESC) + "\n");
+                      PrettyPrintResources.TOKEN_ACCESS_DESC) + "\n");
         SubjectInfoAccessExtension aia = (SubjectInfoAccessExtension) mExt;
 
         for (int i = 0; i < aia.numberOfAccessDescription(); i++) {
@@ -337,13 +337,13 @@ public class ExtPrettyPrint {
 
             if (method.equals(SubjectInfoAccessExtension.METHOD_OCSP)) {
                 sb.append(pp.indent(mIndentSize + 8) + "Method #" + i + ": " +
-                        "ocsp" + "\n");
+                          "ocsp" + "\n");
             } else {
                 sb.append(pp.indent(mIndentSize + 8) + "Method #" + i + ": " +
-                        method.toString() + "\n");
+                          method.toString() + "\n");
             }
             sb.append(pp.indent(mIndentSize + 8) + "Location #" + i + ": " +
-                    ad.getLocation().toString() + "\n");
+                      ad.getLocation().toString() + "\n");
         }
         return sb.toString();
     }
@@ -352,20 +352,20 @@ public class ExtPrettyPrint {
         StringBuffer sb = new StringBuffer();
 
         sb.append(pp.indent(mIndentSize) + mResource.getString(
-                PrettyPrintResources.TOKEN_IDENTIFIER));
+                      PrettyPrintResources.TOKEN_IDENTIFIER));
         sb.append(mResource.getString(PrettyPrintResources.TOKEN_AIA) +
-                "- " + mExt.getExtensionId().toString() + "\n");
+                  "- " + mExt.getExtensionId().toString() + "\n");
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_CRITICAL));
+                      PrettyPrintResources.TOKEN_CRITICAL));
         if (mExt.isCritical()) {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_YES) + "\n");
+                          PrettyPrintResources.TOKEN_YES) + "\n");
         } else {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_NO) + "\n");
+                          PrettyPrintResources.TOKEN_NO) + "\n");
         }
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_ACCESS_DESC) + "\n");
+                      PrettyPrintResources.TOKEN_ACCESS_DESC) + "\n");
         AuthInfoAccessExtension aia = (AuthInfoAccessExtension) mExt;
 
         for (int i = 0; i < aia.numberOfAccessDescription(); i++) {
@@ -374,13 +374,13 @@ public class ExtPrettyPrint {
 
             if (method.equals(AuthInfoAccessExtension.METHOD_OCSP)) {
                 sb.append(pp.indent(mIndentSize + 8) + "Method #" + i + ": " +
-                        "ocsp" + "\n");
+                          "ocsp" + "\n");
             } else {
                 sb.append(pp.indent(mIndentSize + 8) + "Method #" + i + ": " +
-                        method.toString() + "\n");
+                          method.toString() + "\n");
             }
             sb.append(pp.indent(mIndentSize + 8) + "Location #" + i + ": " +
-                    ad.getLocation().toString() + "\n");
+                      ad.getLocation().toString() + "\n");
         }
         return sb.toString();
     }
@@ -389,17 +389,17 @@ public class ExtPrettyPrint {
         StringBuffer sb = new StringBuffer();
 
         sb.append(pp.indent(mIndentSize) + mResource.getString(
-                PrettyPrintResources.TOKEN_IDENTIFIER));
+                      PrettyPrintResources.TOKEN_IDENTIFIER));
         sb.append(mResource.getString(PrettyPrintResources.TOKEN_PRESENCE_SERVER) +
-                "- " + mExt.getExtensionId().toString() + "\n");
+                  "- " + mExt.getExtensionId().toString() + "\n");
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_CRITICAL));
+                      PrettyPrintResources.TOKEN_CRITICAL));
         if (mExt.isCritical()) {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_YES) + "\n");
+                          PrettyPrintResources.TOKEN_YES) + "\n");
         } else {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_NO) + "\n");
+                          PrettyPrintResources.TOKEN_NO) + "\n");
         }
 
         PresenceServerExtension pse = (PresenceServerExtension) mExt;
@@ -421,17 +421,17 @@ public class ExtPrettyPrint {
         StringBuffer sb = new StringBuffer();
 
         sb.append(pp.indent(mIndentSize) + mResource.getString(
-                PrettyPrintResources.TOKEN_IDENTIFIER));
+                      PrettyPrintResources.TOKEN_IDENTIFIER));
         sb.append(mResource.getString(PrettyPrintResources.TOKEN_PRIVATE_KEY_USAGE) +
-                "- " + mExt.getExtensionId().toString() + "\n");
+                  "- " + mExt.getExtensionId().toString() + "\n");
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_CRITICAL));
+                      PrettyPrintResources.TOKEN_CRITICAL));
         if (mExt.isCritical()) {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_YES) + "\n");
+                          PrettyPrintResources.TOKEN_YES) + "\n");
         } else {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_NO) + "\n");
+                          PrettyPrintResources.TOKEN_NO) + "\n");
         }
 
         PrivateKeyUsageExtension usage = (PrivateKeyUsageExtension) mExt;
@@ -453,20 +453,20 @@ public class ExtPrettyPrint {
     private String getExtendedKeyUsageExtension() {
         StringBuffer sb = new StringBuffer();
         sb.append(pp.indent(mIndentSize) + mResource.getString(
-                PrettyPrintResources.TOKEN_IDENTIFIER));
+                      PrettyPrintResources.TOKEN_IDENTIFIER));
         sb.append(mResource.getString(PrettyPrintResources.TOKEN_EXTENDED_KEY_USAGE) +
-                "- " + mExt.getExtensionId().toString() + "\n");
+                  "- " + mExt.getExtensionId().toString() + "\n");
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_CRITICAL));
+                      PrettyPrintResources.TOKEN_CRITICAL));
         if (mExt.isCritical()) {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_YES) + "\n");
+                          PrettyPrintResources.TOKEN_YES) + "\n");
         } else {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_NO) + "\n");
+                          PrettyPrintResources.TOKEN_NO) + "\n");
         }
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_EXTENDED_KEY_USAGE) + "\n");
+                      PrettyPrintResources.TOKEN_EXTENDED_KEY_USAGE) + "\n");
         ExtendedKeyUsageExtension usage = (ExtendedKeyUsageExtension) mExt;
         Enumeration<ObjectIdentifier> e = usage.getOIDs();
 
@@ -492,20 +492,20 @@ public class ExtPrettyPrint {
 
         try {
             sb.append(pp.indent(mIndentSize) + mResource.getString(
-                    PrettyPrintResources.TOKEN_IDENTIFIER));
+                          PrettyPrintResources.TOKEN_IDENTIFIER));
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_KEY_USAGE) +
-                    "- " + mExt.getExtensionId().toString() + "\n");
+                      "- " + mExt.getExtensionId().toString() + "\n");
             sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                    PrettyPrintResources.TOKEN_CRITICAL));
+                          PrettyPrintResources.TOKEN_CRITICAL));
             if (mExt.isCritical()) {
                 sb.append(mResource.getString(
-                        PrettyPrintResources.TOKEN_YES) + "\n");
+                              PrettyPrintResources.TOKEN_YES) + "\n");
             } else {
                 sb.append(mResource.getString(
-                        PrettyPrintResources.TOKEN_NO) + "\n");
+                              PrettyPrintResources.TOKEN_NO) + "\n");
             }
             sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                    PrettyPrintResources.TOKEN_KEY_USAGE) + "\n");
+                          PrettyPrintResources.TOKEN_KEY_USAGE) + "\n");
             KeyUsageExtension usage = (KeyUsageExtension) mExt;
 
             if (((Boolean) usage.get(KeyUsageExtension.DIGITAL_SIGNATURE)).booleanValue()) {
@@ -552,7 +552,7 @@ public class ExtPrettyPrint {
         try {
             sb.append(pp.indent(mIndentSize) + mResource.getString(PrettyPrintResources.TOKEN_IDENTIFIER));
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_CERT_TYPE)
-                    + "- " + mExt.getExtensionId().toString() + "\n");
+                      + "- " + mExt.getExtensionId().toString() + "\n");
             sb.append(pp.indent(mIndentSize + 4) + mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
             if (mExt.isCritical()) {
                 sb.append(mResource.getString(PrettyPrintResources.TOKEN_YES) + "\n");
@@ -582,7 +582,7 @@ public class ExtPrettyPrint {
             }
             if (((Boolean) type.get(NSCertTypeExtension.OBJECT_SIGNING_CA)).booleanValue()) {
                 sb.append(pp.indent(mIndentSize + 8)
-                        + mResource.getString(NSCertTypeExtension.OBJECT_SIGNING_CA) + "\n");
+                          + mResource.getString(NSCertTypeExtension.OBJECT_SIGNING_CA) + "\n");
             }
             return sb.toString();
         } catch (CertificateException e) {
@@ -601,7 +601,7 @@ public class ExtPrettyPrint {
         try {
             sb.append(pp.indent(mIndentSize) + mResource.getString(PrettyPrintResources.TOKEN_IDENTIFIER));
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_SKI)
-                    + "- " + mExt.getExtensionId().toString() + "\n");
+                      + "- " + mExt.getExtensionId().toString() + "\n");
             sb.append(pp.indent(mIndentSize + 4) + mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
             if (mExt.isCritical()) {
                 sb.append(mResource.getString(PrettyPrintResources.TOKEN_YES) + "\n");
@@ -631,7 +631,7 @@ public class ExtPrettyPrint {
         try {
             sb.append(pp.indent(mIndentSize) + mResource.getString(PrettyPrintResources.TOKEN_IDENTIFIER));
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_AKI)
-                    + "- " + mExt.getExtensionId().toString() + "\n");
+                      + "- " + mExt.getExtensionId().toString() + "\n");
             sb.append(pp.indent(mIndentSize + 4) + mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
             if (mExt.isCritical()) {
                 sb.append(mResource.getString(PrettyPrintResources.TOKEN_YES) + "\n");
@@ -654,8 +654,8 @@ public class ExtPrettyPrint {
 
                     if (authName != null) {
                         sb.append(pp.indent(mIndentSize + 4)
-                                + mResource.getString(PrettyPrintResources.TOKEN_AUTH_NAME) + authName.toString()
-                                + "\n");
+                                  + mResource.getString(PrettyPrintResources.TOKEN_AUTH_NAME) + authName.toString()
+                                  + "\n");
                     }
                 }
             }
@@ -664,7 +664,7 @@ public class ExtPrettyPrint {
 
             if (serial != null) {
                 sb.append(pp.indent(mIndentSize + 4) + mResource.getString(PrettyPrintResources.TOKEN_SERIAL) +
-                        "0x" + serial.getNumber().toBigInteger().toString(16).toUpperCase() + "\n");
+                          "0x" + serial.getNumber().toBigInteger().toString(16).toUpperCase() + "\n");
             }
             return sb.toString();
         } catch (IOException e) {
@@ -682,7 +682,7 @@ public class ExtPrettyPrint {
         try {
             sb.append(pp.indent(mIndentSize) + mResource.getString(PrettyPrintResources.TOKEN_IDENTIFIER));
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_REVOCATION_REASON) + "- " +
-                    mExt.getExtensionId().toString() + "\n");
+                      mExt.getExtensionId().toString() + "\n");
             sb.append(pp.indent(mIndentSize + 4) + mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
             CRLReasonExtension ext = (CRLReasonExtension) mExt;
 
@@ -692,7 +692,7 @@ public class ExtPrettyPrint {
                 sb.append(mResource.getString(PrettyPrintResources.TOKEN_NO) + "\n");
             }
             sb.append(pp.indent(mIndentSize + 4) + mResource.getString(PrettyPrintResources.TOKEN_REASON) +
-                    ext.getReason().toString() + "\n");
+                      ext.getReason().toString() + "\n");
 
             return sb.toString();
         } catch (Exception e) {
@@ -706,21 +706,21 @@ public class ExtPrettyPrint {
     private String getInhibitAnyPolicyExtension() {
         StringBuffer sb = new StringBuffer();
         sb.append(pp.indent(mIndentSize) +
-                mResource.getString(PrettyPrintResources.TOKEN_IDENTIFIER));
+                  mResource.getString(PrettyPrintResources.TOKEN_IDENTIFIER));
         sb.append(mResource.getString(
-                PrettyPrintResources.TOKEN_INHIBIT_ANY_POLICY_EXT) + "- " +
-                mExt.getExtensionId().toString() + "\n");
+                      PrettyPrintResources.TOKEN_INHIBIT_ANY_POLICY_EXT) + "- " +
+                  mExt.getExtensionId().toString() + "\n");
         sb.append(pp.indent(mIndentSize + 4) +
-                mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
+                  mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
         InhibitAnyPolicyExtension ext = (InhibitAnyPolicyExtension) mExt;
         if (mExt.isCritical())
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_YES) + "\n");
+                          PrettyPrintResources.TOKEN_YES) + "\n");
         else
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_NO) + "\n");
+                          PrettyPrintResources.TOKEN_NO) + "\n");
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_SKIP_CERTS));
+                      PrettyPrintResources.TOKEN_SKIP_CERTS));
         BigInt num = ext.getSkipCerts();
         sb.append("" + num.toInt() + "\n");
         return sb.toString();
@@ -735,7 +735,7 @@ public class ExtPrettyPrint {
         try {
             sb.append(pp.indent(mIndentSize) + mResource.getString(PrettyPrintResources.TOKEN_IDENTIFIER));
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_BASIC_CONSTRAINTS) + "- " +
-                    mExt.getExtensionId().toString() + "\n");
+                      mExt.getExtensionId().toString() + "\n");
             sb.append(pp.indent(mIndentSize + 4) + mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
             BasicConstraintsExtension ext = (BasicConstraintsExtension) mExt;
 
@@ -757,14 +757,14 @@ public class ExtPrettyPrint {
             if (pathLength != null) {
                 if (pathLength.longValue() >= 0) {
                     sb.append(pp.indent(mIndentSize + 4) + mResource.getString(PrettyPrintResources.TOKEN_PATH_LEN) +
-                            pathLength.toString() + "\n");
+                              pathLength.toString() + "\n");
                 } else if (pathLength.longValue() == -1 || pathLength.longValue() == -2) {
                     sb.append(pp.indent(mIndentSize + 4) + mResource.getString(PrettyPrintResources.TOKEN_PATH_LEN) +
-                            mResource.getString(PrettyPrintResources.TOKEN_PATH_LEN_UNLIMITED) + "\n");
+                              mResource.getString(PrettyPrintResources.TOKEN_PATH_LEN_UNLIMITED) + "\n");
                 } else {
                     sb.append(pp.indent(mIndentSize + 4) + mResource.getString(PrettyPrintResources.TOKEN_PATH_LEN) +
-                            mResource.getString(PrettyPrintResources.TOKEN_PATH_LEN_INVALID) +
-                            " (" + pathLength.toString() + ")\n");
+                              mResource.getString(PrettyPrintResources.TOKEN_PATH_LEN_INVALID) +
+                              " (" + pathLength.toString() + ")\n");
                 }
             }
 
@@ -784,7 +784,7 @@ public class ExtPrettyPrint {
         try {
             sb.append(pp.indent(mIndentSize) + mResource.getString(PrettyPrintResources.TOKEN_IDENTIFIER));
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_CRL_NUMBER) + "- " +
-                    mExt.getExtensionId().toString() + "\n");
+                      mExt.getExtensionId().toString() + "\n");
             sb.append(pp.indent(mIndentSize + 4) + mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
             CRLNumberExtension ext = (CRLNumberExtension) mExt;
 
@@ -797,8 +797,8 @@ public class ExtPrettyPrint {
 
             if (crlNumber != null) {
                 sb.append(pp.indent(mIndentSize + 4) +
-                        mResource.getString(PrettyPrintResources.TOKEN_NUMBER) +
-                        crlNumber.toString() + "\n");
+                          mResource.getString(PrettyPrintResources.TOKEN_NUMBER) +
+                          crlNumber.toString() + "\n");
             }
 
             return sb.toString();
@@ -817,7 +817,7 @@ public class ExtPrettyPrint {
         try {
             sb.append(pp.indent(mIndentSize) + mResource.getString(PrettyPrintResources.TOKEN_IDENTIFIER));
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_DELTA_CRL_INDICATOR) + "- " +
-                    mExt.getExtensionId().toString() + "\n");
+                      mExt.getExtensionId().toString() + "\n");
             sb.append(pp.indent(mIndentSize + 4) + mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
             DeltaCRLIndicatorExtension ext = (DeltaCRLIndicatorExtension) mExt;
 
@@ -830,8 +830,8 @@ public class ExtPrettyPrint {
 
             if (crlNumber != null) {
                 sb.append(pp.indent(mIndentSize + 4) +
-                        mResource.getString(PrettyPrintResources.TOKEN_BASE_CRL_NUMBER) +
-                        crlNumber.toString() + "\n");
+                          mResource.getString(PrettyPrintResources.TOKEN_BASE_CRL_NUMBER) +
+                          crlNumber.toString() + "\n");
             }
 
             return sb.toString();
@@ -850,7 +850,7 @@ public class ExtPrettyPrint {
         try {
             sb.append(pp.indent(mIndentSize) + mResource.getString(PrettyPrintResources.TOKEN_IDENTIFIER));
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_ISSUER_ALT_NAME) + "- " +
-                    mExt.getExtensionId().toString() + "\n");
+                      mExt.getExtensionId().toString() + "\n");
             sb.append(pp.indent(mIndentSize + 4) + mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
             IssuerAlternativeNameExtension ext = (IssuerAlternativeNameExtension) mExt;
 
@@ -864,7 +864,7 @@ public class ExtPrettyPrint {
 
             if (issuerNames != null) {
                 sb.append(pp.indent(mIndentSize + 4) +
-                        mResource.getString(PrettyPrintResources.TOKEN_ISSUER_NAMES) + "\n");
+                          mResource.getString(PrettyPrintResources.TOKEN_ISSUER_NAMES) + "\n");
                 for (int i = 0; i < issuerNames.size(); i++) {
                     GeneralName issuerName = (GeneralName) issuerNames.elementAt(i);
 
@@ -893,7 +893,7 @@ public class ExtPrettyPrint {
         try {
             sb.append(pp.indent(mIndentSize) + mResource.getString(PrettyPrintResources.TOKEN_IDENTIFIER));
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_SUBJECT_ALT_NAME) + "- " +
-                    mExt.getExtensionId().toString() + "\n");
+                      mExt.getExtensionId().toString() + "\n");
             sb.append(pp.indent(mIndentSize + 4) + mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
             SubjectAlternativeNameExtension ext = (SubjectAlternativeNameExtension) mExt;
 
@@ -932,7 +932,7 @@ public class ExtPrettyPrint {
         StringBuffer sb = new StringBuffer();
         sb.append(pp.indent(mIndentSize) + mResource.getString(PrettyPrintResources.TOKEN_IDENTIFIER));
         sb.append(mResource.getString(PrettyPrintResources.TOKEN_CERT_SCOPE_OF_USE) + "- " +
-                mExt.getExtensionId().toString() + "\n");
+                  mExt.getExtensionId().toString() + "\n");
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
         CertificateScopeOfUseExtension ext = (CertificateScopeOfUseExtension) mExt;
 
@@ -945,7 +945,7 @@ public class ExtPrettyPrint {
 
         if (entries != null) {
             sb.append(pp.indent(mIndentSize + 4) +
-                    mResource.getString(PrettyPrintResources.TOKEN_SCOPE_OF_USE) + "\n");
+                      mResource.getString(PrettyPrintResources.TOKEN_SCOPE_OF_USE) + "\n");
             for (int i = 0; i < entries.size(); i++) {
                 CertificateScopeEntry se = entries.elementAt(i);
                 GeneralName gn = se.getGeneralName();
@@ -961,7 +961,7 @@ public class ExtPrettyPrint {
 
                 if (port != null) {
                     sb.append(pp.indent(mIndentSize + 8) + PrettyPrintResources.TOKEN_PORT +
-                            port.toBigInteger().toString() + "\n");
+                              port.toBigInteger().toString() + "\n");
                 }
             }
         }
@@ -978,18 +978,18 @@ public class ExtPrettyPrint {
         // Generic stuff: name, OID, criticality
         //
         sb.append(pp.indent(mIndentSize) +
-                mResource.getString(PrettyPrintResources.TOKEN_IDENTIFIER));
+                  mResource.getString(PrettyPrintResources.TOKEN_IDENTIFIER));
         sb.append(mResource.getString(
-                PrettyPrintResources.TOKEN_FRESHEST_CRL_EXT) + "- " +
-                mExt.getExtensionId().toString() + "\n");
+                      PrettyPrintResources.TOKEN_FRESHEST_CRL_EXT) + "- " +
+                  mExt.getExtensionId().toString() + "\n");
         sb.append(pp.indent(mIndentSize + 4) +
-                mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
+                  mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
         if (mExt.isCritical()) {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_YES) + "\n");
+                          PrettyPrintResources.TOKEN_YES) + "\n");
         } else {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_NO) + "\n");
+                          PrettyPrintResources.TOKEN_NO) + "\n");
         }
 
         //
@@ -1000,8 +1000,8 @@ public class ExtPrettyPrint {
         int numPoints = ext.getNumPoints();
 
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_CRLDP_NUMPOINTS)
-                + numPoints + "\n");
+                      PrettyPrintResources.TOKEN_CRLDP_NUMPOINTS)
+                  + numPoints + "\n");
 
         for (int i = 0; i < numPoints; i++) {
 
@@ -1015,8 +1015,8 @@ public class ExtPrettyPrint {
             boolean isEmpty = true;
 
             sb.append(pp.indent(idt) +
-                    mResource.getString(PrettyPrintResources.TOKEN_CRLDP_POINTN) +
-                    i + "\n");
+                      mResource.getString(PrettyPrintResources.TOKEN_CRLDP_POINTN) +
+                      i + "\n");
 
             CRLDistributionPoint pt = ext.getPointAt(i);
 
@@ -1025,15 +1025,15 @@ public class ExtPrettyPrint {
             if (pt.getFullName() != null) {
                 isEmpty = false;
                 sb.append(pp.indent(idt) +
-                        mResource.getString(PrettyPrintResources.TOKEN_CRLDP_DISTPOINT)
-                        + pt.getFullName() + "\n");
+                          mResource.getString(PrettyPrintResources.TOKEN_CRLDP_DISTPOINT)
+                          + pt.getFullName() + "\n");
             }
 
             if (pt.getRelativeName() != null) {
                 isEmpty = false;
                 sb.append(pp.indent(idt) +
-                        mResource.getString(PrettyPrintResources.TOKEN_CRLDP_DISTPOINT)
-                        + pt.getRelativeName() + "\n");
+                          mResource.getString(PrettyPrintResources.TOKEN_CRLDP_DISTPOINT)
+                          + pt.getRelativeName() + "\n");
             }
 
             if (pt.getReasons() != null) {
@@ -1042,15 +1042,15 @@ public class ExtPrettyPrint {
                 String reasonList = reasonBitsToReasonList(reasonBits);
 
                 sb.append(pp.indent(idt) +
-                        mResource.getString(PrettyPrintResources.TOKEN_CRLDP_REASONS)
-                        + reasonList + "\n");
+                          mResource.getString(PrettyPrintResources.TOKEN_CRLDP_REASONS)
+                          + reasonList + "\n");
             }
 
             if (pt.getCRLIssuer() != null) {
                 isEmpty = false;
                 sb.append(pp.indent(idt) +
-                        mResource.getString(PrettyPrintResources.TOKEN_CRLDP_CRLISSUER)
-                        + pt.getCRLIssuer() + "\n");
+                          mResource.getString(PrettyPrintResources.TOKEN_CRLDP_CRLISSUER)
+                          + pt.getCRLIssuer() + "\n");
             }
 
             if (isEmpty) {
@@ -1072,31 +1072,31 @@ public class ExtPrettyPrint {
         // Generic stuff: name, OID, criticality
         //
         sb.append(pp.indent(mIndentSize) +
-                mResource.getString(PrettyPrintResources.TOKEN_IDENTIFIER));
+                  mResource.getString(PrettyPrintResources.TOKEN_IDENTIFIER));
         sb.append(mResource.getString(
-                PrettyPrintResources.TOKEN_CRL_DP_EXT) + "- " +
-                mExt.getExtensionId().toString() + "\n");
+                      PrettyPrintResources.TOKEN_CRL_DP_EXT) + "- " +
+                  mExt.getExtensionId().toString() + "\n");
         sb.append(pp.indent(mIndentSize + 4) +
-                mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
+                  mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
         if (mExt.isCritical()) {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_YES) + "\n");
+                          PrettyPrintResources.TOKEN_YES) + "\n");
         } else {
             sb.append(mResource.getString(
-                    PrettyPrintResources.TOKEN_NO) + "\n");
+                          PrettyPrintResources.TOKEN_NO) + "\n");
         }
 
         //
         // Now the CRLDP-specific stuff
         //
         CRLDistributionPointsExtension ext =
-                (CRLDistributionPointsExtension) mExt;
+            (CRLDistributionPointsExtension) mExt;
 
         int numPoints = ext.getNumPoints();
 
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_CRLDP_NUMPOINTS)
-                + numPoints + "\n");
+                      PrettyPrintResources.TOKEN_CRLDP_NUMPOINTS)
+                  + numPoints + "\n");
 
         for (int i = 0; i < numPoints; i++) {
 
@@ -1110,8 +1110,8 @@ public class ExtPrettyPrint {
             boolean isEmpty = true;
 
             sb.append(pp.indent(idt) +
-                    mResource.getString(PrettyPrintResources.TOKEN_CRLDP_POINTN) +
-                    i + "\n");
+                      mResource.getString(PrettyPrintResources.TOKEN_CRLDP_POINTN) +
+                      i + "\n");
 
             CRLDistributionPoint pt = ext.getPointAt(i);
 
@@ -1120,15 +1120,15 @@ public class ExtPrettyPrint {
             if (pt.getFullName() != null) {
                 isEmpty = false;
                 sb.append(pp.indent(idt) +
-                        mResource.getString(PrettyPrintResources.TOKEN_CRLDP_DISTPOINT)
-                        + pt.getFullName() + "\n");
+                          mResource.getString(PrettyPrintResources.TOKEN_CRLDP_DISTPOINT)
+                          + pt.getFullName() + "\n");
             }
 
             if (pt.getRelativeName() != null) {
                 isEmpty = false;
                 sb.append(pp.indent(idt) +
-                        mResource.getString(PrettyPrintResources.TOKEN_CRLDP_DISTPOINT)
-                        + pt.getRelativeName() + "\n");
+                          mResource.getString(PrettyPrintResources.TOKEN_CRLDP_DISTPOINT)
+                          + pt.getRelativeName() + "\n");
             }
 
             if (pt.getReasons() != null) {
@@ -1137,15 +1137,15 @@ public class ExtPrettyPrint {
                 String reasonList = reasonBitsToReasonList(reasonBits);
 
                 sb.append(pp.indent(idt) +
-                        mResource.getString(PrettyPrintResources.TOKEN_CRLDP_REASONS)
-                        + reasonList + "\n");
+                          mResource.getString(PrettyPrintResources.TOKEN_CRLDP_REASONS)
+                          + reasonList + "\n");
             }
 
             if (pt.getCRLIssuer() != null) {
                 isEmpty = false;
                 sb.append(pp.indent(idt) +
-                        mResource.getString(PrettyPrintResources.TOKEN_CRLDP_CRLISSUER)
-                        + pt.getCRLIssuer() + "\n");
+                          mResource.getString(PrettyPrintResources.TOKEN_CRLDP_CRLISSUER)
+                          + pt.getCRLIssuer() + "\n");
             }
 
             if (isEmpty) {
@@ -1183,7 +1183,7 @@ public class ExtPrettyPrint {
 
         sb.append(pp.indent(mIndentSize) + mResource.getString(PrettyPrintResources.TOKEN_IDENTIFIER));
         sb.append(mResource.getString(PrettyPrintResources.TOKEN_ISSUING_DIST_POINT) + "- " +
-                mExt.getExtensionId().toString() + "\n");
+                  mExt.getExtensionId().toString() + "\n");
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
         if (mExt.isCritical()) {
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_YES) + "\n");
@@ -1200,10 +1200,10 @@ public class ExtPrettyPrint {
 
             if (fullNames != null || relativeName != null) {
                 sb.append(pp.indent(mIndentSize + 4)
-                        + mResource.getString(PrettyPrintResources.TOKEN_DIST_POINT_NAME) + "\n");
+                          + mResource.getString(PrettyPrintResources.TOKEN_DIST_POINT_NAME) + "\n");
                 if (fullNames != null) {
                     sb.append(pp.indent(mIndentSize + 8)
-                            + mResource.getString(PrettyPrintResources.TOKEN_FULL_NAME) + "\n");
+                              + mResource.getString(PrettyPrintResources.TOKEN_FULL_NAME) + "\n");
                     for (int i = 0; i < fullNames.size(); i++) {
                         GeneralName fullName = (GeneralName) fullNames.elementAt(i);
 
@@ -1214,8 +1214,8 @@ public class ExtPrettyPrint {
                 }
                 if (relativeName != null) {
                     sb.append(pp.indent(mIndentSize + 8)
-                            + mResource.getString(PrettyPrintResources.TOKEN_RELATIVE_NAME) +
-                            relativeName.toString() + "\n");
+                              + mResource.getString(PrettyPrintResources.TOKEN_RELATIVE_NAME) +
+                              relativeName.toString() + "\n");
                 }
             }
 
@@ -1236,7 +1236,7 @@ public class ExtPrettyPrint {
 
             if (onlySomeReasons != null) {
                 sb.append(pp.indent(mIndentSize + 4)
-                        + mResource.getString(PrettyPrintResources.TOKEN_ONLY_SOME_REASONS));
+                          + mResource.getString(PrettyPrintResources.TOKEN_ONLY_SOME_REASONS));
                 sb.append("0x" + pp.toHexString(onlySomeReasons.toByteArray()));
             }
 
@@ -1258,11 +1258,11 @@ public class ExtPrettyPrint {
         StringBuffer sb = new StringBuffer();
 
         sb.append(pp.indent(mIndentSize) + mResource.getString(
-                PrettyPrintResources.TOKEN_IDENTIFIER));
+                      PrettyPrintResources.TOKEN_IDENTIFIER));
         sb.append(mResource.getString(PrettyPrintResources.TOKEN_INVALIDITY_DATE) +
-                "- " + mExt.getExtensionId().toString() + "\n");
+                  "- " + mExt.getExtensionId().toString() + "\n");
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_CRITICAL));
+                      PrettyPrintResources.TOKEN_CRITICAL));
         InvalidityDateExtension ext = (InvalidityDateExtension) mExt;
 
         if (mExt.isCritical()) {
@@ -1271,8 +1271,8 @@ public class ExtPrettyPrint {
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_NO) + "\n");
         }
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_DATE_OF_INVALIDITY) +
-                ext.getInvalidityDate().toString() + "\n");
+                      PrettyPrintResources.TOKEN_DATE_OF_INVALIDITY) +
+                  ext.getInvalidityDate().toString() + "\n");
         return sb.toString();
     }
 
@@ -1284,11 +1284,11 @@ public class ExtPrettyPrint {
 
         try {
             sb.append(pp.indent(mIndentSize) + mResource.getString(
-                    PrettyPrintResources.TOKEN_IDENTIFIER));
+                          PrettyPrintResources.TOKEN_IDENTIFIER));
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_CERTIFICATE_ISSUER) +
-                    "- " + mExt.getExtensionId().toString() + "\n");
+                      "- " + mExt.getExtensionId().toString() + "\n");
             sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                    PrettyPrintResources.TOKEN_CRITICAL));
+                          PrettyPrintResources.TOKEN_CRITICAL));
             CertificateIssuerExtension ext = (CertificateIssuerExtension) mExt;
 
             if (mExt.isCritical()) {
@@ -1298,11 +1298,11 @@ public class ExtPrettyPrint {
             }
 
             GeneralNames issuerNames = (GeneralNames) ext.get(
-                    CertificateIssuerExtension.CERTIFICATE_ISSUER);
+                                           CertificateIssuerExtension.CERTIFICATE_ISSUER);
 
             if (issuerNames != null) {
                 sb.append(pp.indent(mIndentSize + 4) +
-                        mResource.getString(PrettyPrintResources.TOKEN_ISSUER_NAMES) + "\n");
+                          mResource.getString(PrettyPrintResources.TOKEN_ISSUER_NAMES) + "\n");
                 for (int i = 0; i < issuerNames.size(); i++) {
                     GeneralName issuerName = (GeneralName) issuerNames.elementAt(i);
 
@@ -1330,11 +1330,11 @@ public class ExtPrettyPrint {
         StringBuffer sb = new StringBuffer();
 
         sb.append(pp.indent(mIndentSize) + mResource.getString(
-                PrettyPrintResources.TOKEN_IDENTIFIER));
+                      PrettyPrintResources.TOKEN_IDENTIFIER));
         sb.append(mResource.getString(PrettyPrintResources.TOKEN_HOLD_INSTRUCTION) +
-                "- " + mExt.getExtensionId().toString() + "\n");
+                  "- " + mExt.getExtensionId().toString() + "\n");
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_CRITICAL));
+                      PrettyPrintResources.TOKEN_CRITICAL));
         HoldInstructionExtension ext = (HoldInstructionExtension) mExt;
 
         if (mExt.isCritical()) {
@@ -1343,8 +1343,8 @@ public class ExtPrettyPrint {
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_NO) + "\n");
         }
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_HOLD_INSTRUCTION_CODE) +
-                ext.getHoldInstructionCodeDescription() + "\n");
+                      PrettyPrintResources.TOKEN_HOLD_INSTRUCTION_CODE) +
+                  ext.getHoldInstructionCodeDescription() + "\n");
         return sb.toString();
     }
 
@@ -1355,13 +1355,13 @@ public class ExtPrettyPrint {
         StringBuffer sb = new StringBuffer();
 
         sb.append(pp.indent(mIndentSize) + mResource.getString(
-                PrettyPrintResources.TOKEN_IDENTIFIER));
+                      PrettyPrintResources.TOKEN_IDENTIFIER));
         sb.append(
-                mResource.getString(
-                        PrettyPrintResources.TOKEN_POLICY_CONSTRAINTS) +
-                        "- " + mExt.getExtensionId().toString() + "\n");
+            mResource.getString(
+                PrettyPrintResources.TOKEN_POLICY_CONSTRAINTS) +
+            "- " + mExt.getExtensionId().toString() + "\n");
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_CRITICAL));
+                      PrettyPrintResources.TOKEN_CRITICAL));
         if (mExt.isCritical()) {
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_YES) + "\n");
         } else {
@@ -1373,19 +1373,19 @@ public class ExtPrettyPrint {
         int inhibit = ext.getInhibitPolicyMapping();
 
         sb.append(
-                pp.indent(mIndentSize + 4) +
-                        mResource.getString(
-                                PrettyPrintResources.TOKEN_REQUIRE_EXPLICIT_POLICY) +
-                        ((require == -1) ?
-                                mResource.getString(PrettyPrintResources.TOKEN_NOT_SET) :
-                                String.valueOf(require)) + "\n");
+            pp.indent(mIndentSize + 4) +
+            mResource.getString(
+                PrettyPrintResources.TOKEN_REQUIRE_EXPLICIT_POLICY) +
+            ((require == -1) ?
+             mResource.getString(PrettyPrintResources.TOKEN_NOT_SET) :
+             String.valueOf(require)) + "\n");
         sb.append(
-                pp.indent(mIndentSize + 4) +
-                        mResource.getString(
-                                PrettyPrintResources.TOKEN_INHIBIT_POLICY_MAPPING) +
-                        ((inhibit == -1) ?
-                                mResource.getString(PrettyPrintResources.TOKEN_NOT_SET) :
-                                String.valueOf(inhibit)) + "\n");
+            pp.indent(mIndentSize + 4) +
+            mResource.getString(
+                PrettyPrintResources.TOKEN_INHIBIT_POLICY_MAPPING) +
+            ((inhibit == -1) ?
+             mResource.getString(PrettyPrintResources.TOKEN_NOT_SET) :
+             String.valueOf(inhibit)) + "\n");
         return sb.toString();
     }
 
@@ -1396,11 +1396,11 @@ public class ExtPrettyPrint {
         StringBuffer sb = new StringBuffer();
 
         sb.append(pp.indent(mIndentSize) + mResource.getString(
-                PrettyPrintResources.TOKEN_IDENTIFIER));
+                      PrettyPrintResources.TOKEN_IDENTIFIER));
         sb.append(mResource.getString(PrettyPrintResources.TOKEN_POLICY_MAPPINGS) +
-                "- " + mExt.getExtensionId().toString() + "\n");
+                  "- " + mExt.getExtensionId().toString() + "\n");
         sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                PrettyPrintResources.TOKEN_CRITICAL));
+                      PrettyPrintResources.TOKEN_CRITICAL));
         if (mExt.isCritical()) {
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_YES) + "\n");
         } else {
@@ -1411,27 +1411,27 @@ public class ExtPrettyPrint {
         Enumeration<CertificatePolicyMap> maps = ext.getMappings();
 
         sb.append(pp.indent(mIndentSize + 4) +
-                mResource.getString(PrettyPrintResources.TOKEN_MAPPINGS));
+                  mResource.getString(PrettyPrintResources.TOKEN_MAPPINGS));
         if (maps == null || !maps.hasMoreElements()) {
             sb.append(
-                    mResource.getString(PrettyPrintResources.TOKEN_NONE) + "\n");
+                mResource.getString(PrettyPrintResources.TOKEN_NONE) + "\n");
         } else {
             sb.append("\n");
             for (int i = 0; maps.hasMoreElements(); i++) {
                 sb.append(pp.indent(mIndentSize + 8) +
-                        mResource.getString(
-                                PrettyPrintResources.TOKEN_MAP) + i + ":" + "\n");
+                          mResource.getString(
+                              PrettyPrintResources.TOKEN_MAP) + i + ":" + "\n");
                 CertificatePolicyMap m =
-                        maps.nextElement();
+                    maps.nextElement();
 
                 sb.append(pp.indent(mIndentSize + 12) +
-                        mResource.getString(
-                                PrettyPrintResources.TOKEN_ISSUER_DOMAIN_POLICY) +
-                        m.getIssuerIdentifier().getIdentifier().toString() + "\n");
+                          mResource.getString(
+                              PrettyPrintResources.TOKEN_ISSUER_DOMAIN_POLICY) +
+                          m.getIssuerIdentifier().getIdentifier().toString() + "\n");
                 sb.append(pp.indent(mIndentSize + 12) +
-                        mResource.getString(
-                                PrettyPrintResources.TOKEN_SUBJECT_DOMAIN_POLICY) +
-                        m.getSubjectIdentifier().getIdentifier().toString() + "\n");
+                          mResource.getString(
+                              PrettyPrintResources.TOKEN_SUBJECT_DOMAIN_POLICY) +
+                          m.getSubjectIdentifier().getIdentifier().toString() + "\n");
             }
         }
         return sb.toString();
@@ -1445,11 +1445,11 @@ public class ExtPrettyPrint {
 
         try {
             sb.append(pp.indent(mIndentSize) + mResource.getString(
-                    PrettyPrintResources.TOKEN_IDENTIFIER));
+                          PrettyPrintResources.TOKEN_IDENTIFIER));
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_SUBJECT_DIR_ATTR) +
-                    "- " + mExt.getExtensionId().toString() + "\n");
+                      "- " + mExt.getExtensionId().toString() + "\n");
             sb.append(pp.indent(mIndentSize + 4) +
-                    mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
+                      mResource.getString(PrettyPrintResources.TOKEN_CRITICAL));
             if (mExt.isCritical()) {
                 sb.append(mResource.getString(PrettyPrintResources.TOKEN_YES) + "\n");
             } else {
@@ -1457,35 +1457,35 @@ public class ExtPrettyPrint {
             }
 
             SubjectDirAttributesExtension ext =
-                    (SubjectDirAttributesExtension) mExt;
+                (SubjectDirAttributesExtension) mExt;
 
             sb.append(pp.indent(mIndentSize + 4) +
-                    mResource.getString(PrettyPrintResources.TOKEN_ATTRIBUTES));
+                      mResource.getString(PrettyPrintResources.TOKEN_ATTRIBUTES));
             Enumeration<Attribute> attrs = ext.getAttributesList();
 
             if (attrs == null || !attrs.hasMoreElements()) {
                 sb.append(
-                        mResource.getString(PrettyPrintResources.TOKEN_NONE) + "\n");
+                    mResource.getString(PrettyPrintResources.TOKEN_NONE) + "\n");
             } else {
                 sb.append("\n");
                 for (int j = 0; attrs.hasMoreElements(); j++) {
                     Attribute attr = attrs.nextElement();
 
                     sb.append(pp.indent(mIndentSize + 8) +
-                            mResource.getString(
-                                    PrettyPrintResources.TOKEN_ATTRIBUTE) + j + ":" + "\n");
+                              mResource.getString(
+                                  PrettyPrintResources.TOKEN_ATTRIBUTE) + j + ":" + "\n");
                     sb.append(pp.indent(mIndentSize + 12) +
-                            mResource.getString(
-                                    PrettyPrintResources.TOKEN_IDENTIFIER) +
-                            attr.getOid().toString() + "\n");
+                              mResource.getString(
+                                  PrettyPrintResources.TOKEN_IDENTIFIER) +
+                              attr.getOid().toString() + "\n");
                     sb.append(pp.indent(mIndentSize + 12) +
-                            mResource.getString(
-                                    PrettyPrintResources.TOKEN_VALUES));
+                              mResource.getString(
+                                  PrettyPrintResources.TOKEN_VALUES));
                     Enumeration<String> values = attr.getValues();
 
                     if (values == null || !values.hasMoreElements()) {
                         sb.append(mResource.getString(
-                                PrettyPrintResources.TOKEN_NONE) + "\n");
+                                      PrettyPrintResources.TOKEN_NONE) + "\n");
                     } else {
                         for (int k = 0; values.hasMoreElements(); k++) {
                             String v = values.nextElement();
@@ -1509,20 +1509,20 @@ public class ExtPrettyPrint {
 
         try {
             sb.append(pp.indent(mIndentSize) + mResource.getString(
-                    PrettyPrintResources.TOKEN_IDENTIFIER));
+                          PrettyPrintResources.TOKEN_IDENTIFIER));
             sb.append(mResource.getString(PrettyPrintResources.TOKEN_CERT_POLICIES) +
-                    "- " + mExt.getExtensionId().toString() + "\n");
+                      "- " + mExt.getExtensionId().toString() + "\n");
             sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                    PrettyPrintResources.TOKEN_CRITICAL));
+                          PrettyPrintResources.TOKEN_CRITICAL));
             if (mExt.isCritical()) {
                 sb.append(mResource.getString(
-                        PrettyPrintResources.TOKEN_YES) + "\n");
+                              PrettyPrintResources.TOKEN_YES) + "\n");
             } else {
                 sb.append(mResource.getString(
-                        PrettyPrintResources.TOKEN_NO) + "\n");
+                              PrettyPrintResources.TOKEN_NO) + "\n");
             }
             sb.append(pp.indent(mIndentSize + 4) + mResource.getString(
-                    PrettyPrintResources.TOKEN_CERT_POLICIES) + "\n");
+                          PrettyPrintResources.TOKEN_CERT_POLICIES) + "\n");
             CertificatePoliciesExtension cp = (CertificatePoliciesExtension) mExt;
             @SuppressWarnings("unchecked")
             Vector<CertificatePolicyInfo> cpv = (Vector<CertificatePolicyInfo>) cp.get("infos");
@@ -1533,7 +1533,7 @@ public class ExtPrettyPrint {
                     CertificatePolicyInfo cpi = e.nextElement();
 
                     sb.append(pp.indent(mIndentSize + 8)
-                            + "Policy Identifier: " + cpi.getPolicyIdentifier().getIdentifier().toString() + "\n");
+                              + "Policy Identifier: " + cpi.getPolicyIdentifier().getIdentifier().toString() + "\n");
                     PolicyQualifiers cpq = cpi.getPolicyQualifiers();
                     if (cpq != null) {
                         for (int i = 0; i < cpq.size(); i++) {
@@ -1541,20 +1541,20 @@ public class ExtPrettyPrint {
                             Qualifier q = pq.getQualifier();
                             if (q instanceof CPSuri) {
                                 sb.append(pp.indent(mIndentSize + 12)
-                                        + "Policy Qualifier Identifier: CPS Pointer Qualifier - "
-                                        + pq.getId() + "\n");
+                                          + "Policy Qualifier Identifier: CPS Pointer Qualifier - "
+                                          + pq.getId() + "\n");
                                 sb.append(pp.indent(mIndentSize + 12)
-                                        + "Policy Qualifier Data: " + ((CPSuri) q).getURI() + "\n");
+                                          + "Policy Qualifier Data: " + ((CPSuri) q).getURI() + "\n");
                             } else if (q instanceof UserNotice) {
                                 sb.append(pp.indent(mIndentSize + 12)
-                                        + "Policy Qualifier Identifier: CPS User Notice Qualifier - "
-                                        + pq.getId() + "\n");
+                                          + "Policy Qualifier Identifier: CPS User Notice Qualifier - "
+                                          + pq.getId() + "\n");
                                 NoticeReference nref = ((UserNotice) q).getNoticeReference();
                                 DisplayText dt = ((UserNotice) q).getDisplayText();
                                 sb.append(pp.indent(mIndentSize + 12) + "Policy Qualifier Data: \n");
                                 if (nref != null) {
                                     sb.append(pp.indent(mIndentSize + 16)
-                                            + "Organization: " + nref.getOrganization().toString() + "\n");
+                                              + "Organization: " + nref.getOrganization().toString() + "\n");
                                     sb.append(pp.indent(mIndentSize + 16) + "Notice Numbers: ");
                                     int[] nums = nref.getNumbers();
                                     for (int k = 0; k < nums.length; k++) {

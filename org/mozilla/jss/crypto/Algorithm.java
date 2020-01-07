@@ -247,4 +247,10 @@ public class Algorithm {
 
     // Generic Secret
     protected static final int CKM_GENERIC_SECRET_KEY_GEN=71;
+
+    // Remaining AES block modes
+    protected static final int CKM_AES_CTR=72;
+    protected static final int CKM_AES_GCM=73;
+    protected static final int CKM_AES_CCM=74;
+    protected static final int CKM_AES_CTS=75;
 }

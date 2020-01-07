@@ -110,6 +110,12 @@ JSS_AlgInfo JSS_AlgTable[NUM_ALGS] = {
 /* CKM_GENERIC_SECRET_KEY_GEN stub for additional keys. */
 /* 71 */    {CKM_GENERIC_SECRET_KEY_GEN, PK11_MECH},
 
+/* Remaining AES Block modes */
+/* 72 */    {CKM_AES_CTR, PK11_MECH},
+/* 73 */    {CKM_AES_GCM, PK11_MECH},
+/* 74 */    {CKM_AES_CCM PK11_MECH},
+/* 75 */    {CKM_AES_CTS, PK11_MECH},
+
 /* REMEMBER TO UPDATE NUM_ALGS!!! (in Algorithm.h) */
 };
 

@@ -66,7 +66,7 @@ public class TestSSLEngine {
         return tms;
     }
 
-    public static void testHandshake(SSLEngine client_eng, SSLEngine server_eng) throws Exception {
+    public static void testHandshake(SSLEngine client_eng, SSLEngine server_eng, boolean allowFirst) throws Exception {
         // Ensure we exit in case of a bug... :-)
         int counter = 0;
         int max_steps = 20;
@@ -129,7 +129,7 @@ public class TestSSLEngine {
                         break;
                     }
                 }
-            } else if (counter > 1 && !client_done && (client_state == SSLEngineResult.HandshakeStatus.FINISHED || client_state == SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING)) {
+            } else if ((counter > 1 || allowFirst) && !client_done && (client_state == SSLEngineResult.HandshakeStatus.FINISHED || client_state == SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING)) {
                 System.err.println("Client: " + server_eng.getHandshakeStatus());
                 client_done = true;
             } else if (!client_done && client_state == SSLEngineResult.HandshakeStatus.NEED_TASK) {
@@ -214,7 +214,7 @@ public class TestSSLEngine {
                         break;
                     }
                 }
-            } else if (counter > 1 && !server_done && (server_state == SSLEngineResult.HandshakeStatus.FINISHED || server_state == SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING)) {
+            } else if ((counter > 1 || allowFirst) && !server_done && (server_state == SSLEngineResult.HandshakeStatus.FINISHED || server_state == SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING)) {
                 System.err.println("Server: " + server_eng.getHandshakeStatus());
                 server_done = true;
             } else if (!server_done && server_state == SSLEngineResult.HandshakeStatus.NEED_TASK) {
@@ -273,6 +273,10 @@ public class TestSSLEngine {
 
         assert(c_session.getCipherSuite() == s_session.getCipherSuite());
         assert(c_session.getProtocol() == s_session.getProtocol());
+
+        if (server_eng.getNeedClientAuth()) {
+            assert(s_session.getPeerCertificates() != null);
+        }
     }
 
     public static void sendTestData(SSLEngine send, SSLEngine recv, ByteBuffer mesg, ByteBuffer inter, ByteBuffer dest) throws Exception {
@@ -457,10 +461,15 @@ public class TestSSLEngine {
         System.err.println("Passed close test!");
     }
 
-    public static void testBasicHandshake(SSLEngine client_eng, SSLEngine server_eng) throws Exception {
-        testHandshake(client_eng, server_eng);
+    public static void testBasicHandshake(SSLEngine client_eng, SSLEngine server_eng, boolean allowFirst) throws Exception {
+        testHandshake(client_eng, server_eng, allowFirst);
         testPostHandshakeTransfer(client_eng, server_eng);
         testClose(client_eng, server_eng);
+    }
+
+    public static void testInitialHandshake(SSLEngine client_eng, SSLEngine server_eng) throws Exception {
+        testHandshake(client_eng, server_eng, false);
+        testPostHandshakeTransfer(client_eng, server_eng);
     }
 
     public static void configureSSLEngine(SSLEngine eng, String protocol, String cipher_suite) throws Exception {
@@ -527,7 +536,7 @@ public class TestSSLEngine {
                 configureSSLEngine(server_eng, protocol, cipher_suite);
 
                 try {
-                    testBasicHandshake(client_eng, server_eng);
+                    testBasicHandshake(client_eng, server_eng, false);
                 } catch (Exception e) {
                     client_eng.cleanup();
                     server_eng.cleanup();
@@ -588,8 +597,64 @@ public class TestSSLEngine {
                 configureSSLEngine(server_eng, protocol, cipher_suite);
 
                 try {
-                    testBasicHandshake(client_eng, server_eng);
+                    testBasicHandshake(client_eng, server_eng, false);
                 } catch (Exception e) {
+                    server_eng.cleanup();
+                    throw e;
+                }
+            }
+        }
+    }
+
+    public static void testPostHandshakeAuth(SSLContext ctx, String client_alias, String server_alias) throws Exception {
+        SSLEngine dummy = ctx.createSSLEngine();
+        assert(dummy != null);
+
+        for (String protocol : dummy.getSupportedProtocols()) {
+            if (protocol != "TLSv1.2" && protocol != "TLSv1.3") {
+                continue;
+            }
+
+            for (String cipher_suite : dummy.getSupportedCipherSuites()) {
+                if (skipProtocolCipherSuite(protocol, cipher_suite, client_alias, server_alias)) {
+                    continue;
+                }
+
+                System.err.println("Testing: " + protocol + " with " + cipher_suite);
+
+                String context = protocol + "/" + cipher_suite;
+
+                JSSEngine client_eng = (JSSEngine) ctx.createSSLEngine();
+                client_eng.setSSLParameters(createParameters(client_alias));
+                client_eng.setUseClientMode(true);
+
+                if (client_eng instanceof JSSEngineReferenceImpl) {
+                    ((JSSEngineReferenceImpl) client_eng).setName("JSS Client " + context);
+                }
+
+                JSSEngine server_eng = (JSSEngine) ctx.createSSLEngine();
+                server_eng.setSSLParameters(createParameters(server_alias));
+                server_eng.setUseClientMode(false);
+
+                if (server_eng instanceof JSSEngineReferenceImpl) {
+                    ((JSSEngineReferenceImpl) server_eng).setName("JSS Server " + context);
+                    ((JSSEngineReferenceImpl) server_eng).enableSafeDebugLogging(7377);
+                }
+
+                configureSSLEngine(client_eng, protocol, cipher_suite);
+                configureSSLEngine(server_eng, protocol, cipher_suite);
+
+                try {
+                    System.err.println("Starting initial handshake");
+                    testInitialHandshake(client_eng, server_eng);
+
+                    // Require client auth and re-handshake
+                    server_eng.setWantClientAuth(true);
+                    server_eng.setNeedClientAuth(true);
+                    System.err.println("Starting second handshake");
+                    testBasicHandshake(client_eng, server_eng, true);
+                } catch (Exception e) {
+                    client_eng.cleanup();
                     server_eng.cleanup();
                     throw e;
                 }
@@ -618,6 +683,7 @@ public class TestSSLEngine {
 
         testAllHandshakes(ctx, client_alias, server_alias, false);
         testAllHandshakes(ctx, client_alias, server_alias, true);
+        testPostHandshakeAuth(ctx, client_alias, server_alias);
         testJSSEToJSSHandshakes(ctx, server_alias);
     }
 

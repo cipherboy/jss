@@ -106,7 +106,19 @@ class SocketBase {
     static final int SSL_AF_INET6 = 51;
 
     void close() throws IOException {
-        socketClose();
+        try {
+            if (sockProxy != null) {
+                socketClose();
+                sockProxy.close();
+            }
+        } catch (Exception e) {
+            String msg = "Unexpected exception while trying to finalize ";
+            msg += "SocketProxy: " + e.getMessage();
+
+            throw new IOException(msg, e);
+        } finally {
+            sockProxy = null;
+        }
     }
 
     // SSLServerSocket and SSLSocket close methods

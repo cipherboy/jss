@@ -14,6 +14,8 @@ import org.mozilla.jss.ssl.javax.*;
 import org.mozilla.jss.provider.javax.crypto.*;
 
 public class TestSSLEngine {
+    public static boolean debug = false;
+
     public static void initialize(String[] args) throws Exception {
         CryptoManager cm = CryptoManager.getInstance();
         cm.setPasswordCallback(new FilePasswordCallback(args[1]));
@@ -512,7 +514,9 @@ public class TestSSLEngine {
 
                 if (server_eng instanceof JSSEngineReferenceImpl) {
                     ((JSSEngineReferenceImpl) server_eng).setName("JSS Server " + context);
-                    ((JSSEngineReferenceImpl) server_eng).enableSafeDebugLogging(7377);
+                    if (debug) {
+                        ((JSSEngineReferenceImpl) server_eng).enableSafeDebugLogging(7377);
+                    }
                 }
 
                 if (client_auth) {
@@ -575,7 +579,9 @@ public class TestSSLEngine {
                 server_eng.setUseClientMode(false);
 
                 if (server_eng instanceof JSSEngineReferenceImpl) {
-                    ((JSSEngineReferenceImpl) server_eng).enableSafeDebugLogging(7374);
+                    if (debug) {
+                        ((JSSEngineReferenceImpl) server_eng).enableSafeDebugLogging(7374);
+                    }
                 }
 
                 configureSSLEngine(client_eng, protocol, cipher_suite);

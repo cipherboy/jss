@@ -50,6 +50,7 @@ public class JSSEngineReferenceImpl extends JSSEngine {
 
     private int unknown_state_count;
     private boolean step_handshake;
+    private boolean returned_finished;
 
     private SSLException ssl_exception;
     private boolean seen_exception;
@@ -667,7 +668,17 @@ public class JSSEngineReferenceImpl extends JSSEngine {
         // alerts.
         if (!step_handshake && handshake_state == SSLEngineResult.HandshakeStatus.FINISHED) {
             debug("JSSEngine.updateHandshakeState() - FINISHED to NOT_HANDSHAKING");
-            handshake_state = SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING;
+
+            // Because updateHandshakeState() gets called multiple times within
+            // a single wrap/unwrap invocation, we need to wait for the FINISHED
+            // message to be returned (from wrap/unwrap) before moving it to
+            // NOT_HANDSHAKING. Otherwise, callers will miss that the handshake
+            // has completed. We aren't in an unknown state though and we don't
+            // need to call SSL.ForceHandshake().
+            if (returned_finished) {
+                handshake_state = SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING;
+            }
+
             unknown_state_count = 0;
 
             ssl_exception = checkSSLAlerts();
@@ -897,6 +908,10 @@ public class JSSEngineReferenceImpl extends JSSEngine {
         debug(" - Handshake State: " + handshake_state);
         debug(" - wire_data: " + wire_data);
         debug(" - app_data: " + app_data);
+
+        if (handshake_state == SSLEngineResult.HandshakeStatus.FINISHED) {
+            returned_finished = true;
+        }
 
         tryCleanup();
         return new SSLEngineResult(handshake_status, handshake_state, wire_data, app_data);
@@ -1179,6 +1194,10 @@ public class JSSEngineReferenceImpl extends JSSEngine {
         debug(" - Handshake State: " + handshake_state);
         debug(" - wire_data: " + wire_data);
         debug(" - app_data: " + app_data);
+
+        if (handshake_state == SSLEngineResult.HandshakeStatus.FINISHED) {
+            returned_finished = true;
+        }
 
         tryCleanup();
         return new SSLEngineResult(handshake_status, handshake_state, app_data, wire_data);

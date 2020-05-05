@@ -115,6 +115,35 @@ Java_org_mozilla_jss_nss_Buffer_Read(JNIEnv *env, jclass clazz, jobject buf,
     return result;
 }
 
+JNIEXPORT jint JNICALL
+Java_org_mozilla_jss_nss_Buffer_ReadOffset(JNIEnv *env, jclass clazz, jobject buf,
+    jbyteArray output, jlong offset, jlong output_length)
+{
+    j_buffer *real_buf = NULL;
+    int read_amount = -1;
+    uint8_t *real_output = NULL;
+    jsize real_length = 0;
+
+    PR_ASSERT(env != NULL && buf != NULL && output_length > 0);
+
+    if (JSS_PR_unwrapJBuffer(env, buf, &real_buf) != PR_SUCCESS) {
+        return read_amount;
+    }
+
+    if (!JSS_RefByteArray(env, output, (jbyte **)&real_output, &real_length)) {
+        return read_amount;
+    }
+
+    if (real_length < output_length) {
+        return read_amount;
+    }
+
+    read_amount = jb_read_offset(real_buf, real_output, offset, output_length);
+    JSS_DerefByteArray(env, output, (jbyte *)real_output, 0);
+
+    return read_amount;
+}
+
 JNIEXPORT jlong JNICALL
 Java_org_mozilla_jss_nss_Buffer_Write(JNIEnv *env, jclass clazz, jobject buf, jbyteArray input)
 {
@@ -138,6 +167,36 @@ Java_org_mozilla_jss_nss_Buffer_Write(JNIEnv *env, jclass clazz, jobject buf, jb
 
     return write_amount;
 }
+
+JNIEXPORT jlong JNICALL
+Java_org_mozilla_jss_nss_Buffer_WriteOffset(JNIEnv *env, jclass clazz, jobject buf, jbyteArray input,
+    jlong offset, jlong input_length)
+{
+    j_buffer *real_buf = NULL;
+    jsize real_length = 0;
+    uint8_t *real_input = NULL;
+    long write_amount = -1;
+
+    PR_ASSERT(env != NULL && buf != NULL);
+
+    if (JSS_PR_unwrapJBuffer(env, buf, &real_buf) != PR_SUCCESS) {
+        return write_amount;
+    }
+
+    if (!JSS_RefByteArray(env, input, (jbyte **)&real_input, &real_length)) {
+        return write_amount;
+    }
+
+    if (real_length < input_length) {
+        return write_amount;
+    }
+
+    write_amount = jb_write_offset(real_buf, real_input, offset, input_length);
+    JSS_DerefByteArray(env, input, (jbyte *)real_input, JNI_ABORT);
+
+    return write_amount;
+}
+
 
 JNIEXPORT jint JNICALL
 Java_org_mozilla_jss_nss_Buffer_Get(JNIEnv *env, jclass clazz, jobject buf)

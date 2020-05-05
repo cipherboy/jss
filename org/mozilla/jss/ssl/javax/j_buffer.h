@@ -60,6 +60,14 @@ int jb_put(j_buffer *buf, uint8_t byte);
 size_t jb_write(j_buffer *buf, const uint8_t *input, size_t input_size);
 
 /*
+ * Store many characters into the buffer from an array of characters. Returns
+ * the number of characters written into the buffer; max of input_size. This
+ * is zero when the buffer is already full. Unlike jb_write, start at an offset
+ * in the input array.
+ */
+size_t jb_write_offset(j_buffer *buf, const uint8_t *input, size_t input_offset, size_t input_size);
+
+/*
  * Get the next character from the buffer or EOF if the buffer is empty. If
  * not EOF, can safely be casted to uint8_t.
  */
@@ -71,6 +79,14 @@ int jb_get(j_buffer *buf);
  * Returns the number of characters read; zero if the buffer was empty.
  */
 size_t jb_read(j_buffer *buf, uint8_t *output, size_t output_size);
+
+/*
+ * Read several characters from the buffer in the order they were written. The
+ * characters are placed in output and up to output_size characters are read.
+ * Returns the number of characters read; zero if the buffer was empty. Unlike
+ * jb_read, start at an offset in the output array.
+ */
+size_t jb_read_offset(j_buffer *buf, uint8_t *output, size_t outupt_offset, size_t output_size);
 
 /*
  * Free a buffer allocated with jb_alloc. This includes zeroing the contents

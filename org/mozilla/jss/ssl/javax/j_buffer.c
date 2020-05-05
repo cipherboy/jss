@@ -123,9 +123,18 @@ int jb_put(j_buffer *buf, uint8_t byte) {
 }
 
 size_t jb_write(j_buffer *buf, const uint8_t *input, size_t input_size) {
+    return jb_write_offset(buf, input, 0, input_size);
+}
+
+size_t jb_write_offset(j_buffer *buf, const uint8_t *input, size_t input_offset, size_t input_size) {
     /* ret == 0 <=> can't write to the buffer or input_size == 0 */
     /* ret == amount written <=> can write to the buffer */
     if (!jb_can_write(buf) || input_size == 0) {
+        return 0;
+    }
+
+    /* input_offset >= input_size is an array bounds violation */
+    if (input_offset >= input_size) {
         return 0;
     }
 
@@ -143,11 +152,12 @@ size_t jb_write(j_buffer *buf, const uint8_t *input, size_t input_size) {
         // will not grow the size written and only shrink it.
         write_size = buf->read_pos - buf->write_pos;
     }
-    if (write_size > input_size) {
+
+    if (write_size > (input_size - input_offset)) {
         // Since we're limited by the amount we can ultimately write by the
         // quantity of bytes of input we have, shrink write_size since it was
         // previously greater than input_size.
-        write_size = input_size;
+        write_size = input_size - input_offset;
     }
 
     // Note that, sometimes write_size is computed as being smaller than
@@ -160,7 +170,7 @@ size_t jb_write(j_buffer *buf, const uint8_t *input, size_t input_size) {
     // depth of at most two.
 
     // This copies the current byte window from the input to the buffer.
-    memcpy(write_ptr, input, write_size);
+    memcpy(write_ptr, input + input_offset, write_size);
 
     if (buf->read_pos == buf->capacity) {
         // Since we just wrote bytes, we can now read bytes again.
@@ -190,11 +200,10 @@ size_t jb_write(j_buffer *buf, const uint8_t *input, size_t input_size) {
     // writing), by the write_size so that the next byte is placed correctly.
     // Also, update input_size by write_size such that the remaining capacity
     // of the input buffer (or, the offset input buffer) is reflected.
-    input += write_size;
-    input_size -= write_size;
+    input_offset += write_size;
 
     // Recurse, updating the return value by this write size.
-    return write_size + jb_write(buf, input, input_size);
+    return write_size + jb_write_offset(buf, input, input_offset, input_size);
 }
 
 int jb_get(j_buffer *buf) {
@@ -229,9 +238,18 @@ int jb_get(j_buffer *buf) {
 }
 
 size_t jb_read(j_buffer *buf, uint8_t *output, size_t output_size) {
+    return jb_read_offset(buf, output, 0, output_size);
+}
+
+size_t jb_read_offset(j_buffer *buf, uint8_t *output, size_t output_offset, size_t output_size) {
     /* ret == 0 <=> can't read from the buffer or output_size == 0 */
     /* ret == amount written <=> can read from the buffer */
     if (!jb_can_read(buf) || output_size == 0) {
+        return 0;
+    }
+
+    /* output_offset >= output_size is an array bounds violation */
+    if (output_offset >= output_size) {
         return 0;
     }
 
@@ -249,15 +267,16 @@ size_t jb_read(j_buffer *buf, uint8_t *output, size_t output_size) {
         // buf->read_pos. This will thus never grow read_size.
         read_size = buf->write_pos - buf->read_pos;
     }
-    if (read_size > output_size) {
+
+    if (read_size > (output_size - output_offset)) {
         // Bound read_size by output_size when read_size exceeds output_size.
-        read_size = output_size;
+        read_size = output_size - output_offset;
     }
 
     // We perform the initial copy of bytes from buf->contents to the output
     // buffer. However, we might need another pass, hence the recursion at the
     // end of jb_read. For more discussion, see the documentation in
-    memcpy(output, read_ptr, read_size);
+    memcpy(output + output_offset, read_ptr, read_size);
 
     if (buf->write_pos == buf->capacity) {
         // Since we just read from the buffer, we can now write to the buffer
@@ -282,9 +301,10 @@ size_t jb_read(j_buffer *buf, uint8_t *output, size_t output_size) {
 
     // Move our output array by read_size and decrease its given size to
     // handle the recursion into jb_read.
-    output += read_size;
-    output_size -= read_size;
-    return read_size + jb_read(buf, output, output_size);
+    output_offset += read_size;
+
+    // Recurse, updating the return value by this read size.
+    return read_size + jb_read_offset(buf, output, output_offset, output_size);
 }
 
 void jb_free(j_buffer *buf) {

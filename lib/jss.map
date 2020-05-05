@@ -482,6 +482,8 @@ Java_org_mozilla_jss_nss_SECErrors_getRevokedCertificateOCSP;
 Java_org_mozilla_jss_nss_SECErrors_getRevokedCertificate;
 Java_org_mozilla_jss_nss_SECErrors_getUntrustedIssuer;
 Java_org_mozilla_jss_nss_SECErrors_getUntrustedCert;
+Java_org_mozilla_jss_nss_Buffer_ReadOffset;
+Java_org_mozilla_jss_nss_Buffer_WriteOffset;
     local:
         *;
 };

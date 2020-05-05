@@ -53,11 +53,27 @@ public class Buffer {
     public static native byte[] Read(BufferProxy buf, long length);
 
     /**
+     * Read the specified number of bytes from the buffer into the output
+     * array.
+     *
+     * See also: jb_read_offset in org/mozilla/jss/ssl/javax/j_buffer.h
+     */
+    public static native int ReadOffset(BufferProxy buf, byte[] output, long offset, long output_length);
+
+    /**
      * Write the specified bytes to the buffer.
      *
      * See also: jb_write in org/mozilla/jss/ssl/javax/j_buffer.h
      */
     public static native long Write(BufferProxy buf, byte[] input);
+
+    /**
+     * Write the specified bytes to the buffer at the given offset in the
+     * input array.
+     *
+     * See also: jb_write in org/mozilla/jss/ssl/javax/j_buffer.h
+     */
+    public static native long WriteOffset(BufferProxy buf, byte[] input, long offset, long input_length);
 
     /**
      * Get a single character from the buffer.

@@ -741,9 +741,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
         if (!step_handshake && handshake_state == SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING) {
             debug("JSSEngine.updateHandshakeState() - not handshaking");
             unknown_state_count = 0;
-
-            ssl_exception = checkSSLAlerts();
-            seen_exception = (ssl_exception != null);
             return;
         }
 
@@ -764,9 +761,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
             }
 
             unknown_state_count = 0;
-
-            ssl_exception = checkSSLAlerts();
-            seen_exception = (ssl_exception != null);
             return;
         }
 
@@ -913,6 +907,11 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
         int this_dst_write;
 
         do {
+            int max_dst_size = computeSize(dsts, offset, length);
+            if (max_dst_size == 0) {
+                break;
+            }
+
             this_src_write = 0;
             this_dst_write = 0;
 
@@ -921,10 +920,10 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
 
                 // When we have data from src, write it to read_buf.
                 if (this_src_write > 0) {
-                    byte[] wire_buffer = new byte[this_src_write];
-                    src.get(wire_buffer);
-
-                    this_src_write = (int) Buffer.Write(read_buf, wire_buffer);
+                    this_src_write = (int) Buffer.WriteOffset(read_buf, src.array(), src.position(), src.position() + src.remaining());
+                    if (this_src_write > 0) {
+                        src.position(src.position() + this_src_write);
+                    }
 
                     wire_data += this_src_write;
                     debug("JSSEngine.unwrap(): Wrote " + this_src_write + " bytes to read_buf.");
@@ -935,14 +934,13 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
             // see if we need to step our handshake process or not.
             updateHandshakeState();
 
-            int max_dst_size = computeSize(dsts, offset, length);
             byte[] app_buffer = PR.Read(ssl_fd, max_dst_size);
             int error = PR.GetError();
             debug("JSSEngine.unwrap() - " + app_buffer + " error=" + errorText(error));
             if (app_buffer != null) {
                 this_dst_write = putData(app_buffer, dsts, offset, length);
                 app_data += this_dst_write;
-            } else if (max_dst_size > 0) {
+            } else {
                 // There are two scenarios we need to ignore here:
                 //  1. WOULD_BLOCK_ERRORs are safe, because we're expecting
                 //     not to block. Usually this means we don't have space
@@ -1176,6 +1174,10 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
         int this_src_write;
         int this_dst_write;
         do {
+            if (dst.remaining() == 0) {
+                break;
+            }
+
             this_src_write = 0;
             this_dst_write = 0;
 
@@ -1214,27 +1216,17 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
                 debug("JSSEngine.wrap(): not writing from srcs to buffer: this_src_write=" + this_src_write + " handshake_finished=" + isHandshakeFinished());
             }
 
-            if (dst != null) {
-                // Get an estimate for the expected write to dst; this is
-                // the minimum of write_buf read capacity and dst.remaining
-                // capacity.
-                this_dst_write = Math.min((int) Buffer.ReadCapacity(write_buf), dst.remaining());
-
-                // Try reading data from write_buf to dst; always do this, even
-                // if we didn't write.
-                if (this_dst_write > 0) {
-                    byte[] wire_buffer = Buffer.Read(write_buf, this_dst_write);
-                    dst.put(wire_buffer);
-                    this_dst_write = wire_buffer.length;
-                    wire_data += this_dst_write;
-
-                    debug("JSSEngine.wrap() - Wrote " + wire_buffer.length + " bytes to dst.");
-                } else {
-                    debug("JSSEngine.wrap(): not writing from write_buf into dst: this_dst_write=0 write_buf.read_capacity=" + Buffer.ReadCapacity(write_buf) + " dst.remaining=" + dst.remaining());
-                }
-            } else {
-                debug("JSSEngine.wrap(): not writing from write_buf into NULL dst");
+            // Try reading data from write_buf to dst; always do this, even
+            // if we didn't write because we could've written data during the
+            // handshake.
+            this_dst_write = Buffer.ReadOffset(write_buf, dst.array(), dst.position(), dst.position() + dst.remaining());
+            if (this_dst_write > 0) {
+                dst.position(dst.position() + this_dst_write);
             }
+
+            wire_data += this_dst_write;
+
+            debug("JSSEngine.wrap() - Wrote " + this_dst_write + " bytes to dst.");
         } while (this_src_write != 0 || this_dst_write != 0);
 
         if (seen_exception == false && ssl_exception == null) {

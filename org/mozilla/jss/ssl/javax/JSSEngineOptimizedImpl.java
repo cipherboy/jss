@@ -118,8 +118,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     }
 
     private void init() {
-        debug("JSSEngine: init()");
-
         // Initialize our JSSEngine when we begin to handshake; otherwise,
         // calls to Set<Option>(...) won't be processed if we call it too
         // early; some of these need to be applied at initialization.
@@ -161,8 +159,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     }
 
     private void createBuffers() {
-        debug("JSSEngine: createBuffers()");
-
         // If the buffers exist, destroy them and recreate.
         if (read_buf != null) {
             Buffer.Free(read_buf);
@@ -176,8 +172,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     }
 
     private void createBufferFD() {
-        debug("JSSEngine: createBufferFD()");
-
         // Create the basis for the ssl_fd from the pair of buffers.
         PRFDProxy fd;
         if (peer_info != null && peer_info.length() != 0) {
@@ -210,10 +204,7 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     }
 
     private void initClient() {
-        debug("JSSEngine: initClient()");
-
         if (cert != null && key != null) {
-            debug("JSSEngine.initClient(): Enabling client auth: " + cert);
             ssl_fd.SetClientCert(cert);
             if (SSL.AttachClientCertCallback(ssl_fd) != SSL.SECSuccess) {
                 throw new RuntimeException("JSSEngine.init(): Unable to attach client certificate auth callback.");
@@ -222,20 +213,17 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     }
 
     private void initServer() {
-        debug("JSSEngine: initServer()");
-
         // The only time cert and key are required are when we're creating a
         // server SSLEngine.
         if (cert == null || key == null) {
             throw new IllegalArgumentException("JSSEngine: must be initialized with server certificate and key!");
         }
 
-        debug("JSSEngine.initServer(): " + cert);
-        debug("JSSEngine.initServer(): " + key);
-
         // Configure SSL server with the given certificate and its private
         // key.
         if (SSL.ConfigServerCert(ssl_fd, cert, key) == SSL.SECFailure) {
+            debug("JSSEngine.initServer(): Certificate: " + cert);
+            debug("JSSEngine.initServer(): Key: " + key);
             throw new RuntimeException("Unable to initialize server with cert and key: " + errorText(PR.GetError()));
         }
         session.setLocalCertificates(new PK11Cert[]{ cert } );
@@ -251,8 +239,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     }
 
     private void configureClientAuth() {
-        debug("SSLFileDesc: " + ssl_fd);
-
         // Only specify these on the server side as they affect what we
         // want from the remote peer in NSS. In the server case, this is
         // client auth, but if we were to set these on the client, it would
@@ -275,7 +261,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     }
 
     private void applyCiphers() {
-        debug("JSSEngine: applyCiphers()");
         // Enabled the ciphersuites specified by setEnabledCipherSuites(...).
         // When this isn't called, enabled_ciphers will be null, so we'll just
         // use whatever is enabled by default.
@@ -309,7 +294,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     }
 
     private void applyProtocols() {
-        debug("JSSEngine: applyProtocols() min_protocol=" + min_protocol + " max_protocol=" + max_protocol);
         // Enable the protocols only when both a maximum and minimum protocol
         // version are specified.
         if (min_protocol == null || max_protocol == null) {
@@ -321,25 +305,23 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
         // match the current behavior.
         SSLVersionRange vrange = new SSLVersionRange(min_protocol, max_protocol);
         if (SSL.VersionRangeSet(ssl_fd, vrange) == SSL.SECFailure) {
+            debug("JSSEngine: applyProtocols() failed: min_protocol=" + min_protocol + " max_protocol=" + max_protocol);
             throw new RuntimeException("Unable to set version range: " + errorText(PR.GetError()));
         }
     }
 
     private void applyConfig() {
-        debug("JSSEngine: applyConfig()");
         for (Integer key : config.keySet()) {
             Integer value = config.get(key);
 
-            debug("Setting configuration option: " + key + "=" + value);
             if (SSL.OptionSet(ssl_fd, key, value) != SSL.SECSuccess) {
+                debug("Setting configuration option failed: " + key + "=" + value);
                 throw new RuntimeException("Unable to set configuration value: " + key + "=" + value);
             }
         }
     }
 
     private void applyHosts() {
-        debug("JSSEngine: applyHosts()");
-
         // This is most useful for the client end of the connection; this
         // specifies what to match the server's certificate against.
         if (hostname != null) {
@@ -350,8 +332,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     }
 
     private void applyTrustManagers() {
-        debug("JSSEngine: applyTrustManagers()");
-
         // If none have been specified, exit early.
         if (trust_managers == null || trust_managers.length == 0) {
             debug("JSSEngine: no TrustManagers to apply.");
@@ -416,8 +396,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     }
 
     public void beginHandshake() {
-        debug("JSSEngine: beginHandshake()");
-
         // We assume beginHandshake(...) is the entry point for initializing
         // the buffer. In particular, wrap(...) / unwrap(...) *MUST* call
         // beginHandshake(...) if ssl_fd == null.
@@ -512,15 +490,11 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     }
 
     public void closeInbound() {
-        debug("JSSEngine: closeInbound()");
-
         PR.Shutdown(ssl_fd, PR.SHUTDOWN_RCV);
         is_inbound_closed = true;
     }
 
     public void closeOutbound() {
-        debug("JSSEngine: closeOutbound()");
-
         PR.Shutdown(ssl_fd, PR.SHUTDOWN_SEND);
         is_outbound_closed = true;
     }
@@ -530,8 +504,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     }
 
     public Runnable getDelegatedTask() {
-        debug("JSSEngine: getDelegatedTask()");
-
         // We fake being a non-blocking SSLEngine. In particular, we never
         // export tasks as delegated tasks (e.g., OCSP checking), so this
         // method will always return null.
@@ -540,8 +512,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     }
 
     public SSLEngineResult.HandshakeStatus getHandshakeStatus() {
-        debug("JSSEngine: getHandshakeStatus()");
-
         // Always update the handshake state; this ensures that we catch
         // looping due to missing data and flip our expected direction.
         updateHandshakeState();
@@ -567,11 +537,9 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     }
 
     private int computeSize(ByteBuffer[] buffers, int offset, int length) throws IllegalArgumentException {
-        debug("JSSEngine: computeSize()");
         int result = 0;
 
         if (buffers == null || buffers.length == 0) {
-            debug("JSSEngine.compueSize(): no buffers - result=" + result);
             return result;
         }
 
@@ -589,29 +557,15 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
                 throw new IllegalArgumentException("offset (" + offset + ") or length (" + length + ") exceeds contract based on number of buffers (" + buffers.length + ")");
             }
 
-            if (rel_index == 0 && buffers[index] == null) {
-                // If our first buffer is null, assume the rest are and skip
-                // everything else. This commonly happens when null is passed
-                // as the src parameter to wrap or when null is passed as the
-                // dst parameter to unwrap.
-                debug("JSSEngine.compueSize(): null first buffer - result=" + result);
-                return result;
+            if (buffers[index] != null) {
+                result += buffers[index].remaining();
             }
-
-            if (buffers[index] == null) {
-                throw new IllegalArgumentException("Buffer at index " + index + " is null.");
-            }
-
-            result += buffers[index].remaining();
         }
-
-        debug("JSSEngine.compueSize(): result=" + result);
 
         return result;
     }
 
     private int putData(byte[] data, ByteBuffer[] buffers, int offset, int length) {
-        debug("JSSEngine: putData()");
         // Handle the rather unreasonable task of moving data into the buffers.
         // We assume the buffer parameters have already been checked by
         // computeSize(...); that is, offset/length contracts hold and that
@@ -676,19 +630,15 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     }
 
     private SSLException checkSSLAlerts() {
-        debug("JSSEngine: Checking inbound and outbound SSL Alerts. Have " + ssl_fd.inboundAlerts.size() + " inbound and " + ssl_fd.outboundAlerts.size() + " outbound alerts.");
-
         // Prefer inbound alerts to outbound alerts.
         while (ssl_fd.inboundOffset < ssl_fd.inboundAlerts.size()) {
             SSLAlertEvent event = ssl_fd.inboundAlerts.get(ssl_fd.inboundOffset);
             ssl_fd.inboundOffset += 1;
 
             if (event.getLevelEnum() == SSLAlertLevel.WARNING && event.getDescriptionEnum() == SSLAlertDescription.CLOSE_NOTIFY) {
-                warn("Got inbound CLOSE_NOTIFY alert");
+                debug("Got inbound CLOSE_NOTIFY alert");
                 closeInbound();
             }
-
-            debug("JSSEngine: Got inbound alert: " + event);
 
             SSLException exception = event.toException();
             if (exception != null) {
@@ -701,11 +651,9 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
             ssl_fd.outboundOffset += 1;
 
             if (event.getLevelEnum() == SSLAlertLevel.WARNING && event.getDescriptionEnum() == SSLAlertDescription.CLOSE_NOTIFY) {
-                warn("Sent outbound CLOSE_NOTIFY alert.");
+                debug("Sent outbound CLOSE_NOTIFY alert.");
                 closeOutbound();
             }
-
-            debug("JSSEngine: Got outbound alert: " + event);
 
             SSLException exception = event.toException();
             if (exception != null) {
@@ -717,8 +665,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     }
 
     private void updateHandshakeState() {
-        debug("JSSEngine: updateHandshakeState()");
-
         // If we've previously seen an exception, we should just return
         // here; there's already an alert on the wire, so there's no point
         // in checking for new ones and/or stepping the handshake: it has
@@ -739,7 +685,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
 
         // If we're already done, we should check for SSL ALerts.
         if (!step_handshake && handshake_state == SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING) {
-            debug("JSSEngine.updateHandshakeState() - not handshaking");
             unknown_state_count = 0;
             return;
         }
@@ -748,8 +693,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
         // NOT_HANDSHAKING. Now is also a good time to check for any
         // alerts.
         if (!step_handshake && handshake_state == SSLEngineResult.HandshakeStatus.FINISHED) {
-            debug("JSSEngine.updateHandshakeState() - FINISHED to NOT_HANDSHAKING");
-
             // Because updateHandshakeState() gets called multiple times within
             // a single wrap/unwrap invocation, we need to wait for the FINISHED
             // message to be returned (from wrap/unwrap) before moving it to
@@ -766,13 +709,10 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
 
         // Since we're not obviously done handshaking, and the last time we
         // were called, we were still handshaking, step the handshake.
-        debug("JSSEngine.updateHandshakeState() - forcing handshake");
         if (SSL.ForceHandshake(ssl_fd) == SSL.SECFailure) {
             int error_value = PR.GetError();
 
             if (error_value != PRErrors.WOULD_BLOCK_ERROR) {
-                debug("JSSEngine.updateHandshakeState() - FATAL " + getStatus());
-
                 ssl_exception = new SSLHandshakeException("Error duing SSL.ForceHandshake() :: " + errorText(error_value));
                 seen_exception = true;
 
@@ -780,9 +720,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
                 return;
             }
         }
-
-        // Check if we've just finished handshaking.
-        debug("JSSEngine.updateHandshakeState() - read_buf.read=" + Buffer.ReadCapacity(read_buf) + " read_buf.write=" + Buffer.WriteCapacity(read_buf) + " write_buf.read=" + Buffer.ReadCapacity(write_buf) + " write_buf.write=" + Buffer.WriteCapacity(write_buf));
 
         // Set NEED_WRAP when we have data to send to the client.
         if (Buffer.ReadCapacity(write_buf) > 0 && handshake_state != SSLEngineResult.HandshakeStatus.NEED_WRAP) {
@@ -829,7 +766,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     }
 
     private boolean isHandshakeFinished() {
-        debug("JSSEngine: isHandshakeFinished()");
         return (handshake_state == SSLEngineResult.HandshakeStatus.FINISHED ||
                 (ssl_fd != null && handshake_state == SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING));
     }

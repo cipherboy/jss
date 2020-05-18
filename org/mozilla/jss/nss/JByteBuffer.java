@@ -20,6 +20,12 @@ public class JByteBuffer {
             return;
         }
 
+        if (buffer != null && !buffer.hasArray()) {
+            String msg = "Unable to support ByteBuffers which are not backed ";
+            msg += "by real arrays.";
+            throw new RuntimeException(msg);
+        }
+
         if (buffer == null) {
             long offset = SetBufferNative(proxy, null, 0);
             if (proxy.last == null && offset != 0) {
@@ -40,6 +46,7 @@ public class JByteBuffer {
             // the j_bytebuffer instance by NSPR.
             proxy.last.position(proxy.last.position() + (int) offset);
             proxy.last = null;
+            return;
         }
 
         long offset = SetBufferNative(proxy, buffer.array(), buffer.position());

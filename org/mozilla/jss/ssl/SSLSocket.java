@@ -14,10 +14,15 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.net.ssl.HandshakeCompletedListener;
+import javax.net.ssl.SSLSession;
+
+import org.mozilla.jss.ssl.javax.JSSParameters;
+
 /**
  * SSL client socket.
  */
-public class SSLSocket extends java.net.Socket {
+public class SSLSocket extends javax.net.ssl.SSLSocket {
 
     /**
      *
@@ -838,6 +843,8 @@ public class SSLSocket extends java.net.Socket {
         for (SSLHandshakeCompletedListener listener : handshakeCompletedListeners) {
             listener.handshakeCompleted(event);
         }
+
+        notifyHandshakeCompletedListeners();
     }
 
     /**
@@ -1276,6 +1283,14 @@ public class SSLSocket extends java.net.Socket {
      */
     public native void forceHandshake() throws SocketException;
 
+    public void startHandshake() throws IOException {
+        try {
+            forceHandshake();
+        } catch (SocketException se) {
+            throw new IOException(se.getMessage(), se);
+        }
+    }
+
     /**
      * Determines whether this end of the socket is the client or the server
      *  for purposes of the SSL protocol. By default, it is the client.
@@ -1345,12 +1360,14 @@ public class SSLSocket extends java.net.Socket {
     }
 
     /**
-     * @deprecated As of JSS 3.0. This method is misnamed. Use
      *  <code>requestClientAuth</code> instead.
      */
-    @Deprecated
-    public void setNeedClientAuth(boolean b) throws SocketException {
-        base.requestClientAuth(b);
+    public void setNeedClientAuth(boolean b) {
+        try {
+            base.requireClientAuth(b, b);
+        } catch (SocketException se) {
+            throw new RuntimeException(se.getMessage(), se);
+        }
     }
 
     /**
@@ -1623,4 +1640,80 @@ public class SSLSocket extends java.net.Socket {
      * <code>TLS_RSA_WITH_AES_128_CBC_SHA</code>).
      */
     public static native int[] getImplementedCipherSuites();
+
+    public boolean getEnableSessionCreation() { return false; }
+    public void setEnableSessionCreation(boolean on) throws IllegalArgumentException {
+        if (!on) {
+            throw new IllegalArgumentException("Unable to disable session creation.");
+        }
+    }
+
+    public boolean getWantClientAuth() {
+        return false;
+    }
+
+    public void setWantClientAuth(boolean on) {
+        requestClientAuth(on);
+    }
+
+    public boolean getNeedClientAuth() {
+        return false;
+    }
+
+    private ArrayList<HandshakeCompletedListener> handshakeCallbacks = new ArrayList<HandshakeCompletedListener>();
+
+    /**
+     * Add a callback to fire on handshake completion.
+     *
+     * @see javax.net.ssl.SSLSocket#addHandshakeCompletedListener(HandshakeCompletedListener)
+     */
+    @Override
+    public void addHandshakeCompletedListener(HandshakeCompletedListener callback) throws IllegalArgumentException {
+        if (callback == null) {
+            throw new IllegalArgumentException("Expected non-null HandshakeCompletedListener instance.");
+        }
+
+        handshakeCallbacks.add(callback);
+    }
+
+    /**
+     * Internal helper to fire callbacks on handshake completion.
+     */
+    protected void notifyHandshakeCompletedListeners() {
+        HandshakeCompletedEvent event = new HandshakeCompletedEvent(this, getSession());
+        for (HandshakeCompletedListener callback : handshakeCallbacks) {
+            callback.handshakeCompleted(event);
+        }
+    }
+
+    /**
+     * Remove a callback from firing on handshake completion.
+     *
+     * @see javax.net.ssl.SSLSocket#removeHandshakeCompletedListener(HandshakeCompletedListener)
+     */
+    @Override
+    public void removeHandshakeCompletedListener(HandshakeCompletedListener callback) throws IllegalArgumentException {
+        if (callback == null) {
+            throw new IllegalArgumentException("Expected non-null HandshakeCompletedListener instance.");
+        }
+
+        if (!handshakeCallbacks.contains(callback)) {
+            throw new IllegalArgumentException("Passed callback " + callback + " wasn't registered!");
+        }
+
+        handshakeCallbacks.remove(callback);
+    }
+
+    public SSLSession getSession() {
+        return null;
+    }
+
+    public void setEnabledProtocols(String[] protocols) throws IllegalArgumentException {
+        JSSParameters parser = new JSSParameters();
+        parser.setProtocols(protocols);
+
+        SSLVersionRange vrange = parser.getSSLVersionRange();
+        setSSLVersionRangeDefault(SSLProtocolVariant.STREAM, vrange);
+        setSSLVersionRangeDefault(SSLProtocolVariant.DATA_GRAM, vrange);
+    }
 }

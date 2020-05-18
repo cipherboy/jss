@@ -4,13 +4,17 @@
 
 package org.mozilla.jss.ssl;
 
-class SocketProxy extends org.mozilla.jss.util.NativeProxy {
+import org.mozilla.jss.nss.SSLFDProxy;
+
+class SocketProxy extends SSLFDProxy {
 
     public SocketProxy(byte[] pointer) {
         super(pointer);
     }
 
-    protected native void releaseNativeResources();
+    protected void releaseNativeResources() {
+        super.releaseNativeResources();
+    }
 
     protected void finalize() throws Throwable {
         super.finalize();

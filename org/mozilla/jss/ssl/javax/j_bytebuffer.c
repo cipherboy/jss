@@ -25,12 +25,21 @@ void jbb_release_buffer(j_bytebuffer *buf, JNIEnv *env) {
 
     // We wish to preserve changes to our underlying byteArray, so specify 0
     // as the mode parameter.
+    jbyte *data = NULL;
+    jsize length = 0;
+    if (!JSS_RefByteArray(env, buf->backingArray, &data, &length)) {
+        return;
+    }
+    memcpy(data, buf->contents, length);
     JSS_DerefByteArray(env, buf->backingArray, buf->contents, 0);
+    free(buf->contents);
+    buf->backingArray = NULL;
+    buf->contents = NULL;
 }
 
 size_t jbb_set_buffer(j_bytebuffer *buf, JNIEnv *env, jbyteArray backingArray, size_t offset) {
     size_t ret = 0;
-    if (buf == NULL) {
+    if (buf == NULL || env == NULL) {
         return ret;
     }
 
@@ -49,12 +58,12 @@ size_t jbb_set_buffer(j_bytebuffer *buf, JNIEnv *env, jbyteArray backingArray, s
         buf->position = 0;
         return ret;
     }
-    
+
     // Otherwise, take a reference to the underlying data in the byte
     // array, updating the capacity as necessary.
-    jsize capacity;
-    if (!JSS_RefByteArray(env, backingArray, (jbyte **)&buf->contents, &capacity)
-        || offset > (size_t) capacity) {
+    size_t capacity;
+    if (!JSS_FromByteArray(env, backingArray, &buf->contents, &capacity)
+        || offset > capacity) {
         // We've failed to set the new data. This means RefByteArray
         // should've thrown an exception. Reset our contents to NULL
         // so we don't try using anything.

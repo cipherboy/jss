@@ -33,8 +33,8 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
     private String peer_info;
 
     private boolean closed_fd = true;
-    private BufferProxy read_buf;
-    private BufferProxy write_buf;
+    private ByteBufferProxy read_buf;
+    private ByteBufferProxy write_buf;
 
     private int unknown_state_count;
     private boolean step_handshake;
@@ -42,15 +42,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
 
     private SSLException ssl_exception;
     private boolean seen_exception;
-
-    private int debug_port;
-    private ServerSocket ss_socket;
-    private Socket s_socket;
-    private Socket c_socket;
-    private InputStream s_istream;
-    private OutputStream s_ostream;
-    private InputStream c_istream;
-    private OutputStream c_ostream;
 
     private String name;
     private String prefix = "";
@@ -153,31 +144,28 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
         // Apply TrustManager(s) information for validating the peer's
         // certificate.
         applyTrustManagers();
-
-        // Finally, set up any debug logging necessary.
-        createLoggingSocket();
     }
 
     private void createBuffers() {
         // If the buffers exist, destroy them and recreate.
         if (read_buf != null) {
-            Buffer.Free(read_buf);
+            JByteBuffer.Free(read_buf);
         }
-        read_buf = Buffer.Create(BUFFER_SIZE);
+        read_buf = JByteBuffer.Create();
 
         if (write_buf != null) {
-            Buffer.Free(write_buf);
+            JByteBuffer.Free(write_buf);
         }
-        write_buf = Buffer.Create(BUFFER_SIZE);
+        write_buf = JByteBuffer.Create();
     }
 
     private void createBufferFD() {
         // Create the basis for the ssl_fd from the pair of buffers.
         PRFDProxy fd;
         if (peer_info != null && peer_info.length() != 0) {
-            fd = PR.NewBufferPRFD(read_buf, write_buf, peer_info.getBytes());
+            fd = PR.NewByteBufferPRFD(read_buf, write_buf, peer_info.getBytes());
         } else {
-            fd = PR.NewBufferPRFD(read_buf, write_buf, null);
+            fd = PR.NewByteBufferPRFD(read_buf, write_buf, null);
         }
 
         if (fd == null) {
@@ -351,50 +339,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
         }
     }
 
-    private void createLoggingSocket() {
-        if (debug_port == 0) {
-            return;
-        }
-
-        try {
-            ss_socket = new ServerSocket(debug_port);
-            ss_socket.setReuseAddress(true);
-            ss_socket.setReceiveBufferSize(BUFFER_SIZE);
-
-            c_socket = new Socket(ss_socket.getInetAddress(), ss_socket.getLocalPort());
-            c_socket.setReuseAddress(true);
-            c_socket.setReceiveBufferSize(BUFFER_SIZE);
-            c_socket.setSendBufferSize(BUFFER_SIZE);
-
-            s_socket = ss_socket.accept();
-            s_socket.setReuseAddress(true);
-            s_socket.setReceiveBufferSize(BUFFER_SIZE);
-            s_socket.setSendBufferSize(BUFFER_SIZE);
-
-            s_istream = s_socket.getInputStream();
-            s_ostream = s_socket.getOutputStream();
-
-            c_istream = c_socket.getInputStream();
-            c_ostream = c_socket.getOutputStream();
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to enable debug socket logging! " + e.getMessage(), e);
-        }
-    }
-
-    private void loggingSocketConsumeAllBytes() {
-        try {
-            int available = s_istream.available();
-            byte[] data = new byte[available];
-            s_istream.read(data);
-        } catch (Exception e) {}
-
-        try {
-            int available = c_istream.available();
-            byte[] data = new byte[available];
-            c_istream.read(data);
-        } catch (Exception e) {}
-    }
-
     public void beginHandshake() {
         // We assume beginHandshake(...) is the entry point for initializing
         // the buffer. In particular, wrap(...) / unwrap(...) *MUST* call
@@ -525,15 +469,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
         }
 
         return SSL.SecurityStatus(ssl_fd);
-    }
-
-    /**
-     * Enable writing of encrypted TLS traffic to the specified port in a
-     * client-server relationship (mirroring the actual role of this
-     * SSLEngine) to enable debugging with Wireshark.
-     */
-    public void enableSafeDebugLogging(int port) {
-        debug_port = port;
     }
 
     private int computeSize(ByteBuffer[] buffers, int offset, int length) throws IllegalArgumentException {
@@ -721,16 +656,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
             }
         }
 
-        // Set NEED_WRAP when we have data to send to the client.
-        if (Buffer.ReadCapacity(write_buf) > 0 && handshake_state != SSLEngineResult.HandshakeStatus.NEED_WRAP) {
-            // Can't write; to read, we need to call wrap to provide more
-            // data to write.
-            debug("JSSEngine.updateHandshakeState() - can write " + Buffer.ReadCapacity(write_buf) + " bytes, NEED_WRAP to process");
-            handshake_state = SSLEngineResult.HandshakeStatus.NEED_WRAP;
-            unknown_state_count = 0;
-            return;
-        }
-
         // Delay the check to see if the handshake finished until after we
         // send the CLIENT FINISHED message and recieved the SERVER FINISHED
         // message if we're a client. Otherwise, wait to send SERVER FINISHED
@@ -738,7 +663,7 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
         // (according to SecurityStatusResult since it has sent the massage)
         // but we haven't yet gotten around to doing so if we're in a WRAP()
         // call.
-        if (ssl_fd.handshakeComplete && Buffer.ReadCapacity(write_buf) == 0) {
+        if (ssl_fd.handshakeComplete) {
             debug("JSSEngine.updateHandshakeState() - handshakeComplete is " + ssl_fd.handshakeComplete + ", so we've just finished handshaking");
             step_handshake = false;
             handshake_state = SSLEngineResult.HandshakeStatus.FINISHED;
@@ -746,9 +671,17 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
             return;
         }
 
-        if (Buffer.ReadCapacity(read_buf) == 0 && handshake_state != SSLEngineResult.HandshakeStatus.NEED_UNWRAP) {
+        // Set NEED_WRAP when we have data to send to the client.
+        if (handshake_state != SSLEngineResult.HandshakeStatus.NEED_WRAP) {
+            // Can't write; to read, we need to call wrap to provide more
+            // data to write.
+            handshake_state = SSLEngineResult.HandshakeStatus.NEED_WRAP;
+            unknown_state_count = 0;
+            return;
+        }
+
+        if (handshake_state != SSLEngineResult.HandshakeStatus.NEED_UNWRAP) {
             // Set NEED_UNWRAP when we have no data to read from the client.
-            debug("JSSEngine.updateHandshakeState() - can read " + Buffer.ReadCapacity(read_buf) + " bytes, NEED_UNWRAP to give us more");
             handshake_state = SSLEngineResult.HandshakeStatus.NEED_UNWRAP;
             unknown_state_count = 0;
             return;
@@ -770,38 +703,18 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
                 (ssl_fd != null && handshake_state == SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING));
     }
 
-    private void logUnwrap(ByteBuffer src) {
-        if (debug_port <= 0 || src == null || src.remaining() == 0) {
-            return;
-        }
-
-        loggingSocketConsumeAllBytes();
-
-        OutputStream stream = c_ostream;
-
-        if (!as_server) {
-            // An unwrap from the client means we write data to the outbound
-            // side of the server socket.
-            stream = s_ostream;
-        }
-
-        WritableByteChannel channel = Channels.newChannel(stream);
-
-        int pos = src.position();
-        try {
-            debug("JSSEngine: logUnwrap() - writing " + src.remaining() + " bytes.");
-            channel.write(src);
-            stream.flush();
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to log contents of unwrap's src to debug socket: " + e.getMessage(), e);
-        } finally {
-            src.position(pos);
-        }
-    }
-
     public SSLEngineResult unwrap(ByteBuffer src, ByteBuffer[] dsts, int offset, int length) throws IllegalArgumentException, SSLException {
         debug("JSSEngine: unwrap(ssl_fd=" + ssl_fd + ")");
 
+        try {
+            JByteBuffer.SetBuffer(read_buf, src);
+            return unwrap(dsts, offset, length);
+        } finally {
+            JByteBuffer.ClearBuffer(read_buf);
+        }
+    }
+
+    private SSLEngineResult unwrap(ByteBuffer[] dsts, int offset, int length) throws IllegalArgumentException, SSLException {
         // In this method, we're taking the network wire contents of src and
         // passing them as the read side of our buffer. If there's any data
         // for us to read from the remote peer (via ssl_fd), we place it in
@@ -813,8 +726,6 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
         if (ssl_fd == null) {
             beginHandshake();
         }
-
-        logUnwrap(src);
 
         // Order of operations:
         //  1. Read data from srcs
@@ -839,57 +750,31 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
         // Actual amount of data written to the buffer.
         int app_data = 0;
 
-        int this_src_write;
-        int this_dst_write;
+        int this_dst_write = 0;
 
-        do {
-            int max_dst_size = computeSize(dsts, offset, length);
-            if (max_dst_size == 0) {
-                break;
+        // In the above, we should always try to read and write data. Check to
+        // see if we need to step our handshake process or not.
+        updateHandshakeState();
+
+        byte[] app_buffer = PR.Read(ssl_fd, BUFFER_SIZE);
+        int error = PR.GetError();
+        debug("JSSEngine.unwrap() - " + app_buffer + " error=" + errorText(error));
+        if (app_buffer != null) {
+            this_dst_write = putData(app_buffer, dsts, offset, length);
+            app_data += this_dst_write;
+        } else {
+            // There are two scenarios we need to ignore here:
+            //  1. WOULD_BLOCK_ERRORs are safe, because we're expecting
+            //     not to block. Usually this means we don't have space
+            //     to write any more data.
+            //  2. SOCKET_SHUTDOWN_ERRORs are safe, because if the
+            //     underling cause was fatal, we'd catch it after exiting
+            //     the do-while loop, in checkSSLAlerts().
+            if (error != 0 && error != PRErrors.WOULD_BLOCK_ERROR && error != PRErrors.SOCKET_SHUTDOWN_ERROR) {
+                ssl_exception = new SSLException("Unexpected return from PR.Read(): " + errorText(error));
+                seen_exception = true;
             }
-
-            this_src_write = 0;
-            this_dst_write = 0;
-
-            if (src != null) {
-                this_src_write = Math.min((int) Buffer.WriteCapacity(read_buf), src.remaining());
-
-                // When we have data from src, write it to read_buf.
-                if (this_src_write > 0) {
-                    this_src_write = (int) Buffer.WriteOffset(read_buf, src.array(), src.position(), src.position() + src.remaining());
-                    if (this_src_write > 0) {
-                        src.position(src.position() + this_src_write);
-                    }
-
-                    wire_data += this_src_write;
-                    debug("JSSEngine.unwrap(): Wrote " + this_src_write + " bytes to read_buf.");
-                }
-            }
-
-            // In the above, we should always try to read and write data. Check to
-            // see if we need to step our handshake process or not.
-            updateHandshakeState();
-
-            byte[] app_buffer = PR.Read(ssl_fd, max_dst_size);
-            int error = PR.GetError();
-            debug("JSSEngine.unwrap() - " + app_buffer + " error=" + errorText(error));
-            if (app_buffer != null) {
-                this_dst_write = putData(app_buffer, dsts, offset, length);
-                app_data += this_dst_write;
-            } else {
-                // There are two scenarios we need to ignore here:
-                //  1. WOULD_BLOCK_ERRORs are safe, because we're expecting
-                //     not to block. Usually this means we don't have space
-                //     to write any more data.
-                //  2. SOCKET_SHUTDOWN_ERRORs are safe, because if the
-                //     underling cause was fatal, we'd catch it after exiting
-                //     the do-while loop, in checkSSLAlerts().
-                if (error != 0 && error != PRErrors.WOULD_BLOCK_ERROR && error != PRErrors.SOCKET_SHUTDOWN_ERROR) {
-                    ssl_exception = new SSLException("Unexpected return from PR.Read(): " + errorText(error));
-                    seen_exception = true;
-                }
-            }
-        } while (this_src_write != 0 || this_dst_write != 0);
+        }
 
         if (seen_exception == false && ssl_exception == null) {
             ssl_exception = checkSSLAlerts();
@@ -974,7 +859,7 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
             // than BUFFER_SIZE bytes either; so cap at the minimum of the
             // two sizes.
             int expected_write = Math.min(srcs[index].remaining(), BUFFER_SIZE);
-            debug("JSSEngine.writeData(): expected_write=" + expected_write + " write_cap=" + Buffer.WriteCapacity(write_buf) + " read_cap=" + Buffer.ReadCapacity(read_buf));
+            debug("JSSEngine.writeData(): expected_write=" + expected_write);
 
             // Get data from our current srcs[index] buffer.
             byte[] app_data = new byte[expected_write];
@@ -1033,39 +918,18 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
         return data_length;
     }
 
-    private void logWrap(ByteBuffer dst) {
-        if (debug_port <= 0 || dst == null || dst.remaining() == 0) {
-            return;
-        }
+    public SSLEngineResult wrap(ByteBuffer[] srcs, int offset, int length, ByteBuffer dst) throws IllegalArgumentException, SSLException {
+        debug("JSSEngine: wrap(ssl_fd=" + ssl_fd + ")");
 
-        loggingSocketConsumeAllBytes();
-
-        OutputStream stream = s_ostream;
-
-        if (!as_server) {
-            // A wrap from the client means we write data to the outbound
-            // side of the client socket.
-            stream = c_ostream;
-        }
-
-        WritableByteChannel channel = Channels.newChannel(stream);
-
-        int pos = dst.position();
         try {
-            dst.flip();
-            debug("JSSEngine: logWrap() - writing " + dst.remaining() + " bytes.");
-            channel.write(dst);
-            stream.flush();
-            dst.flip();
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to log contents of wrap's dst to debug socket: " + e.getMessage(), e);
+            JByteBuffer.SetBuffer(write_buf, dst);
+            return wrap(srcs, offset, length);
         } finally {
-            dst.position(pos);
+            JByteBuffer.ClearBuffer(write_buf);
         }
     }
 
-    public SSLEngineResult wrap(ByteBuffer[] srcs, int offset, int length, ByteBuffer dst) throws IllegalArgumentException, SSLException {
-        debug("JSSEngine: wrap(ssl_fd=" + ssl_fd + ")");
+    private SSLEngineResult wrap(ByteBuffer[] srcs, int offset, int length) throws IllegalArgumentException, SSLException {
         // In this method, we're taking the application data from the various
         // srcs and writing it to the remote peer (via ssl_fd). If there's any
         // data for us to send to the remote peer, we place it in dst.
@@ -1107,70 +971,47 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
         // write_buf, and the size of dst, if present.
         int wire_data = 0;
 
-        int this_src_write;
-        int this_dst_write;
-        do {
-            if (dst.remaining() == 0) {
-                break;
+        int this_src_write = 0;
+
+        // First we try updating the handshake state.
+        updateHandshakeState();
+        if (ssl_exception == null && seen_exception) {
+            if (handshake_state != SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING) {
+                // In the event that:
+                //
+                //      1. We saw an exception in the past
+                //          --> (seen_exception is true),
+                //      2. We've already thrown it from wrap or unwrap,
+                //          --> (ssl_exception is null),
+                //      3. We were previously handshaking
+                //          --> (handshake_state is a handshaking state),
+                //
+                // we need to make sure wrap is called again to ensure the
+                // alert is actually written to the wire. So here we are,
+                // in wrap and the above hold true; we can mark the handshake
+                // status as "FINISHED" (because well, it is over due to the
+                // alert). That leaves the return state to be anything other
+                // than OK to indicate the error.
+                handshake_state = SSLEngineResult.HandshakeStatus.FINISHED;
             }
+        }
 
-            this_src_write = 0;
-            this_dst_write = 0;
-
-            // First we try updating the handshake state.
-            updateHandshakeState();
-            if (ssl_exception == null && seen_exception) {
-                if (handshake_state != SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING) {
-                    // In the event that:
-                    //
-                    //      1. We saw an exception in the past
-                    //          --> (seen_exception is true),
-                    //      2. We've already thrown it from wrap or unwrap,
-                    //          --> (ssl_exception is null),
-                    //      3. We were previously handshaking
-                    //          --> (handshake_state is a handshaking state),
-                    //
-                    // we need to make sure wrap is called again to ensure the
-                    // alert is actually written to the wire. So here we are,
-                    // in wrap and the above hold true; we can mark the handshake
-                    // status as "FINISHED" (because well, it is over due to the
-                    // alert). That leaves the return state to be anything other
-                    // than OK to indicate the error.
-                    handshake_state = SSLEngineResult.HandshakeStatus.FINISHED;
-                }
-            }
-
-            // Try writing data from srcs to the other end of the connection. Note
-            // that we always attempt this, even if the handshake isn't yet marked
-            // as finished. This is because we need the call to PR.Write(...) to
-            // tell if an alert is getting sent.
-            this_src_write = writeData(srcs, offset, length);
-            if (this_src_write > 0) {
-                app_data += this_src_write;
-                debug("JSSEngine.wrap(): wrote " + this_src_write + " from srcs to buffer.");
-            } else {
-                debug("JSSEngine.wrap(): not writing from srcs to buffer: this_src_write=" + this_src_write + " handshake_finished=" + isHandshakeFinished());
-            }
-
-            // Try reading data from write_buf to dst; always do this, even
-            // if we didn't write because we could've written data during the
-            // handshake.
-            this_dst_write = Buffer.ReadOffset(write_buf, dst.array(), dst.position(), dst.position() + dst.remaining());
-            if (this_dst_write > 0) {
-                dst.position(dst.position() + this_dst_write);
-            }
-
-            wire_data += this_dst_write;
-
-            debug("JSSEngine.wrap() - Wrote " + this_dst_write + " bytes to dst.");
-        } while (this_src_write != 0 || this_dst_write != 0);
+        // Try writing data from srcs to the other end of the connection. Note
+        // that we always attempt this, even if the handshake isn't yet marked
+        // as finished. This is because we need the call to PR.Write(...) to
+        // tell if an alert is getting sent.
+        this_src_write = writeData(srcs, offset, length);
+        if (this_src_write > 0) {
+            app_data += this_src_write;
+            debug("JSSEngine.wrap(): wrote " + this_src_write + " from srcs to buffer.");
+        } else {
+            debug("JSSEngine.wrap(): not writing from srcs to buffer: this_src_write=" + this_src_write + " handshake_finished=" + isHandshakeFinished());
+        }
 
         if (seen_exception == false && ssl_exception == null) {
             ssl_exception = checkSSLAlerts();
             seen_exception = (ssl_exception != null);
         }
-
-        logWrap(dst);
 
         // Before we return, check if an exception occurred and throw it if
         // one did.
@@ -1244,27 +1085,8 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
             closeOutbound();
         }
 
-        // First cleanup any debugging ports, if any.
-        cleanupLoggingSocket();
-
         // Then clean up the NSS state.
         cleanupSSLFD();
-    }
-
-    private void cleanupLoggingSocket() {
-        if (debug_port > 0) {
-            try {
-                s_socket.close();
-            } catch (Exception e) {}
-
-            try {
-                c_socket.close();
-            } catch (Exception e) {}
-
-            try {
-                ss_socket.close();
-            } catch (Exception e) {}
-        }
     }
 
     private void cleanupSSLFD() {
@@ -1280,12 +1102,12 @@ public class JSSEngineOptimizedImpl extends JSSEngine {
         }
 
         if (read_buf != null) {
-            Buffer.Free(read_buf);
+            JByteBuffer.Free(read_buf);
             read_buf = null;
         }
 
         if (write_buf != null) {
-            Buffer.Free(write_buf);
+            JByteBuffer.Free(write_buf);
             write_buf = null;
         }
     }

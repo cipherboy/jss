@@ -52,7 +52,7 @@ JSS_PK11_wrapPrivKey(JNIEnv *env, SECKEYPrivateKey **privk)
         className = "org/mozilla/jss/pkcs11/PK11PrivKey";
         break;
     }
-      
+
 	keyClass = (*env)->FindClass(env, className);
 	if(keyClass == NULL) {
 		ASSERT_OUTOFMEM(env);
@@ -298,7 +298,7 @@ Java_org_mozilla_jss_pkcs11_PK11PrivKey_getOwningToken
     /* Get the slot that this key lives on */
 	keySlot = PK11_GetSlotFromPrivateKey(key);
     PR_ASSERT(keySlot != NULL);
-    
+
     /* Turn the slot into a Java PK11Token */
     token = JSS_PK11_wrapPK11Token(env, &keySlot);
     if(token == NULL) {
@@ -360,7 +360,7 @@ finish:
     if (idItem != NULL) {
         SECITEM_FreeItem(idItem, PR_TRUE /*freeit*/);
     }
-    
+
     return byteArray;
 }
 
@@ -745,4 +745,26 @@ Java_org_mozilla_jss_pkcs11_PK11PrivKey_getPublicKey
     }
 
     return JSS_PK11_wrapPubKey(env, &pubKey);
+}
+
+/**********************************************************************
+ * PK11PrivKey.duplicate()
+ */
+JNIEXPORT jobject JNICALL
+Java_org_mozilla_jss_pkcs11_PK11PrivKey_duplicate
+    (JNIEnv *env, jobject this)
+{
+    SECKEYPrivateKey *privKey = NULL;
+    SECKEYPrivateKey *copy = NULL;
+
+    if (JSS_PK11_getPrivKeyPtr(env, this, &privKey) != PR_SUCCESS || privKey == NULL) {
+        return NULL;
+    }
+
+    copy = SECKEY_CopyPrivateKey(privKey);
+    if (copy == NULL) {
+        return NULL;
+    }
+
+    return JSS_PK11_wrapPrivKey(env, &copy);
 }

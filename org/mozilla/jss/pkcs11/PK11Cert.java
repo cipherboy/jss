@@ -466,6 +466,12 @@ public class PK11Cert
 		this.nickname = nickname;
 	}
 
+    /**
+     * Duplicate an existing PK11Cert object, allowing the existing one to
+     * go out of scope.
+     */
+    public native PK11Cert duplicate();
+
 	/////////////////////////////////////////////////////////////
 	// private data
 	/////////////////////////////////////////////////////////////

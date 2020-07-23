@@ -485,3 +485,10 @@ Java_org_mozilla_jss_nss_SECErrors_getUntrustedCert;
     local:
         *;
 };
+JSS_4.7.1 {
+    global:
+Java_org_mozilla_jss_pkcs11_PK11Cert_duplicate;
+Java_org_mozilla_jss_pkcs11_PK11PrivKey_duplicate;
+    local:
+        *;
+};

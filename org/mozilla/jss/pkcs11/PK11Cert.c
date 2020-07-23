@@ -114,7 +114,7 @@ finish:
 
 /******************************************************************
  *
- * C e r t P r o x y . g e t P u b l i c K e y 
+ * C e r t P r o x y . g e t P u b l i c K e y
  *
  * Extracts the SECKEYPublicKey from the CERTCertificate, wraps it
  * in a Java wrapper, and returns it.
@@ -190,7 +190,7 @@ Java_org_mozilla_jss_pkcs11_CertProxy_releaseNativeResources
 finish:
 	PR_DetachThread();
 }
-	
+
 
 /******************************************************************
  *
@@ -780,4 +780,26 @@ Java_org_mozilla_jss_pkcs11_PK11Cert_getIssuerDNString
     } else {
         return NULL;
     }
+}
+
+/**********************************************************************
+ * PK11Cert.duplicate
+ */
+JNIEXPORT jobject JNICALL
+Java_org_mozilla_jss_pkcs11_PK11Cert_duplicate
+    (JNIEnv *env, jobject this)
+{
+    CERTCertificate *cert = NULL;
+    CERTCertificate *copy = NULL;
+
+    if (JSS_PK11_getCertPtr(env, this, &cert) != PR_SUCCESS || cert == NULL) {
+        return NULL;
+    }
+
+    copy = CERT_DupCertificate(cert);
+    if (copy == NULL) {
+        return NULL;
+    }
+
+    return JSS_PK11_wrapCert(env, &copy);
 }

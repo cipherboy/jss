@@ -27,6 +27,12 @@ public class PK11PrivKey extends org.mozilla.jss.pkcs11.PK11Key
         keyProxy = new PrivateKeyProxy(pointer);
     }
 
+    /**
+     * Duplicate an existing PK11PrivKey object, allowing the existing
+     * one to go out of scope.
+     */
+    public native PK11PrivKey duplicate();
+
 	/**
 	 * Make sure this key lives on the given token.
 	 */

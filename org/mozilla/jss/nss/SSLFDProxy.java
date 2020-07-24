@@ -34,7 +34,7 @@ public class SSLFDProxy extends PRFDProxy {
             throw new IllegalArgumentException("Unable to cast given certificate to PK11Cert: " + cert.getClass().getName());
         }
 
-        clientCert = (PK11Cert)cert;
+        clientCert = ((PK11Cert)cert).duplicate();
     }
 
     @Override
@@ -47,6 +47,11 @@ public class SSLFDProxy extends PRFDProxy {
                     globalRef = null;
                 }
             }
+        }
+
+        if (clientCert != null) {
+            clientCert.close();
+            clientCert = null;
         }
     }
 

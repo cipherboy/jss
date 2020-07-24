@@ -224,7 +224,7 @@ public class JSSEngineReferenceImpl extends JSSEngine {
 
         if (cert != null && key != null) {
             debug("JSSEngine.initClient(): Enabling client auth: " + cert);
-            ssl_fd.SetClientCert(cert);
+            ssl_fd.SetClientCert(cert.duplicate());
             if (SSL.AttachClientCertCallback(ssl_fd) != SSL.SECSuccess) {
                 throw new SSLException("Unable to attach client certificate auth callback.");
             }
@@ -243,7 +243,7 @@ public class JSSEngineReferenceImpl extends JSSEngine {
         debug("JSSEngine.initServer(): " + cert);
         debug("JSSEngine.initServer(): " + key);
 
-        session.setLocalCertificates(new PK11Cert[]{ cert } );
+        session.setLocalCertificates(new PK11Cert[]{ cert.duplicate() } );
 
         // Create a small session cache.
         //
@@ -1415,6 +1415,10 @@ public class JSSEngineReferenceImpl extends JSSEngine {
         }
     }
 
+    protected void finalize() throws Throwable {
+        cleanup();
+    }
+
     /**
      * Performs cleanup of internal data, closing both inbound and outbound
      * data streams if still open.
@@ -1443,21 +1447,62 @@ public class JSSEngineReferenceImpl extends JSSEngine {
             session.close();
             session = null;
         }
+
+        cleanupKeys();
+    }
+
+    private void cleanupKeys() {
+        // Clean up the keys used in this transaction.
+        if (cert != null) {
+            try {
+                debug("Closing cert: " + cert);
+                cert.close();
+            } catch (Exception e) {
+                debug("Got exception closing cert: " + e);
+            }
+
+            cert = null;
+        }
+
+        if (key != null) {
+            try {
+                key.close();
+            } catch (Exception e) {
+                debug("Got exception closing key: " + e);
+            }
+
+            key = null;
+        }
     }
 
     private void cleanupLoggingSocket() {
         if (debug_port > 0) {
-            try {
-                s_socket.close();
-            } catch (Exception e) {}
+            if (s_socket != null) {
+                try {
+                    s_socket.close();
+                } catch (Exception e) {
+                    debug("Got exception closing s_socket: " + e);
+                }
+                s_socket = null;
+            }
 
-            try {
-                c_socket.close();
-            } catch (Exception e) {}
+            if (c_socket != null) {
+                try {
+                    c_socket.close();
+                } catch (Exception e) {
+                    debug("Got exception closing c_socket: " + e);
+                }
+                c_socket = null;
+            }
 
-            try {
-                ss_socket.close();
-            } catch (Exception e) {}
+            if (ss_socket != null) {
+                try {
+                    ss_socket.close();
+                } catch (Exception e) {
+                    debug("Got exception closing ss_socket: " + e);
+                }
+                ss_socket = null;
+            }
         }
     }
 
@@ -1543,8 +1588,8 @@ public class JSSEngineReferenceImpl extends JSSEngine {
                 // provided. This makes the TrustManager field redundant,
                 // but yet we still have to provide it.
                 if (chain != null && chain.length > 0 && chain[0] != null) {
-                    PK11Cert cert = chain[0];
-                    PublicKey key = cert.getPublicKey();
+                    PK11Cert leaf_cert = chain[0];
+                    PublicKey key = leaf_cert.getPublicKey();
                     return key.getAlgorithm();
                 }
                 // Implicit else here and above: authType == null, which
@@ -1600,6 +1645,17 @@ public class JSSEngineReferenceImpl extends JSSEngine {
                 }
             } catch (Exception excpt) {
                 return assignException(excpt, chain);
+            } finally {
+                if (chain != null) {
+                    for (PK11Cert chain_cert : chain) {
+                        if (chain_cert != null) {
+                            try {
+                                debug("Closing cert: " + chain_cert);
+                                chain_cert.close();
+                            } catch (Exception e) {}
+                        }
+                    }
+                }
             }
 
             return 0;
@@ -1619,8 +1675,8 @@ public class JSSEngineReferenceImpl extends JSSEngine {
             } else if (chain.length == 0) {
                 msg += " - (0 length chain)\n";
             } else {
-                for (PK11Cert cert : chain) {
-                    msg += " - " + cert + "\n";
+                for (PK11Cert chain_cert : chain) {
+                    msg += " - " + chain_cert + "\n";
                 }
             }
             msg += "with given TrustManagers:\n";

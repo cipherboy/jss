@@ -229,8 +229,8 @@ public abstract class JSSEngine extends javax.net.ssl.SSLEngine {
                      org.mozilla.jss.crypto.PrivateKey localKey) {
         super(peerHost, peerPort);
 
-        cert = (PK11Cert) localCert;
-        key = (PK11PrivKey) localKey;
+        cert = ((PK11Cert) localCert).duplicate();
+        key = ((PK11PrivKey) localKey).duplicate();
 
         session = new JSSSession(this, BUFFER_SIZE);
         session.setPeerHost(peerHost);
@@ -454,8 +454,8 @@ public abstract class JSSEngine extends javax.net.ssl.SSLEngine {
             // they are always PK11Cert instances. We're going to need an
             // instance of PK11Cert anyways, in order to correctly pass it to
             // the native layer.
-            cert = (PK11Cert) jkm.getCertificate(alias);
-            key = (PK11PrivKey) jkm.getPrivateKey(alias);
+            cert = ((PK11Cert) jkm.getCertificate(alias)).duplicate();
+            key = ((PK11PrivKey) jkm.getPrivateKey(alias)).duplicate();
 
             if (cert != null && key != null) {
                 // Found a cert and key matching our alias; exit.
@@ -728,8 +728,8 @@ public abstract class JSSEngine extends javax.net.ssl.SSLEngine {
             throw new IllegalArgumentException("JSSEngine.setKeyMaterials(): Either both cert and key must be null or both must be not-null");
         }
 
-        cert = our_cert;
-        key = our_key;
+        cert = our_cert.duplicate();
+        key = our_key.duplicate();
     }
 
     /**
@@ -980,6 +980,15 @@ public abstract class JSSEngine extends javax.net.ssl.SSLEngine {
 
         SSLFDProxy fd = serverTemplates.get(cert);
         if (fd == null) {
+            // Here we clone the certificate. This certificate is functionally
+            // the same, but its scope is owned by the serverTemplates map.
+            // This allows the certificate to persist, even when the original
+            // key is closed by the owning JSSEngine instance. Note that we
+            // need not clone the key: ConfigServerCert will maintain its own
+            // copy of the key and cert, so we are free to let it get garbage
+            // collected.
+            PK11Cert cert_clone = cert.duplicate();
+
             PRFDProxy base = PR.NewTCPSocket();
             fd = SSL.ImportFD(null, base);
             if (SSL.ConfigServerCert(fd, cert, key) != SSL.SECSuccess) {
@@ -989,7 +998,7 @@ public abstract class JSSEngine extends javax.net.ssl.SSLEngine {
                 throw new RuntimeException(msg);
             }
 
-            serverTemplates.put(cert, fd);
+            serverTemplates.put(cert_clone, fd);
         }
 
         return fd;

@@ -3,6 +3,8 @@
 # This tool attempts to detect the presence of various tools to run the CI
 # images. If present, it'll use them to run the specified container image.
 
+set -x
+
 function rc_buildah() {
     buildah_path="$(command -v buildah)"
     podman_path="$(command -v podman)"

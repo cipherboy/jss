@@ -2,6 +2,7 @@ FROM fedora:rawhide
 
 # Install generic dependencies to build jss
 RUN true \
+        && ls -alhd /proc \
         && dnf update -y --refresh \
         && dnf install -y dnf-plugins-core gcc make rpm-build cmake \
                           glassfish-jaxb-api java-11-openjdk nss-tools \
